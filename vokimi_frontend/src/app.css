@@ -1,0 +1,20 @@
+:root {
+    --text: #040316;
+    --back-main: #fefeff;
+    --back-secondary: #f3f1fd;
+    --primary: #796cfa;
+    --primary-hov: #6455fb;
+    --red-del: #ed2f2f;
+}
+
+body {
+    margin: 0 !important;
+    background-color: var(--back-main);
+}
+
+.unselectable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

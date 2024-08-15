@@ -1,0 +1,25 @@
+﻿using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
+using vokimi_api.Src.db_related.db_entities_ids;
+using vokimi_api.Src.enums;
+
+namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
+{
+    public class DraftGeneralTest : BaseDraftTest
+    {
+        public virtual ICollection<DraftGeneralTestQuestion> Questions { get; private set; } = [];
+        public virtual ICollection<DraftGeneralTestResult> PossibleResults { get; set; } = [];
+
+        public DraftGeneralTest() {
+            Template = TestTemplate.General;
+        }
+        public static DraftGeneralTest CreateNew(AppUserId creatorId, DraftTestMainInfoId mainInfoId, TestStylesSheetId stylesSheetId) =>
+            new() {
+                Id = new(),
+                CreatorId = creatorId,
+                MainInfoId = mainInfoId,
+                CreationDate = DateTime.UtcNow,
+                ConclusionId = null,
+                StylesSheetId = stylesSheetId
+            };
+    }
+}
