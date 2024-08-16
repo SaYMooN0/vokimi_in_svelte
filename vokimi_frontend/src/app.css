@@ -1,7 +1,7 @@
 :root {
     --text: #040316;
     --back-main: #fefeff;
-    --back-secondary: #f3f1fd;
+    --back-secondary: #f5f4fd;
     --primary: #796cfa;
     --primary-hov: #6455fb;
     --red-del: #ed2f2f;
@@ -10,6 +10,7 @@
 body {
     margin: 0 !important;
     background-color: var(--back-main);
+    font-family: "Inter", sans-serif;
 }
 
 .unselectable {

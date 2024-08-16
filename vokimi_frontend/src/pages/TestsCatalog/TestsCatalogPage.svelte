@@ -1,0 +1,1 @@
+<h2>Tests catalog page</h2>

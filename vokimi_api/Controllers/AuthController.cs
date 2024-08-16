@@ -7,7 +7,7 @@ namespace vokimi_api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController
+    public class AuthController : ControllerBase
     {
         private readonly AppDbContext db;
         public AuthController(AppDbContext appDbContext) {
@@ -16,20 +16,36 @@ namespace vokimi_api.Controllers
 
         [HttpGet]
         [Route("/pingauth")]
-        [Authorize]
-        public IResult PingAuth(ClaimsPrincipal user) {
-            string? email = user.FindFirstValue(ClaimTypes.Email);
-            string? username = user.FindFirstValue(ClaimTypes.Name);
-            string? userId = user.FindFirstValue("UserId");
+        public IResult PingAuth() {
+            var user = this.User;
 
-            return Results.Json(new { Email = email, Username = username, UserId = userId });
+            if (user.Identity?.IsAuthenticated ?? false) {
+                string? email = user.FindFirstValue(ClaimTypes.Email);
+                string? username = user.FindFirstValue(ClaimTypes.Name);
+                string? userId = user.FindFirstValue("UserId");
+
+                return Results.Json(new { Email = email, Username = username, UserId = userId });
+            } else {
+                return Results.Unauthorized();
+            }
         }
-        public record PingAuthObj(bool isAuthenticated, string Username, string Email);
 
         [HttpGet]
         [Route("/getUsernameWithProfilePicture")]
         public IResult GetUsernameWithProfilePicture() {
-            return Results.Json(new { Username = "test", ProfileImage = "test" });
+            var currentUser = this.User;
+
+            if (currentUser.Identity?.IsAuthenticated ?? false) {
+                string? userName = currentUser.Identity.Name;
+                string? userId = currentUser.FindFirstValue("UserId");
+
+                return Results.Json(new {
+                    UserName = userName,
+                    ProfilePictureUrl = ""
+                });
+            } else {
+                return Results.Unauthorized();
+            }
         }
     }
 }

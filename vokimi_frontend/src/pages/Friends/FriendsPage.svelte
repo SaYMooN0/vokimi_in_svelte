@@ -1,0 +1,1 @@
+<h2>Friends page</h2>
