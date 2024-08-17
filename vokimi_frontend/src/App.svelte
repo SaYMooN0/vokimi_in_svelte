@@ -3,9 +3,10 @@
   import HeaderLayout from "./components/layouts/header_layout/HeaderLayout.svelte";
   import FriendsPage from "./pages/Friends/FriendsPage.svelte";
   import LoginPage from "./pages/Login/LoginPage.svelte";
+  import MyAccPage from "./pages/MyAcc/MyAccPage.svelte";
   import CollectionsPage from "./pages/Collections/CollectionsPage.svelte";
   import MyTestsPage from "./pages/MyTests/MyTestsPage.svelte";
-  import RegistrationPage from "./pages/Registration/RegistrationPage.svelte";
+  import RegistrationPage from "./pages/Register/RegisterPage.svelte";
   import TestsCatalogPage from "./pages/TestsCatalog/TestsCatalogPage.svelte";
 </script>
 
@@ -17,6 +18,7 @@
       <Route path="/catalog" component={TestsCatalogPage} />
       <Route path="/friends" component={FriendsPage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/my-acc" component={MyAccPage} />
       <Route path="/collections" component={CollectionsPage} />
       <Route path="/my-tests" component={MyTestsPage} />
       <Route path="/register" component={RegistrationPage} />

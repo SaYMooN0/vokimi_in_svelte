@@ -18,8 +18,8 @@ namespace vokimi_api.Src.db_related.db_entities.users
         public virtual LoginInfo LoginInfo { get; private set; }
         public virtual UserAdditionalInfo UserAdditionalInfo { get; private set; }
 
-        public virtual ICollection<BaseDraftTest> DraftTests { get;private set; } = [];
-        public virtual ICollection<BaseTest> PublishedTests { get; private set; } = [];
+        //public virtual ICollection<BaseDraftTest> DraftTests { get;private set; } = [];
+        //public virtual ICollection<BaseTest> PublishedTests { get; private set; } = [];
         public virtual ICollection<AppUser> Friends { get; private set; } = [];
         public virtual ICollection<AppUser> Followers { get; private set; } = [];
         public static AppUser CreateNew(string username, LoginInfoId loginInfoId, UserAdditionalInfoId userAdditionalInfoId) =>

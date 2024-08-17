@@ -54,39 +54,6 @@ namespace vokimi_api
 
             app.UseAuthorization();
 
-
-            //app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager) => {
-
-            //    await signInManager.SignOutAsync();
-            //    return Results.Ok();
-
-            //}).RequireAuthorization();
-
-
-            //app.MapGet("/pingauth", (ClaimsPrincipal user) => {
-            //    var email = user.FindFirstValue(ClaimTypes.Email); 
-            //    return Results.Json(new { Email = email }); //return id and role instead 
-            //}).RequireAuthorization();
-
-            app.MapPost("/login", async (HttpContext context) => {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, "email@example.com")
-                };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties {
-                };
-
-                await context.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
-
-                return Results.Ok("User logged in");
-            });
-
-
-
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");

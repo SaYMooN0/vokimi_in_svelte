@@ -1,6 +1,5 @@
 <script lang="ts">
     import NavMenu from "./NavMenu.svelte";
-    import { Link } from "svelte-routing";
     import vokimiLogo from "../../../assets/vokimi-logo.svg";
 
     let username: string = "";
@@ -8,13 +7,10 @@
 
     async function IsAuthenticated(): Promise<boolean> {
         const response = await fetch("/api/getUsernameWithProfilePicture");
-        console.log(response);
 
         if (response.status == 200) {
             //#TODO: create object
-            console.log("status 200");
             let j = await response.json();
-            console.log("-----");
             username = j.username;
             profilePicture = j.profilePicture;
             return username != "" && profilePicture != "";
@@ -31,7 +27,7 @@
     <NavMenu />
 
     {#await IsAuthenticated()}
-        <a href="/login" class="login-button">Login</a>
+        <div></div>
     {:then authenticated}
         {#if authenticated}
             <div>{username}</div>
