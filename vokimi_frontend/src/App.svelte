@@ -8,6 +8,7 @@
   import MyTestsPage from "./pages/MyTests/MyTestsPage.svelte";
   import RegistrationPage from "./pages/Register/RegisterPage.svelte";
   import TestsCatalogPage from "./pages/TestsCatalog/TestsCatalogPage.svelte";
+  import ConfirmRegistrationPage from "./pages/ConfirmRegistrationPage.svelte";
 </script>
 
 <Router>
@@ -22,6 +23,9 @@
       <Route path="/collections" component={CollectionsPage} />
       <Route path="/my-tests" component={MyTestsPage} />
       <Route path="/register" component={RegistrationPage} />
+      <Route path="/confirm-registration/:confirmationString" let:params>
+        <ConfirmRegistrationPage confirmationString="{params.confirmationString}" />
+    </Route>
     </div>
   </div>
 </Router>
