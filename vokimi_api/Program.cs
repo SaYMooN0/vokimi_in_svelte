@@ -5,6 +5,7 @@ using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using vokimi_api.Src.db_related;
+using vokimi_api.Services;
 
 namespace vokimi_api
 {
@@ -13,8 +14,7 @@ namespace vokimi_api
         public static async Task Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddCors(options =>
-            {
+            builder.Services.AddCors(options => {
                 options.AddPolicy("AllowSpecificOrigin",
                     policy => {
                         policy.WithOrigins("https://localhost:5173")
@@ -61,21 +61,12 @@ namespace vokimi_api
             app.Run();
         }
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
-            services.AddDbContext<AppDbContext>(options =>
-           options.UseNpgsql(configuration.GetConnectionString("VokimiDb")));
-
-            // Yandex s3 configuration
-            var creds = new BasicAWSCredentials(configuration["AWS:AccessKey"], configuration["AWS:SecretKey"]);
-            var config = new AmazonS3Config { ServiceURL = "https://s3.yandexcloud.net" };
-
-            services.AddSingleton<IAmazonS3>(sp => new AmazonS3Client(creds, config));
-
-            string bucketName = configuration["AWS:BucketName"];
-            //services.AddSingleton(sp => new VokimiStorageService(sp.GetRequiredService<IAmazonS3>(), bucketName));
+            ConfigureDbContextFactory(services, configuration);
+            ConfigureS3(services, configuration);
+            ConfigureEmailService(services, configuration);
 
 
-            //services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
-            //services.AddTransient<EmailService>();
+
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => {
@@ -91,7 +82,30 @@ namespace vokimi_api
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
         }
+        private static void ConfigureDbContextFactory(IServiceCollection services, IConfiguration configuration) =>
+            services.AddDbContextFactory<AppDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("VokimiDb")));
+        private static void ConfigureS3(IServiceCollection services, IConfiguration configuration) {
+
+            string
+                accessKey = configuration["AWS:AccessKey"] ?? throw new Exception("AWS:AccessKey is not set"),
+                secretKey = configuration["AWS:SecretKey"] ?? throw new Exception("AWS:SecretKey is not set"),
+                bucketName = configuration["AWS:BucketName"] ?? throw new Exception("AWS:BucketName is not set");
+
+            var creds = new BasicAWSCredentials(accessKey, secretKey);
+            var config = new AmazonS3Config { ServiceURL = "https://s3.yandexcloud.net" };
+
+            services.AddSingleton<IAmazonS3>(sp => new AmazonS3Client(creds, config));
+
+            //services.AddSingleton(sp => new VokimiStorageService(sp.GetRequiredService<IAmazonS3>(), bucketName));
+        }
+        private static void ConfigureEmailService(IServiceCollection services, IConfiguration configuration) {
+            string smtpHost = configuration["Smtp:Host"] ?? throw new Exception("Smtp:Host is not set");
+            int smtpPort = int.Parse(configuration["Smtp:Port"] ?? throw new Exception("Smtp:Port is not set"));
+            string smtpUsername = configuration["Smtp:Username"] ?? throw new Exception("Smtp:Username is not set");
+            string smtpPassword = configuration["Smtp:Password"] ?? throw new Exception("Smtp:Password is not set");
+            services.AddTransient((_) => new EmailService(smtpHost, smtpPort, smtpUsername, smtpPassword));
+        }
     }
-
-
 }
+

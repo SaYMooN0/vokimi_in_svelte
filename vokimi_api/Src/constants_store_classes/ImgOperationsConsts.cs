@@ -29,7 +29,7 @@ namespace vokimi_api.Src.constants_store_classes
         public static string TestQuestionsFolder(TestId testId) => $"{TestsFolder}/{testId}/{QuestionsFolderName}/";
 
         public static string ImgUrl(string fileKey) =>
-           $"vokimiimgs/GetImage/{fileKey}";
+           $"vokimiimgs/{fileKey}";
         public static string ImageUrlWithVersion(string path) =>
             $"{ImgUrl(path)}?v={Guid.NewGuid()}";
     }

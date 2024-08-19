@@ -52,8 +52,8 @@ namespace vokimi_api.Services
         }
         private SmtpClient ConfigureSmtpClient() {
             var client = new SmtpClient();
-            client.Connect(_smtpSettings.Host, _smtpSettings.Port, true);
-            client.Authenticate(_smtpSettings.Username, _smtpSettings.Password);
+            client.Connect(_host, _port, true);
+            client.Authenticate(_username, _password);
             return client;
         }
 

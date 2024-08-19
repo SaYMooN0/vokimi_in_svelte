@@ -31,8 +31,9 @@
     async function submitForm() {
         validateForm();
         if (valid) {
-            const data = { email, password, username };
-            const response = await fetch("/signup", {
+            const frontendBaseUrl = window.location.origin;
+            const data = { email, password, username, frontendBaseUrl };
+            const response = await fetch("/api/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -44,7 +45,7 @@
                 ChangeStateToLinkHasBeenSentMessage(username, email);
             } else if (response.status === 400) {
                 const errorResponse = await response.json();
-                message = errorResponse.Error || "An unknown error occurred.";
+                message = errorResponse.error || "An unknown error occurred.";
             } else {
                 message = "An unknown error occurred.";
             }

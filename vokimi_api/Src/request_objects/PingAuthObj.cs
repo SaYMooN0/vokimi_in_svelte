@@ -9,5 +9,9 @@ namespace vokimi_api.Src
             ClaimKeyUsername = "username",
             ClaimKeyEmail = "email",
             ClaimKeyUserId = "userid";
+        public bool AnyFieldEmpty => 
+            string.IsNullOrEmpty(Email) && 
+            string.IsNullOrEmpty(Username) && 
+            UserId is null;
     }
 }

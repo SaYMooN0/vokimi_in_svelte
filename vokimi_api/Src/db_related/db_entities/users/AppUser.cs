@@ -12,11 +12,12 @@ namespace vokimi_api.Src.db_related.db_entities.users
         public string RealName { get; private set; } = string.Empty;
         public string ProfilePicturePath { get; private set; }
         public bool IsAccountPrivate { get; private set; } = false;
-        public LoginInfoId LoginInfoId { get; init; }
-        public UserAdditionalInfoId UserAdditionalInfoId { get; init; }
 
-        public virtual LoginInfo LoginInfo { get; private set; }
+        public UserAdditionalInfoId UserAdditionalInfoId { get; init; }
         public virtual UserAdditionalInfo UserAdditionalInfo { get; private set; }
+
+        public LoginInfoId LoginInfoId { get; init; }
+        public virtual LoginInfo LoginInfo { get; private set; }
 
         //public virtual ICollection<BaseDraftTest> DraftTests { get;private set; } = [];
         //public virtual ICollection<BaseTest> PublishedTests { get; private set; } = [];

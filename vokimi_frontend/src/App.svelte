@@ -9,13 +9,15 @@
   import RegistrationPage from "./pages/Register/RegisterPage.svelte";
   import TestsCatalogPage from "./pages/TestsCatalog/TestsCatalogPage.svelte";
   import ConfirmRegistrationPage from "./pages/ConfirmRegistrationPage.svelte";
+  import Page404 from "./pages/Page404.svelte";
 </script>
 
 <Router>
   <div class="app-page">
     <HeaderLayout />
     <div class="page-content">
-      <Route component={TestsCatalogPage} />
+      <Route component={Page404} />
+      <Route path="/" component={TestsCatalogPage} />
       <Route path="/catalog" component={TestsCatalogPage} />
       <Route path="/friends" component={FriendsPage} />
       <Route path="/login" component={LoginPage} />
@@ -23,9 +25,16 @@
       <Route path="/collections" component={CollectionsPage} />
       <Route path="/my-tests" component={MyTestsPage} />
       <Route path="/register" component={RegistrationPage} />
-      <Route path="/confirm-registration/:confirmationString" let:params>
-        <ConfirmRegistrationPage confirmationString="{params.confirmationString}" />
-    </Route>
+
+      <Route
+        path="/confirm-registration/:userId/:confirmationString"
+        let:params
+      >
+        <ConfirmRegistrationPage
+          confirmationString={params.confirmationString}
+          userId={params.userId}
+        />
+      </Route>
     </div>
   </div>
 </Router>
