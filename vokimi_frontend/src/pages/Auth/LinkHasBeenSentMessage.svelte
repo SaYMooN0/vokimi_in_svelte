@@ -1,13 +1,6 @@
 <script lang="ts">
-    let username: string = "";
-    let email: string = "";
-    export const SetUsernameAndEmail = function (
-        usernameVal: string,
-        emailVal: string,
-    ) {
-        username = usernameVal;
-        email = emailVal;
-    };
+    export let username: string = "";
+    export let email: string = "";
 </script>
 
 <h3 class="thank-you">{username}, thank you for registration</h3>

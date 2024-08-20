@@ -1,9 +1,10 @@
 :root {
     --text: #040316;
+    --text-faded: #6f6b88;
     --back-main: #fefeff;
     --back-secondary: #f5f4fd;
     --primary: #796cfa;
-    --primary-hov: #6455fb;
+    --primary-hov:  #6457f0;
     --red-del: #ed2f2f;
 }
 

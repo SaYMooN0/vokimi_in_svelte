@@ -211,16 +211,26 @@ namespace vokimi_api.Controllers
         [HttpPost]
         [Route("/login")]
         public async Task<IResult> LoginAsync([FromBody] LoginRequest loginRequest) {
+            if (string.IsNullOrEmpty(loginRequest.Email) || string.IsNullOrEmpty(loginRequest.Password)) {
+                return Results.BadRequest(new { Error = "Please fill all fields" });
+            }
+            using (var db = _dbFactory.CreateDbContext()) {
+                AppUser? user = await db.AppUsers
+                    .Include(x => x.LoginInfo)
+                    .FirstOrDefaultAsync(u => u.LoginInfo.Email == loginRequest.Email);
 
-            //check if user exists
-            //check password
-
-            string username = "basicUsername";
-            AppUserId userId = new(Guid.NewGuid());
-
-
-
-            return Results.Ok("User logged in");
+                if (user is null) {
+                    return Results.BadRequest(new { Error = "There is no user with this email" });
+                }
+                if (!BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.LoginInfo.PasswordHash)) {
+                    return Results.BadRequest(new { Error = "Incorrect password" });
+                }
+                Err signInErr = await SignInUser(new PingAuthObj(user.LoginInfo.Email, user.Username, user.Id));
+                if (signInErr.NotNone()) {
+                    return Results.BadRequest(new { Error = "Something went wrong. Please try again later" });
+                }
+                return Results.Ok();
+            }
         }
         [HttpPost]
         [Route("/logout")]

@@ -12,7 +12,7 @@
             //#TODO: create object
             let j = await response.json();
             console.log(j);
-            
+
             username = j.username;
             profilePicture = j.profilePicture;
             return username != "" && profilePicture != "";
@@ -34,7 +34,7 @@
         {#if authenticated}
             <div>{username}</div>
         {:else}
-            <a href="/login" class="login-button">Login</a>
+            <a href="/auth/login" class="login-button">Login</a>
         {/if}
     {/await}
 </div>
