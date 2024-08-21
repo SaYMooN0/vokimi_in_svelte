@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using Amazon.Runtime;
 using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using vokimi_api.Src.db_related;
 using vokimi_api.Services;
+using vokimi_api.Endpoints;
+using Amazon.S3.Model;
 
 namespace vokimi_api
 {
@@ -56,9 +56,42 @@ namespace vokimi_api
 
             app.MapControllers();
 
+            MapEndpoints(app);
+
             app.MapFallbackToFile("/index.html");
 
             app.Run();
+        }
+        public static void MapEndpoints(WebApplication app) {
+            app.MapGet("/pingauth", AuthEndpoints.PingAuth);
+            app.MapGet("/getUsernameWithProfilePicture", AuthEndpoints.GetUsernameWithProfilePicture);
+            app.MapPost("/signup", AuthEndpoints.Signup);
+            app.MapPost("/confirmRegistration", AuthEndpoints.ConfirmRegistration);
+            app.MapPost("/login", AuthEndpoints.Login);
+            app.MapPost("/logout", AuthEndpoints.Logout);
+
+            app.MapGet("/vokimiimgs/{fileKey}", async (string fileKey, IAmazonS3 s3Client, string bucketName) => {
+                GetObjectRequest request = new() {
+                    BucketName = bucketName,
+                    Key = fileKey
+                };
+
+                try {
+                    using (var response = await s3Client.GetObjectAsync(request)) {
+                        using (var responseStream = response.ResponseStream) {
+                            MemoryStream memoryStream = new();
+                            await responseStream.CopyToAsync(memoryStream);
+                            memoryStream.Seek(0, SeekOrigin.Begin);
+                            return Results.File(memoryStream, response.Headers.ContentType, response.Key);
+                        }
+                    }
+                } catch (AmazonS3Exception ex) {
+                    return Results.NotFound($"Error fetching file");
+                } catch {
+                    return Results.Problem($"Internal server error");
+                }
+            });
+
         }
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
             ConfigureDbContextFactory(services, configuration);
