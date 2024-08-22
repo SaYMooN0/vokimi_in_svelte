@@ -4,13 +4,13 @@ using VokimiShared.src.models.db_classes.test.test_types;
 
 namespace vokimi_api.Src.dtos.responses
 {
-    public record class UsersDraftTestsVm(
+    public record class UsersTestsVm(
         string ImagePath, string Name, string OverviewLink, TestTemplate Template
         )
     {
-        public static UsersDraftTestsVm FromDraftTest(BaseDraftTest test) =>
+        public static UsersTestsVm FromDraftTest(BaseDraftTest test) =>
             new(test.MainInfo.CoverImagePath, test.MainInfo.Name, "", test.Template);
-        public static UsersDraftTestsVm FromPublishedTest(BaseTest test) =>
+        public static UsersTestsVm FromPublishedTest(BaseTest test) =>
             new(test.Cover, test.Name, "", test.Template);
     }
 }

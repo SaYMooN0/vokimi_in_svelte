@@ -20,6 +20,23 @@ namespace vokimi_api.Src.db_related
             modelBuilder.ConfigureLoginInfo();
             modelBuilder.ConfigureUserAdditionalInfo();
             modelBuilder.ConfigureUnconfirmedAppUser();
+
+            //draft and published tests shared
+            modelBuilder.ConfigureTestConclusion();
+            modelBuilder.ConfigureTestStylesSheet();
+            modelBuilder.ConfigureGenerlTestAnswerTypeSpecificInfo();
+
+            //base draft tests
+            modelBuilder.ConfigureBaseDraftTest();
+            modelBuilder.ConfigureDraftTestMainInfo();
+
+            //draft general tests
+            modelBuilder.ConfigureDraftGeneralTest();
+            modelBuilder.ConfigureDraftGeneralTestQuestions();
+            modelBuilder.ConfigureDraftGeneralTestAnswers();
+            modelBuilder.ConfigureDraftGeneralTestResults();
+
+
         }
 
     }

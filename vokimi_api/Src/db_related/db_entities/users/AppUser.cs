@@ -19,7 +19,7 @@ namespace vokimi_api.Src.db_related.db_entities.users
         public LoginInfoId LoginInfoId { get; init; }
         public virtual LoginInfo LoginInfo { get; private set; }
 
-        //public virtual ICollection<BaseDraftTest> DraftTests { get;private set; } = [];
+        public virtual ICollection<BaseDraftTest> DraftTests { get; private set; } = [];
         //public virtual ICollection<BaseTest> PublishedTests { get; private set; } = [];
         public virtual ICollection<AppUser> Friends { get; private set; } = [];
         public virtual ICollection<AppUser> Followers { get; private set; } = [];

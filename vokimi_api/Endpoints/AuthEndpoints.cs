@@ -17,22 +17,30 @@ namespace vokimi_api.Endpoints
 {
     public class AuthEndpoints
     {
-        public static Results<Ok<PingAuthResponse>, UnauthorizedHttpResult> PingAuth(HttpContext httpContext) {
-            var user = httpContext.User;
+        public static async Task<Results<Ok<PingAuthResponse>, UnauthorizedHttpResult>> PingAuth(
+            HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory) {
+            var cntxUser = httpContext.User;
 
-            if (user.Identity?.IsAuthenticated ?? false) {
-                string? email = user.FindFirstValue(PingAuthResponse.ClaimKeyEmail);
-                string? username = user.FindFirstValue(PingAuthResponse.ClaimKeyUsername);
-                string? userIdStr = user.FindFirstValue(PingAuthResponse.ClaimKeyUserId);
+            if (cntxUser.Identity?.IsAuthenticated ?? false) {
+                string? email = cntxUser.FindFirstValue(PingAuthResponse.ClaimKeyEmail);
+                string? username = cntxUser.FindFirstValue(PingAuthResponse.ClaimKeyUsername);
+                string? userIdStr = cntxUser.FindFirstValue(PingAuthResponse.ClaimKeyUserId);
 
                 AppUserId? userId = null;
                 if (!string.IsNullOrEmpty(userIdStr)) {
                     userId = new(new Guid(userIdStr));
                 }
+                using (var db = dbFactory.CreateDbContext()) {
+                    AppUser? user = db.AppUsers.FirstOrDefault(x => x.Id == userId);
+                    if (user is null) {
+                        await httpContext.SignOutAsync();
+                        return TypedResults.Unauthorized();
+                    }
 
-                PingAuthResponse objToReturn = new(email, username, userId);
+                    PingAuthResponse objToReturn = new(email, user.Username, user.Id);
 
-                return TypedResults.Ok(objToReturn);
+                    return TypedResults.Ok(objToReturn);
+                }
             } else {
                 return TypedResults.Unauthorized();
             }
@@ -170,7 +178,7 @@ namespace vokimi_api.Endpoints
             }
 
             return Results.Ok();
-        }
+            }
 
         public static async Task<IResult> Logout(HttpContext httpContext) {
             await httpContext.SignOutAsync();

@@ -1,13 +1,13 @@
 <script lang="ts">
     import AuthorizeView from "../../components/AuthorizeView.svelte";
-    import MyTestsTabsContainer from "./MyTestsTabsContainer.svelte";
+    import MyTestsTabsContainer from "./my_tests_page_components/MyTestsTabsContainer.svelte";
 </script>
 
 <AuthorizeView>
     <div slot="loading">
         <span>Checking Authentication</span>
     </div>
-    <div slot="authenticated"  let:authData>
+    <div slot="authenticated" let:authData>
         <MyTestsTabsContainer {authData} />
     </div>
     <div slot="unauthenticated">

@@ -19,10 +19,14 @@
             },
             body: JSON.stringify(data),
         });
+
         if (response.ok) {
             window.location.href = "/";
+        } else if (response.status === 400) {
+            const errorResponse = await response.json();
+            errorMessage = errorResponse.error || "An unknown error occurred.";
         } else {
-            errorMessage = "Error Logging in.";
+            errorMessage = "An unknown error occurred.";
         }
     }
 </script>
