@@ -6,6 +6,7 @@ using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.responses;
+using vokimi_api.Src.enums;
 
 namespace vokimi_api.Endpoints
 {
@@ -52,6 +53,37 @@ namespace vokimi_api.Endpoints
                 return TypedResults.Ok(new UsersTestsVm[] { });
             } else {
                 return TypedResults.BadRequest();
+            }
+        }
+
+        public static IResult CreateNewTest(
+            HttpContext httpContext,
+            IDbContextFactory<AppDbContext> dbFactory,
+            TestTemplate template) {
+
+            IResult authErrResponse = Results.BadRequest(new { Error = "Please log out and log in again" });
+            var cntxUser = httpContext.User;
+            if (cntxUser.Identity?.IsAuthenticated ?? false) {
+                string? userIdStr = cntxUser.FindFirstValue(PingAuthResponse.ClaimKeyUserId);
+
+                if (string.IsNullOrEmpty(userIdStr)) {
+                    return authErrResponse;
+                }
+                AppUserId userId;
+                if (Guid.TryParse(userIdStr, out Guid userGuid)) {
+                    userId = new(userGuid);
+                } else { return authErrResponse; }
+                using (var db = dbFactory.CreateDbContext()) {
+                    AppUser? user = db.AppUsers.FirstOrDefault(u => u.Id == userId);
+                    if (user is null) {
+                        return authErrResponse;
+                    }
+                    throw new NotImplementedException();
+                }
+
+
+            } else {
+                return authErrResponse;
             }
         }
     }

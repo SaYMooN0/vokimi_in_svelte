@@ -23,12 +23,16 @@ namespace vokimi_api.Endpoints
 
             if (cntxUser.Identity?.IsAuthenticated ?? false) {
                 string? email = cntxUser.FindFirstValue(PingAuthResponse.ClaimKeyEmail);
-                string? username = cntxUser.FindFirstValue(PingAuthResponse.ClaimKeyUsername);
                 string? userIdStr = cntxUser.FindFirstValue(PingAuthResponse.ClaimKeyUserId);
 
-                AppUserId? userId = null;
-                if (!string.IsNullOrEmpty(userIdStr)) {
-                    userId = new(new Guid(userIdStr));
+                if (string.IsNullOrEmpty(userIdStr)) {
+                    return TypedResults.Unauthorized();
+                }
+                AppUserId userId;
+                if (Guid.TryParse(userIdStr, out Guid userGuid)) {
+                    userId = new(userGuid);
+                } else {
+                    return TypedResults.Unauthorized();
                 }
                 using (var db = dbFactory.CreateDbContext()) {
                     AppUser? user = db.AppUsers.FirstOrDefault(x => x.Id == userId);
@@ -178,7 +182,7 @@ namespace vokimi_api.Endpoints
             }
 
             return Results.Ok();
-            }
+        }
 
         public static async Task<IResult> Logout(HttpContext httpContext) {
             await httpContext.SignOutAsync();
