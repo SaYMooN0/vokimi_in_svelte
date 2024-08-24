@@ -9,8 +9,8 @@
   import MyTestsPage from "./pages/MyTests/MyTestsPage.svelte";
   import TestsCatalogPage from "./pages/TestsCatalog/TestsCatalogPage.svelte";
   import ConfirmRegistrationPage from "./pages/ConfirmRegistrationPage.svelte";
+  import TestCreationPage from "./pages/TestCreation/TestCreationPage.svelte";
   import Page404 from "./pages/Page404.svelte";
-  import AuthorizeView from "./components/AuthorizeView.svelte";
 </script>
 
 <Router>
@@ -37,6 +37,7 @@
           userId={params.userId}
         />
       </Route>
+      <Route path="/test-creation/:id" component={TestCreationPage} />
     </div>
   </div>
 </Router>

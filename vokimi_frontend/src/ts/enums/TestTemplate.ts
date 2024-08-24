@@ -1,19 +1,19 @@
 export enum TestTemplate {
     General = "General",
-    Knowledge = "Knowledge"
+    Scoring = "Scoring"
 }
 
 export function getFeatures(template: TestTemplate): string[] {
     switch (template) {
         case TestTemplate.General:
             return [
-                "Completely customize your test the way you want it",
-                "No restrictions or necessities (almost)"
+                "Basic template that let's create almost any kind of test",
+                "A simple system where the answer to a question leads to the specific result(s)"
             ];
-        case TestTemplate.Knowledge:
+        case TestTemplate.Scoring:
             return [
-                "See how well test takers know the subject",
-                "Specially selected types of questions and the method of evaluating answers"
+                "Let test takers see how well they ",
+                "Specially made system for scoring points and getting a result based on them"
             ];
         default:
             throw new Error("Not implemented");

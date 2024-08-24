@@ -15,11 +15,6 @@
         public GeneralTestQuestionId() : this(Guid.NewGuid()) { }
         public override string ToString() => Value.ToString();
     }
-    public readonly record struct MultiChoiceQuestionDataId(Guid Value)
-    {
-        public MultiChoiceQuestionDataId() : this(Guid.NewGuid()) { }
-        public override string ToString() => Value.ToString();
-    }
     public readonly record struct GeneralTestResultId(Guid Value)
     {
         public GeneralTestResultId() : this(Guid.NewGuid()) { }

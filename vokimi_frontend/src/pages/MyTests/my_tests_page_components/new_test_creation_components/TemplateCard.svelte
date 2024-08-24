@@ -2,6 +2,8 @@
     import { TestTemplate } from "../../../../ts/enums/TestTemplate";
     import GeneralTemplateIcon from "../../../../components/icons/test_templates_icons/GeneralTemplateIcon.svelte";
     import KnowledgeTemplateIcon from "../../../../components/icons/test_templates_icons/KnowledgeTemplateIcon.svelte";
+    import CorrectAnswersTemplateIcon from "../../../../components/icons/test_templates_icons/CorrectAnswersTemplateIcon.svelte";
+
     export let template: TestTemplate;
     export let isActive = false;
     export let onClick;
@@ -12,11 +14,13 @@
                     "Completely customize your test the way you want it",
                     "No restrictions or necessities (almost)",
                 ];
-            case TestTemplate.Knowledge:
+            case TestTemplate.Scoring:
                 return [
-                    "See how well test takers know the subject",
+                    "Let the test takers see how well do they meet this or that criterion",
                     "Specially selected types of questions and the method of evaluating answers",
                 ];
+            case TestTemplate.CorrectAnswers:
+                return ["", ""];
             default:
                 throw new Error("Template not implemented");
         }
@@ -25,7 +29,7 @@
         switch (template) {
             case TestTemplate.General:
                 return GeneralTemplateIcon;
-            case TestTemplate.Knowledge:
+            case TestTemplate.Scoring:
                 return KnowledgeTemplateIcon;
             default:
                 throw new Error("Template not implemented");

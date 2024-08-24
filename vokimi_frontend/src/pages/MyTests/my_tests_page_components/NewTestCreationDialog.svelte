@@ -15,15 +15,16 @@
             errorMessage = "Please choose a template";
             return;
         }
-        if (chosenTemplate == TestTemplate.Knowledge) {
-            alert("Not implemented yet");
+        if (chosenTemplate !== TestTemplate.General) {
+            alert(`Template ${chosenTemplate} is not implemented yet`);
             return;
         }
-        const response = await fetch("/api/userTests/createNew");
+        const url = "/api/createNewTest/" + chosenTemplate;
+        const response = await fetch(url, { method: "POST" });
 
         if (response.status === 200) {
             const data = await response.json();
-            navigate("/my-tests/test-creation/" + data.testId);
+            navigate("/test-creation/" + data.testId);
         } else if (response.status === 400) {
             const data = await response.json();
             errorMessage = data.error || "An unknown error occurred.";
@@ -124,6 +125,5 @@
     .create-btn:hover {
         background-color: var(--primary-hov);
         padding: 8px 40px;
-
     }
 </style>

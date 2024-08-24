@@ -11,8 +11,6 @@
         if (response.status == 200) {
             //#TODO: create object
             let j = await response.json();
-            console.log(j);
-
             username = j.username;
             profilePicture = j.profilePicture;
             return username != "" && profilePicture != "";

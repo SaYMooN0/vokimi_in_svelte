@@ -6,6 +6,7 @@ using vokimi_api.Src.db_related;
 using vokimi_api.Services;
 using vokimi_api.Endpoints;
 using Amazon.S3.Model;
+using vokimi_api.Src.enums;
 
 namespace vokimi_api
 {
@@ -69,6 +70,17 @@ namespace vokimi_api
             app.MapPost("/confirmRegistration", AuthEndpoints.ConfirmRegistration);
             app.MapPost("/login", AuthEndpoints.Login);
             app.MapPost("/logout", AuthEndpoints.Logout);
+
+            app.MapGet("/usersDraftTestsFirstPackage", UserTestsEndpoints.GetUsersDraftTestsVms);
+            app.MapGet("/usersPublishedTestFirstPackage", UserTestsEndpoints.GetUsersPublishedTestsVms);
+            app.MapPost("/createNewTest/{template}",
+                async (HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory, string template) => {
+                    if (Enum.TryParse<TestTemplate>(template, true, out var parsedTemplate)) {
+                        return await UserTestsEndpoints.CreateNewTest(httpContext, dbFactory, parsedTemplate);
+                    } else {
+                        return Results.BadRequest("Invalid template specified.");
+                    }
+                });
 
             app.MapGet("/vokimiimgs/{fileKey}", async (string fileKey, IAmazonS3 s3Client, string bucketName) => {
                 GetObjectRequest request = new() {

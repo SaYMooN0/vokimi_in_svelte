@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using vokimi_api.Src;
 using vokimi_api.Src.db_related;
+using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
+using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
+using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.responses;
@@ -12,6 +13,11 @@ namespace vokimi_api.Endpoints
 {
     public class UserTestsEndpoints
     {
+        private static readonly IResult authErrResponse =
+            Results.BadRequest(new { Error = "Please log out and log in again" });
+
+
+        //TODO: Rewrite to first package and remaining
         public static async Task<IResult> GetUsersDraftTestsVms(
             HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory) {
             var cntxUser = httpContext.User;
@@ -38,7 +44,8 @@ namespace vokimi_api.Endpoints
                 return Results.BadRequest();
             }
         }
-        public static Results<Ok<UsersTestsVm[]>, BadRequest> GetUsersЗPublishedTestsVms(HttpContext httpContext) {
+        public static async Task<IResult> GetUsersPublishedTestsVms(
+            HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory) {
             var user = httpContext.User;
 
             if (user.Identity?.IsAuthenticated ?? false) {
@@ -56,12 +63,10 @@ namespace vokimi_api.Endpoints
             }
         }
 
-        public static IResult CreateNewTest(
+        public static async Task<IResult> CreateNewTest(
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory,
             TestTemplate template) {
-
-            IResult authErrResponse = Results.BadRequest(new { Error = "Please log out and log in again" });
             var cntxUser = httpContext.User;
             if (cntxUser.Identity?.IsAuthenticated ?? false) {
                 string? userIdStr = cntxUser.FindFirstValue(PingAuthResponse.ClaimKeyUserId);
@@ -73,12 +78,34 @@ namespace vokimi_api.Endpoints
                 if (Guid.TryParse(userIdStr, out Guid userGuid)) {
                     userId = new(userGuid);
                 } else { return authErrResponse; }
+
                 using (var db = dbFactory.CreateDbContext()) {
-                    AppUser? user = db.AppUsers.FirstOrDefault(u => u.Id == userId);
-                    if (user is null) {
-                        return authErrResponse;
+                    using (var transaction = await db.Database.BeginTransactionAsync()) {
+                        try {
+                            AppUser? user = db.AppUsers.FirstOrDefault(u => u.Id == userId);
+                            if (user is null) {
+                                return authErrResponse;
+                            }
+
+                            DraftTestMainInfo mainInfo = DraftTestMainInfo.CreateNewFromName("Draft General Test");
+                            TestStylesSheet styles = TestStylesSheet.CreateNew();
+
+                            BaseDraftTest test = template switch {
+                                TestTemplate.General => DraftGeneralTest.CreateNew(user.Id, mainInfo.Id, styles.Id),
+                                TestTemplate.Knowledge =>
+                                throw new NotImplementedException("Knowledge type not implemented yet"),
+                                _ => throw new ArgumentException("incorrect type")
+                            };
+                            db.DraftTestMainInfo.Add(mainInfo);
+                            db.TestStyles.Add(styles);
+                            db.DraftTestsSharedInfo.Add(test);
+                            await db.SaveChangesAsync();
+                            return Results.Ok(new { TestId = test.Id.ToString() });
+                        } catch {
+                            transaction.Rollback();
+                            return Results.BadRequest(new { Error = "Something went wrong. Please try again later" });
+                        }
                     }
-                    throw new NotImplementedException();
                 }
 
 
