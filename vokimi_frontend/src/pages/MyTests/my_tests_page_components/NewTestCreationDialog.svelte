@@ -70,7 +70,6 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 10px 40px;
         position: relative;
     }
     .close-btn {
@@ -100,10 +99,14 @@
     }
 
     .templates-container {
-        padding: 10px;
-        gap: 40px;
+        padding: 10px 40px;
+        box-sizing: border-box;
+        gap: 36px;
         display: flex;
-        justify-content: space-evenly;
+        justify-content: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        max-width: 98vw;
     }
     .create-btn {
         margin-top: 32px;

@@ -1,36 +1,23 @@
 <script lang="ts">
-    import { TestTemplate } from "../../../../ts/enums/TestTemplate";
+    import {
+        TestTemplate,
+        getTemplateFeatures,
+    } from "../../../../ts/enums/TestTemplate";
     import GeneralTemplateIcon from "../../../../components/icons/test_templates_icons/GeneralTemplateIcon.svelte";
-    import KnowledgeTemplateIcon from "../../../../components/icons/test_templates_icons/KnowledgeTemplateIcon.svelte";
+    import ScoringTemplateIcon from "../../../../components/icons/test_templates_icons/ScoringTemplateIcon.svelte";
     import CorrectAnswersTemplateIcon from "../../../../components/icons/test_templates_icons/CorrectAnswersTemplateIcon.svelte";
 
     export let template: TestTemplate;
     export let isActive = false;
     export let onClick;
-    function getTemplateFeatures(template: TestTemplate): string[] {
-        switch (template) {
-            case TestTemplate.General:
-                return [
-                    "Completely customize your test the way you want it",
-                    "No restrictions or necessities (almost)",
-                ];
-            case TestTemplate.Scoring:
-                return [
-                    "Let the test takers see how well do they meet this or that criterion",
-                    "Specially selected types of questions and the method of evaluating answers",
-                ];
-            case TestTemplate.CorrectAnswers:
-                return ["", ""];
-            default:
-                throw new Error("Template not implemented");
-        }
-    }
     function getTemplateIcon(template: TestTemplate) {
         switch (template) {
             case TestTemplate.General:
                 return GeneralTemplateIcon;
             case TestTemplate.Scoring:
-                return KnowledgeTemplateIcon;
+                return ScoringTemplateIcon;
+            case TestTemplate.CorrectAnswers:
+                return CorrectAnswersTemplateIcon;
             default:
                 throw new Error("Template not implemented");
         }
@@ -60,9 +47,9 @@
     .template-card {
         display: grid;
         grid-template-rows: 70px 1fr;
-        height: 230px;
-        aspect-ratio: 1.7/1;
-        padding: 10px 20px;
+        height: 240px;
+        aspect-ratio: 1.8/1;
+        padding: 12px 20px;
         box-sizing: border-box;
         border-radius: 10px;
         border: 4px solid transparent;
@@ -122,5 +109,12 @@
         font-size: 18px;
         font-family: Roboto;
         color: var(--primary);
+    }
+    @media screen and (max-width: 1600px) {
+        .template-card {
+            height: 220px;
+            aspect-ratio: 1.8/1;
+            grid-template-rows: 60px 1fr;
+        }
     }
 </style>

@@ -7,6 +7,9 @@ using vokimi_api.Services;
 using vokimi_api.Endpoints;
 using Amazon.S3.Model;
 using vokimi_api.Src.enums;
+using vokimi_api.Src.dtos.responses;
+using vokimi_api.Endpoints.tests_operations;
+using vokimi_api.Endpoints.tests_operations.test_creation;
 
 namespace vokimi_api
 {
@@ -71,12 +74,15 @@ namespace vokimi_api
             app.MapPost("/login", AuthEndpoints.Login);
             app.MapPost("/logout", AuthEndpoints.Logout);
 
-            app.MapGet("/usersDraftTestsFirstPackage", UserTestsEndpoints.GetUsersDraftTestsVms);
-            app.MapGet("/usersPublishedTestFirstPackage", UserTestsEndpoints.GetUsersPublishedTestsVms);
+            app.MapGet("/usersDraftTestsFirstPackage", DraftTestEndpoints.GetUsersDraftTestsVms);
+            app.MapGet("/getDraftTestTemplate/{id}", DraftTestEndpoints.GetDraftTestTemplate);
+            app.MapPost("/checkIfUserIsDraftTestCreator", DraftTestEndpoints.CheckIfUserIsDraftTestCreator);
+
+            app.MapGet("/usersPublishedTestFirstPackage", async (_) => new List<UsersTestsVm>() { });
             app.MapPost("/createNewTest/{template}",
                 async (HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory, string template) => {
                     if (Enum.TryParse<TestTemplate>(template, true, out var parsedTemplate)) {
-                        return await UserTestsEndpoints.CreateNewTest(httpContext, dbFactory, parsedTemplate);
+                        return await TestCreationShared.CreateNewTest(httpContext, dbFactory, parsedTemplate);
                     } else {
                         return Results.BadRequest("Invalid template specified.");
                     }

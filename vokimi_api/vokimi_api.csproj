@@ -11,6 +11,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Src\json_converters - Копировать\**" />
+    <Compile Remove="Src\json_converter\**" />
+    <Compile Remove="Src\Новая папка\**" />
+    <Content Remove="Src\json_converters - Копировать\**" />
+    <Content Remove="Src\json_converter\**" />
+    <Content Remove="Src\Новая папка\**" />
+    <EmbeddedResource Remove="Src\json_converters - Копировать\**" />
+    <EmbeddedResource Remove="Src\json_converter\**" />
+    <EmbeddedResource Remove="Src\Новая папка\**" />
+    <None Remove="Src\json_converters - Копировать\**" />
+    <None Remove="Src\json_converter\**" />
+    <None Remove="Src\Новая папка\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.301" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.400.4" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />

@@ -37,7 +37,9 @@
           userId={params.userId}
         />
       </Route>
-      <Route path="/test-creation/:id" component={TestCreationPage} />
+      <Route path="/test-creation/:testId/*" let:params>
+        <TestCreationPage testId={params.testId} />
+      </Route>
     </div>
   </div>
 </Router>

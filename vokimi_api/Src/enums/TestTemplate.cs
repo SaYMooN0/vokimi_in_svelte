@@ -3,6 +3,7 @@
     public enum TestTemplate
     {
         General,
-        Knowledge
+        Scoring,
+        CorrectAnswers
     }
 }
