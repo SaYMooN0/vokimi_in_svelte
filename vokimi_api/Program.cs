@@ -75,7 +75,7 @@ namespace vokimi_api
             app.MapPost("/logout", AuthEndpoints.Logout);
 
             app.MapGet("/usersDraftTestsFirstPackage", DraftTestEndpoints.GetUsersDraftTestsVms);
-            app.MapGet("/getDraftTestTemplate/{id}", DraftTestEndpoints.GetDraftTestTemplate);
+            app.MapGet("/getDraftTestTemplateWithName/{id}", DraftTestEndpoints.GetDraftTestTemplateAndName);
             app.MapPost("/checkIfUserIsDraftTestCreator", DraftTestEndpoints.CheckIfUserIsDraftTestCreator);
 
             app.MapGet("/usersPublishedTestFirstPackage", async (_) => new List<UsersTestsVm>() { });

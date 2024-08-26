@@ -40,17 +40,24 @@ namespace vokimi_api.Endpoints.tests_operations
                 return Results.BadRequest();
             }
         }
-        public static IResult GetDraftTestTemplate(IDbContextFactory<AppDbContext> dbFactory, string id) {
+        public static IResult GetDraftTestTemplateAndName(IDbContextFactory<AppDbContext> dbFactory, string id) {
             DraftTestId testId;
             if (Guid.TryParse(id, out Guid testGuid)) {
                 testId = new(testGuid);
             } else { return Results.BadRequest(); }
 
             using (var db = dbFactory.CreateDbContext()) {
-                BaseDraftTest? test = db.DraftTestsSharedInfo.FirstOrDefault(x => x.Id == testId);
+                BaseDraftTest? test = db.DraftTestsSharedInfo
+                    .Include(t => t.MainInfo)
+                    .FirstOrDefault(x => x.Id == testId);
                 if (test is null) {
                     return Results.BadRequest();
-                } else { return Results.Ok(new { Template = test.Template.ToString() }); }
+                } else {
+                    return Results.Ok(new {
+                        Template = test.Template.ToString(),
+                        Name = test.MainInfo.Name
+                    });
+                }
             }
         }
         public static IResult CheckIfUserIsDraftTestCreator(

@@ -3,14 +3,16 @@
     import { TestTemplate } from "../../ts/enums/TestTemplate";
     import AuthorizeView from "../../components/AuthorizeView.svelte";
     import GeneralTestCreationOverview from "./general_test_creation_components/GeneralTestCreationOverview.svelte";
-    import GeneralTestCreationOverviewTabs from "./general_test_creation_components/GeneralTestCreationOverview.svelte";
+    import { GeneralTestCreationOverviewTabs } from "./general_test_creation_components/generalTestCreationOverviewTabs";
+    import ScoringTestCreationOverview from "./scoring_test_creation_components/ScoringTestCreationOverview.svelte";
+    import { ScoringTestCreationOverviewTabs } from "./scoring_test_creation_components/generalTestCreationOverviewTabs";
     import { Link } from "svelte-routing";
 
     export let testId: string;
 
     let template: TestTemplate;
-    let basepath = "/test-creation/:testId";
     let testName: string;
+    let basepath = "/test-creation/:testId";
 
     async function checkIfViewerIsCreator(
         userId: string | undefined,
@@ -29,18 +31,21 @@
         return response.status == 200;
     }
     onMount(async () => {
-        const url = "/api/getDraftTestTemplate/" + testId;
+        const url = "/api/getDraftTestTemplateWithName/" + testId;
         const response = await fetch(url);
         if (response.status == 200) {
             let j = await response.json();
             template = j.template;
+            testName = j.name;
         }
     });
 
-    function getTabLinks() {
-        switch (template) {
+    function getTabLinks(t: TestTemplate) {
+        switch (t) {
             case TestTemplate.General:
                 return GeneralTestCreationOverviewTabs;
+            case TestTemplate.Scoring:
+                return ScoringTestCreationOverviewTabs;
             default:
                 throw new Error("Template not implemented");
         }
@@ -62,14 +67,18 @@
                     <span>" draft test</span>
                 </p>
                 <div class="tab-links-container">
-                    {#each Object.entries(getTabLinks()) as [key, label]}
-                        <Link to="{basepath}/{key}">{label}</Link>
+                    {#each Object.entries(getTabLinks(template)) as [label, path]}
+                        <Link to="/test-creation/{testId}/{path}">
+                            <div class="tab-link">
+                                {label}
+                            </div>
+                        </Link>
                     {/each}
                 </div>
                 {#if template === TestTemplate.General}
                     <GeneralTestCreationOverview {basepath} />
                 {:else if template === TestTemplate.Scoring}
-                    <!-- <ScoringTestCreationOverview  {basepath}/> -->
+                    <ScoringTestCreationOverview {basepath} />
                 {/if}
             {:else}
                 <div class="no-access-div">
@@ -82,3 +91,26 @@
         <p>You have to be authenticated to access this page</p>
     </div>
 </AuthorizeView>
+
+<style>
+    .tab-links-container {
+        display: flex;
+        justify-content: center;
+        gap: 2vw;
+        align-items: center;
+        box-sizing: border-box;
+    }
+    .tab-link {
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: transparent;
+        color: var(--primary);
+        font-weight: 500;
+        font-size: 18px;
+        cursor: pointer;
+    }
+    .tab-link:hover {
+        background-color: var(--back-secondary);
+        color: var(--primary-hov);
+    }
+</style>
