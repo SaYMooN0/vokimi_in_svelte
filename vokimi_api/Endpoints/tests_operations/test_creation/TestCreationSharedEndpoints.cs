@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using System.Security.Claims;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
@@ -7,11 +8,12 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.responses;
+using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
 using vokimi_api.Src.enums;
 
 namespace vokimi_api.Endpoints.tests_operations.test_creation
 {
-    public static class TestCreationShared
+    public static class TestCreationSharedEndpoints
     {
         public static async Task<IResult> CreateNewTest(HttpContext httpContext,
                                                         IDbContextFactory<AppDbContext> dbFactory,
@@ -68,5 +70,22 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             return test.Id;
         }
 
+        public static IResult GetDraftTestMainInfoData(IDbContextFactory<AppDbContext> dbFactory, string testId) {
+            if (string.IsNullOrEmpty(testId)) { return Results.BadRequest(); }
+
+            DraftTestId draftTestId;
+            if (!Guid.TryParse(testId, out _)) {
+                return Results.BadRequest();
+            }
+            draftTestId = new(new(testId));
+
+            using (var db = dbFactory.CreateDbContext()) {
+                BaseDraftTest? test = db.DraftTestsSharedInfo
+                        .Include(t => t.MainInfo)
+                        .FirstOrDefault(t => t.Id == draftTestId);
+                if (test is null || test.MainInfo is null) { return Results.BadRequest(); }
+                return Results.Ok(DraftTestMainInfoDataResponse.FromDraftTest(test));
+            }
+        }
     }
 }

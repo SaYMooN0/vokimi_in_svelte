@@ -2,7 +2,7 @@
 {
     public enum TestPrivacy
     {
-        ForMySelf,
+        ForMyself,
         FriendsOnly,
         FriendsAndFollowers,
         Anyone

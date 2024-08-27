@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { TestTemplate } from "../../ts/enums/TestTemplate";
     import AuthorizeView from "../../components/AuthorizeView.svelte";
     import GeneralTestCreationOverview from "./general_test_creation_components/GeneralTestCreationOverview.svelte";
-    import { GeneralTestCreationOverviewTabs } from "./general_test_creation_components/generalTestCreationOverviewTabs";
+    import { GeneralTestCreationOverviewTabs } from "../../ts/test_creatiom_overview_tabs/generalTestCreationOverviewTabs";
     import ScoringTestCreationOverview from "./scoring_test_creation_components/ScoringTestCreationOverview.svelte";
     import { ScoringTestCreationOverviewTabs } from "./scoring_test_creation_components/generalTestCreationOverviewTabs";
     import { Link } from "svelte-routing";
@@ -12,33 +11,40 @@
 
     let template: TestTemplate;
     let testName: string;
-    let basepath = "/test-creation/:testId";
+    let isCreator: boolean = false;
+    let isLoading: boolean = true;
+    let basepath = `/test-creation/${testId}`;
 
-    async function checkIfViewerIsCreator(
-        userId: string | undefined,
-    ): Promise<boolean> {
-        if (userId === undefined) {
-            return false;
+    async function loadTestOverviewInfo(viewerId: string | undefined) {
+        if (!viewerId) {
+            isCreator = false;
+            isLoading = false;
+            return;
         }
-        const data = { testId, userId };
-        const response = await fetch("/api/checkIfUserIsDraftTestCreator", {
-            method: "Post",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-        return response.status == 200;
+
+        try {
+            const response = await fetch("/api/getDraftTestOverviewInfo", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ testId, viewerId }),
+            });
+
+            if (response.status === 200) {
+                const data = await response.json();
+                isCreator = data.isViewerCreator;
+                template = data.template;
+                testName = data.testName;
+            } else {
+                isCreator = false;
+            }
+        } catch (error) {
+            isCreator = false;
+        } finally {
+            isLoading = false;
+        }
     }
-    onMount(async () => {
-        const url = "/api/getDraftTestTemplateWithName/" + testId;
-        const response = await fetch(url);
-        if (response.status == 200) {
-            let j = await response.json();
-            template = j.template;
-            testName = j.name;
-        }
-    });
 
     function getTabLinks(t: TestTemplate) {
         switch (t) {
@@ -57,14 +63,12 @@
         <span>Checking Authentication</span>
     </div>
     <div slot="authenticated" let:authData>
-        {#await checkIfViewerIsCreator(authData.UserId)}
+        {#await loadTestOverviewInfo(authData.UserId)}
             <p>Loading...</p>
-        {:then isCreator}
+        {:then}
             {#if isCreator}
                 <p class="test-editing-label">
-                    <span>Editing of the "</span>
-                    <span class="test-name">{testName}</span>
-                    <span>" draft test</span>
+                    <span>Editing of the "{testName}" draft test</span>
                 </p>
                 <div class="tab-links-container">
                     {#each Object.entries(getTabLinks(template)) as [label, path]}
@@ -76,9 +80,9 @@
                     {/each}
                 </div>
                 {#if template === TestTemplate.General}
-                    <GeneralTestCreationOverview {basepath} />
+                    <GeneralTestCreationOverview {basepath} {testId} />
                 {:else if template === TestTemplate.Scoring}
-                    <ScoringTestCreationOverview {basepath} />
+                    <ScoringTestCreationOverview {basepath} {testId} />
                 {/if}
             {:else}
                 <div class="no-access-div">
@@ -96,13 +100,12 @@
     .tab-links-container {
         display: flex;
         justify-content: center;
-        gap: 2vw;
+        gap: 4vw;
         align-items: center;
         box-sizing: border-box;
     }
     .tab-link {
-        padding: 10px 20px;
-        border-radius: 5px;
+        border-bottom: 2px solid transparent;
         background-color: transparent;
         color: var(--primary);
         font-weight: 500;
@@ -110,7 +113,7 @@
         cursor: pointer;
     }
     .tab-link:hover {
-        background-color: var(--back-secondary);
         color: var(--primary-hov);
+        border-bottom: 2px solid var(--primary-hov);
     }
 </style>

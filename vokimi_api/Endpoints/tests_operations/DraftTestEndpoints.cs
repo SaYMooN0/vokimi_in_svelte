@@ -40,41 +40,28 @@ namespace vokimi_api.Endpoints.tests_operations
                 return Results.BadRequest();
             }
         }
-        public static IResult GetDraftTestTemplateAndName(IDbContextFactory<AppDbContext> dbFactory, string id) {
-            DraftTestId testId;
-            if (Guid.TryParse(id, out Guid testGuid)) {
-                testId = new(testGuid);
-            } else { return Results.BadRequest(); }
-
-            using (var db = dbFactory.CreateDbContext()) {
-                BaseDraftTest? test = db.DraftTestsSharedInfo
-                    .Include(t => t.MainInfo)
-                    .FirstOrDefault(x => x.Id == testId);
-                if (test is null) {
-                    return Results.BadRequest();
-                } else {
-                    return Results.Ok(new {
-                        Template = test.Template.ToString(),
-                        Name = test.MainInfo.Name
-                    });
-                }
-            }
-        }
-        public static IResult CheckIfUserIsDraftTestCreator(
-            IDbContextFactory<AppDbContext> dbFactory, [FromBody] UserIsDraftTestCreatorCheckingRequest request) {
+        public static IResult GetDraftTestOverviewInfo(
+            IDbContextFactory<AppDbContext> dbFactory, [FromBody] DraftTestOverviewInfoRequest request) {
 
             if (
                 Guid.TryParse(request.TestId, out Guid testGuid) &&
-                Guid.TryParse(request.UserId, out Guid userGuid)) {
+                Guid.TryParse(request.ViewerId, out Guid userGuid)) {
                 DraftTestId testId = new(testGuid);
                 AppUserId userId = new(userGuid);
 
                 using (var db = dbFactory.CreateDbContext()) {
-                    BaseDraftTest? test = db.DraftTestsSharedInfo.FirstOrDefault(t => t.Id == testId);
+                    BaseDraftTest? test = db.DraftTestsSharedInfo
+                        .Include(t => t.MainInfo)
+                        .FirstOrDefault(t => t.Id == testId);
                     if (test is null) {
                         return Results.BadRequest();
                     }
-                    return test.CreatorId == userId ? Results.Ok() : Results.BadRequest();
+                    bool isViewerCreator = test.CreatorId == userId;
+                    return Results.Ok(new {
+                        IsViewerCreator = isViewerCreator,
+                        Template = isViewerCreator ? test.Template.ToString() : "",
+                        TestName = isViewerCreator ? test.MainInfo.Name : ""
+                    });
                 }
 
             } else { return Results.BadRequest(); }
