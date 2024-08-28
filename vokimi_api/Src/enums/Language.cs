@@ -11,14 +11,13 @@
     }
     public static class LanguageExtensions
     {
-        public static string FullName(this Language lang) => lang switch
-        {
-            Language.Eng => "English",
-            Language.Rus => "Русский",
-            Language.Spa => "Español",
-            Language.Ger => "Deutsch",
-            Language.Fra => "Français",
-            Language.Other => "Other",
+        public static string GetId(this Language language) => language switch {
+            Language.Eng => "eng",
+            Language.Rus => "rus",
+            Language.Spa => "spa",
+            Language.Ger => "ger",
+            Language.Fra => "fra",
+            Language.Other => "other",
             _ => throw new NotImplementedException()
         };
 

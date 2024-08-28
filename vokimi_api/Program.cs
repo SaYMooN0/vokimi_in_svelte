@@ -80,15 +80,16 @@ namespace vokimi_api
             app.MapGet("/usersPublishedTestFirstPackage", async (_) => new List<UsersTestsVm>() { });
             app.MapPost("/createNewTest/{template}",
                 async (HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory, string template) => {
-                    if (Enum.TryParse<TestTemplate>(template, true, out var parsedTemplate)) {
-                        return await TestCreationSharedEndpoints.CreateNewTest(httpContext, dbFactory, parsedTemplate);
-                    } else {
+                    TestTemplate? parsedTemplate = TestTemplateExtensions.FromId(template);
+                    if (parsedTemplate is null) {
                         return Results.BadRequest("Invalid template specified.");
                     }
+                    return await TestCreationSharedEndpoints.CreateNewTest(httpContext, dbFactory, parsedTemplate.Value);
+
                 });
 
-            app.MapGet("/test-creation/getDraftTestMainInfoData/{testId}",TestCreationSharedEndpoints.GetDraftTestMainInfoData);
-                
+            app.MapGet("/test-creation/getDraftTestMainInfoData/{testId}", TestCreationSharedEndpoints.GetDraftTestMainInfoData);
+
 
             app.MapGet("/vokimiimgs/{fileKey}", async (string fileKey, IAmazonS3 s3Client, string bucketName) => {
                 GetObjectRequest request = new() {

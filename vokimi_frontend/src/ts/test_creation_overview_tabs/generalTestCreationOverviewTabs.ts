@@ -4,4 +4,5 @@ export const GeneralTestCreationOverviewTabs = {
     Results: "view-results",
     Styles: "view-styles",
     Conclusion: "view-conclusion",
+    Tags: "view-tags",
 };

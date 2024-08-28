@@ -16,5 +16,12 @@
             GeneralTestAnswerType.ImageOnly => true,
             _ => throw new NotImplementedException()
         };
+        public static string GetId(this GeneralTestAnswerType type) => type switch
+        {
+            GeneralTestAnswerType.TextOnly => "text_only",
+            GeneralTestAnswerType.TextAndImage => "text_and_image",
+            GeneralTestAnswerType.ImageOnly => "image_only",
+            _ => throw new NotImplementedException()
+        };
     }
 }

@@ -1,22 +1,32 @@
 <script lang="ts">
     import DraftTestMainInfoView from "./main_info_tab/DraftTestMainInfoView.svelte";
-    import DraftTestConcusionView from "./DraftTestConcusionView.svelte";
+    import DraftTestConclusionView from "./DraftTestConclusionView.svelte";
     import DraftTestStylesView from "./DraftTestStylesView.svelte";
+    import DraftTestTagsView from "./tags_tab/DraftTestTagsView.svelte";
     import { Route } from "svelte-routing";
     import type { TestCreationMainInfoTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
 
     export let testId: string;
 
     export let mainInfoPath: string;
-    export let mainInfoData: TestCreationMainInfoTabData | null;
+    export let mainInfoData: TestCreationMainInfoTabData;
 
     export let viewConclusionPath: string;
 
     export let viewStylesPath: string;
+
+    export let viewTagsPath: string;
 </script>
 
-<Route path={mainInfoPath} component={DraftTestMainInfoView}>
+<Route path={mainInfoPath}>
     <DraftTestMainInfoView {mainInfoData} {testId} />
 </Route>
-<Route path={viewConclusionPath} component={DraftTestConcusionView} />
-<Route path={viewStylesPath} component={DraftTestStylesView} />
+<Route path={viewConclusionPath}>
+    <DraftTestConclusionView />
+</Route>
+<Route path={viewStylesPath}>
+    <DraftTestStylesView />
+</Route>
+<Route path={viewTagsPath}>
+    <DraftTestTagsView />
+</Route>

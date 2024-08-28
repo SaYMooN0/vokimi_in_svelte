@@ -1,7 +1,19 @@
 export enum TestTemplate {
     General = "General",
     Scoring = "Scoring",
-    CorrectAnswers = "CorrectAnswers"
+    CorrectAnswers = "CorrectAnswers",
+}
+
+export namespace TestTemplate {
+    const idToEnumMap: { [key: string]: TestTemplate } = {
+        "general": TestTemplate.General,
+        "scoring": TestTemplate.Scoring,
+        "correct_answers": TestTemplate.CorrectAnswers,
+    };
+
+    export function fromId(id: string): TestTemplate {
+        return idToEnumMap[id] || TestTemplate.General;
+    }
 }
 
 export function getTemplateFeatures(template: TestTemplate): string[] {

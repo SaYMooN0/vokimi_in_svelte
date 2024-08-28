@@ -2,7 +2,7 @@
     import { TestTemplate } from "../../ts/enums/TestTemplate";
     import AuthorizeView from "../../components/AuthorizeView.svelte";
     import GeneralTestCreationOverview from "./general_test_creation_components/GeneralTestCreationOverview.svelte";
-    import { GeneralTestCreationOverviewTabs } from "../../ts/test_creatiom_overview_tabs/generalTestCreationOverviewTabs";
+    import { GeneralTestCreationOverviewTabs } from "../../ts/test_creation_overview_tabs/generalTestCreationOverviewTabs";
     import ScoringTestCreationOverview from "./scoring_test_creation_components/ScoringTestCreationOverview.svelte";
     import { ScoringTestCreationOverviewTabs } from "./scoring_test_creation_components/generalTestCreationOverviewTabs";
     import { Link } from "svelte-routing";
