@@ -79,11 +79,13 @@
                         </Link>
                     {/each}
                 </div>
-                {#if template === TestTemplate.General}
-                    <GeneralTestCreationOverview {basepath} {testId} />
-                {:else if template === TestTemplate.Scoring}
-                    <ScoringTestCreationOverview {basepath} {testId} />
-                {/if}
+                <div class="tab-content-container">
+                    {#if template === TestTemplate.General}
+                        <GeneralTestCreationOverview {basepath} {testId} />
+                    {:else if template === TestTemplate.Scoring}
+                        <ScoringTestCreationOverview {basepath} {testId} />
+                    {/if}
+                </div>
             {:else}
                 <div class="no-access-div">
                     You don't have access to this test
@@ -115,5 +117,11 @@
     .tab-link:hover {
         color: var(--primary-hov);
         border-bottom: 2px solid var(--primary-hov);
+    }
+
+    .tab-content-container {
+        box-sizing: border-box;
+        max-width: 1420px;
+        margin: 0 auto;
     }
 </style>

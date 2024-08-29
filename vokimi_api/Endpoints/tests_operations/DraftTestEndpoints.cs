@@ -7,6 +7,7 @@ using vokimi_api.Src.dtos.responses;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using Microsoft.AspNetCore.Mvc;
 using vokimi_api.Src.dtos.requests.draft_tests_request;
+using vokimi_api.Src.enums;
 
 namespace vokimi_api.Endpoints.tests_operations
 {
@@ -59,7 +60,7 @@ namespace vokimi_api.Endpoints.tests_operations
                     bool isViewerCreator = test.CreatorId == userId;
                     return Results.Ok(new {
                         IsViewerCreator = isViewerCreator,
-                        Template = isViewerCreator ? test.Template.ToString() : "",
+                        Template = isViewerCreator ? test.Template.GetId() : "",
                         TestName = isViewerCreator ? test.MainInfo.Name : ""
                     });
                 }

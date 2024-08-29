@@ -91,7 +91,7 @@ namespace vokimi_api
             app.MapGet("/test-creation/getDraftTestMainInfoData/{testId}", TestCreationSharedEndpoints.GetDraftTestMainInfoData);
 
 
-            app.MapGet("/vokimiimgs/{fileKey}", async (string fileKey, IAmazonS3 s3Client, string bucketName) => {
+            app.MapGet("/vokimiimgs/{*fileKey}", async (string fileKey, IAmazonS3 s3Client, string bucketName) => {
                 GetObjectRequest request = new() {
                     BucketName = bucketName,
                     Key = fileKey

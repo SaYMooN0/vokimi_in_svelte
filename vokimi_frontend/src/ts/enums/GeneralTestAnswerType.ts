@@ -1,17 +1,33 @@
 export enum GeneralTestAnswerType {
-    TextOnly = "TextOnly",
-    TextAndImage = "TextAndImage",
-    ImageOnly = "ImageOnly"
+    TextOnly = "text_only",
+    TextAndImage = "text_and_image",
+    ImageOnly = "image_only"
 }
 
-export namespace GeneralTestAnswerType {
-    const idToEnumMap: { [key: string]: GeneralTestAnswerType } = {
-        "text_only": GeneralTestAnswerType.TextOnly,
-        "text_and_image": GeneralTestAnswerType.TextAndImage,
-        "image_only": GeneralTestAnswerType.ImageOnly,
-    };
-
+export namespace GeneralTestAnswerTypeUtils {
     export function fromId(id: string): GeneralTestAnswerType {
-        return idToEnumMap[id] || GeneralTestAnswerType.TextOnly;
+        for (const key in GeneralTestAnswerType) {
+            if (GeneralTestAnswerType[key as keyof typeof GeneralTestAnswerType] === id) {
+                return GeneralTestAnswerType[key as keyof typeof GeneralTestAnswerType];
+            }
+        }
+        return GeneralTestAnswerType.TextOnly;
+    }
+
+    export function getId(type: GeneralTestAnswerType): string {
+        return type;
+    }
+
+    export function getFullName(type: GeneralTestAnswerType): string {
+        switch (type) {
+            case GeneralTestAnswerType.TextOnly:
+                return "Text Only";
+            case GeneralTestAnswerType.TextAndImage:
+                return "Text and Image";
+            case GeneralTestAnswerType.ImageOnly:
+                return "Image Only";
+            default:
+                return "Unknown Answer Type";
+        }
     }
 }

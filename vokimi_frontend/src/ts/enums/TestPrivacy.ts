@@ -1,19 +1,36 @@
 export enum TestPrivacy {
-    ForMyself = "ForMyself",
-    FriendsOnly = "FriendsOnly",
-    FriendsAndFollowers = "FriendsAndFollowers",
-    Anyone = "Anyone"
+    ForMyself = "for_myself",
+    FriendsOnly = "friends_only",
+    FriendsAndFollowers = "friends_and_followers",
+    Anyone = "anyone"
 }
 
-export namespace TestPrivacy {
-    const idToEnumMap: { [key: string]: TestPrivacy } = {
-        "for_myself": TestPrivacy.ForMyself,
-        "friends_only": TestPrivacy.FriendsOnly,
-        "friends_and_followers": TestPrivacy.FriendsAndFollowers,
-        "anyone": TestPrivacy.Anyone,
-    };
-
+export namespace TestPrivacyUtils {
     export function fromId(id: string): TestPrivacy {
-        return idToEnumMap[id] || TestPrivacy.ForMyself;
+        for (const key in TestPrivacy) {
+            if (TestPrivacy[key as keyof typeof TestPrivacy] === id) {
+                return TestPrivacy[key as keyof typeof TestPrivacy];
+            }
+        }
+        return TestPrivacy.ForMyself;
+    }
+
+    export function getId(privacy: TestPrivacy): string {
+        return privacy;
+    }
+
+    export function getFullName(privacy: TestPrivacy): string {
+        switch (privacy) {
+            case TestPrivacy.ForMyself:
+                return "For Myself";
+            case TestPrivacy.FriendsOnly:
+                return "Friends Only";
+            case TestPrivacy.FriendsAndFollowers:
+                return "Friends and Followers";
+            case TestPrivacy.Anyone:
+                return "Anyone";
+            default:
+                return "Unknown Privacy Setting";
+        }
     }
 }

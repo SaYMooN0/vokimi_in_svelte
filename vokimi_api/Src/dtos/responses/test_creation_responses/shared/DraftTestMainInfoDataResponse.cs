@@ -4,11 +4,11 @@ using vokimi_api.Src.enums;
 namespace vokimi_api.Src.dtos.responses.test_creation_responses.shared
 {
     public record class DraftTestMainInfoDataResponse(
-        TestTemplate Template,
+        string Template,
         string Name,
         string? Description,
-        Language Language,
-        TestPrivacy Privacy,
+        string Language,
+        string Privacy,
         string ImgPath
     )
     {
@@ -17,11 +17,11 @@ namespace vokimi_api.Src.dtos.responses.test_creation_responses.shared
                 throw new ArgumentNullException(nameof(test));
             }
             return new DraftTestMainInfoDataResponse(
-                test.Template,
+                test.Template.GetId(),
                 test.MainInfo.Name,
                 test.MainInfo.Description,
-                test.MainInfo.Language,
-                test.MainInfo.Privacy,
+                test.MainInfo.Language.GetId(),
+                test.MainInfo.Privacy.GetId(),
                 test.MainInfo.CoverImagePath
             );
         }

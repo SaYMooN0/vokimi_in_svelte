@@ -1,6 +1,12 @@
 <script lang="ts">
     import { TestCreationMainInfoTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
     import LoadingMessage from "../../../../components/shared/LoadingMessage.svelte";
+    import { TestTemplateUtils } from "../../../../ts/enums/TestTemplate";
+    import { LanguageUtils } from "../../../../ts/enums/Language";
+    import { TestPrivacyUtils } from "../../../../ts/enums/TestPrivacy";
+    import MainInfoViewLeftPart from "./MainInfoViewLeftPart.svelte";
+    import MainInfoViewRightPart from "./MainInfoViewRightPart.svelte";
+    import ErrorMessageInCenter from "../../creation_shared_components/ErrorMessageInCenter.svelte";
     export let mainInfoData: TestCreationMainInfoTabData;
     export let testId: string;
     async function loadTabData() {
@@ -13,13 +19,12 @@
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             mainInfoData.update(
-                data.template,
+                TestTemplateUtils.fromId(data.template),
                 data.name,
+                LanguageUtils.fromId(data.language),
+                TestPrivacyUtils.fromId(data.privacy),
                 data.description,
-                data.language,
-                data.privacy,
                 data.imgPath,
             );
         } else {
@@ -28,53 +33,35 @@
     }
 </script>
 
-<div class="tab-content">
-    {#await loadTabData()}
-        <LoadingMessage />
-    {:then}
-        {#if mainInfoData.isEmpty()}
-            <p class="error-message">Please refresh the page</p>
-        {:else}
+{#await loadTabData()}
+    <LoadingMessage />
+{:then}
+    {#if mainInfoData.isEmpty()}
+        <ErrorMessageInCenter
+            errorMessage="An error has occurred. Please refresh the page"
+        />
+    {:else}
+        <div class="tab-content">
             <div class="left-div">
-                <p class="test-template">
-                    <span class="property-label"
-                        >Test template:
-                    </span>{mainInfoData.template}
-                </p>
-                <p class="test-name">
-                    <span class="property-label">Test name: </span>
-                    {mainInfoData.name}
-                </p>
-                <p class="test-description">
-                    <span class="property-label">Test description: </span>
-                    {#if mainInfoData.description === ""}
-                        (No description)
-                    {:else}
-                        {mainInfoData.description}
-                    {/if}
-                </p>
-                <div class="lang-and-priv-div">
-                    <div class="lang-div">
-                        <span class="property-label">Language: </span>
-                        {mainInfoData.language}
-                    </div>
-                    <div class="priv-div">
-                        <span class="property-label">Privacy: </span>
-                        {mainInfoData.privacy}
-                    </div>
-                </div>
+                <MainInfoViewLeftPart
+                    template={mainInfoData.template}
+                    testName={mainInfoData.name}
+                    description={mainInfoData.description}
+                    language={mainInfoData.language}
+                    privacy={mainInfoData.privacy}
+                />
             </div>
             <div class="right-div">
-                <div class="img-container">
-                    <img src={mainInfoData.imgPath} alt="test cover" />
-                    <div class="img-operations-btn change-img-btn">
-                        Change Test Cover
-                    </div>
-                    <div class="img-operations-btn remove-img-btn">
-                        Set Back To Default
-                    </div>
-                </div>
+                <MainInfoViewRightPart imgPath={mainInfoData.imgPath} />
             </div>
-        {/if}
-    {/await}
-</div>
+        </div>
+    {/if}
+{/await}
+
+<style>
+    .tab-content {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        height: max-content;
+    }
+</style>

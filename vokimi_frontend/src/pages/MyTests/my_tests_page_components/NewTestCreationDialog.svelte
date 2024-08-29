@@ -1,6 +1,9 @@
 <script lang="ts">
     import BaseDialog from "../../../components/BaseDialog.svelte";
-    import { TestTemplate } from "../../../ts/enums/TestTemplate";
+    import {
+        TestTemplate,
+        TestTemplateUtils,
+    } from "../../../ts/enums/TestTemplate";
     import TemplateCard from "./new_test_creation_components/TemplateCard.svelte";
     import { navigate } from "svelte-routing";
 
@@ -19,7 +22,8 @@
             alert(`Template ${chosenTemplate} is not implemented yet`);
             return;
         }
-        const url = "/api/createNewTest/" + chosenTemplate;
+        const url =
+            "/api/createNewTest/" + TestTemplateUtils.getId(chosenTemplate);
         const response = await fetch(url, { method: "POST" });
 
         if (response.status === 200) {

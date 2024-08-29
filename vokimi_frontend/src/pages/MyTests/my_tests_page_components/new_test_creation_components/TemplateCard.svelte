@@ -1,7 +1,7 @@
 <script lang="ts">
     import {
         TestTemplate,
-        getTemplateFeatures,
+        TestTemplateUtils,
     } from "../../../../ts/enums/TestTemplate";
     import GeneralTemplateIcon from "../../../../components/icons/test_templates_icons/GeneralTemplateIcon.svelte";
     import ScoringTemplateIcon from "../../../../components/icons/test_templates_icons/ScoringTemplateIcon.svelte";
@@ -32,12 +32,12 @@
         <svelte:component this={getTemplateIcon(template)} />
 
         <label class="name">
-            {template}
+            {TestTemplateUtils.getFullName(template)}
         </label>
     </div>
 
     <div class="features">
-        {#each getTemplateFeatures(template) as feature}
+        {#each TestTemplateUtils.getTemplateFeatures(template) as feature}
             <label>• {feature}</label>
         {/each}
     </div>

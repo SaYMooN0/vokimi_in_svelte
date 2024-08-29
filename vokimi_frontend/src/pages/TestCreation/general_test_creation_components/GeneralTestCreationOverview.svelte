@@ -25,7 +25,7 @@
     <Route path="view-results" component={GeneralTestResultsView} />
     <Route>
         <p class="go-back-error-message">
-            An error has occured. Please go to a previous page
+            An error has occurred. Please go to a previous page
         </p>
     </Route>
 </Router>
