@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { MyTestsPageTestViewModel } from "./../../../ts/MyTestsPageTestViewModel";
+    import { MyTestsPageTestViewModel } from "../../../../ts/MyTestsPageTestViewModel";
     export let draftTests: MyTestsPageTestViewModel[] = [];
 </script>
 

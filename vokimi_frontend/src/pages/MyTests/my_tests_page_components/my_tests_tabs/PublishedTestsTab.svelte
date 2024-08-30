@@ -1,8 +1,8 @@
 <script lang="ts">
-    import type { MyTestsPageTestViewModel } from "./../../../ts/MyTestsPageTestViewModel";
+    import type { MyTestsPageTestViewModel } from "../../../../ts/MyTestsPageTestViewModel";
     export let publishedTests: MyTestsPageTestViewModel[] = [];
 
-    if(publishedTests.length === 0) {
+    if (publishedTests.length === 0) {
         //load from api
     }
 </script>

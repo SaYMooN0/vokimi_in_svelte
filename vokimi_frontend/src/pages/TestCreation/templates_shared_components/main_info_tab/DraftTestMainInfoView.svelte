@@ -7,6 +7,7 @@
     import MainInfoViewLeftPart from "./MainInfoViewLeftPart.svelte";
     import MainInfoViewRightPart from "./MainInfoViewRightPart.svelte";
     import ErrorMessageInCenter from "../../creation_shared_components/ErrorMessageInCenter.svelte";
+    import TabHeaderWithButton from "../../creation_shared_components/TabHeaderWithButton.svelte";
     export let mainInfoData: TestCreationMainInfoTabData;
     export let testId: string;
     async function loadTabData() {
@@ -41,6 +42,11 @@
             errorMessage="An error has occurred. Please refresh the page"
         />
     {:else}
+        <TabHeaderWithButton
+            tabName="Main info"
+            buttonText="Edit"
+            onButtonClick={() => {}}
+        />
         <div class="tab-content">
             <div class="left-div">
                 <MainInfoViewLeftPart

@@ -1,11 +1,9 @@
 <script lang="ts">
-    import type { PingAuthResponse } from "../../../ts/PingAuthResponse";
     import DraftTestsTab from "./my_tests_tabs/DraftTestsTab.svelte";
     import PublishedTestsTab from "./my_tests_tabs/PublishedTestsTab.svelte";
     import type { MyTestsPageTestViewModel } from "../../../ts/MyTestsPageTestViewModel";
     import NewTestCreationDialog from "./NewTestCreationDialog.svelte";
 
-    export let authData: PingAuthResponse;
 
     enum MyTestsPageTabs {
         DraftTests = "Draft Tests",

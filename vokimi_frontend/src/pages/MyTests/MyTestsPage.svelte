@@ -8,8 +8,8 @@
     <div slot="loading">
         <LoadingMessage />
     </div>
-    <div slot="authenticated" let:authData>
-        <MyTestsTabsContainer {authData} />
+    <div slot="authenticated">
+        <MyTestsTabsContainer />
     </div>
     <div slot="unauthenticated">
         <p>You have to be authenticated to access this page</p>

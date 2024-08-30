@@ -59,11 +59,11 @@
 </script>
 
 <AuthorizeView>
-    <div slot="loading">
+    <svelte:fragment slot="loading">
         <span>Checking Authentication</span>
-    </div>
+    </svelte:fragment>
     <div slot="authenticated" let:authData>
-        {#await loadTestOverviewInfo(authData.UserId)}
+        {#await loadTestOverviewInfo(authData?.UserId)}
             <p>Loading...</p>
         {:then}
             {#if isCreator}
