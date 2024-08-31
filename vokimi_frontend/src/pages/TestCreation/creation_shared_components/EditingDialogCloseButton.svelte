@@ -25,7 +25,7 @@
         box-sizing: border-box;
         aspect-ratio: 1/1;
         border-radius: 50%;
-        color: white;
+        fill: white;
         cursor: pointer;
     }
     .close-btn:hover {

@@ -11,15 +11,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helpers\**" />
     <Compile Remove="Src\json_converters - Копировать\**" />
     <Compile Remove="Src\json_converter\**" />
     <Compile Remove="Src\Новая папка\**" />
+    <Content Remove="Helpers\**" />
     <Content Remove="Src\json_converters - Копировать\**" />
     <Content Remove="Src\json_converter\**" />
     <Content Remove="Src\Новая папка\**" />
+    <EmbeddedResource Remove="Helpers\**" />
     <EmbeddedResource Remove="Src\json_converters - Копировать\**" />
     <EmbeddedResource Remove="Src\json_converter\**" />
     <EmbeddedResource Remove="Src\Новая папка\**" />
+    <None Remove="Helpers\**" />
     <None Remove="Src\json_converters - Копировать\**" />
     <None Remove="Src\json_converter\**" />
     <None Remove="Src\Новая папка\**" />
@@ -42,10 +46,6 @@
     <ProjectReference Include="..\vokimi_frontend\vokimi_frontend.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>

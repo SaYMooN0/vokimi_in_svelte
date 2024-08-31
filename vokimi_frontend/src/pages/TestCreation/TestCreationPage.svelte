@@ -4,7 +4,7 @@
     import GeneralTestCreationOverview from "./general_test_creation_components/GeneralTestCreationOverview.svelte";
     import { GeneralTestCreationOverviewTabs } from "../../ts/test_creation_overview_tabs/generalTestCreationOverviewTabs";
     import ScoringTestCreationOverview from "./scoring_test_creation_components/ScoringTestCreationOverview.svelte";
-    import { ScoringTestCreationOverviewTabs } from "./scoring_test_creation_components/generalTestCreationOverviewTabs";
+    import { ScoringTestCreationOverviewTabs } from "../../ts/test_creation_overview_tabs/scoringTestCreationOverviewTabs";
     import { Link } from "svelte-routing";
 
     export let testId: string;
@@ -68,7 +68,7 @@
         {:then}
             {#if isCreator}
                 <p class="test-editing-label">
-                    <span>Editing of the "{testName}" draft test</span>
+                    Editing of the "<label>{testName}</label>" draft test
                 </p>
                 <div class="tab-links-container">
                     {#each Object.entries(getTabLinks(template)) as [label, path]}
@@ -79,6 +79,7 @@
                         </Link>
                     {/each}
                 </div>
+                <div class="divider"></div>
                 <div class="tab-content-container">
                     {#if template === TestTemplate.General}
                         <GeneralTestCreationOverview {basepath} {testId} />
@@ -99,6 +100,22 @@
 </AuthorizeView>
 
 <style>
+    .test-editing-label {
+        font-size: 20px;
+        width: fit-content;
+        margin: 0px auto 16px auto;
+        color: var(--text-faded);
+        display: flex;
+        align-items: center;
+    }
+    .test-editing-label label {
+        display: inline-block;
+        max-width: calc(60vw - 64px);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        color: var(--text);
+    }
     .tab-links-container {
         display: flex;
         justify-content: center;
@@ -123,5 +140,13 @@
         box-sizing: border-box;
         max-width: 1420px;
         margin: 0 auto;
+    }
+    .divider {
+        height: 2px;
+        background-color: var(--text-faded);
+        opacity: 0.48;
+        width: calc(100% - 24px);
+        margin: 4px auto 20px auto;
+        border-radius: 2px;
     }
 </style>

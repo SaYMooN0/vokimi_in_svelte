@@ -91,28 +91,7 @@ namespace vokimi_api
             app.MapGet("/test-creation/getDraftTestMainInfoData/{testId}", TestCreationSharedEndpoints.GetDraftTestMainInfoData);
 
 
-            app.MapGet("/vokimiimgs/{*fileKey}", async (string fileKey, IAmazonS3 s3Client, string bucketName) => {
-                GetObjectRequest request = new() {
-                    BucketName = bucketName,
-                    Key = fileKey
-                };
-
-                try {
-                    using (var response = await s3Client.GetObjectAsync(request)) {
-                        using (var responseStream = response.ResponseStream) {
-                            MemoryStream memoryStream = new();
-                            await responseStream.CopyToAsync(memoryStream);
-                            memoryStream.Seek(0, SeekOrigin.Begin);
-                            return Results.File(memoryStream, response.Headers.ContentType, response.Key);
-                        }
-                    }
-                } catch (AmazonS3Exception ex) {
-                    return Results.NotFound($"Error fetching file");
-                } catch {
-                    return Results.Problem($"Internal server error");
-                }
-            });
-
+            app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
         }
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
             ConfigureDbContextFactory(services, configuration);
@@ -150,8 +129,7 @@ namespace vokimi_api
             var config = new AmazonS3Config { ServiceURL = "https://s3.yandexcloud.net" };
 
             services.AddSingleton<IAmazonS3>(sp => new AmazonS3Client(creds, config));
-
-            //services.AddSingleton(sp => new VokimiStorageService(sp.GetRequiredService<IAmazonS3>(), bucketName));
+            services.AddSingleton(sp => new VokimiStorageService(sp.GetRequiredService<IAmazonS3>(), bucketName));
         }
         private static void ConfigureEmailService(IServiceCollection services, IConfiguration configuration) {
             string smtpHost = configuration["Smtp:Host"] ?? throw new Exception("Smtp:Host is not set");

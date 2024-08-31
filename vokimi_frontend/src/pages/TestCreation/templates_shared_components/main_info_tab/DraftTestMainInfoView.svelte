@@ -8,16 +8,14 @@
     import MainInfoViewRightPart from "./MainInfoViewRightPart.svelte";
     import ErrorMessageInCenter from "../../creation_shared_components/ErrorMessageInCenter.svelte";
     import TabHeaderWithButton from "../../creation_shared_components/TabHeaderWithButton.svelte";
+    import DraftTestMainInfoEditingDialog from "./DraftTestMainInfoEditingDialog.svelte";
+
     export let mainInfoData: TestCreationMainInfoTabData;
     export let testId: string;
+
     async function loadTabData() {
-        if (!mainInfoData.isEmpty()) {
-            return;
-        }
         const url = "/api/test-creation/getDraftTestMainInfoData/" + testId;
-
         const response = await fetch(url);
-
         if (response.ok) {
             const data = await response.json();
             mainInfoData.update(
@@ -32,9 +30,23 @@
             mainInfoData = TestCreationMainInfoTabData.empty();
         }
     }
+    async function onTabEnter() {
+        if (mainInfoData.isEmpty()) {
+            await loadTabData();
+        }
+    }
+    function openEditingDialog() {
+        mainInfoEditingDialog.open(
+            mainInfoData.name,
+            mainInfoData.description,
+            mainInfoData.language,
+            mainInfoData.privacy,
+        );
+    }
+    let mainInfoEditingDialog: DraftTestMainInfoEditingDialog;
 </script>
 
-{#await loadTabData()}
+{#await onTabEnter()}
     <LoadingMessage />
 {:then}
     {#if mainInfoData.isEmpty()}
@@ -42,10 +54,14 @@
             errorMessage="An error has occurred. Please refresh the page"
         />
     {:else}
+        <DraftTestMainInfoEditingDialog
+            bind:this={mainInfoEditingDialog}
+            updateParentElementData={loadTabData}
+        />
         <TabHeaderWithButton
             tabName="Main info"
             buttonText="Edit"
-            onButtonClick={() => {}}
+            onButtonClick={() => openEditingDialog()}
         />
         <div class="tab-content">
             <div class="left-div">
