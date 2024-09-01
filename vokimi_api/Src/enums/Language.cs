@@ -20,6 +20,15 @@
             Language.Other => "other",
             _ => throw new NotImplementedException()
         };
+        public static Language? FromId(string id) => id switch {
+            "eng" => Language.Eng,
+            "rus" => Language.Rus,
+            "spa" => Language.Spa,
+            "ger" => Language.Ger,
+            "fra" => Language.Fra,
+            "other" => Language.Other,
+            _ => null
+        };
 
     }
 }

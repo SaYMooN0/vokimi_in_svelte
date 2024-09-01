@@ -1,13 +1,13 @@
 <script lang="ts">
-    import BaseDialog from "../../../../components/BaseDialog.svelte";
     import { Language, LanguageUtils } from "../../../../ts/enums/Language";
     import {
         TestPrivacy,
         TestPrivacyUtils,
     } from "../../../../ts/enums/TestPrivacy";
-    import EditingDialogCloseButton from "../../creation_shared_components/EditingDialogCloseButton.svelte";
+    import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
 
     export let updateParentElementData: () => void;
+    export let testId: string;
 
     export function open(
         testNameVal: string,
@@ -27,88 +27,88 @@
     let language: Language;
     let privacy: TestPrivacy;
 
-    let dialogElement: BaseDialog;
-    let errorMessage: string = "";
+    let dialogElement: BaseDraftTestEditingDialog;
 
     async function saveData() {
-        console.log("before valid");
-
-        validateFormData();
-        console.log("after valid");
-        if (!valid) {
+        const dataErr: string | null = checkFormDataForError();
+        if (dataErr !== null) {
+            dialogElement.setErrorMessage(dataErr);
             return;
         }
-        // await updateParentElementData();
-        dialogElement.close();
+        const response = await fetch(
+            "/api/test-creation/updateDraftTestMainInfoData",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    testId: testId,
+                    name: testName.trim(),
+                    description: description.trim(),
+                    language: LanguageUtils.getId(language),
+                    privacy: TestPrivacyUtils.getId(privacy),
+                }),
+            },
+        );
+        if (response.ok) {
+            await updateParentElementData();
+            dialogElement.close();
+        } else if (response.status === 400) {
+            const data = await response.json();
+            dialogElement.setErrorMessage(data.error);
+        } else {
+            dialogElement.setErrorMessage("Unknown error");
+        }
     }
-    function validateFormData() {
-        valid = true;
-        errorMessage = "";
+    function checkFormDataForError(): string | null {
         if (testName === "") {
-            valid = false;
-            errorMessage = "Test name cannot be empty";
-            return;
+            return "Test name cannot be empty";
         }
         if (language === null) {
-            valid = false;
-            errorMessage = "Please select a language";
-            return;
+            return "Please select a language";
         }
         if (privacy === null) {
-            valid = false;
-            errorMessage = "Please select a privacy";
-            return;
+            return "Please select a privacy";
         }
+        return null;
     }
-
-    let valid: boolean = true;
 </script>
 
-<BaseDialog dialogId="draftTestMainInfo" bind:this={dialogElement}>
-    <div class="dialog-body">
-        <EditingDialogCloseButton onClose={() => dialogElement.close()} />
+<BaseDraftTestEditingDialog
+    onSaveButtonClicked={saveData}
+    bind:this={dialogElement}
+>
+    <label for="testName" class="property-label">Test name:</label>
+    <input id="testName" type="text" bind:value={testName} />
 
-        <label for="testName" class="property-label">Test name:</label>
-        <input id="testName" type="text" bind:value={testName} />
+    <label for="description" class="property-label">Test description: </label>
+    <textarea
+        id="description"
+        bind:value={description}
+        placeholder="Test description is optional"
+    />
 
-        <label for="description" class="property-label"
-            >Test description:
-        </label>
-        <textarea
-            id="description"
-            bind:value={description}
-            placeholder="Test description is optional"
-        />
+    <label for="language" class="property-label">Language:</label>
+    <select id="language" bind:value={language}>
+        {#each Object.values(Language) as language}
+            <option value={language}>
+                {LanguageUtils.getFullName(language)}
+            </option>
+        {/each}
+    </select>
 
-        <label for="language" class="property-label">Language:</label>
-        <select id="language" bind:value={language}>
-            {#each Object.values(Language) as language}
-                <option value={language}>
-                    {LanguageUtils.getFullName(language)}
-                </option>
-            {/each}
-        </select>
-
-        <label for="privacy" class="property-label">Privacy:</label>
-        <select id="privacy" bind:value={privacy}>
-            {#each Object.values(TestPrivacy) as privacy}
-                <option value={privacy}>
-                    {TestPrivacyUtils.getFullName(privacy)}
-                </option>
-            {/each}
-        </select>
-        <button on:click={saveData}>Save</button>
-    </div>
-</BaseDialog>
+    <label for="privacy" class="property-label">Privacy:</label>
+    <select id="privacy" bind:value={privacy}>
+        {#each Object.values(TestPrivacy) as privacy}
+            <option value={privacy}>
+                {TestPrivacyUtils.getFullName(privacy)}
+            </option>
+        {/each}
+    </select>
+</BaseDraftTestEditingDialog>
 
 <style>
-    .dialog-body {
-        position: relative;
-        padding: 10px 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
     .property-label {
         color: var(--text-faded);
     }

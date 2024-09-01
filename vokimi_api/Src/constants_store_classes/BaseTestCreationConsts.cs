@@ -3,10 +3,10 @@ namespace vokimi_api.Src.constants_store_classes
 {
     public static class BaseTestCreationConsts
     {
-        //public const int
-        //    MinTestNameLength = 12,
-        //    MaxTestNameLength = 255,
-        //    MaxTestDescriptionLength = 255;
+        public const int
+            MinTestNameLength = 12,
+            MaxTestNameLength = 255,
+            MaxTestDescriptionLength = 255;
         //public const int
         //    MaxResultsForTestCount = 30,
         //    ResultMinTextLength = 8,

@@ -1,12 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Security.Claims;
+using vokimi_api.Src;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
+using vokimi_api.Src.dtos.requests.draft_tests_requests.data_update;
 using vokimi_api.Src.dtos.responses;
 using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
 using vokimi_api.Src.enums;
@@ -85,6 +88,37 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                         .FirstOrDefault(t => t.Id == draftTestId);
                 if (test is null || test.MainInfo is null) { return Results.BadRequest(); }
                 return Results.Ok(DraftTestMainInfoDataResponse.FromDraftTest(test));
+            }
+        }
+        public static IResult UpdateDraftTestMainInfo(
+            IDbContextFactory<AppDbContext> dbFactory,
+            [FromBody] DraftTestMainInfoUpdateRequest request) {
+
+            var returnErr = (string err) => Results.BadRequest(new { Error = err });
+
+
+            Err validationErr = request.CheckForErr();
+            if (validationErr.NotNone()) {
+                return returnErr(validationErr.Message);
+            }
+            ParsedDraftTestMainInfoUpdateRequest? newData = request.ParseToObjWithTypes();
+            if (newData is null) {
+                return returnErr("Error occurred during saving. Please try again");
+            }
+            try {
+                using (var db = dbFactory.CreateDbContext()) {
+                    BaseDraftTest? test = db.DraftTestsSharedInfo
+                        .Include(t => t.MainInfo)
+                        .FirstOrDefault(t => t.Id == newData.TestId);
+                    if (test is null) {
+                        return returnErr("Test not found");
+                    }
+                    test.MainInfo.Update(newData.Name, newData.Description, newData.Language, newData.Privacy);
+                    db.SaveChanges();
+                    return Results.Ok();
+                }
+            } catch {
+                return returnErr("Server error. Please try again later");
             }
         }
     }

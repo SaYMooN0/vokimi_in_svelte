@@ -16,6 +16,12 @@
             TestPrivacy.Anyone => "anyone",
             _ => throw new NotImplementedException()
         };
-
+        public static TestPrivacy? FromId(string id) => id switch {
+            "for_myself" => TestPrivacy.ForMyself,
+            "friends_only" => TestPrivacy.FriendsOnly,
+            "friends_and_followers" => TestPrivacy.FriendsAndFollowers,
+            "anyone" => TestPrivacy.Anyone,
+            _ => null
+        };
     }
 }

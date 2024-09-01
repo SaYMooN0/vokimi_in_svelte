@@ -57,6 +57,7 @@
         <DraftTestMainInfoEditingDialog
             bind:this={mainInfoEditingDialog}
             updateParentElementData={loadTabData}
+            {testId}
         />
         <TabHeaderWithButton
             tabName="Main info"
