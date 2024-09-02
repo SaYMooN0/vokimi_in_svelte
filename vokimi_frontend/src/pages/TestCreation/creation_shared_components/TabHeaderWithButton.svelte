@@ -1,12 +1,16 @@
 <script lang="ts">
     export let tabName: string;
-    export let buttonText: string;
-    export let onButtonClick: () => void;
+    export let buttonText: string | null = null;
+    export let onButtonClick: (() => void) | null = null;
 </script>
 
 <div class="tab-header">
     <span class="tab-name">{tabName}</span>
-    <button class="header-button" on:click={onButtonClick}>{buttonText}</button>
+    {#if buttonText !== null && onButtonClick !== null}
+        <button class="header-button" on:click={onButtonClick}
+            >{buttonText}</button
+        >
+    {/if}
 </div>
 
 <style>

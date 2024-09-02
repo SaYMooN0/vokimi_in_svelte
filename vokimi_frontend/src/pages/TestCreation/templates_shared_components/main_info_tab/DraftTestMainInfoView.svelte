@@ -26,6 +26,7 @@
                 data.description,
                 data.imgPath,
             );
+            mainInfoData = mainInfoData;
         } else {
             mainInfoData = TestCreationMainInfoTabData.empty();
         }

@@ -1,7 +1,7 @@
 <script lang="ts">
     import DraftTestMainInfoView from "./main_info_tab/DraftTestMainInfoView.svelte";
-    import DraftTestConclusionView from "./DraftTestConclusionView.svelte";
-    import DraftTestStylesView from "./DraftTestStylesView.svelte";
+    import DraftTestConclusionView from "./conclusion_tab/DraftTestConclusionView.svelte";
+    import DraftTestStylesView from "./styles_tab/DraftTestStylesView.svelte";
     import DraftTestTagsView from "./tags_tab/DraftTestTagsView.svelte";
     import { Route } from "svelte-routing";
     import type { TestCreationMainInfoTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";

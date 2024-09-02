@@ -4,12 +4,14 @@
     import GeneralTestQuestionsView from "./general_test_overview_tabs/questions_tab/GeneralTestQuestionsView.svelte";
     import GeneralTestResultsView from "./general_test_overview_tabs/results_tab/GeneralTestResultsView.svelte";
     import { TestCreationMainInfoTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
-
+    import { GeneralTestCreationQuestionsTabData } from "../../../ts/test_creation_tabs_classes/general_test_creation/GeneralTestCreationQuestionsTabData";
     export let basepath: string;
     export let testId: string;
 
     let mainInfoTabData: TestCreationMainInfoTabData =
         TestCreationMainInfoTabData.empty();
+    let questionsTabData: GeneralTestCreationQuestionsTabData =
+        GeneralTestCreationQuestionsTabData.empty();
 </script>
 
 <Router {basepath}>
@@ -21,7 +23,9 @@
         viewStylesPath="view-styles"
         viewTagsPath="view-tags"
     />
-    <Route path="view-questions" component={GeneralTestQuestionsView} />
+    <Route path="view-questions">
+        <GeneralTestQuestionsView {testId} questionsData={questionsTabData} />
+    </Route>
     <Route path="view-results" component={GeneralTestResultsView} />
     <Route>
         <p class="go-back-error-message">
