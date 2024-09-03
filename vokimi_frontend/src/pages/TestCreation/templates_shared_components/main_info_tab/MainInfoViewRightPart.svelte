@@ -6,8 +6,10 @@
 
 <div class="img-container">
     <img src={ImgUtils.imgUrlWithVersion(imgPath)} alt="test cover" />
-    <div class="img-operations-btn change-img-btn">Change Test Cover</div>
-    <div class="img-operations-btn remove-img-btn">Set Cover To Default</div>
+    <button class="img-operations-btn change-img-btn">Change Test Cover</button>
+    <button class="img-operations-btn remove-img-btn"
+        >Set Cover To Default</button
+    >
 </div>
 
 <style>
@@ -16,5 +18,37 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 4px;
+    }
+    .img-container img {
+        border-radius: 14px;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    .change-img-btn,
+    .remove-img-btn {
+        height: 36px;
+        width: 82%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 16px;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.12s ease-in;
+    }
+    .change-img-btn {
+        margin-top: 8px;
+        background-color: var(--primary);
+    }
+    .remove-img-btn {
+        background-color: var(--red-del);
+    }
+    .change-img-btn:hover,
+    .remove-img-btn:hover {
+        width: 86%;
     }
 </style>

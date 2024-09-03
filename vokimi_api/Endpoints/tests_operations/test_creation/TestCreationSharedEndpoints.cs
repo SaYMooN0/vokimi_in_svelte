@@ -9,7 +9,7 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
-using vokimi_api.Src.dtos.requests.draft_tests_requests.data_update;
+using vokimi_api.Src.dtos.requests.test_creation.templates_shared;
 using vokimi_api.Src.dtos.responses;
 using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
 using vokimi_api.Src.enums;

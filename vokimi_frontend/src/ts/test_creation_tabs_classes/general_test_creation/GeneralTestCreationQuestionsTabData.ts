@@ -20,7 +20,7 @@ export class GeneralTestCreationQuestionsTabData {
 export class DraftGeneralTestQuestionBriefInfo {
     readonly id: string;
     readonly text: string;
-    readonly type: GeneralTestAnswerType;
+    readonly answersType: GeneralTestAnswerType;
     readonly answersCount: number;
     readonly isMultiple: boolean;
     readonly orderInTest: number;
@@ -28,14 +28,14 @@ export class DraftGeneralTestQuestionBriefInfo {
     constructor(
         id: string,
         text: string,
-        type: GeneralTestAnswerType,
+        answersType: GeneralTestAnswerType,
         answersCount: number,
         isMultiple: boolean,
         orderInTest: number
     ) {
         this.id = id;
         this.text = text;
-        this.type = type;
+        this.answersType = answersType;
         this.answersCount = answersCount;
         this.isMultiple = isMultiple;
         this.orderInTest = orderInTest;

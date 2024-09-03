@@ -1,6 +1,6 @@
 <script lang="ts">
     import { TestCreationMainInfoTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
-    import LoadingMessage from "../../../../components/shared/LoadingMessage.svelte";
+    import TabViewDataLoader from "../../creation_shared_components/TabViewDataLoader.svelte";
     import { TestTemplateUtils } from "../../../../ts/enums/TestTemplate";
     import { LanguageUtils } from "../../../../ts/enums/Language";
     import { TestPrivacyUtils } from "../../../../ts/enums/TestPrivacy";
@@ -13,7 +13,7 @@
     export let mainInfoData: TestCreationMainInfoTabData;
     export let testId: string;
 
-    async function loadTabData() {
+    async function loadData() {
         const url = "/api/test-creation/getDraftTestMainInfoData/" + testId;
         const response = await fetch(url);
         if (response.ok) {
@@ -31,11 +31,7 @@
             mainInfoData = TestCreationMainInfoTabData.empty();
         }
     }
-    async function onTabEnter() {
-        if (mainInfoData.isEmpty()) {
-            await loadTabData();
-        }
-    }
+
     function openEditingDialog() {
         mainInfoEditingDialog.open(
             mainInfoData.name,
@@ -44,20 +40,19 @@
             mainInfoData.privacy,
         );
     }
+
     let mainInfoEditingDialog: DraftTestMainInfoEditingDialog;
 </script>
 
-{#await onTabEnter()}
-    <LoadingMessage />
-{:then}
-    {#if mainInfoData.isEmpty()}
-        <ErrorMessageInCenter
-            errorMessage="An error has occurred. Please refresh the page"
-        />
-    {:else}
+<TabViewDataLoader {loadData} isEmpty={() => mainInfoData.isEmpty()}>
+    <ErrorMessageInCenter
+        slot="empty"
+        errorMessage="Unable to fetch data. Please try again later."
+    />
+    <div slot="content">
         <DraftTestMainInfoEditingDialog
             bind:this={mainInfoEditingDialog}
-            updateParentElementData={loadTabData}
+            updateParentElementData={loadData}
             {testId}
         />
         <TabHeaderWithButton
@@ -79,8 +74,8 @@
                 <MainInfoViewRightPart imgPath={mainInfoData.imgPath} />
             </div>
         </div>
-    {/if}
-{/await}
+    </div>
+</TabViewDataLoader>
 
 <style>
     .tab-content {

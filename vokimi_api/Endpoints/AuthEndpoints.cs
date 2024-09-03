@@ -11,7 +11,7 @@ using vokimi_api.Src.db_related;
 using vokimi_api.Src;
 using Microsoft.AspNetCore.Http.HttpResults;
 using vokimi_api.Src.dtos.responses;
-using vokimi_api.Src.dtos.requests.auth_requests;
+using vokimi_api.Src.dtos.requests.auth;
 
 namespace vokimi_api.Endpoints
 {

@@ -6,8 +6,8 @@ using vokimi_api.Src.db_related;
 using vokimi_api.Src.dtos.responses;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using Microsoft.AspNetCore.Mvc;
-using vokimi_api.Src.dtos.requests.draft_tests_request;
 using vokimi_api.Src.enums;
+using vokimi_api.Src.dtos.requests.test_creation.templates_shared;
 
 namespace vokimi_api.Endpoints.tests_operations
 {

@@ -15,13 +15,12 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
         public ushort MaxAnswersCount { get; private set; }
         public virtual ICollection<DraftGeneralTestAnswer> Answers { get; private set; } = [];
         public DraftTestId TestId { get; init; }
-        public static DraftGeneralTestQuestion CreateNew(string text,
+        public static DraftGeneralTestQuestion CreateNew(DraftTestId testId,
                                                          GeneralTestAnswerType answersType,
-                                                         DraftTestId testId,
                                                          ushort orderInTest) =>
             new() {
                 Id = new(),
-                Text = text,
+                Text = $"General Test Question #{orderInTest + 1}",
                 ImagePath = null,
                 ShuffleAnswers = false,
                 AnswersType = answersType,
@@ -29,7 +28,7 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
                 MinAnswersCount = 1,
                 MaxAnswersCount = 1,
                 TestId = testId,
-                Answers = new List<DraftGeneralTestAnswer>()
+                Answers = []
             };
         public bool IsSingleChoice => MinAnswersCount == 1 && MaxAnswersCount == 1;
     }
