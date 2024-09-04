@@ -92,7 +92,8 @@ namespace vokimi_api
             app.MapPost("/test-creation/updateDraftTestMainInfoData", TestCreationSharedEndpoints.UpdateDraftTestMainInfo);
 
             app.MapGet("/test-creation/general/getGeneralDraftTestQuestionsData/{testId}", GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
-            
+            app.MapPost("/test-creation/general/createGeneralTestQuestion", GeneralTestCreationEndpoints.CreateGeneralTestQuestion);
+
             app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
         }
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {

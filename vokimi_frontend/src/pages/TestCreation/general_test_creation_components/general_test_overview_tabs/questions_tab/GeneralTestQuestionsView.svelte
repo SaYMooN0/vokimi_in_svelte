@@ -1,9 +1,10 @@
 <script lang="ts">
     import { GeneralTestCreationQuestionsTabData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/GeneralTestCreationQuestionsTabData";
     import TabViewDataLoader from "../../../creation_shared_components/TabViewDataLoader.svelte";
-    import LoadingMessage from "../../../../../components/shared/LoadingMessage.svelte";
     import TabHeaderWithButton from "../../../creation_shared_components/TabHeaderWithButton.svelte";
-    import DraftGeneralTestQuestionEditingDialog from "./DraftGeneralTestQuestionEditingDialog.svelte";
+    import DraftGeneralTestQuestionEditingDialog from "./dialog_components/DraftGeneralTestQuestionEditingDialog.svelte";
+    import DraftGeneralTestQuestionCreationDialog from "./dialog_components/DraftGeneralTestQuestionCreationDialog.svelte";
+    import DraftGeneralTestQuestionViewElement from "./DraftGeneralTestQuestionViewElement.svelte";
 
     export let questionsData: GeneralTestCreationQuestionsTabData;
     export let testId: string;
@@ -26,28 +27,22 @@
         questionEditingDialog.open(id);
     }
 
-    async function createNewQuestion() {
-        const url = "/api/test-creation/general/createGeneralTestQuestion";
-        //post to create new question
-        
-        // const response = await fetch(url);
-        // if (response.ok) {
-        //     await loadData();
-        // } else {
-        //     questionsData = GeneralTestCreationQuestionsTabData.empty();
-        // }
-    }
-
     let questionEditingDialog: DraftGeneralTestQuestionEditingDialog;
+    let questionCreationDialog: DraftGeneralTestQuestionCreationDialog;
     let errorMessage: string = "";
 </script>
 
+<DraftGeneralTestQuestionCreationDialog
+    bind:this={questionCreationDialog}
+    updateParentElementData={loadData}
+    {testId}
+/>
 <TabViewDataLoader {loadData} isEmpty={() => questionsData.isEmpty()}>
     <div slot="empty">
         <h2>It seems like there is no questions added yet</h2>
         <a on:click={loadData}>Refresh</a>
         <p class="error-message">{errorMessage}</p>
-        <button on:click={() => createNewQuestion()}>
+        <button on:click={() => questionCreationDialog.open()}>
             Create First Question
         </button>
     </div>
@@ -56,17 +51,17 @@
             bind:this={questionEditingDialog}
             updateParentElementData={loadData}
         />
-        <TabHeaderWithButton tabName="Test Questions" />
+        <TabHeaderWithButton
+            tabName="Test Questions({questionsData.questions.length})"
+            buttonText="Add Question"
+            onButtonClick={() => questionCreationDialog.open()}
+        />
         <div class="tab-content">
-            {#each questionsData.questions as question}
-                <div class="question-container">
-                    <label>{question.text}</label>
-                    <button
-                        on:click={() => openQuestionEditingDialog(question.id)}
-                    >
-                        Edit
-                    </button>
-                </div>
+            {#each questionsData.questions.sort((a, b) => a.orderInTest - b.orderInTest) as question}
+                <DraftGeneralTestQuestionViewElement
+                    {question}
+                    {openQuestionEditingDialog}
+                />
             {/each}
         </div>
     </div>

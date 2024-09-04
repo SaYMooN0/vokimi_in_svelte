@@ -46,8 +46,8 @@
                     testId: testId,
                     name: testName.trim(),
                     description: description.trim(),
-                    language: LanguageUtils.getId(language),
-                    privacy: TestPrivacyUtils.getId(privacy),
+                    language: language,
+                    privacy: privacy,
                 }),
             },
         );

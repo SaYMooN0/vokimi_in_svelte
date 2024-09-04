@@ -14,11 +14,6 @@ export namespace TestPrivacyUtils {
         }
         return TestPrivacy.ForMyself;
     }
-
-    export function getId(privacy: TestPrivacy): string {
-        return privacy;
-    }
-
     export function getFullName(privacy: TestPrivacy): string {
         switch (privacy) {
             case TestPrivacy.ForMyself:

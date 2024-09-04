@@ -16,11 +16,6 @@ export namespace LanguageUtils {
         }
         return Language.Other;
     }
-
-    export function getId(language: Language): string {
-        return language;
-    }
-
     export function getFullName(language: Language): string {
         switch (language) {
             case Language.Eng:

@@ -1,8 +1,11 @@
 <script lang="ts">
     export let onClick: () => void;
+    export let buttonText: string = "Save";
 </script>
 
-<button class="save-button" on:click={onClick}>Save</button>
+<button class="save-button" on:click={onClick}>
+    {buttonText}
+</button>
 
 <style>
     .save-button {

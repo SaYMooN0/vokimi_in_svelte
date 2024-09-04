@@ -1,5 +1,5 @@
 <script lang="ts">
-    import BaseDraftTestEditingDialog from "../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
+    import BaseDraftTestEditingDialog from "../../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
 
     export let updateParentElementData: () => void;
 

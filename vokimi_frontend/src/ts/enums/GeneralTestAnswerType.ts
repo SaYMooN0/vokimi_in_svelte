@@ -14,10 +14,6 @@ export namespace GeneralTestAnswerTypeUtils {
         return GeneralTestAnswerType.TextOnly;
     }
 
-    export function getId(type: GeneralTestAnswerType): string {
-        return type;
-    }
-
     export function getFullName(type: GeneralTestAnswerType): string {
         switch (type) {
             case GeneralTestAnswerType.TextOnly:

@@ -7,9 +7,9 @@
 <div class="tab-header">
     <span class="tab-name">{tabName}</span>
     {#if buttonText !== null && onButtonClick !== null}
-        <button class="header-button" on:click={onButtonClick}
-            >{buttonText}</button
-        >
+        <button class="header-button" on:click={onButtonClick}>
+            {buttonText}
+        </button>
     {/if}
 </div>
 

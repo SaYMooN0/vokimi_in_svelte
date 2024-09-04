@@ -22,8 +22,7 @@
             alert(`Template ${chosenTemplate} is not implemented yet`);
             return;
         }
-        const url =
-            "/api/createNewTest/" + TestTemplateUtils.getId(chosenTemplate);
+        const url = "/api/createNewTest/" + chosenTemplate;
         const response = await fetch(url, { method: "POST" });
 
         if (response.status === 200) {

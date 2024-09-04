@@ -22,9 +22,10 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             draftTestId = new(new(testId));
 
             using (var db = dbFactory.CreateDbContext()) {
-                IEnumerable<DraftGeneralTestQuestion> questions = db.DraftGeneralTestQuestions
+                var questions = db.DraftGeneralTestQuestions
                         .Include(q => q.Answers)
-                        .Where(q => q.TestId == draftTestId);
+                        .Where(q => q.TestId == draftTestId)
+                        .ToArray();
 
                 return Results.Ok(questions.Select(DraftGeneralTestQuestionBriefInfo.FromDraftTestQuestion));
             }
@@ -35,19 +36,24 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             if (data is null) {
                 return Results.BadRequest();
             }
+            try {
+                using (var db = dbFactory.CreateDbContext()) {
 
-            using (var db = dbFactory.CreateDbContext()) {
-                int existingQuestionsCount = db.DraftGeneralTestQuestions
-                    .Where(q => q.TestId == data.TestId)
-                    .Count();
-                ushort orderInTest = (ushort)existingQuestionsCount;
-                DraftGeneralTestQuestion question = DraftGeneralTestQuestion.CreateNew(
-                    data.TestId,
-                    data.AnswersType,
-                    orderInTest);
-                db.DraftGeneralTestQuestions.Add(question);
-                db.SaveChanges();
-                return Results.Ok();
+
+                    int existingQuestionsCount = db.DraftGeneralTestQuestions
+                        .Where(q => q.TestId == data.TestId)
+                        .Count();
+                    ushort orderInTest = (ushort)existingQuestionsCount;
+                    DraftGeneralTestQuestion question = DraftGeneralTestQuestion.CreateNew(
+                        data.TestId,
+                        data.AnswersType,
+                        orderInTest);
+                    db.DraftGeneralTestQuestions.Add(question);
+                    db.SaveChanges();
+                    return Results.Ok();
+                }
+            } catch {
+                return Results.StatusCode(500);
             }
         }
     }

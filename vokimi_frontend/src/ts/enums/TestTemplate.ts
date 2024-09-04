@@ -11,11 +11,7 @@ export namespace TestTemplateUtils {
                 return TestTemplate[key as keyof typeof TestTemplate];
             }
         }
-        return TestTemplate.General; 
-    }
-
-    export function getId(template: TestTemplate): string {
-        return template;
+        return TestTemplate.General;
     }
 
     export function getFullName(template: TestTemplate): string {

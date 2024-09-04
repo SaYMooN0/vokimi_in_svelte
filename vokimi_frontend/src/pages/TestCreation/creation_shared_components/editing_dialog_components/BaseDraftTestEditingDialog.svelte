@@ -13,6 +13,7 @@
         dialogElement.close();
     }
     export let onSaveButtonClicked: () => void;
+    export let saveButtonText: string = "Save";
     let dialogElement: BaseDialog;
     let errorMessage: string = "";
 </script>
@@ -22,7 +23,10 @@
         <EditingDialogCloseButton onClose={() => dialogElement.close()} />
         <slot></slot>
         <p class="error-message">{errorMessage}</p>
-        <EditingDialogSaveButton onClick={() => onSaveButtonClicked()} />
+        <EditingDialogSaveButton
+            buttonText={saveButtonText}
+            onClick={() => onSaveButtonClicked()}
+        />
     </div>
 </BaseDialog>
 
