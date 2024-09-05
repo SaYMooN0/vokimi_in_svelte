@@ -88,11 +88,12 @@ namespace vokimi_api
 
                 });
 
-            app.MapGet("/test-creation/getDraftTestMainInfoData/{testId}", TestCreationSharedEndpoints.GetDraftTestMainInfoData);
-            app.MapPost("/test-creation/updateDraftTestMainInfoData", TestCreationSharedEndpoints.UpdateDraftTestMainInfo);
+            app.MapGet("/testCreation/getDraftTestMainInfoData/{testId}", TestCreationSharedEndpoints.GetDraftTestMainInfoData);
+            app.MapPost("/testCreation/updateDraftTestMainInfoData", TestCreationSharedEndpoints.UpdateDraftTestMainInfo);
 
-            app.MapGet("/test-creation/general/getGeneralDraftTestQuestionsData/{testId}", GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
-            app.MapPost("/test-creation/general/createGeneralTestQuestion", GeneralTestCreationEndpoints.CreateGeneralTestQuestion);
+            app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}", GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
+            app.MapPost("/testCreation/general/createGeneralTestQuestion", GeneralTestCreationEndpoints.CreateGeneralTestQuestion);
+            app.MapGet("/testCreation/general/getDraftGeneralTestQuestionDataToEdit/{testId}", GeneralTestCreationEndpoints.GetDraftGeneralTestQuestionDataToEdit);
 
             app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
         }

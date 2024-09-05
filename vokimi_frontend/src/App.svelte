@@ -37,7 +37,7 @@
           userId={params.userId}
         />
       </Route>
-      <Route path="/test-creation/:testId/*" let:params>
+      <Route path="/testCreation/:testId/*" let:params>
         <TestCreationPage testId={params.testId} />
       </Route>
     </div>

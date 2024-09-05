@@ -56,5 +56,9 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 return Results.StatusCode(500);
             }
         }
+        public static IResult GetDraftGeneralTestQuestionDataToEdit(IDbContextFactory<AppDbContext> dbFactory,
+                                                                    string testId) {
+            return Results.BadRequest(new { Error = "Not implemented" });
+        }
     }
 }

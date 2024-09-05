@@ -20,7 +20,7 @@
             );
             return;
         }
-        const url = "/api/test-creation/general/createGeneralTestQuestion";
+        const url = "/api/testCreation/general/createGeneralTestQuestion";
         const data = { testId, answersType };
         const response = await fetch(url, {
             method: "POST",

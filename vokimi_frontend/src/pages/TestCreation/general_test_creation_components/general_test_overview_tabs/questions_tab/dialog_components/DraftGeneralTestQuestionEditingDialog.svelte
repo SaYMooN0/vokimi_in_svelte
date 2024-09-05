@@ -1,11 +1,25 @@
 <script lang="ts">
     import BaseDraftTestEditingDialog from "../../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
+    import TextWithOptionalImageInput from "../../../../creation_shared_components/TextWithOptionalImageInput.svelte";
 
     export let updateParentElementData: () => void;
-
-    export function open(questionIdVal: string) {
+    let fetchingDataErr: string = "";
+    export async function open(questionIdVal: string) {
+        fetchingDataErr = "";
         questionId = questionIdVal;
-        //fetch data from server
+        const url =
+            "/api/testCreation/general/getDraftGeneralTestQuestionDataToEdit/" +
+            questionId;
+        const response = await fetch(url);
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+        } else if (response.status === 400) {
+            const data = await response.json();
+            fetchingDataErr = data.error;
+        } else {
+            fetchingDataErr = "Unknown error";
+        }
         dialogElement.open();
     }
 
@@ -22,7 +36,7 @@
             return;
         }
         const response = await fetch(
-            "/api/test-creation/general/updateDraftGeneralTestQuestionData",
+            "/api/testCreation/general/updateDraftGeneralTestQuestionData",
             {
                 method: "POST",
                 headers: {
@@ -52,7 +66,12 @@
     onSaveButtonClicked={saveData}
     bind:this={dialogElement}
 >
-    <p>Editing of the {questionId} question</p>
+    {#if fetchingDataErr === ""}
+        <TextWithOptionalImageInput />
+        <p>Editing of the {questionId} question</p>
+    {:else}
+        <p>{fetchingDataErr}</p>
+    {/if}
 </BaseDraftTestEditingDialog>
 
 <style>

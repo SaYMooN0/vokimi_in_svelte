@@ -14,7 +14,7 @@
     export let testId: string;
 
     async function loadData() {
-        const url = "/api/test-creation/getDraftTestMainInfoData/" + testId;
+        const url = "/api/testCreation/getDraftTestMainInfoData/" + testId;
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();

@@ -13,7 +13,7 @@
     let testName: string;
     let isCreator: boolean = false;
     let isLoading: boolean = true;
-    let basepath = `/test-creation/${testId}`;
+    let basepath = `/testCreation/${testId}`;
 
     async function loadTestOverviewInfo(viewerId: string | undefined) {
         if (!viewerId) {
@@ -72,7 +72,7 @@
                 </p>
                 <div class="tab-links-container">
                     {#each Object.entries(getTabLinks(template)) as [label, path]}
-                        <Link to="/test-creation/{testId}/{path}">
+                        <Link to="/testCreation/{testId}/{path}">
                             <div class="tab-link">
                                 {label}
                             </div>

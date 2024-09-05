@@ -11,7 +11,7 @@
 
     async function loadData() {
         const url =
-            "/api/test-creation/general/getGeneralDraftTestQuestionsData/" +
+            "/api/testCreation/general/getGeneralDraftTestQuestionsData/" +
             testId;
         const response = await fetch(url);
         if (response.ok) {

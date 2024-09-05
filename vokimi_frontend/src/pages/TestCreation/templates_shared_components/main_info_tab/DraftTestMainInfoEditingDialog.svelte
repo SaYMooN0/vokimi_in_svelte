@@ -36,7 +36,7 @@
             return;
         }
         const response = await fetch(
-            "/api/test-creation/updateDraftTestMainInfoData",
+            "/api/testCreation/updateDraftTestMainInfoData",
             {
                 method: "POST",
                 headers: {

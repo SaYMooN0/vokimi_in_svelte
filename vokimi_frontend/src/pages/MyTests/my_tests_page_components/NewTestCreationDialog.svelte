@@ -27,7 +27,7 @@
 
         if (response.status === 200) {
             const data = await response.json();
-            navigate("/test-creation/" + data.testId);
+            navigate("/testCreation/" + data.testId);
         } else if (response.status === 400) {
             const data = await response.json();
             errorMessage = data.error || "An unknown error occurred.";
