@@ -2,7 +2,7 @@
     import { ImgUtils } from "../../../ts/ImgUtils";
 
     export let text: string = "";
-    export let TextInputLabel: string = "Text:";
+    export let textInputLabel: string = "Text:";
     export let image: string | null = null;
     export let saveImageFunction: (image: string) => Promise<string | null>;
 
@@ -16,9 +16,9 @@
             imageUploadingErr = "Please choose an image first";
             return;
         }
-        saveImageFunction(image).then((res) => {
-            if (res !== null) {
-                imageUploadingErr = res;
+        saveImageFunction(image).then((imgSavingErr: string | null) => {
+            if (imgSavingErr !== null) {
+                imageUploadingErr = imgSavingErr;
                 return;
             }
         });
@@ -29,7 +29,7 @@
 <div class="inputs-conrainer {anyImageAdded() ? 'hor-div' : 'ver-div'}">
     <div class="text-input-part">
         <label class="text-input-label" for="text-input-textarea">
-            {TextInputLabel}
+            {textInputLabel}
         </label>
         <textarea class="text-input" id="text-input-textarea">{text}</textarea>
     </div>

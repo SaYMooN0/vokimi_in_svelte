@@ -1,7 +1,10 @@
 <script lang="ts">
+    import BasicToolTip from "../../../../../../components/shared/BasicToolTip.svelte";
+    import CustomCheckbox from "../../../../../../components/shared/CustomCheckbox.svelte";
+    import type { DraftGenralTestQuestionEditingData } from "../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/DraftGenralTestQuestionEditingData";
     import BaseDraftTestEditingDialog from "../../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import TextWithOptionalImageInput from "../../../../creation_shared_components/TextWithOptionalImageInput.svelte";
-
+    import DraftGeneralTestQuestionEditingMultipleChoiceZone from "../dialog_components/editing_dialog_zone_components/DraftGeneralTestQuestionEditingMultipleChoiceZone.svelte";
     export let updateParentElementData: () => void;
     let fetchingDataErr: string = "";
     export async function open(questionIdVal: string) {
@@ -24,7 +27,7 @@
     }
 
     let questionId: string;
-    let questionText: string = "";
+    let questionData: DraftGenralTestQuestionEditingData;
     //multiple answers info
 
     let dialogElement: BaseDraftTestEditingDialog;
@@ -67,8 +70,31 @@
     bind:this={dialogElement}
 >
     {#if fetchingDataErr === ""}
-        <TextWithOptionalImageInput />
-        <p>Editing of the {questionId} question</p>
+        <TextWithOptionalImageInput
+            text={questionData.text}
+            image={questionData.imagePath}
+            textInputLabel="Question Text"
+            saveImageFunction={async () => {
+                return "Not implemented";
+            }}
+        />
+        <div class="shuffle-answers-input-line">
+            Shuffle Answers:
+            <BasicToolTip text={"Shuffle Answers"} />
+            <CustomCheckbox checked={questionData.shuffleAnswers} />
+        </div>
+
+        <DraftGeneralTestQuestionEditingMultipleChoiceZone
+            isMultiple={questionData.isMultiple}
+            minAnswersCount={questionData.minAnswersCount}
+            maxAnswersCount={questionData.maxAnswersCount}
+        />
+
+        <!-- <AnswersZone
+            Answers="@formData.Answers"
+            AnswersType="@formData.AnswersType"
+            QuestionId="@QuestionId"
+        /> -->
     {:else}
         <p>{fetchingDataErr}</p>
     {/if}
