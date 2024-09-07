@@ -5,6 +5,7 @@
     import DraftGeneralTestQuestionEditingDialog from "./dialog_components/DraftGeneralTestQuestionEditingDialog.svelte";
     import DraftGeneralTestQuestionCreationDialog from "./dialog_components/DraftGeneralTestQuestionCreationDialog.svelte";
     import DraftGeneralTestQuestionViewElement from "./DraftGeneralTestQuestionViewElement.svelte";
+    import DraftGeneralTestQuestionDeletingConfirmation from "./dialog_components/DraftGeneralTestQuestionDeletingConfirmation.svelte";
 
     export let questionsData: GeneralTestCreationQuestionsTabData;
     export let testId: string;
@@ -26,9 +27,13 @@
     function openQuestionEditingDialog(id: string) {
         questionEditingDialog.open(id);
     }
+    function openQuestionDeletingDialog(id: string) {
+        questionDeletingDialog.open(id);
+    }
 
     let questionEditingDialog: DraftGeneralTestQuestionEditingDialog;
     let questionCreationDialog: DraftGeneralTestQuestionCreationDialog;
+    let questionDeletingDialog: DraftGeneralTestQuestionDeletingConfirmation;
     let errorMessage: string = "";
 </script>
 
@@ -51,6 +56,10 @@
             bind:this={questionEditingDialog}
             updateParentElementData={loadData}
         />
+        <DraftGeneralTestQuestionDeletingConfirmation
+            bind:this={questionDeletingDialog}
+            updateParentElementData={loadData}
+        />
         <TabHeaderWithButton
             tabName="Test Questions({questionsData.questions.length})"
             buttonText="Add Question"
@@ -61,6 +70,7 @@
                 <DraftGeneralTestQuestionViewElement
                     {question}
                     {openQuestionEditingDialog}
+                    {openQuestionDeletingDialog}
                 />
             {/each}
         </div>

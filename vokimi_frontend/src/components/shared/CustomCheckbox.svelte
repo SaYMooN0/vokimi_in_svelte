@@ -1,9 +1,9 @@
 <script lang="ts">
-    export let checked: boolean = false;
+    export let isChecked: boolean = false;
 </script>
 
 <div class="custom-checkbox">
-    <input type="checkbox" bind:checked />
+    <input type="checkbox" bind:checked={isChecked} />
     <span class="checkmark" />
 </div>
 

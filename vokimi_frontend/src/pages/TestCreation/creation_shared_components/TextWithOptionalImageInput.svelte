@@ -111,4 +111,28 @@
         max-height: 480px;
         height: 480px;
     }
+    .add-img-btn {
+        margin-top: 12px;
+        align-self: end;
+        width: fit-content;
+        padding: 8px 12px;
+        border-radius: 7px;
+        background-color: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        color: var(--back-main);
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .add-img-btn svg {
+        color: inherit;
+        height: 32px;
+    }
+
+    .add-img-btn:hover {
+        background-color: var(--primary-hov);
+    }
 </style>

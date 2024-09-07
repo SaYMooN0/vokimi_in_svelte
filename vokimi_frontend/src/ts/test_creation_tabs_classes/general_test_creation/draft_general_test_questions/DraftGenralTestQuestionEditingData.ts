@@ -1,7 +1,7 @@
 import type { GeneralTestAnswerType } from "../../../enums/GeneralTestAnswerType";
 import type { IDraftGeneralTestAnswerFormData } from "./answers/IDraftGeneralTestAnswerFormData";
 
-export class DraftGenralTestQuestionEditingData {
+export class DraftGeneralTestQuestionEditingData {
     id: string;
     text: string;
     imagePath: string | null;
@@ -18,7 +18,6 @@ export class DraftGenralTestQuestionEditingData {
         imagePath: string | null,
         shuffleAnswers: boolean,
         answersType: GeneralTestAnswerType,
-        orderInTest: number,
         minAnswersCount: number,
         maxAnswersCount: number,
         answers: IDraftGeneralTestAnswerFormData[]

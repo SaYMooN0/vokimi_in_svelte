@@ -20,14 +20,18 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 return Results.BadRequest();
             }
             draftTestId = new(new(testId));
+            try {
 
-            using (var db = dbFactory.CreateDbContext()) {
-                var questions = db.DraftGeneralTestQuestions
-                        .Include(q => q.Answers)
-                        .Where(q => q.TestId == draftTestId)
-                        .ToArray();
+                using (var db = dbFactory.CreateDbContext()) {
+                    var questions = db.DraftGeneralTestQuestions
+                            .Include(q => q.Answers)
+                            .Where(q => q.TestId == draftTestId)
+                            .ToArray();
 
-                return Results.Ok(questions.Select(DraftGeneralTestQuestionBriefInfo.FromDraftTestQuestion));
+                    return Results.Ok(questions.Select(DraftGeneralTestQuestionBriefInfo.FromDraftTestQuestion));
+                }
+            } catch {
+                return Results.BadRequest();
             }
         }
         public static IResult CreateGeneralTestQuestion(IDbContextFactory<AppDbContext> dbFactory,
@@ -57,8 +61,32 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             }
         }
         public static IResult GetDraftGeneralTestQuestionDataToEdit(IDbContextFactory<AppDbContext> dbFactory,
-                                                                    string testId) {
-            return Results.BadRequest(new { Error = "Not implemented" });
+                                                                    string questionId) {
+            if (string.IsNullOrEmpty(questionId)) { return Results.BadRequest(); }
+
+            DraftGeneralTestQuestionId draftTestQuestionId;
+            if (!Guid.TryParse(questionId, out _)) {
+                return Results.BadRequest();
+            }
+            draftTestQuestionId = new(new(questionId));
+
+            try {
+                using (var db = dbFactory.CreateDbContext()) {
+                    DraftGeneralTestQuestion? question = db.DraftGeneralTestQuestions
+                        .Include(q => q.Answers)
+                        .FirstOrDefault(q => q.Id == draftTestQuestionId);
+                    if (question is null) {
+                        return Results.BadRequest("Question not found");
+                    }
+                    return Results.Ok(DraftGeneralTestQuestionDataToEdit.FromDraftTestQuestion(question));
+                }
+            } catch {
+                return Results.BadRequest();
+            }
+
+        }
+        public static IResult UpdateDraftGeneralTestQuestionData(IDbContextFactory<AppDbContext> dbFactory) {
+            return Results.BadRequest();
         }
     }
 }

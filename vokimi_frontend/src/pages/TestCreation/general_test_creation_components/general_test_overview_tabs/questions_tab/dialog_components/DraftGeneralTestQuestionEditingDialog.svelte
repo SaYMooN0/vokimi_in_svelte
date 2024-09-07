@@ -1,7 +1,11 @@
 <script lang="ts">
     import BasicToolTip from "../../../../../../components/shared/BasicToolTip.svelte";
     import CustomCheckbox from "../../../../../../components/shared/CustomCheckbox.svelte";
-    import type { DraftGenralTestQuestionEditingData } from "../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/DraftGenralTestQuestionEditingData";
+    import {
+        GeneralTestAnswerType,
+        GeneralTestAnswerTypeUtils,
+    } from "../../../../../../ts/enums/GeneralTestAnswerType";
+    import { DraftGeneralTestQuestionEditingData } from "../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/DraftGenralTestQuestionEditingData";
     import BaseDraftTestEditingDialog from "../../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import TextWithOptionalImageInput from "../../../../creation_shared_components/TextWithOptionalImageInput.svelte";
     import DraftGeneralTestQuestionEditingMultipleChoiceZone from "../dialog_components/editing_dialog_zone_components/DraftGeneralTestQuestionEditingMultipleChoiceZone.svelte";
@@ -16,7 +20,22 @@
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
+            const answersType: GeneralTestAnswerType | null =
+                GeneralTestAnswerTypeUtils.fromId(data.answersType);
+            if (answersType === null) {
+                fetchingDataErr = "Unknown error";
+                return;
+            }
+            questionData = new DraftGeneralTestQuestionEditingData(
+                data.id,
+                data.text,
+                data.imagePath,
+                data.shuffleAnswers,
+                answersType,
+                data.minAnswersCount,
+                data.maxAnswersCount,
+                data.answers,
+            );
         } else if (response.status === 400) {
             const data = await response.json();
             fetchingDataErr = data.error;
@@ -27,8 +46,7 @@
     }
 
     let questionId: string;
-    let questionData: DraftGenralTestQuestionEditingData;
-    //multiple answers info
+    let questionData: DraftGeneralTestQuestionEditingData;
 
     let dialogElement: BaseDraftTestEditingDialog;
 
