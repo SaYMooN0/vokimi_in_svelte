@@ -73,7 +73,8 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             try {
                 using (var db = dbFactory.CreateDbContext()) {
                     DraftGeneralTestQuestion? question = db.DraftGeneralTestQuestions
-                        .Include(q => q.Answers)
+                        .Include(q => q.Answers) 
+                        .ThenInclude(a=>a.RelatedResults)
                         .FirstOrDefault(q => q.Id == draftTestQuestionId);
                     if (question is null) {
                         return Results.BadRequest("Question not found");

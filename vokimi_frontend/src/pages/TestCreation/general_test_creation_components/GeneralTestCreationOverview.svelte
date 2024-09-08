@@ -5,6 +5,9 @@
     import GeneralTestResultsView from "./general_test_overview_tabs/results_tab/GeneralTestResultsView.svelte";
     import { TestCreationMainInfoTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
     import { GeneralTestCreationQuestionsTabData } from "../../../ts/test_creation_tabs_classes/general_test_creation/GeneralTestCreationQuestionsTabData";
+    import type { TestCreationConclusionTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
+    import type { TestCreationStylesTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
+    import type { TestCreationTagsTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
     export let basepath: string;
     export let testId: string;
 
@@ -12,19 +15,28 @@
         TestCreationMainInfoTabData.empty();
     let questionsTabData: GeneralTestCreationQuestionsTabData =
         GeneralTestCreationQuestionsTabData.empty();
+    let conclusionTabData: TestCreationConclusionTabData;
+    let stylesTabData: TestCreationStylesTabData;
+    let tagsTabData: TestCreationTagsTabData;
 </script>
 
 <Router {basepath}>
     <SharedTestCreationRoutes
         {testId}
-        mainInfoPath="main-info-view"
-        mainInfoData={mainInfoTabData}
-        viewConclusionPath="view-conclusion"
-        viewStylesPath="view-styles"
-        viewTagsPath="view-tags"
+        mainInfoTabPath="main-info-view"
+        bind:mainInfoTabData
+        conclusionTabPath="view-conclusion"
+        bind:conclusionTabData
+        stylesTabPath="view-styles"
+        bind:stylesTabData
+        tagsTabPath="view-tags"
+        bind:tagsTabData
     />
     <Route path="view-questions">
-        <GeneralTestQuestionsView {testId} questionsData={questionsTabData} />
+        <GeneralTestQuestionsView
+            {testId}
+            bind:questionsData={questionsTabData}
+        />
     </Route>
     <Route path="view-results" component={GeneralTestResultsView} />
     <Route>

@@ -18,7 +18,7 @@
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
-            mainInfoData.update(
+            mainInfoData = new TestCreationMainInfoTabData(
                 TestTemplateUtils.fromId(data.template),
                 data.name,
                 LanguageUtils.fromId(data.language),
@@ -26,7 +26,6 @@
                 data.description,
                 data.imgPath,
             );
-            mainInfoData = mainInfoData;
         } else {
             mainInfoData = TestCreationMainInfoTabData.empty();
         }

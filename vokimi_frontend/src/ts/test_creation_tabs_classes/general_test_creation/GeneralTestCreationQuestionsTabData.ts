@@ -7,9 +7,6 @@ export class GeneralTestCreationQuestionsTabData {
     ) {
         this.questions = questions;
     }
-    update(newQuestions: DraftGeneralTestQuestionBriefInfo[]): void {
-        this.questions.splice(0, this.questions.length, ...newQuestions);
-    }
     static empty(): GeneralTestCreationQuestionsTabData {
         return new GeneralTestCreationQuestionsTabData([]);
     }

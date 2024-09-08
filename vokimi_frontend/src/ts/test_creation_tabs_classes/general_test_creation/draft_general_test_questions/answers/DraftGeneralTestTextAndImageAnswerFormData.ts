@@ -1,6 +1,6 @@
 import type { IDraftGeneralTestAnswerFormData } from "./IDraftGeneralTestAnswerFormData";
 
-class DraftGeneralTestTextAndImageAnswerFormData implements IDraftGeneralTestAnswerFormData {
+export class DraftGeneralTestTextAndImageAnswerFormData implements IDraftGeneralTestAnswerFormData {
     imagePath: string;
     text: string;
     relatedResults: { [key: string]: string };

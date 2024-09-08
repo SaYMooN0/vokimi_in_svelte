@@ -9,6 +9,7 @@
     import BaseDraftTestEditingDialog from "../../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import TextWithOptionalImageInput from "../../../../creation_shared_components/TextWithOptionalImageInput.svelte";
     import DraftGeneralTestQuestionEditingMultipleChoiceZone from "../dialog_components/editing_dialog_zone_components/DraftGeneralTestQuestionEditingMultipleChoiceZone.svelte";
+    import DraftGeneralTestQuestionEditingAnswersZone from "./editing_dialog_zone_components/DraftGeneralTestQuestionEditingAnswersZone.svelte";
     export let updateParentElementData: () => void;
     let fetchingDataErr: string = "";
     export async function open(questionIdVal: string) {
@@ -99,7 +100,7 @@
         <div class="shuffle-answers-input-line">
             Shuffle Answers:
             <BasicToolTip text={"Shuffle Answers"} />
-            <CustomCheckbox checked={questionData.shuffleAnswers} />
+            <CustomCheckbox isChecked={questionData.shuffleAnswers} />
         </div>
 
         <DraftGeneralTestQuestionEditingMultipleChoiceZone
@@ -107,12 +108,10 @@
             minAnswersCount={questionData.minAnswersCount}
             maxAnswersCount={questionData.maxAnswersCount}
         />
-
-        <!-- <AnswersZone
-            Answers="@formData.Answers"
-            AnswersType="@formData.AnswersType"
-            QuestionId="@QuestionId"
-        /> -->
+        <DraftGeneralTestQuestionEditingAnswersZone
+            answersType={questionData.answersType}
+            answers={questionData.answers}
+        />
     {:else}
         <p>{fetchingDataErr}</p>
     {/if}

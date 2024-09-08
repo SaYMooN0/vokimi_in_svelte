@@ -5,28 +5,34 @@
     import DraftTestTagsView from "./tags_tab/DraftTestTagsView.svelte";
     import { Route } from "svelte-routing";
     import type { TestCreationMainInfoTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
+    import type { TestCreationConclusionTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
+    import type { TestCreationStylesTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
+    import type { TestCreationTagsTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
 
     export let testId: string;
 
-    export let mainInfoPath: string;
-    export let mainInfoData: TestCreationMainInfoTabData;
+    export let mainInfoTabPath: string;
+    export let mainInfoTabData: TestCreationMainInfoTabData;
 
-    export let viewConclusionPath: string;
+    export let conclusionTabPath: string;
+    export let conclusionTabData: TestCreationConclusionTabData;
 
-    export let viewStylesPath: string;
+    export let stylesTabPath: string;
+    export let stylesTabData: TestCreationStylesTabData;
 
-    export let viewTagsPath: string;
+    export let tagsTabPath: string;
+    export let tagsTabData: TestCreationTagsTabData;
 </script>
 
-<Route path={mainInfoPath}>
-    <DraftTestMainInfoView {mainInfoData} {testId} />
+<Route path={mainInfoTabPath}>
+    <DraftTestMainInfoView bind:mainInfoData={mainInfoTabData} {testId} />
 </Route>
-<Route path={viewConclusionPath}>
-    <DraftTestConclusionView />
+<Route path={conclusionTabPath}>
+    <DraftTestConclusionView bind:conclusionData={conclusionTabData} {testId} />
 </Route>
-<Route path={viewStylesPath}>
-    <DraftTestStylesView />
+<Route path={stylesTabPath}>
+    <DraftTestStylesView bind:stylesData={stylesTabData} {testId} />
 </Route>
-<Route path={viewTagsPath}>
-    <DraftTestTagsView />
+<Route path={tagsTabPath}>
+    <DraftTestTagsView bind:tagsData={tagsTabData} {testId} />
 </Route>

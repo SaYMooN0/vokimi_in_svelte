@@ -17,8 +17,7 @@
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
-            questionsData.update(data);
-            questionsData = questionsData;
+            questionsData = new GeneralTestCreationQuestionsTabData(data);
         } else {
             questionsData = GeneralTestCreationQuestionsTabData.empty();
         }

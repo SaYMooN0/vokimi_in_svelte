@@ -4,18 +4,19 @@
     export let isMultiple: boolean;
     export let minAnswersCount: number;
     export let maxAnswersCount: number;
-
-    function showMultipleChoiceCssClass(): string {
-        return "";
-    }
 </script>
 
-<div class="multi-choince-input-line">
+<div class="multi-choice-input-line">
     <div class="input-label is-multiple-input-label">
         Is multiple choice:
-        <CustomCheckbox isChecked={isMultiple} />
+        <CustomCheckbox bind:isChecked={isMultiple} />
     </div>
-    <div class="multiple-choice-only-form-block {isMultiple ? 'show' : 'hide'}">
+
+    <div
+        class="multiple-choice-only-form-block"
+        class:show={isMultiple}
+        class:hide={!isMultiple}
+    >
         <label for="min-answers-count" class="input-label">
             Minimum answers count:
             <input
@@ -47,9 +48,21 @@
     }
     .show {
         animation: slideIn 0.5s forwards;
+        display: flex;
     }
 
     .hide {
         display: none !important;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>

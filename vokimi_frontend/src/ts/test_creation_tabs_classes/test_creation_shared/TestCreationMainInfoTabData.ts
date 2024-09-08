@@ -3,12 +3,12 @@ import { Language } from "../../enums/Language";
 import { TestTemplate } from "../../enums/TestTemplate";
 
 export class TestCreationMainInfoTabData {
-    private _template: TestTemplate;
-    private _name: string;
-    private _description: string;
-    private _language: Language;
-    private _privacy: TestPrivacy;
-    private _imgPath: string;
+    public readonly template: TestTemplate;
+    public readonly name: string;
+    public readonly description: string;
+    public readonly language: Language;
+    public readonly privacy: TestPrivacy;
+    public readonly imgPath: string;
 
     constructor(
         template: TestTemplate,
@@ -18,28 +18,16 @@ export class TestCreationMainInfoTabData {
         description: string,
         imgPath: string
     ) {
-        this._template = template;
-        this._name = name;
-        this._language = language;
-        this._privacy = privacy;
-        this._description = description;
-        this._imgPath = imgPath;
+        this.template = template;
+        this.name = name;
+        this.language = language;
+        this.privacy = privacy;
+        this.description = description;
+        this.imgPath = imgPath;
     }
 
-    get template(): TestTemplate { return this._template; }
-
-    get name(): string { return this._name; }
-
-    get description(): string { return this._description; }
-
-    get language(): Language { return this._language; }
-
-    get privacy(): TestPrivacy { return this._privacy; }
-
-    get imgPath(): string { return this._imgPath; }
-
     isEmpty(): boolean {
-        return this._name === "" && this._imgPath === "";
+        return this.name === "" && this.imgPath === "";
     }
 
     static empty(): TestCreationMainInfoTabData {
@@ -51,21 +39,5 @@ export class TestCreationMainInfoTabData {
             "",
             ""
         );
-    }
-
-    update(
-        template: TestTemplate,
-        name: string,
-        language: Language,
-        privacy: TestPrivacy,
-        description: string,
-        imgPath: string
-    ): void {
-        this._template = template;
-        this._name = name;
-        this._language = language;
-        this._privacy = privacy;
-        this._description = description;
-        this._imgPath = imgPath;
     }
 }
