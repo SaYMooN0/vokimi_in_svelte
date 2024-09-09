@@ -89,33 +89,42 @@
     bind:this={dialogElement}
 >
     {#if fetchingDataErr === ""}
-        <TextWithOptionalImageInput
-            text={questionData.text}
-            image={questionData.imagePath}
-            textInputLabel="Question Text"
-            saveImageFunction={async () => {
-                return "Not implemented";
-            }}
-        />
-        <div class="shuffle-answers-input-line">
-            Shuffle Answers:
-            <BasicToolTip text={"Shuffle Answers"} />
-            <CustomCheckbox isChecked={questionData.shuffleAnswers} />
-        </div>
+        <div class="dialog-content">
+            <TextWithOptionalImageInput
+                text={questionData.text}
+                image={questionData.imagePath}
+                textInputLabel="Question Text"
+                saveImageFunction={async () => {
+                    return "Not implemented";
+                }}
+            />
+            <div class="shuffle-answers-input-line">
+                Shuffle Answers:
+                <BasicToolTip text={"Shuffle Answers"} />
+                <CustomCheckbox isChecked={questionData.shuffleAnswers} />
+            </div>
 
-        <DraftGeneralTestQuestionEditingMultipleChoiceZone
-            isMultiple={questionData.isMultiple}
-            minAnswersCount={questionData.minAnswersCount}
-            maxAnswersCount={questionData.maxAnswersCount}
-        />
-        <DraftGeneralTestQuestionEditingAnswersZone
-            answersType={questionData.answersType}
-            answers={questionData.answers}
-        />
+            <DraftGeneralTestQuestionEditingMultipleChoiceZone
+                isMultiple={questionData.isMultiple}
+                minAnswersCount={questionData.minAnswersCount}
+                maxAnswersCount={questionData.maxAnswersCount}
+            />
+            <DraftGeneralTestQuestionEditingAnswersZone
+                answersType={questionData.answersType}
+                answers={questionData.answers}
+            />
+        </div>
     {:else}
         <p>{fetchingDataErr}</p>
     {/if}
 </BaseDraftTestEditingDialog>
 
 <style>
+    .dialog-content {
+        width: 1200px;
+        max-height: 76vh;
+        box-sizing: border-box;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 </style>
