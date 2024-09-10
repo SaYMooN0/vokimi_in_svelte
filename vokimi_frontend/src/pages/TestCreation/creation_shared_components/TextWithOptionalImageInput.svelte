@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { ImgUtils } from "../../../ts/ImgUtils";
+    import BasicTextAreaInput from "../../../components/shared/BasicTextAreaInput.svelte";
+    import { ImgUtils } from "../../../ts/utils/ImgUtils";
 
     export let text: string = "";
     export let textInputLabel: string = "Text:";
@@ -26,12 +27,12 @@
     function removeImage() {}
 </script>
 
-<div class="inputs-conrainer {anyImageAdded() ? 'hor-div' : 'ver-div'}">
+<div class:horizontal={anyImageAdded()} class:vertical={!anyImageAdded()}>
     <div class="text-input-part">
         <label class="text-input-label" for="text-input-textarea">
             {textInputLabel}
         </label>
-        <textarea class="text-input" id="text-input-textarea">{text}</textarea>
+        <BasicTextAreaInput bind:text id="text-input-textarea" />
     </div>
     <input type="file" id="img-input" accept=".jpg,.png,.webp" hidden />
     {#if anyImageAdded()}
@@ -84,13 +85,13 @@
 </div>
 
 <style>
-    .hor-div {
+    .horizontal {
         display: grid;
         grid-template-columns: 1fr auto;
         gap: 10px;
     }
 
-    .ver-div {
+    .vertical {
         display: flex;
         flex-direction: column;
     }
@@ -100,14 +101,20 @@
     }
 
     .text-input-label {
+        margin-top: 10px;
+        margin-bottom: 2px;
+        font-size: 24px;
+        color: var(--text);
     }
-    .text-input {
+
+    .text-input-part > :global(textarea) {
+        box-sizing: border-box;
         resize: vertical;
         width: 100%;
         min-height: 70px;
         max-height: 240px;
     }
-    .hor-div .text-input {
+    .horizontal .text-input-part > :global(textarea) {
         max-height: 480px;
         height: 480px;
     }

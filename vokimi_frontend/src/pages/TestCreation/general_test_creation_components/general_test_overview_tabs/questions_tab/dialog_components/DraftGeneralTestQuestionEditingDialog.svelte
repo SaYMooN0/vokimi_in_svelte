@@ -98,7 +98,7 @@
                     return "Not implemented";
                 }}
             />
-            <div class="shuffle-answers-input-line">
+            <div class="input-label">
                 Shuffle Answers:
                 <BasicToolTip text={"Shuffle Answers"} />
                 <CustomCheckbox isChecked={questionData.shuffleAnswers} />
@@ -126,5 +126,13 @@
         box-sizing: border-box;
         overflow-y: auto;
         overflow-x: hidden;
+    }
+    .dialog-content :global(.input-label) {
+        gap: 8px;
+        font-size: 22px;
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        align-items: center;
     }
 </style>

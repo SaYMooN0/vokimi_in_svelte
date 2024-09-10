@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { ImgUtils } from "../../../../ts/ImgUtils";
+    import { ImgUtils } from "../../../../ts/utils/ImgUtils";
 
     export let imgPath: string;
 </script>

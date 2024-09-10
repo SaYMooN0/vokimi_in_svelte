@@ -31,6 +31,7 @@
             }
         })();
         answers = [...answers, newAnswer];
+        showAnswers = true;
     }
 
     function removeAnswer(answer: IDraftGeneralTestAnswerFormData) {
@@ -43,7 +44,7 @@
 <ResultAssigningDialog bind:this={resultAssigningDialog} />
 <div class="answers-zone">
     <p class="answers-title">
-        Answers
+        Answers ({answers.length})
         <label
             class="answers-visibility-toggle"
             on:click={() => (showAnswers = !showAnswers)}
@@ -103,9 +104,19 @@
 </div>
 
 <style>
+    .answers-title {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        font-size: 24px;
+        color: var(--text);
+        font-weight: 500;
+    }
     .answers-visibility-toggle {
         position: absolute;
-        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 40px;
         cursor: pointer;
         color: var(--text-faded);
         font-size: 18px;
@@ -117,6 +128,7 @@
         color: var(--primary);
     }
     .answers-container {
+       
         width: 100%;
         box-sizing: border-box;
         display: flex;
