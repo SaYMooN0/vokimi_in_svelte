@@ -17,7 +17,7 @@ namespace vokimi_api.Services
         private readonly Err
                              fileUploadingErr = new Err("Failed to upload the file"),
                              serverErr = new Err("Server error. Please try again later");
-        private async Task<PutObjectResponse> PutObjectIntoStorage(string objKey, Stream fileStream) {
+        public async Task<PutObjectResponse> PutObjectIntoStorage(string objKey, Stream fileStream) {
             PutObjectRequest putRequest = new() {
                 BucketName = _bucketName,
                 Key = objKey,

@@ -12,6 +12,7 @@
 
     export let answers: IDraftGeneralTestAnswerFormData[];
     export let answersType: GeneralTestAnswerType;
+    export let questionId: string;
 
     function addAnswer() {
         const newAnswer: IDraftGeneralTestAnswerFormData = (() => {
@@ -67,6 +68,7 @@
                     />
                 {:else if answer instanceof DraftGeneralTestTextAndImageAnswerFormData}
                     <GeneralTestTextAndImageAnswerEditing
+                        {questionId}
                         bind:answerData={answer}
                     />
                 {:else if answer instanceof DraftGeneralTestImageOnlyAnswerFormData}
@@ -128,7 +130,6 @@
         color: var(--primary);
     }
     .answers-container {
-       
         width: 100%;
         box-sizing: border-box;
         display: flex;

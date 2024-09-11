@@ -70,7 +70,10 @@
                 />
             </div>
             <div class="right-div">
-                <MainInfoViewRightPart imgPath={mainInfoData.imgPath} />
+                <MainInfoViewRightPart
+                    draftTestId={testId}
+                    bind:imgPath={mainInfoData.imgPath}
+                />
             </div>
         </div>
     </div>

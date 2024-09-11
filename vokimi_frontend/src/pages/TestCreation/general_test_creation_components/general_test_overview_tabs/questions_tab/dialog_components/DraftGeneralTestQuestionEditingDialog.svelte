@@ -110,6 +110,7 @@
                 maxAnswersCount={questionData.maxAnswersCount}
             />
             <DraftGeneralTestQuestionEditingAnswersZone
+                {questionId}
                 answersType={questionData.answersType}
                 answers={questionData.answers}
             />

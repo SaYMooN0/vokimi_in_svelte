@@ -3,6 +3,7 @@
     import { ImgUtils } from "../../../../../../../../ts/utils/ImgUtils";
     import type { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
     import { StringUtils } from "../../../../../../../../ts/utils/StringUtils";
+    import { getErrorFromResponse } from "../../../../../../../../ts/ErrorResponse";
     export let answerData: DraftGeneralTestTextAndImageAnswerFormData;
     export let questionId: string;
     let id: string = StringUtils.randomString(8);
@@ -10,15 +11,22 @@
     async function uploadFile(file: File) {
         const formData = new FormData();
         formData.append("file", file);
-        const fileKey: string = `test_answers/${questionId}/${StringUtils.randomString(16)}`;
         try {
-            const response = await fetch(ImgUtils.saveImgApiUrl(fileKey), {
-                method: "POST",
-                body: formData,
-            });
+            const response = await fetch(
+                `/api/saveimg/saveDraftGeneralTestAnswerImage/${questionId}`,
+                {
+                    method: "POST",
+                    body: formData,
+                },
+            );
 
-            if (!response.ok) {
-                errorString = "Server error. Please try again later";
+            if (response.ok) {
+                const data = await response.json();
+                answerData.imagePath = data.imgPath;
+                errorString = "";
+            } else if (response.status === 400) {
+                errorString = await getErrorFromResponse(response);
+            } else {
             }
         } catch (error) {
             errorString = "Failed to upload the file";
@@ -29,8 +37,7 @@
         const input = event.target as HTMLInputElement;
 
         if (input.files && input.files.length > 0) {
-            let selectedFile: File = input.files[0];
-            uploadFile(selectedFile);
+            uploadFile(input.files[0]);
         }
     }
 </script>
@@ -62,6 +69,19 @@
 </div>
 
 <style>
+    .answer-main-content {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 8px;
+        box-sizing: border-box;
+        padding: 8px;
+    }
+    .answer-main-content > :global(textarea) {
+        min-height: 100%;
+        max-height: 400px;
+        resize: vertical;
+    }
     .image-input-container {
         display: flex;
         gap: 4px;
@@ -71,12 +91,13 @@
     }
     .image-input-container img {
         max-height: 420px;
+        border-radius: 4px;
         height: auto;
         width: 100%;
     }
     .change-img-btn {
-        margin-bottom: auto;
-        width: 100%;
+        align-self: center;
+        width: 92%;
         padding: 6px;
         box-sizing: border-box;
         background-color: var(--primary);
@@ -90,8 +111,8 @@
     }
 
     .change-img-btn:hover {
+        width: 100%;
         background-color: var(--primary-hov);
-        letter-spacing: 2px;
     }
 
     .change-img-btn:active {

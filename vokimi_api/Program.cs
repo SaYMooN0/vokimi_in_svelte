@@ -60,6 +60,7 @@ namespace vokimi_api
 
             app.MapControllers();
 
+            app.UseAntiforgery();
             MapEndpoints(app);
 
             app.MapFallbackToFile("/index.html");
@@ -88,22 +89,34 @@ namespace vokimi_api
 
                 });
 
-            app.MapGet("/testCreation/getDraftTestMainInfoData/{testId}", TestCreationSharedEndpoints.GetDraftTestMainInfoData);
-            app.MapPost("/testCreation/updateDraftTestMainInfoData", TestCreationSharedEndpoints.UpdateDraftTestMainInfo);
+            app.MapGet("/testCreation/getDraftTestMainInfoData/{testId}", 
+                TestCreationSharedEndpoints.GetDraftTestMainInfoData);
+            app.MapPost("/testCreation/updateDraftTestMainInfoData", 
+                TestCreationSharedEndpoints.UpdateDraftTestMainInfo);
+            app.MapPost("/testCreation/updateDraftTestQuestionCover/{testId}",
+                TestCreationSharedEndpoints.UpdateDraftTestQuestionCover).DisableAntiforgery();
 
-            app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}", GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
-            app.MapPost("/testCreation/general/createGeneralTestQuestion", GeneralTestCreationEndpoints.CreateGeneralTestQuestion);
-            app.MapGet("/testCreation/general/getDraftGeneralTestQuestionDataToEdit/{questionId}", GeneralTestCreationEndpoints.GetDraftGeneralTestQuestionDataToEdit);
-            app.MapPost("/testCreation/general/updateDraftGeneralTestQuestionData", GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestionData);
+            app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}",
+                GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
+            app.MapPost("/testCreation/general/createGeneralTestQuestion",
+                GeneralTestCreationEndpoints.CreateGeneralTestQuestion);
+            app.MapGet("/testCreation/general/getDraftGeneralTestQuestionDataToEdit/{questionId}",
+                GeneralTestCreationEndpoints.GetDraftGeneralTestQuestionDataToEdit);
+            app.MapPost("/testCreation/general/updateDraftGeneralTestQuestionData",
+                GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestionData);
+       
+
             app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
+
+            app.MapPost("/saveimg/saveDraftGeneralTestAnswerImage/{questionId}",
+                ImgOperationsEndpoints.SaveDraftGeneralTestAnswerImage).DisableAntiforgery();
         }
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
+
+            
             ConfigureDbContextFactory(services, configuration);
             ConfigureS3(services, configuration);
             ConfigureEmailService(services, configuration);
-
-
-
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => {
@@ -114,6 +127,7 @@ namespace vokimi_api
 
 
             services.AddControllers();
+            services.AddAntiforgery();
 
             // configuring Swagger/OpenAPI 
             services.AddEndpointsApiExplorer();

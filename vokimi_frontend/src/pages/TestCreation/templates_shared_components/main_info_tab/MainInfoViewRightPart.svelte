@@ -1,15 +1,61 @@
 <script lang="ts">
+    import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
 
     export let imgPath: string;
+    export let draftTestId: string;
+    let errorString: string = "";
+    async function uploadFile(file: File) {
+        const formData = new FormData();
+        formData.append("file", file);
+        try {
+            const response = await fetch(
+                `/api/testCreation/updateDraftTestQuestionCover/${draftTestId}`,
+                {
+                    method: "POST",
+                    body: formData,
+                },
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                imgPath = data.imgPath;
+                errorString = "";
+            } else if (response.status === 400) {
+                errorString = await getErrorFromResponse(response);
+            } else {
+            }
+        } catch (error) {
+            errorString = "Failed to upload the file";
+        }
+    }
+
+    function handleImageInputChange(event: Event) {
+        const input = event.target as HTMLInputElement;
+
+        if (input.files && input.files.length > 0) {
+            uploadFile(input.files[0]);
+        }
+    }
 </script>
 
 <div class="img-container">
     <img src={ImgUtils.imgUrlWithVersion(imgPath)} alt="test cover" />
-    <button class="img-operations-btn change-img-btn">Change Test Cover</button>
-    <button class="img-operations-btn remove-img-btn"
-        >Set Cover To Default</button
-    >
+    <label for="test-cover-input" class="img-operations-btn change-img-btn">
+        Change Test Cover
+    </label>
+    <input
+        type="file"
+        id="test-cover-input"
+        accept=".jpg,.png,.webp"
+        hidden
+        on:change={handleImageInputChange}
+    />
+    <button class="img-operations-btn remove-img-btn">
+        Set Cover To Default
+    </button>
+
+    <label class="error-string">{errorString}</label>
 </div>
 
 <style>

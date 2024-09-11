@@ -13,8 +13,7 @@ namespace vokimi_api.Src.constants_store_classes
         //    ResultMaxTextLength = 500,
         //    ResultNameMinCharacters = 10,
         //    ResultNameMaxCharacters = 60;
-        //public const int MaxImageSizeInBytes = 3145728;
-        //public static int MaxImageSizeInMB => MaxImageSizeInBytes / 1048576;
+    
 
         //public const int
         //    ConclusionMaxCharsInText = 255,

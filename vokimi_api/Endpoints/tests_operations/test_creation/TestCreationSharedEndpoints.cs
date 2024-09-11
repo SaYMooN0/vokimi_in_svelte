@@ -2,7 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Security.Claims;
+using vokimi_api.Helpers;
+using vokimi_api.Services;
 using vokimi_api.Src;
+using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
@@ -94,16 +97,15 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             IDbContextFactory<AppDbContext> dbFactory,
             [FromBody] DraftTestMainInfoUpdateRequest request) {
 
-            var returnErr = (string err) => Results.BadRequest(new { Error = err });
 
 
             Err validationErr = request.CheckForErr();
             if (validationErr.NotNone()) {
-                return returnErr(validationErr.Message);
+                return ResultsHelper.BadRequestWithErr(validationErr.Message);
             }
             ParsedDraftTestMainInfoUpdateRequest? newData = request.ParseToObjWithTypes();
             if (newData is null) {
-                return returnErr("Error occurred during saving. Please try again");
+                return ResultsHelper.BadRequestWithErr("Error occurred during saving. Please try again");
             }
             try {
                 using (var db = dbFactory.CreateDbContext()) {
@@ -111,14 +113,53 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                         .Include(t => t.MainInfo)
                         .FirstOrDefault(t => t.Id == newData.TestId);
                     if (test is null) {
-                        return returnErr("Test not found");
+                        return ResultsHelper.BadRequestWithErr("Test not found");
                     }
                     test.MainInfo.Update(newData.Name, newData.Description, newData.Language, newData.Privacy);
                     db.SaveChanges();
                     return Results.Ok();
                 }
             } catch {
-                return returnErr("Server error. Please try again later");
+                return ResultsHelper.BadRequestWithErr("Server error. Please try again later");
+            }
+        }
+
+        public static async Task<IResult> UpdateDraftTestQuestionCover(string testId,
+                                                           IFormFile file,
+                                                           IDbContextFactory<AppDbContext> dbFactory,
+                                                           VokimiStorageService vokimiStorage) {
+            DraftTestId id;
+            if (Guid.TryParse(testId, out Guid testGuid)) {
+                id = new(testGuid);
+            } else {
+                return ResultsHelper.BadRequestWithErr("Unable to update cover. Please refresh the page.");
+            }
+            using (var db = dbFactory.CreateDbContext()) {
+                BaseDraftTest? test = db.DraftTestsSharedInfo
+                    .Include(t => t.MainInfo)
+                    .FirstOrDefault(t => t.Id == id);
+
+                if (test is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown test");
+                }
+                string extension = ImgOperationsHelper.ExtractFileExtension(file);
+                string key = $"{ImgOperationsConsts.DraftTestCoversFolder}/{testId}.{extension}";
+
+                using (var transaction = await db.Database.BeginTransactionAsync()) {
+                    try {
+                        string? savedKey = await ImgOperationsHelper.SaveImgToStorage(key, file, vokimiStorage);
+                        if (savedKey is null) {
+                            throw new Exception();
+                        }
+                        test.MainInfo.UpdateCoverImage(savedKey);
+                        db.SaveChanges();
+                        await transaction.CommitAsync();
+                        return ResultsHelper.OkResultWithImgPath(key);
+                    } catch {
+                        await transaction.RollbackAsync();
+                        return ResultsHelper.BadRequestWithErr("Server error. Please try again later");
+                    }
+                }
             }
         }
     }

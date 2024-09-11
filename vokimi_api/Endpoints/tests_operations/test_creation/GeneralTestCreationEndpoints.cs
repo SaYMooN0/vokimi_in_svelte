@@ -10,7 +10,6 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
 {
     public static class GeneralTestCreationEndpoints
     {
-
         public static IResult GetGeneralDraftTestQuestionsData(IDbContextFactory<AppDbContext> dbFactory,
                                                                string testId) {
             if (string.IsNullOrEmpty(testId)) { return Results.BadRequest(); }
