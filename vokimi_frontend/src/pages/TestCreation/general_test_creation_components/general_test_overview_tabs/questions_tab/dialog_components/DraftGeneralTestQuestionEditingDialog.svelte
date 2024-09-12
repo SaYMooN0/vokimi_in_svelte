@@ -10,8 +10,9 @@
     import TextWithOptionalImageInput from "../../../../creation_shared_components/TextWithOptionalImageInput.svelte";
     import DraftGeneralTestQuestionEditingMultipleChoiceZone from "../dialog_components/editing_dialog_zone_components/DraftGeneralTestQuestionEditingMultipleChoiceZone.svelte";
     import DraftGeneralTestQuestionEditingAnswersZone from "./editing_dialog_zone_components/DraftGeneralTestQuestionEditingAnswersZone.svelte";
-    export let updateParentElementData: () => void;
     let fetchingDataErr: string = "";
+    export let updateParentElementData: () => void;
+    export let testId: string;
     export async function open(questionIdVal: string) {
         fetchingDataErr = "";
         questionId = questionIdVal;
@@ -110,6 +111,7 @@
                 maxAnswersCount={questionData.maxAnswersCount}
             />
             <DraftGeneralTestQuestionEditingAnswersZone
+                {testId}
                 {questionId}
                 answersType={questionData.answersType}
                 answers={questionData.answers}

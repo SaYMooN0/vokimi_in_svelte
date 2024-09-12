@@ -89,12 +89,12 @@ namespace vokimi_api
 
                 });
 
-            app.MapGet("/testCreation/getDraftTestMainInfoData/{testId}", 
+            app.MapGet("/testCreation/getDraftTestMainInfoData/{testId}",
                 TestCreationSharedEndpoints.GetDraftTestMainInfoData);
-            app.MapPost("/testCreation/updateDraftTestMainInfoData", 
+            app.MapPost("/testCreation/updateDraftTestMainInfoData",
                 TestCreationSharedEndpoints.UpdateDraftTestMainInfo);
-            app.MapPost("/testCreation/updateDraftTestQuestionCover/{testId}",
-                TestCreationSharedEndpoints.UpdateDraftTestQuestionCover).DisableAntiforgery();
+            app.MapPost("/testCreation/setDraftTestCoverToDefault/{testId}",
+                TestCreationSharedEndpoints.SetDraftTestCoverToDefault);
 
             app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}",
                 GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
@@ -104,16 +104,19 @@ namespace vokimi_api
                 GeneralTestCreationEndpoints.GetDraftGeneralTestQuestionDataToEdit);
             app.MapPost("/testCreation/general/updateDraftGeneralTestQuestionData",
                 GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestionData);
-       
+            app.MapGet("/testCreation/general/getResultsIdNameDictionary/{testId}",
+                GeneralTestCreationEndpoints.GetResultsIdNameDictionary);
+
 
             app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
-
+            app.MapPost("/testCreation/updateDraftTestQuestionCover/{testId}",
+                ImgOperationsEndpoints.UpdateDraftTestQuestionCover).DisableAntiforgery();
             app.MapPost("/saveimg/saveDraftGeneralTestAnswerImage/{questionId}",
                 ImgOperationsEndpoints.SaveDraftGeneralTestAnswerImage).DisableAntiforgery();
         }
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
 
-            
+
             ConfigureDbContextFactory(services, configuration);
             ConfigureS3(services, configuration);
             ConfigureEmailService(services, configuration);

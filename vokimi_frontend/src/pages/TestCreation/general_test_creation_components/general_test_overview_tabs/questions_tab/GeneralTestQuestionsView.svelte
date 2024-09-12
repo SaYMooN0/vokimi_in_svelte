@@ -52,6 +52,7 @@
     </div>
     <div slot="content">
         <DraftGeneralTestQuestionEditingDialog
+            {testId}
             bind:this={questionEditingDialog}
             updateParentElementData={loadData}
         />

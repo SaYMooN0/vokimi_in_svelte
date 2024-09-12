@@ -1,6 +1,8 @@
 <script lang="ts">
     export let relatedResults: { [key: string]: string };
-    export let openResultAssigningDialog: () => void;
+    export let openResultAssigningDialog: (chosenResults: {
+        [key: string]: string;
+    }) => void;
 
     function removeResult(key: string) {
         const { [key]: omitted, ...rest } = relatedResults;
@@ -31,7 +33,10 @@
         </div>
     {/each}
     {#if Object.keys(relatedResults).length < 5}
-        <div class="add-new-result-btn" on:click={openResultAssigningDialog}>
+        <div
+            class="add-new-result-btn"
+            on:click={() => openResultAssigningDialog(relatedResults)}
+        >
             <svg
                 viewBox="0 0 448 512"
                 xmlns="http://www.w3.org/2000/svg"

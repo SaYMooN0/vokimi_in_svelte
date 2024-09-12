@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using vokimi_api.Helpers;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities_ids;
@@ -72,8 +73,8 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             try {
                 using (var db = dbFactory.CreateDbContext()) {
                     DraftGeneralTestQuestion? question = db.DraftGeneralTestQuestions
-                        .Include(q => q.Answers) 
-                        .ThenInclude(a=>a.RelatedResults)
+                        .Include(q => q.Answers)
+                        .ThenInclude(a => a.RelatedResults)
                         .FirstOrDefault(q => q.Id == draftTestQuestionId);
                     if (question is null) {
                         return Results.BadRequest("Question not found");
@@ -88,5 +89,19 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
         public static IResult UpdateDraftGeneralTestQuestionData(IDbContextFactory<AppDbContext> dbFactory) {
             return Results.BadRequest();
         }
+        public static IResult GetResultsIdNameDictionary(string testId, IDbContextFactory<AppDbContext> dbFactory) {
+            DraftTestId draftTestId;
+            if (!Guid.TryParse(testId, out _)) {
+                return ResultsHelper.BadRequestUnknownTest();
+            }
+            draftTestId = new(new(testId));
+            using (var db = dbFactory.CreateDbContext()) {
+                DraftGeneralTestResult[] results = db.DraftGeneralTestResults
+                    .Where(r => r.TestId == draftTestId)
+                    .ToArray();
+                return Results.Ok(results);
+            }
+        }
+
     }
 }

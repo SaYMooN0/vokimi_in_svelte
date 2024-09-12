@@ -113,53 +113,38 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                         .Include(t => t.MainInfo)
                         .FirstOrDefault(t => t.Id == newData.TestId);
                     if (test is null) {
-                        return ResultsHelper.BadRequestWithErr("Test not found");
+                        return ResultsHelper.BadRequestUnknownTest();
                     }
                     test.MainInfo.Update(newData.Name, newData.Description, newData.Language, newData.Privacy);
                     db.SaveChanges();
                     return Results.Ok();
                 }
             } catch {
-                return ResultsHelper.BadRequestWithErr("Server error. Please try again later");
+                return ResultsHelper.BadRequestServerError();
             }
         }
-
-        public static async Task<IResult> UpdateDraftTestQuestionCover(string testId,
-                                                           IFormFile file,
-                                                           IDbContextFactory<AppDbContext> dbFactory,
-                                                           VokimiStorageService vokimiStorage) {
-            DraftTestId id;
-            if (Guid.TryParse(testId, out Guid testGuid)) {
-                id = new(testGuid);
+        public static IResult SetDraftTestCoverToDefault(string testId, IDbContextFactory<AppDbContext> dbFactory) {
+            DraftTestId draftTestId;
+            if (Guid.TryParse(testId, out var testGuid)) {
+                draftTestId = new(testGuid);
             } else {
-                return ResultsHelper.BadRequestWithErr("Unable to update cover. Please refresh the page.");
+                return ResultsHelper.BadRequestUnknownTest();
             }
-            using (var db = dbFactory.CreateDbContext()) {
-                BaseDraftTest? test = db.DraftTestsSharedInfo
-                    .Include(t => t.MainInfo)
-                    .FirstOrDefault(t => t.Id == id);
-
-                if (test is null) {
-                    return ResultsHelper.BadRequestWithErr("Unknown test");
-                }
-                string extension = ImgOperationsHelper.ExtractFileExtension(file);
-                string key = $"{ImgOperationsConsts.DraftTestCoversFolder}/{testId}.{extension}";
-
-                using (var transaction = await db.Database.BeginTransactionAsync()) {
-                    try {
-                        string? savedKey = await ImgOperationsHelper.SaveImgToStorage(key, file, vokimiStorage);
-                        if (savedKey is null) {
-                            throw new Exception();
-                        }
-                        test.MainInfo.UpdateCoverImage(savedKey);
-                        db.SaveChanges();
-                        await transaction.CommitAsync();
-                        return ResultsHelper.OkResultWithImgPath(key);
-                    } catch {
-                        await transaction.RollbackAsync();
-                        return ResultsHelper.BadRequestWithErr("Server error. Please try again later");
+            try {
+                using (var db = dbFactory.CreateDbContext()) {
+                    BaseDraftTest? test = db.DraftTestsSharedInfo
+                        .Include(t => t.MainInfo)
+                        .FirstOrDefault(t => t.Id == draftTestId);
+                    if (test is null) {
+                        return ResultsHelper.BadRequestUnknownTest();
                     }
+                    string imgPath = ImgOperationsConsts.DefaultTestCoverImg;
+                    test.MainInfo.UpdateCoverImage(imgPath);
+                    db.SaveChanges();
+                    return ResultsHelper.OkResultWithImgPath(imgPath);
                 }
+            } catch {
+                return ResultsHelper.BadRequestServerError();
             }
         }
     }

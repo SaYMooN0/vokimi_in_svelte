@@ -15,8 +15,7 @@ namespace vokimi_api.Helpers
                 return ResultsHelper.BadRequestWithErr("File is not selected");
             }
             if (file.Length > ImgOperationsConsts.MaxImageSizeInBytes) {
-                return ResultsHelper.BadRequestWithErr(
-                    $"File is too big. Max allowed size: {ImgOperationsConsts.MaxImageSizeInMB}MB");
+                return ResultsHelper.BadRequestMaxImgSizeIs3MB();
             }
             try {
                 var stream = file.OpenReadStream();

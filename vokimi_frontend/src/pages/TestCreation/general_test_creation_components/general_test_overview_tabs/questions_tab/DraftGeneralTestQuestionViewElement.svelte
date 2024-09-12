@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { GeneralTestAnswerTypeUtils } from "../../../../../ts/enums/GeneralTestAnswerType";
     import type { DraftGeneralTestQuestionBriefInfo } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/GeneralTestCreationQuestionsTabData";
 
     export let question: DraftGeneralTestQuestionBriefInfo;
@@ -41,7 +42,8 @@
             {question.orderInTest + 1}. {question.text}
         </p>
         <label class="answers-count">
-            Answers count: {question.answersCount}
+            {GeneralTestAnswerTypeUtils.getFullName(question.answersType)},
+            Answers count: {question.answersCount},
             {question.isMultiple ? "Multiple-choice" : "Single-choice"}
         </label>
     </div>

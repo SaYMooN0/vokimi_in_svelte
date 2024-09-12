@@ -13,6 +13,7 @@
     export let answers: IDraftGeneralTestAnswerFormData[];
     export let answersType: GeneralTestAnswerType;
     export let questionId: string;
+    export let testId: string;
 
     function addAnswer() {
         const newAnswer: IDraftGeneralTestAnswerFormData = (() => {
@@ -42,7 +43,7 @@
     let resultAssigningDialog: ResultAssigningDialog;
 </script>
 
-<ResultAssigningDialog bind:this={resultAssigningDialog} />
+<ResultAssigningDialog bind:this={resultAssigningDialog} {testId} />
 <div class="answers-zone">
     <p class="answers-title">
         Answers ({answers.length})
@@ -58,8 +59,7 @@
             <div class="answer-element">
                 <label class="answer-number">#{index + 1}</label>
                 <AnswerResultsEditingComponent
-                    openResultAssigningDialog={() =>
-                        resultAssigningDialog.open()}
+                    openResultAssigningDialog={resultAssigningDialog.open}
                     bind:relatedResults={answer.relatedResults}
                 />
                 {#if answer instanceof DraftGeneralTestTextOnlyAnswerFormData}
@@ -73,6 +73,7 @@
                     />
                 {:else if answer instanceof DraftGeneralTestImageOnlyAnswerFormData}
                     <GeneralTestImageOnlyAnswerEditing
+                        {questionId}
                         bind:answerData={answer}
                     />
                 {:else}
