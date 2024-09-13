@@ -14,7 +14,12 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
 
         public static DraftGeneralTestResult CreateEmpty(string name, DraftTestId testId)
             => CreateNew(testId, name, string.Empty, string.Empty);
-        public static DraftGeneralTestResult CreateNew(DraftTestId testId, string name, string? text, string? imagePath) =>
+        public static DraftGeneralTestResult CreateNew(
+            DraftTestId testId,
+            string name,
+            string? text = null,
+            string? imagePath = null) =>
+
             new() {
                 Id = new(),
                 TestId = testId,

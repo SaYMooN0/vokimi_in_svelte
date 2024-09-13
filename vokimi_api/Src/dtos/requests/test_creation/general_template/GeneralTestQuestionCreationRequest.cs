@@ -4,9 +4,9 @@ using vokimi_api.Src.enums;
 
 namespace vokimi_api.Src.dtos.requests.test_creation.general_template
 {
-    public record class CreateGeneralTestQuestionRequest(string TestId, string AnswersType)
+    public record class GeneralTestQuestionCreationRequest(string TestId, string AnswersType)
     {
-        public ParsedCreateGeneralTestQuestionRequest? ToObjWithTypes() {
+        public TypedGeneralTestQuestionCreationRequest? ToObjWithTypes() {
             DraftTestId? draftTestId = null;
             if (Guid.TryParse(TestId, out Guid testGuid)) {
                 draftTestId = new(testGuid);
@@ -22,6 +22,6 @@ namespace vokimi_api.Src.dtos.requests.test_creation.general_template
         }
     }
 
-    public record class ParsedCreateGeneralTestQuestionRequest(DraftTestId TestId, GeneralTestAnswerType AnswersType);
+    public record class TypedGeneralTestQuestionCreationRequest(DraftTestId TestId, GeneralTestAnswerType AnswersType);
 
 }

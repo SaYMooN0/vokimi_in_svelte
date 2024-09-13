@@ -8,14 +8,6 @@ namespace vokimi_api.Src.constants_store_classes
             MaxTestNameLength = 255,
             MaxTestDescriptionLength = 255;
         //public const int
-        //    MaxResultsForTestCount = 30,
-        //    ResultMinTextLength = 8,
-        //    ResultMaxTextLength = 500,
-        //    ResultNameMinCharacters = 10,
-        //    ResultNameMaxCharacters = 60;
-    
-
-        //public const int
         //    ConclusionMaxCharsInText = 255,
         //    ConclusionMaxAccompanyingFeedbackTextChars = 255,
         //    ConclusionMaxFeedbackCharsCount = 255;

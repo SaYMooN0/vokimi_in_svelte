@@ -8,7 +8,7 @@
     import GeneralTestImageOnlyAnswerEditing from "./answer_zone_components/GeneralTestImageOnlyAnswerEditing.svelte";
     import GeneralTestTextAndImageAnswerEditing from "./answer_zone_components/GeneralTestTextAndImageAnswerEditing.svelte";
     import GeneralTestTextOnlyAnswerEditing from "./answer_zone_components/GeneralTestTextOnlyAnswerEditing.svelte";
-    import ResultAssigningDialog from "./answer_zone_components/ResultAssigningDialog.svelte";
+    import ResultAddingDialog from "./answer_zone_components/result_adding_dialog/ResultAddingDialog.svelte";
 
     export let answers: IDraftGeneralTestAnswerFormData[];
     export let answersType: GeneralTestAnswerType;
@@ -40,10 +40,10 @@
         answers = answers.filter((a) => a !== answer);
     }
     let showAnswers: boolean = false;
-    let resultAssigningDialog: ResultAssigningDialog;
+    let resultsDialog: ResultAddingDialog;
 </script>
 
-<ResultAssigningDialog bind:this={resultAssigningDialog} {testId} />
+<ResultAddingDialog bind:this={resultsDialog} {testId} />
 <div class="answers-zone">
     <p class="answers-title">
         Answers ({answers.length})
@@ -59,7 +59,7 @@
             <div class="answer-element">
                 <label class="answer-number">#{index + 1}</label>
                 <AnswerResultsEditingComponent
-                    openResultAssigningDialog={resultAssigningDialog.open}
+                    openResultAssigningDialog={resultsDialog.open}
                     bind:relatedResults={answer.relatedResults}
                 />
                 {#if answer instanceof DraftGeneralTestTextOnlyAnswerFormData}

@@ -24,8 +24,9 @@
             },
         );
 
-        const { imgPath: newImgPath, errorString: newErrorString } =
+        const { image: newImgPath, err: newErrorString } =
             await handleResponse(response);
+        imgPath = "";
         imgPath = newImgPath || imgPath;
         errorString = newErrorString || "";
     }
@@ -38,26 +39,26 @@
             },
         );
 
-        const { imgPath: newImgPath, errorString: newErrorString } =
+        const { image: newImgPath, err: newErrorString } =
             await handleResponse(response);
         imgPath = newImgPath || imgPath;
         errorString = newErrorString || "";
     }
     async function handleResponse(
         response: Response,
-    ): Promise<{ imgPath?: string; errorString?: string }> {
+    ): Promise<{ image?: string; err?: string }> {
         try {
             if (response.ok) {
                 const data = await response.json();
-                return { imgPath: data.imgPath, errorString: "" };
+                return { image: data.imgPath, err: "" };
             } else if (response.status === 400) {
                 const errorString = await getErrorFromResponse(response);
-                return { errorString };
+                return { err: errorString };
             } else {
-                return { errorString: "Unexpected server error" };
+                return { err: "Unexpected server error" };
             }
         } catch (error) {
-            return { errorString: "Failed to process the request" };
+            return { err: "Failed to process the request" };
         }
     }
 </script>

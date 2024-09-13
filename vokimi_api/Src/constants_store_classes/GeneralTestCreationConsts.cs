@@ -2,6 +2,13 @@
 {
     public static class GeneralTestCreationConsts
     {
+        public const int
+            MaxResultsForTestCount = 30,
+            ResultMinTextLength = 8,
+            ResultMaxTextLength = 500,
+            ResultNameMinLength = 8,
+            ResultNameMaxLength = 60;
+
         //public const int
         //    QuestionTextMinLength = 10,
         //    QuestionTextMaxLength = 255;

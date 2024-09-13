@@ -1,5 +1,6 @@
 <script lang="ts">
     import BaseDialog from "../../../../components/BaseDialog.svelte";
+    import { StringUtils } from "../../../../ts/utils/StringUtils";
     import EditingDialogCloseButton from "./EditingDialogCloseButton.svelte";
     import EditingDialogSaveButton from "./EditingDialogSaveButton.svelte";
 
@@ -16,17 +17,20 @@
     }
     export let onSaveButtonClicked: () => void;
     export let saveButtonText: string = "Save";
+    export let dialogId: string = "editingDialog";
     let dialogElement: BaseDialog;
     let errorMessage: string = "";
     let isOpen: boolean = false;
 </script>
 
-<BaseDialog dialogId="editingDialog" bind:this={dialogElement}>
+<BaseDialog {dialogId} bind:this={dialogElement}>
     {#if isOpen}
         <div class="dialog-body">
             <EditingDialogCloseButton onClose={() => dialogElement.close()} />
             <slot></slot>
-            <p class="error-message">{errorMessage}</p>
+            {#if !StringUtils.isNullOrWhiteSpace(errorMessage)}
+                <p class="error-message">{errorMessage}</p>
+            {/if}
             <EditingDialogSaveButton
                 buttonText={saveButtonText}
                 onClick={() => onSaveButtonClicked()}
@@ -42,5 +46,12 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+    }
+
+    .error-message {
+        align-self: center;
+        margin: 4px 0;
+        font-size: 18px;
+        font-weight: 500;
     }
 </style>

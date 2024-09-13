@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using vokimi_api.Helpers;
+using vokimi_api.Src;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities_ids;
@@ -35,8 +36,8 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             }
         }
         public static IResult CreateGeneralTestQuestion(IDbContextFactory<AppDbContext> dbFactory,
-                                                        [FromBody] CreateGeneralTestQuestionRequest request) {
-            ParsedCreateGeneralTestQuestionRequest? data = request.ToObjWithTypes();
+                                                        [FromBody] GeneralTestQuestionCreationRequest request) {
+            TypedGeneralTestQuestionCreationRequest? data = request.ToObjWithTypes();
             if (data is null) {
                 return Results.BadRequest();
             }
@@ -96,12 +97,31 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             }
             draftTestId = new(new(testId));
             using (var db = dbFactory.CreateDbContext()) {
-                DraftGeneralTestResult[] results = db.DraftGeneralTestResults
+                var results = db.DraftGeneralTestResults
                     .Where(r => r.TestId == draftTestId)
-                    .ToArray();
+                    .ToDictionary(r => r.Id.Value.ToString(), r => r.Name);
                 return Results.Ok(results);
             }
         }
+        public static IResult CreateNewResultForTest(
+            [FromBody] GeneralTestResultCreationRequest request,
+            IDbContextFactory<AppDbContext> dbFactory) {
 
+            Err formValidatingErr = request.GetError();
+            if (formValidatingErr.NotNone()) {
+                return ResultsHelper.BadRequestWithErr(formValidatingErr.Message);
+            }
+            DraftTestId testId = new(new(request.TestId));
+            try {
+                using (var db = dbFactory.CreateDbContext()) {
+                    DraftGeneralTestResult result = DraftGeneralTestResult.CreateNew(testId, request.ResultName);
+                    db.DraftGeneralTestResults.Add(result);
+                    db.SaveChanges();
+                    return Results.Ok();
+                }
+            } catch {
+                return ResultsHelper.BadRequestServerError();
+            }
+        }
     }
 }
