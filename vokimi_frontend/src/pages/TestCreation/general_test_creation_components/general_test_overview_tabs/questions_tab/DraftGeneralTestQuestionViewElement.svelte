@@ -4,7 +4,10 @@
 
     export let question: DraftGeneralTestQuestionBriefInfo;
     export let openQuestionEditingDialog: (questionId: string) => void;
-    export let openQuestionDeletingDialog: (questionId: string) => void;
+    export let openQuestionDeletingDialog: (
+        questionId: string,
+        questionText: string,
+    ) => void;
 
     async function MoveQuestionUpInOrder() {}
     async function MoveQuestionDownInOrder() {}
@@ -71,7 +74,8 @@
         </div>
         <svg
             class="delete-question-btn"
-            on:click={() => openQuestionDeletingDialog(question.id)}
+            on:click={() =>
+                openQuestionDeletingDialog(question.id, question.text)}
             viewBox="0 0 24 24"
             fill="none"
         >

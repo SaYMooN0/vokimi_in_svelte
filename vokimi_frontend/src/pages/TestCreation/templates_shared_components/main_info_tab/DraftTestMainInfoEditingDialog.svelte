@@ -4,6 +4,7 @@
         TestPrivacy,
         TestPrivacyUtils,
     } from "../../../../ts/enums/TestPrivacy";
+    import { StringUtils } from "../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
 
     export let updateParentElementData: () => void;
@@ -80,7 +81,12 @@
     bind:this={dialogElement}
 >
     <label for="testName" class="property-label">Test name:</label>
-    <input id="testName" type="text" bind:value={testName} />
+    <input
+        id="testName"
+        type="text"
+        bind:value={testName}
+        name="testName-{StringUtils.randomString()}"
+    />
 
     <label for="description" class="property-label">Test description: </label>
     <textarea

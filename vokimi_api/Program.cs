@@ -107,7 +107,11 @@ namespace vokimi_api
             app.MapGet("/testCreation/general/getResultsIdNameDictionary/{testId}",
                 GeneralTestCreationEndpoints.GetResultsIdNameDictionary);
             app.MapPost("/testCreation/general/createNewResult", GeneralTestCreationEndpoints.CreateNewResultForTest);
-
+            
+            app.MapGet("/testCreation/general/getTestResultsDataToEdit",
+                GeneralTestCreationEndpoints.GetResultsDataToEdit);
+            app.MapDelete("/testCreation/general/deleteGeneralDraftTestQuestion/{questionId}",
+                GeneralTestCreationEndpoints.DeleteGeneralDraftTestQuestion);
 
             app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
             app.MapPost("/testCreation/updateDraftTestQuestionCover/{testId}",

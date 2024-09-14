@@ -3,6 +3,6 @@ export interface ErrorResponse {
 }
 export async function getErrorFromResponse(response: Response): Promise<string> {
     const data: ErrorResponse = await response.json();
-    return data.error;
+    return data.error || "Unknown error";
 }
 

@@ -10,6 +10,7 @@
     import type { TestCreationTagsTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
 
     export let testId: string;
+    export let updateTestName: (name: string) => void;
 
     export let mainInfoTabPath: string;
     export let mainInfoTabData: TestCreationMainInfoTabData;
@@ -25,7 +26,11 @@
 </script>
 
 <Route path={mainInfoTabPath}>
-    <DraftTestMainInfoView bind:mainInfoData={mainInfoTabData} {testId} />
+    <DraftTestMainInfoView
+        {updateTestName}
+        bind:mainInfoData={mainInfoTabData}
+        {testId}
+    />
 </Route>
 <Route path={conclusionTabPath}>
     <DraftTestConclusionView bind:conclusionData={conclusionTabData} {testId} />

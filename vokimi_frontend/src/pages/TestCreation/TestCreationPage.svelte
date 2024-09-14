@@ -45,7 +45,9 @@
             isLoading = false;
         }
     }
-
+    function updateTestName(name: string): void {
+        testName = name;
+    }
     function getTabLinks(t: TestTemplate) {
         switch (t) {
             case TestTemplate.General:
@@ -72,7 +74,7 @@
                 </p>
                 <div class="tab-links-container">
                     {#each Object.entries(getTabLinks(template)) as [label, path]}
-                        <Link to="/testCreation/{testId}/{path}">
+                        <Link to="{basepath}/{path}">
                             <div class="tab-link">
                                 {label}
                             </div>
@@ -82,9 +84,17 @@
                 <div class="divider"></div>
                 <div class="tab-content-container">
                     {#if template === TestTemplate.General}
-                        <GeneralTestCreationOverview {basepath} {testId} />
+                        <GeneralTestCreationOverview
+                            {basepath}
+                            {testId}
+                            {updateTestName}
+                        />
                     {:else if template === TestTemplate.Scoring}
-                        <ScoringTestCreationOverview {basepath} {testId} />
+                        <ScoringTestCreationOverview
+                            {basepath}
+                            {testId}
+                            {updateTestName}
+                        />
                     {/if}
                 </div>
             {:else}

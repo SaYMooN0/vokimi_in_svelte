@@ -12,6 +12,7 @@
 
     export let mainInfoData: TestCreationMainInfoTabData;
     export let testId: string;
+    export let updateTestName: (name: string) => void;
 
     async function loadData() {
         const url = "/api/testCreation/getDraftTestMainInfoData/" + testId;
@@ -26,6 +27,7 @@
                 data.description,
                 data.imgPath,
             );
+            updateTestName(mainInfoData.name);
         } else {
             mainInfoData = TestCreationMainInfoTabData.empty();
         }

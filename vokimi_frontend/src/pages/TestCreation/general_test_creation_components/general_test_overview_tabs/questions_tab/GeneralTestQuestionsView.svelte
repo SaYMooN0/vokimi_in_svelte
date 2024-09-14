@@ -5,7 +5,8 @@
     import DraftGeneralTestQuestionEditingDialog from "./dialog_components/DraftGeneralTestQuestionEditingDialog.svelte";
     import DraftGeneralTestQuestionCreationDialog from "./dialog_components/DraftGeneralTestQuestionCreationDialog.svelte";
     import DraftGeneralTestQuestionViewElement from "./DraftGeneralTestQuestionViewElement.svelte";
-    import DraftGeneralTestQuestionDeletingConfirmation from "./dialog_components/DraftGeneralTestQuestionDeletingConfirmation.svelte";
+    import ActionConfirmationDialog from "../../../../../components/shared/ActionConfirmationDialog.svelte";
+    import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
 
     export let questionsData: GeneralTestCreationQuestionsTabData;
     export let testId: string;
@@ -26,13 +27,35 @@
     function openQuestionEditingDialog(id: string) {
         questionEditingDialog.open(id);
     }
-    function openQuestionDeletingDialog(id: string) {
-        questionDeletingDialog.open(id);
+    function openQuestionDeletingDialog(
+        questionId: string,
+        questionText: string,
+    ) {
+        const deletingAction: () => Promise<string | null> = async () => {
+            const url =
+                "/api/testCreation/general/deleteGeneralDraftTestQuestion/" +
+                questionId;
+            const response = await fetch(url, {
+                method: "DELETE",
+            });
+            if (response.ok) {
+                await loadData();
+                questionDeletingDialog.close();
+                return null;
+            } else {
+                const errorMessage = getErrorFromResponse(response);
+                return errorMessage;
+            }
+        };
+        questionDeletingDialog.open(
+            deletingAction,
+            `Do you really want to delete "${questionText}" question?`,
+        );
     }
 
     let questionEditingDialog: DraftGeneralTestQuestionEditingDialog;
     let questionCreationDialog: DraftGeneralTestQuestionCreationDialog;
-    let questionDeletingDialog: DraftGeneralTestQuestionDeletingConfirmation;
+    let questionDeletingDialog: ActionConfirmationDialog;
     let errorMessage: string = "";
 </script>
 
@@ -56,9 +79,9 @@
             bind:this={questionEditingDialog}
             updateParentElementData={loadData}
         />
-        <DraftGeneralTestQuestionDeletingConfirmation
+        <ActionConfirmationDialog
             bind:this={questionDeletingDialog}
-            updateParentElementData={loadData}
+            confirmBtnText="Delete"
         />
         <TabHeaderWithButton
             tabName="Test Questions({questionsData.questions.length})"

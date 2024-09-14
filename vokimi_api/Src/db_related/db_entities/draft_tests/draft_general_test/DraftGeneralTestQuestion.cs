@@ -31,6 +31,7 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
                 Answers = []
             };
         public bool IsSingleChoice => MinAnswersCount == 1 && MaxAnswersCount == 1;
+        public void UpdateOrderInTest(ushort orderInTest) => OrderInTest = orderInTest;
     }
 }
 

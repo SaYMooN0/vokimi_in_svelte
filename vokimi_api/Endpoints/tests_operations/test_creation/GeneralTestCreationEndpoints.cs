@@ -123,5 +123,63 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 return ResultsHelper.BadRequestServerError();
             }
         }
+        public static IResult GetResultsDataToEdit(string testId, IDbContextFactory<AppDbContext> dbFactory) {
+            DraftTestId draftTestId;
+            if (!Guid.TryParse(testId, out _)) {
+                return ResultsHelper.BadRequestUnknownTest();
+            }
+            draftTestId = new(new(testId));
+            using (var db = dbFactory.CreateDbContext()) {
+                var results = db.DraftGeneralTestResults
+                    .Where(r => r.TestId == draftTestId)
+                    .Select(DraftGeneralTestResultDataToEdit.FromResult)
+                    .ToArray();
+                return Results.Ok(results);
+            }
+        }
+        public static IResult DeleteGeneralDraftTestQuestion(string questionId,
+                                                            IDbContextFactory<AppDbContext> dbFactory) {
+            DraftGeneralTestQuestionId questionToDeleteId;
+            if (!Guid.TryParse(questionId, out _)) {
+                return ResultsHelper.BadRequestWithErr("An error has occurred. Please refresh the page and try again");
+            }
+            questionToDeleteId = new(new(questionId));
+            using (var db = dbFactory.CreateDbContext()) {
+                using (var transaction = db.Database.BeginTransaction()) {
+                    try {
+                        DraftGeneralTestQuestion? question = db.DraftGeneralTestQuestions
+                                        .Include(q => q.Answers)
+                                        .ThenInclude(a => a.AdditionalInfo)
+                                        .FirstOrDefault(q => q.Id == questionToDeleteId);
+                        if (question is null) {
+                            return ResultsHelper.BadRequestWithErr("Unknown questions");
+                        }
+                        foreach (var answer in question.Answers) {
+                            db.AnswerTypeSpecificInfo.Remove(answer.AdditionalInfo);
+                            db.DraftGeneralTestAnswers.Remove(answer);
+                        }
+                        db.DraftGeneralTestQuestions.Remove(question);
+                        db.SaveChanges();
+                        DraftGeneralTestQuestion[] remainingQuestions = db.DraftGeneralTestQuestions
+                            .Where(q => q.TestId == question.TestId)
+                            .OrderBy(q => q.OrderInTest)
+                            .ToArray();
+                        ushort currentOrder = 0;
+                        foreach (var remainingQuestion in remainingQuestions) {
+                            remainingQuestion.UpdateOrderInTest(currentOrder);
+                            currentOrder++;
+                        }
+                        transaction.Commit();
+                        db.SaveChanges();
+                        return Results.Ok();
+                    } catch {
+                        transaction.Rollback();
+                        return ResultsHelper.BadRequestServerError();
+                    }
+                }
+
+            }
+
+        }
     }
 }
