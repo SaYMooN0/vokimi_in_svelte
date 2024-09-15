@@ -1,9 +1,9 @@
 <script lang="ts">
     import { GeneralTestAnswerType } from "../../../../../../../ts/enums/GeneralTestAnswerType";
-    import { DraftGeneralTestImageOnlyAnswerFormData } from "../../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/answers/DraftGeneralTestImageOnlyAnswerFormData";
-    import { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
-    import { DraftGeneralTestTextOnlyAnswerFormData } from "../../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/answers/DraftGeneralTestTextOnlyAnswerFormData";
-    import type { IDraftGeneralTestAnswerFormData } from "../../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/answers/IDraftGeneralTestAnswerFormData";
+    import { DraftGeneralTestImageOnlyAnswerFormData } from "../../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestImageOnlyAnswerFormData";
+    import { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
+    import { DraftGeneralTestTextOnlyAnswerFormData } from "../../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextOnlyAnswerFormData";
+    import type { IDraftGeneralTestAnswerFormData } from "../../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/answers/IDraftGeneralTestAnswerFormData";
     import AnswerResultsEditingComponent from "./answer_zone_components/AnswerResultsEditingComponent.svelte";
     import GeneralTestImageOnlyAnswerEditing from "./answer_zone_components/GeneralTestImageOnlyAnswerEditing.svelte";
     import GeneralTestTextAndImageAnswerEditing from "./answer_zone_components/GeneralTestTextAndImageAnswerEditing.svelte";
@@ -15,7 +15,7 @@
     export let questionId: string;
     export let testId: string;
 
-    function addAnswer() {
+    function createAnswer() {
         const newAnswer: IDraftGeneralTestAnswerFormData = (() => {
             switch (answersType) {
                 case GeneralTestAnswerType.TextOnly:
@@ -39,6 +39,14 @@
     function removeAnswer(answer: IDraftGeneralTestAnswerFormData) {
         answers = answers.filter((a) => a !== answer);
     }
+    function addRelatedResultToAnswer(
+        answer: IDraftGeneralTestAnswerFormData,
+        key: string,
+        value: string,
+    ) {
+        answer.relatedResults = { ...answer.relatedResults, [key]: value };
+        answers = answers;
+    }
     let showAnswers: boolean = false;
     let resultsDialog: ResultAddingDialog;
 </script>
@@ -59,7 +67,10 @@
             <div class="answer-element">
                 <label class="answer-number">#{index + 1}</label>
                 <AnswerResultsEditingComponent
-                    openResultAssigningDialog={resultsDialog.open}
+                    openResultAssigningDialog={(chosenResults) =>
+                        resultsDialog.open(chosenResults, (key, val) =>
+                            addRelatedResultToAnswer(answer, key, val),
+                        )}
                     bind:relatedResults={answer.relatedResults}
                 />
                 {#if answer instanceof DraftGeneralTestTextOnlyAnswerFormData}
@@ -103,7 +114,8 @@
             </div>
         {/each}
     </div>
-    <button class="add-answer-button" on:click={addAnswer}>Add Answer</button>
+    <button class="add-answer-button" on:click={createAnswer}>Add Answer</button
+    >
 </div>
 
 <style>

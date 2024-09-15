@@ -5,7 +5,7 @@
         GeneralTestAnswerType,
         GeneralTestAnswerTypeUtils,
     } from "../../../../../../ts/enums/GeneralTestAnswerType";
-    import { DraftGeneralTestQuestionEditingData } from "../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/DraftGenralTestQuestionEditingData";
+    import { DraftGeneralTestQuestionEditingData } from "../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/DraftGenralTestQuestionEditingData";
     import BaseDraftTestEditingDialog from "../../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import TextWithOptionalImageInput from "../../../../creation_shared_components/TextWithOptionalImageInput.svelte";
     import DraftGeneralTestQuestionEditingMultipleChoiceZone from "../dialog_components/editing_dialog_zone_components/DraftGeneralTestQuestionEditingMultipleChoiceZone.svelte";

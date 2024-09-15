@@ -1,7 +1,7 @@
 <script lang="ts">
     import BasicTextAreaInput from "../../../../../../../../components/shared/BasicTextAreaInput.svelte";
     import { ImgUtils } from "../../../../../../../../ts/utils/ImgUtils";
-    import type { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
+    import type { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
     import { StringUtils } from "../../../../../../../../ts/utils/StringUtils";
     import { getErrorFromResponse } from "../../../../../../../../ts/ErrorResponse";
     export let answerData: DraftGeneralTestTextAndImageAnswerFormData;

@@ -108,7 +108,7 @@ namespace vokimi_api
                 GeneralTestCreationEndpoints.GetResultsIdNameDictionary);
             app.MapPost("/testCreation/general/createNewResult", GeneralTestCreationEndpoints.CreateNewResultForTest);
             
-            app.MapGet("/testCreation/general/getTestResultsDataToEdit",
+            app.MapGet("/testCreation/general/getTestResultsDataToEdit/{testId}",
                 GeneralTestCreationEndpoints.GetResultsDataToEdit);
             app.MapDelete("/testCreation/general/deleteGeneralDraftTestQuestion/{questionId}",
                 GeneralTestCreationEndpoints.DeleteGeneralDraftTestQuestion);

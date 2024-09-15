@@ -4,10 +4,11 @@
     import GeneralTestQuestionsView from "./general_test_overview_tabs/questions_tab/GeneralTestQuestionsView.svelte";
     import GeneralTestResultsView from "./general_test_overview_tabs/results_tab/GeneralTestResultsView.svelte";
     import { TestCreationMainInfoTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
-    import { GeneralTestCreationQuestionsTabData } from "../../../ts/test_creation_tabs_classes/general_test_creation/GeneralTestCreationQuestionsTabData";
+    import { GeneralTestCreationQuestionsTabData } from "../../../ts/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
     import type { TestCreationConclusionTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
     import type { TestCreationStylesTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
     import type { TestCreationTagsTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
+    import { GeneralTestCreationResultsTabData } from "../../../ts/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";
     export let basepath: string;
     export let testId: string;
     export let updateTestName: (name: string) => void;
@@ -16,10 +17,11 @@
         TestCreationMainInfoTabData.empty();
     let questionsTabData: GeneralTestCreationQuestionsTabData =
         GeneralTestCreationQuestionsTabData.empty();
+    let resultsTabData: GeneralTestCreationResultsTabData =
+        GeneralTestCreationResultsTabData.empty();
     let conclusionTabData: TestCreationConclusionTabData;
     let stylesTabData: TestCreationStylesTabData;
     let tagsTabData: TestCreationTagsTabData;
-
 </script>
 
 <Router {basepath}>
@@ -41,7 +43,9 @@
             bind:questionsData={questionsTabData}
         />
     </Route>
-    <Route path="view-results" component={GeneralTestResultsView} />
+    <Route path="view-results">
+        <GeneralTestResultsView {testId} bind:resultsData={resultsTabData} />
+    </Route>
     <Route>
         <p class="go-back-error-message">
             An error has occurred. Please go to a previous page

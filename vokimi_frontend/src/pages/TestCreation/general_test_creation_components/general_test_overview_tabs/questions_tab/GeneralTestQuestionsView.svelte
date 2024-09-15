@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { GeneralTestCreationQuestionsTabData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/GeneralTestCreationQuestionsTabData";
+    import { GeneralTestCreationQuestionsTabData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
     import TabViewDataLoader from "../../../creation_shared_components/TabViewDataLoader.svelte";
     import TabHeaderWithButton from "../../../creation_shared_components/TabHeaderWithButton.svelte";
     import DraftGeneralTestQuestionEditingDialog from "./dialog_components/DraftGeneralTestQuestionEditingDialog.svelte";
@@ -43,7 +43,7 @@
                 questionDeletingDialog.close();
                 return null;
             } else {
-                const errorMessage = getErrorFromResponse(response);
+                const errorMessage =await getErrorFromResponse(response);
                 return errorMessage;
             }
         };

@@ -1,6 +1,6 @@
 <script lang="ts">
     import BasicTextAreaInput from "../../../../../../../../components/shared/BasicTextAreaInput.svelte";
-    import type { DraftGeneralTestTextOnlyAnswerFormData } from "../../../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/answers/DraftGeneralTestTextOnlyAnswerFormData";
+    import type { DraftGeneralTestTextOnlyAnswerFormData } from "../../../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextOnlyAnswerFormData";
 
     export let answerData: DraftGeneralTestTextOnlyAnswerFormData;
 </script>

@@ -1,10 +1,15 @@
 <script lang="ts">
-    import { GeneralTestCreationResultsTabData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/GeneralTestCreationResultsTabData";
+    import ActionConfirmationDialog from "../../../../../components/shared/ActionConfirmationDialog.svelte";
+    import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
+    import { GeneralTestCreationResultsTabData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";
     import TabHeaderWithButton from "../../../creation_shared_components/TabHeaderWithButton.svelte";
     import TabViewDataLoader from "../../../creation_shared_components/TabViewDataLoader.svelte";
+    import DraftGeneralTesResultViewElement from "./DraftGeneralTesResultViewElement.svelte";
+    import DraftGeneralTestResultEditingDialog from "./DraftGeneralTestResultEditingDialog.svelte";
 
     export let resultsData: GeneralTestCreationResultsTabData;
     export let testId: string;
+    let creationErrorString: string = "";
 
     async function loadData() {
         const url =
@@ -12,25 +17,67 @@
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
+            console.log(data);
             resultsData = new GeneralTestCreationResultsTabData(data);
         } else {
             resultsData = GeneralTestCreationResultsTabData.empty();
         }
     }
     async function createNewResult() {
-        const name = "New Result #" + resultsData.results.length+1;
-        //server
-        await loadData(); 
+        creationErrorString = "";
+
+        const name =
+            "New Draft General Test Result #" + resultsData.results.length + 1;
+        const data = { testId, name };
+        const url = "/api/testCreation/general/createGeneralDraftTestResult";
+        const response = await fetch(url, {
+            method: "Post",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        if (response.ok) {
+            await loadData();
+        } else if (response.status === 400) {
+            creationErrorString = await getErrorFromResponse(response);
+        } else {
+            creationErrorString =
+                "Failed to create new result. Please try again later";
+        }
+        await loadData();
     }
     function openResultEditingDialog(id: string) {
         resultEditingDialog.open(id);
     }
-    function openResultDeletingDialog(id: string) {
-        resultDeletingDialog.open(id);
+    async function openResultDeletingDialog(
+        resultId: string,
+        resultName: string,
+    ) {
+        const deletingAction: () => Promise<string | null> = async () => {
+            const url =
+                "/api/testCreation/general/deleteGeneralDraftTestResult/" +
+                resultId;
+            const response = await fetch(url, {
+                method: "DELETE",
+            });
+            if (response.ok) {
+                await loadData();
+                resultDeletingDialog.close();
+                return null;
+            } else {
+                const errorMessage = await getErrorFromResponse(response);
+                return errorMessage;
+            }
+        };
+        resultDeletingDialog.open(
+            deletingAction,
+            `Do you really want to delete "${resultName}" question?`,
+        );
     }
 
     let resultEditingDialog: DraftGeneralTestResultEditingDialog;
-    let resultDeletingDialog: DraftGeneralTestQuestionDeletingConfirmation;
+    let resultDeletingDialog: ActionConfirmationDialog;
     let errorMessage: string = "";
 </script>
 
@@ -44,15 +91,14 @@
         </button>
     </div>
     <div slot="content">
-       
         <TabHeaderWithButton
             tabName="Test Results({resultsData.results.length})"
             buttonText="Add New Result"
             onButtonClick={() => createNewResult}
         />
         <div class="tab-content">
-            {#each resultsData.results as question}
-                <!-- result view Element -->
+            {#each resultsData.results as result}
+                <DraftGeneralTesResultViewElement {result} />
             {/each}
         </div>
     </div>

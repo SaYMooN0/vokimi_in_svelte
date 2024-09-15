@@ -7,14 +7,17 @@
     export let changeStateToResultCreation: () => void;
 
     export let chosenResultName: [string, string] | undefined = undefined;
-    console.log(resultsToChooseFrom);
+
+    export function getChosenResult(): [string, string] | undefined {
+        return chosenResultName;
+    }
 </script>
 
 <div class="result-assigning-state">
     <p class="result-assigning-title">Choose a result from the following:</p>
     <div class="results-options">
         {#if resultsToChooseFrom.length === 0}
-            <p class="no-results-label">You have not created any results</p>
+            <p class="no-results-label">There are no results to choose from</p>
         {:else}
             {#each resultsToChooseFrom as [key, value]}
                 <input
@@ -30,7 +33,7 @@
             {/each}
         {/if}
 
-        <div class="create-res-btn" on:click={changeStateToResultCreation}>
+        <div class="create-res-btn unselectable" on:click={changeStateToResultCreation}>
             Create New
         </div>
     </div>

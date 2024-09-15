@@ -1,8 +1,8 @@
 export class GeneralTestCreationResultsTabData {
-    readonly results: DraftGeneralTestResultDataToEdit[] = [];
+    readonly results: DraftGeneralTestResultDataToView[] = [];
 
     constructor(
-        results: DraftGeneralTestResultDataToEdit[]
+        results: DraftGeneralTestResultDataToView[]
     ) {
         this.results = results;
     }
@@ -13,7 +13,7 @@ export class GeneralTestCreationResultsTabData {
         return this.results.length === 0;
     }
 }
-export class DraftGeneralTestResultDataToEdit {
+export class DraftGeneralTestResultDataToView {
     readonly id: string;
     readonly name: string;
     readonly text: string;

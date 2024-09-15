@@ -1,4 +1,4 @@
-import { GeneralTestAnswerType } from "../../../ts/enums/GeneralTestAnswerType";
+import { GeneralTestAnswerType } from "../../../enums/GeneralTestAnswerType";
 export class GeneralTestCreationQuestionsTabData {
     readonly questions: DraftGeneralTestQuestionBriefInfo[] = [];
 

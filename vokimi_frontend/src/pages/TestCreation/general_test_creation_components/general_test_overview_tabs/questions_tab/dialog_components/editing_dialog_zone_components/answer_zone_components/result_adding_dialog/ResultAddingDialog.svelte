@@ -4,11 +4,15 @@
     import ResultAssigningContent from "./ResultAssigningContent.svelte";
     import ResultCreationContent from "./ResultCreationContent.svelte";
 
-    export async function open(chosenResults: { [key: string]: string }) {
+    export async function open(
+        chosenResults: { [key: string]: string },
+        addResultAction: (key: string, value: string) => void,
+    ) {
         resultsFetched = false;
         dialogElement.open();
         dialogElement.setErrorMessage("");
         chosenResultsRef = chosenResults;
+        addResult = addResultAction;
         isResultCreationState = false;
         await fetchResults();
     }
@@ -20,6 +24,7 @@
 
     let isResultCreationState: boolean = false;
     let chosenResultsRef: { [key: string]: string } = {};
+    let addResult: (key: string, value: string) => void;
     let allResults: { [key: string]: string } = {};
     let resultsFetched: boolean = false;
 
@@ -51,12 +56,12 @@
         if (isResultCreationState) {
             await resultCreationElement.onCreateButtonClick();
         } else {
-            const chosenRes = resultAssigningElement.chosenResultName;
+            const chosenRes = resultAssigningElement.getChosenResult();
             if (chosenRes === undefined) {
                 dialogElement.setErrorMessage("Please choose a result");
             } else {
                 const [key, value] = chosenRes;
-                chosenResultsRef[key] = value;
+                addResult(key, value);
                 dialogElement.close();
             }
         }

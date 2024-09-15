@@ -1,6 +1,6 @@
 <script lang="ts">
     import { getErrorFromResponse } from "../../../../../../../../ts/ErrorResponse";
-    import { DraftGeneralTestImageOnlyAnswerFormData } from "../../../../../../../../ts/test_creation_tabs_classes/general_test_creation/draft_general_test_questions/answers/DraftGeneralTestImageOnlyAnswerFormData";
+    import { DraftGeneralTestImageOnlyAnswerFormData } from "../../../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestImageOnlyAnswerFormData";
     import { ImgUtils } from "../../../../../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../../../../../ts/utils/StringUtils";
 
@@ -55,7 +55,7 @@
         on:change={handleImageInputChange}
     />
     {#if !StringUtils.isNullOrWhiteSpace(answerData.imagePath)}
-        <label for={id} class="change-btn">Change Image</label>
+        <label for={id} class="change-btn unselectable">Change Image</label>
     {:else}
         <label for={id} class="add-img-btn">
             Add Image

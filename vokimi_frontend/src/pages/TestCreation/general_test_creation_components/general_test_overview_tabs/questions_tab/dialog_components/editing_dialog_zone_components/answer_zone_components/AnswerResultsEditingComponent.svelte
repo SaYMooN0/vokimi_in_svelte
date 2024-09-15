@@ -10,15 +10,15 @@
     }
 </script>
 
-<div class="related-results-container">
+<div class="related-results-container unselectable">
     {#each Object.keys(relatedResults) as resKey}
         <div class="chosen-result">
             <label class="result-label">
                 {relatedResults[resKey]}
             </label>
-            <div class="result-label-tooltip">
+            <!-- <div class="result-label-tooltip">
                 {relatedResults[resKey]}
-            </div>
+            </div> -->
             <svg
                 class="remove-result-btn"
                 on:click={() => removeResult(resKey)}
@@ -60,6 +60,40 @@
         align-items: center;
         gap: 4px;
         width: 180px;
+    }
+    .chosen-result {
+        width: inherit;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        position: relative;
+    }
+
+    .result-label {
+        text-align: center;
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        z-index: 1;
+    }
+    .remove-result-btn {
+        height: 24px;
+        aspect-ratio: 1/1;
+        box-sizing: border-box;
+        padding: 2px;
+        border-radius: 26%;
+        background: var(--text-faded);
+        fill: var(--back-main);
+        cursor: pointer;
+    }
+    .remove-result-btn:hover {
+        background-color: var(--red-del);
+    }
+
+    .remove-result-btn:active {
+        padding: 4px;
     }
     .add-new-result-btn {
         width: 92%;

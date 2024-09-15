@@ -1,6 +1,6 @@
 <script lang="ts">
     import { GeneralTestAnswerTypeUtils } from "../../../../../ts/enums/GeneralTestAnswerType";
-    import type { DraftGeneralTestQuestionBriefInfo } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/GeneralTestCreationQuestionsTabData";
+    import type { DraftGeneralTestQuestionBriefInfo } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
 
     export let question: DraftGeneralTestQuestionBriefInfo;
     export let openQuestionEditingDialog: (questionId: string) => void;
