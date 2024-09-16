@@ -69,6 +69,7 @@
 
     .dialog-message {
         font-size: 24px;
+        text-align: center;
     }
 
     .error-string {

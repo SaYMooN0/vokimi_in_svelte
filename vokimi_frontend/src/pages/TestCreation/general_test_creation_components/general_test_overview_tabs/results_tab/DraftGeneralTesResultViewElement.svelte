@@ -1,7 +1,15 @@
 <script lang="ts">
     import type { DraftGeneralTestResultDataToView } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";
+    import { ImgUtils } from "../../../../../ts/utils/ImgUtils";
+    import { StringUtils } from "../../../../../ts/utils/StringUtils";
+    import ElementEditDeleteActions from "../../../creation_shared_components/ElementEditDeleteActions.svelte";
 
     export let result: DraftGeneralTestResultDataToView;
+    export let openResultEditingDialog: (resultId: string) => void;
+    export let openResultDeletingDialog: (
+        resultId: string,
+        resultName: string,
+    ) => void;
 
     let isHidden: boolean = true;
 </script>
@@ -17,7 +25,7 @@
             xmlns:xlink="http://www.w3.org/1999/xlink"
             viewBox="0 0 24 24"
             fill="none"
-            class="content-toogle-btn"
+            class="hide-content-btn"
             class:rotated={isHidden}
             on:click={() => (isHidden = !isHidden)}
         >
@@ -31,9 +39,87 @@
         </svg>
     </div>
     <div class:hiddenContent={isHidden} class:resultInnerContent={!isHidden}>
-        <!--    
-        text
-        image
-        removeBtn -->
+        <label class="result-text">
+            {result.text}
+        </label>
+        {#if StringUtils.isNullOrWhiteSpace(result.imagePath)}
+            <button class="add-image-button">Add Image</button>
+        {:else}
+            <img
+                src={ImgUtils.imgUrl(result.imagePath ?? "")}
+                alt="result image"
+            />
+        {/if}
+        <div class="result-actions-container unselectable">
+            <ElementEditDeleteActions
+                editButtonAction={() => openResultEditingDialog(result.id)}
+                deleteButtonAction={() =>
+                    openResultDeletingDialog(result.id, result.name)}
+            />
+        </div>
     </div>
 </div>
+
+<style>
+    .result-view {
+        background-color: var(--back-secondary);
+        border-radius: 8px;
+        margin-top: 8px;
+        padding: 0;
+    }
+
+    .always-shown {
+        width: 100%;
+        padding: 0px 4px;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 1fr auto;
+    }
+    .hide-content-btn {
+        margin-right: 6px;
+        width: 36px;
+        padding: 0;
+        border-radius: 30%;
+        aspect-ratio: 1/1;
+        color: var(--text-faded);
+        transition:
+            all 0.12s ease,
+            transform 0.28s ease;
+        cursor: pointer;
+    }
+    .hide-content-btn path {
+        stroke-width: 2;
+    }
+
+    .hide-content-btn:hover {
+        color: var(--primary);
+    }
+
+    .hide-content-btn:active {
+        border-radius: 34%;
+    }
+    .rotated {
+        transform: rotate(180deg);
+    }
+    .resultInnerContent {
+        display: grid;
+        grid-template-columns: 1fr 300px auto;
+        padding: 12px;
+        gap: 10px;
+        box-sizing: border-box;
+        animation: slideIn 0.4s forwards;
+    }
+    .hiddenContent {
+        display: none;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0.1;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+</style>

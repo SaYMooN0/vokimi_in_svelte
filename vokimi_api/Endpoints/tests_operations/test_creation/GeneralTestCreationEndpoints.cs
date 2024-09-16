@@ -181,5 +181,29 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             }
 
         }
+        public static IResult DeleteGeneralDraftTestResult(string resultId,
+                                                           IDbContextFactory<AppDbContext> dbFactory) {
+            DraftGeneralTestResultId resultToDeleteId;
+            if (!Guid.TryParse(resultId, out _)) {
+                return ResultsHelper.BadRequestWithErr("An error has occurred. Please refresh the page and try again");
+            }
+            resultToDeleteId = new(new(resultId));
+            using (var db = dbFactory.CreateDbContext()) {
+                try {
+                    DraftGeneralTestResult? res = db.DraftGeneralTestResults
+                                    .FirstOrDefault(q => q.Id == resultToDeleteId);
+                    if (res is null) {
+                        return ResultsHelper.BadRequestWithErr("Unknown result");
+                    }
+                    db.DraftGeneralTestResults.Remove(res);
+                    db.SaveChanges();
+                    return Results.Ok();
+                } catch {
+                    return ResultsHelper.BadRequestServerError();
+                }
+
+            }
+
+        }
     }
 }

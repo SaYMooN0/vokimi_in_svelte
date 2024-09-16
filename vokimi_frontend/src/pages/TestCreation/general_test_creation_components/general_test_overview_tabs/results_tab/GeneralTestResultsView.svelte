@@ -9,7 +9,6 @@
 
     export let resultsData: GeneralTestCreationResultsTabData;
     export let testId: string;
-    let creationErrorString: string = "";
 
     async function loadData() {
         const url =
@@ -17,35 +16,31 @@
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             resultsData = new GeneralTestCreationResultsTabData(data);
         } else {
             resultsData = GeneralTestCreationResultsTabData.empty();
         }
     }
-    async function createNewResult() {
-        creationErrorString = "";
 
-        const name =
-            "New Draft General Test Result #" + resultsData.results.length + 1;
-        const data = { testId, name };
-        const url = "/api/testCreation/general/createGeneralDraftTestResult";
-        const response = await fetch(url, {
-            method: "Post",
-            headers: {
-                "Content-Type": "application/json",
+    async function createNewResult() {
+        console.log("create new result");
+        const resultName =
+            "New Draft General Test Result #" +
+            (resultsData.results.length + 1);
+        const data = { resultName, testId };
+        const response = await fetch(
+            "/api/testCreation/general/createNewResult",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
             },
-            body: JSON.stringify(data),
-        });
+        );
         if (response.ok) {
             await loadData();
-        } else if (response.status === 400) {
-            creationErrorString = await getErrorFromResponse(response);
-        } else {
-            creationErrorString =
-                "Failed to create new result. Please try again later";
         }
-        await loadData();
     }
     function openResultEditingDialog(id: string) {
         resultEditingDialog.open(id);
@@ -70,9 +65,10 @@
                 return errorMessage;
             }
         };
+
         resultDeletingDialog.open(
             deletingAction,
-            `Do you really want to delete "${resultName}" question?`,
+            `Do you really want to delete "${resultName}" result?`,
         );
     }
 
@@ -81,6 +77,11 @@
     let errorMessage: string = "";
 </script>
 
+<DraftGeneralTestResultEditingDialog
+    bind:this={resultEditingDialog}
+    updateParentElementData={loadData}
+/>
+<ActionConfirmationDialog bind:this={resultDeletingDialog} />
 <TabViewDataLoader {loadData} isEmpty={() => resultsData.isEmpty()}>
     <div slot="empty">
         <h2>It seems like there is no results added yet</h2>
@@ -94,11 +95,15 @@
         <TabHeaderWithButton
             tabName="Test Results({resultsData.results.length})"
             buttonText="Add New Result"
-            onButtonClick={() => createNewResult}
+            onButtonClick={() => createNewResult()}
         />
         <div class="tab-content">
             {#each resultsData.results as result}
-                <DraftGeneralTesResultViewElement {result} />
+                <DraftGeneralTesResultViewElement
+                    {result}
+                    {openResultEditingDialog}
+                    {openResultDeletingDialog}
+                />
             {/each}
         </div>
     </div>
@@ -106,5 +111,9 @@
 
 <style>
     .tab-content {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 40px;
     }
 </style>
