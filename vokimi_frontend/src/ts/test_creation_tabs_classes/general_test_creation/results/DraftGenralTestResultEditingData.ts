@@ -1,6 +1,6 @@
 
 export class DraftGeneralTestResultEditingData {
-    id: string;
+    readonly id: string;
     name: string;
     text: string;
     imagePath: string | null;

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using vokimi_api.Src.db_related.db_entities_ids;
 
-namespace vokimi_api.Src.dtos.shared.draft_general_test_answers
+namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_answers
 {
     public abstract class BaseDraftGeneralTestAnswerFormData
     {
@@ -10,7 +10,8 @@ namespace vokimi_api.Src.dtos.shared.draft_general_test_answers
         [JsonPropertyName("relatedResults")]
         public Dictionary<string, string> RelatedResultsStringified
         {
-            get {
+            get
+            {
                 return RelatedResultsIdName.ToDictionary(
                     kvp => kvp.Key.Value.ToString(),
                     kvp => kvp.Value

@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using vokimi_api.Helpers;
+using vokimi_api.Services;
 using vokimi_api.Src;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.requests.test_creation.general_template;
 using vokimi_api.Src.dtos.responses.test_creation_responses.general;
+using vokimi_api.Src.dtos.shared.general_test_creation;
 
 namespace vokimi_api.Endpoints.tests_operations.test_creation
 {
@@ -80,15 +82,19 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                     if (question is null) {
                         return Results.BadRequest("Question not found");
                     }
-                    return Results.Ok(DraftGeneralTestQuestionDataToEdit.FromDraftTestQuestion(question));
+                    return Results.Ok(DraftGeneralTestQuestionData.FromDraftTestQuestion(question));
                 }
             } catch {
                 return Results.BadRequest();
             }
 
         }
-        public static IResult UpdateDraftGeneralTestQuestionData(IDbContextFactory<AppDbContext> dbFactory) {
-            return Results.BadRequest();
+        public static IResult SaveChangesForDraftGeneralTestQuestion(
+            [FromBody] DraftGeneralTestQuestionData newQuestionData,
+            IDbContextFactory<AppDbContext> dbFactory,
+            VokimiStorageService storageService) {
+
+            return ResultsHelper.BadRequestWithErr("Not implemented");
         }
         public static IResult GetResultsIdNameDictionary(string testId, IDbContextFactory<AppDbContext> dbFactory) {
             DraftTestId draftTestId;
@@ -123,7 +129,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 return ResultsHelper.BadRequestServerError();
             }
         }
-        public static IResult GetResultsDataToEdit(string testId, IDbContextFactory<AppDbContext> dbFactory) {
+        public static IResult GetDraftGeneralTestResultsData(string testId, IDbContextFactory<AppDbContext> dbFactory) {
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out _)) {
                 return ResultsHelper.BadRequestUnknownTest();
@@ -132,9 +138,24 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             using (var db = dbFactory.CreateDbContext()) {
                 var results = db.DraftGeneralTestResults
                     .Where(r => r.TestId == draftTestId)
-                    .Select(DraftGeneralTestResultDataToEdit.FromResult)
+                    .Select(DraftGeneralTestResultData.FromResult)
                     .ToArray();
                 return Results.Ok(results);
+            }
+        }
+        public static IResult GetDraftGeneralTestResultDataToEdit(string resultId,
+                                                                  IDbContextFactory<AppDbContext> dbFactory) {
+            DraftGeneralTestResultId resId;
+            if (!Guid.TryParse(resultId, out _)) {
+                return ResultsHelper.BadRequestWithErr("Unknown test result");
+            }
+            resId = new(new(resultId));
+            using (var db = dbFactory.CreateDbContext()) {
+                DraftGeneralTestResult? result = db.DraftGeneralTestResults.FirstOrDefault(r => r.Id == resId);
+                if (result is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown test result");
+                }
+                return Results.Ok(DraftGeneralTestResultData.FromResult(result));
             }
         }
         public static IResult DeleteGeneralDraftTestQuestion(string questionId,
@@ -204,6 +225,14 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
 
             }
 
+        }
+
+        public static IResult SaveChangesForDraftGeneralTestResult(
+            [FromBody] DraftGeneralTestResultData newResData,
+            IDbContextFactory<AppDbContext> dbFactory,
+            VokimiStorageService storageService) {
+
+            return ResultsHelper.BadRequestWithErr("Not implemented");
         }
     }
 }

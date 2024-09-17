@@ -1,11 +1,11 @@
 ﻿using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared.general_test_answers;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
-using vokimi_api.Src.dtos.shared.draft_general_test_answers;
+using vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_answers;
 using vokimi_api.Src.enums;
 
-namespace vokimi_api.Src.dtos.responses.test_creation_responses.general
+namespace vokimi_api.Src.dtos.shared.general_test_creation
 {
-    public record class DraftGeneralTestQuestionDataToEdit(
+    public record class DraftGeneralTestQuestionData(
         string Id,
         string Text,
         string? imagePath,
@@ -16,7 +16,7 @@ namespace vokimi_api.Src.dtos.responses.test_creation_responses.general
         List<BaseDraftGeneralTestAnswerFormData> answers
     )
     {
-        public static DraftGeneralTestQuestionDataToEdit FromDraftTestQuestion(DraftGeneralTestQuestion question) =>
+        public static DraftGeneralTestQuestionData FromDraftTestQuestion(DraftGeneralTestQuestion question) =>
             new(
                 question.Id.Value.ToString(),
                 question.Text,
@@ -28,11 +28,13 @@ namespace vokimi_api.Src.dtos.responses.test_creation_responses.general
                 ExtractAnswers(question).ToList()
             );
         private static IEnumerable<BaseDraftGeneralTestAnswerFormData> ExtractAnswers(
-            DraftGeneralTestQuestion question) {
+            DraftGeneralTestQuestion question)
+        {
             if (question.Answers.Count == 0)
                 return [];
 
-            switch (question.AnswersType) {
+            switch (question.AnswersType)
+            {
                 case GeneralTestAnswerType.TextOnly:
                     return question.Answers.Select(a =>
                         DraftGeneralTestTextOnlyAnswerFormData.New(

@@ -1,6 +1,6 @@
 ﻿using vokimi_api.Src.db_related.db_entities_ids;
 
-namespace vokimi_api.Src.dtos.shared.draft_general_test_answers
+namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_answers
 {
     public class DraftGeneralTestImageOnlyAnswerFormData : BaseDraftGeneralTestAnswerFormData
     {
@@ -8,7 +8,8 @@ namespace vokimi_api.Src.dtos.shared.draft_general_test_answers
         public static DraftGeneralTestImageOnlyAnswerFormData New(
             string image,
             Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName
-        ) => new() {
+        ) => new()
+        {
             Image = image,
             RelatedResultsIdName = relatedResultsIdName,
         };

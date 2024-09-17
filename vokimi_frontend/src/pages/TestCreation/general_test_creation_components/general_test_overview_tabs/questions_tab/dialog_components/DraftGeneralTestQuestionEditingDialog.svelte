@@ -6,13 +6,20 @@
         GeneralTestAnswerTypeUtils,
     } from "../../../../../../ts/enums/GeneralTestAnswerType";
     import { DraftGeneralTestQuestionEditingData } from "../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/DraftGenralTestQuestionEditingData";
+    import { StringUtils } from "../../../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import TextWithOptionalImageInput from "../../../../creation_shared_components/TextWithOptionalImageInput.svelte";
     import DraftGeneralTestQuestionEditingMultipleChoiceZone from "../dialog_components/editing_dialog_zone_components/DraftGeneralTestQuestionEditingMultipleChoiceZone.svelte";
     import DraftGeneralTestQuestionEditingAnswersZone from "./editing_dialog_zone_components/DraftGeneralTestQuestionEditingAnswersZone.svelte";
-    let fetchingDataErr: string = "";
+
     export let updateParentElementData: () => void;
     export let testId: string;
+
+    let fetchingDataErr: string = "";
+    let questionId: string;
+    let questionData: DraftGeneralTestQuestionEditingData;
+    let dialogElement: BaseDraftTestEditingDialog;
+
     export async function open(questionIdVal: string) {
         fetchingDataErr = "";
         questionId = questionIdVal;
@@ -47,11 +54,6 @@
         dialogElement.open();
     }
 
-    let questionId: string;
-    let questionData: DraftGeneralTestQuestionEditingData;
-
-    let dialogElement: BaseDraftTestEditingDialog;
-
     async function saveData() {
         const dataErr: string | null = checkFormDataForError();
         if (dataErr !== null) {
@@ -59,15 +61,13 @@
             return;
         }
         const response = await fetch(
-            "/api/testCreation/general/updateDraftGeneralTestQuestionData",
+            "/api/testCreation/general/saveChangesForDraftGeneralTestQuestion",
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    questionId: questionId,
-                }),
+                body: JSON.stringify(questionData),
             },
         );
         if (response.ok) {
@@ -81,7 +81,13 @@
         }
     }
     function checkFormDataForError(): string | null {
+        if (StringUtils.isNullOrWhiteSpace(questionData.text)) {
+            return "Question text cannot be empty";
+        }
         return null;
+    }
+    async function saveQuestionImage(file: File): Promise<string | null> {
+        return "not implemented";
     }
 </script>
 
@@ -92,12 +98,10 @@
     {#if fetchingDataErr === ""}
         <div class="dialog-content">
             <TextWithOptionalImageInput
-                text={questionData.text}
-                image={questionData.imagePath}
+                bind:text={questionData.text}
+                bind:image={questionData.imagePath}
                 textInputLabel="Question Text"
-                saveImageFunction={async () => {
-                    return "Not implemented";
-                }}
+                saveImageFunction={saveQuestionImage}
             />
             <div class="input-label">
                 Shuffle Answers:

@@ -102,19 +102,22 @@ namespace vokimi_api
                 GeneralTestCreationEndpoints.CreateGeneralTestQuestion);
             app.MapGet("/testCreation/general/getDraftGeneralTestQuestionDataToEdit/{questionId}",
                 GeneralTestCreationEndpoints.GetDraftGeneralTestQuestionDataToEdit);
-            app.MapPost("/testCreation/general/updateDraftGeneralTestQuestionData",
-                GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestionData);
             app.MapDelete("/testCreation/general/deleteGeneralDraftTestQuestion/{questionId}",
              GeneralTestCreationEndpoints.DeleteGeneralDraftTestQuestion);
+            app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestQuestion",
+                GeneralTestCreationEndpoints.SaveChangesForDraftGeneralTestQuestion);
 
             app.MapGet("/testCreation/general/getResultsIdNameDictionary/{testId}",
                 GeneralTestCreationEndpoints.GetResultsIdNameDictionary);
             app.MapPost("/testCreation/general/createNewResult", GeneralTestCreationEndpoints.CreateNewResultForTest);
-            app.MapGet("/testCreation/general/getTestResultsDataToEdit/{testId}",
-                GeneralTestCreationEndpoints.GetResultsDataToEdit);
-            app.MapDelete("/testCreation/general/deleteGeneralDraftTestResult/{resultId}",
+            app.MapGet("/testCreation/general/getGeneralDraftTestResultsData/{testId}",
+                GeneralTestCreationEndpoints.GetDraftGeneralTestResultsData);
+            app.MapGet("/testCreation/general/getDraftGeneralTestResultDataToEdit/{resultId}",
+            GeneralTestCreationEndpoints.GetDraftGeneralTestResultDataToEdit);
+            app.MapDelete("/testCreation/general/deleteDraftGeneralTestResult/{resultId}",
                 GeneralTestCreationEndpoints.DeleteGeneralDraftTestResult);
-         
+            app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestResult",
+                GeneralTestCreationEndpoints.SaveChangesForDraftGeneralTestResult);
 
             app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
             app.MapPost("/testCreation/updateDraftTestQuestionCover/{testId}",

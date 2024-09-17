@@ -40,10 +40,12 @@
     </div>
     <div class:hiddenContent={isHidden} class:resultInnerContent={!isHidden}>
         <label class="result-text">
-            {result.text}
+            {StringUtils.isNullOrWhiteSpace(result.text)
+                ? "(No result text added)"
+                : result.text}
         </label>
         {#if StringUtils.isNullOrWhiteSpace(result.imagePath)}
-            <button class="add-image-button">Add Image</button>
+            <p class="no-result-image">(No result image added)</p>
         {:else}
             <img
                 src={ImgUtils.imgUrl(result.imagePath ?? "")}
@@ -74,6 +76,9 @@
         box-sizing: border-box;
         display: grid;
         grid-template-columns: 1fr auto;
+    }
+    .result-name {
+        margin: 8px 16px;
     }
     .hide-content-btn {
         margin-right: 6px;
@@ -111,6 +116,13 @@
     }
     .hiddenContent {
         display: none;
+    }
+    .result-text {
+    }
+    .no-result-image {
+        text-align: center;
+        margin-bottom: auto;
+        margin-top: 0;
     }
 
     @keyframes slideIn {

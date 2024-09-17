@@ -5,19 +5,19 @@
     export let text: string = "";
     export let textInputLabel: string = "Text:";
     export let image: string | null = null;
-    export let saveImageFunction: (image: string) => Promise<string | null>;
+    export let saveImageFunction: (file: File) => Promise<string | null>;
 
     let imageUploadingErr: string = "";
     function anyImageAdded(): boolean {
         return image !== null;
     }
 
-    function saveImage() {
+    function saveImage(file: File) {
         if (image === null) {
             imageUploadingErr = "Please choose an image first";
             return;
         }
-        saveImageFunction(image).then((imgSavingErr: string | null) => {
+        saveImageFunction(file).then((imgSavingErr: string | null) => {
             if (imgSavingErr !== null) {
                 imageUploadingErr = imgSavingErr;
                 return;

@@ -12,7 +12,7 @@
 
     async function loadData() {
         const url =
-            "/api/testCreation/general/getTestResultsDataToEdit/" + testId;
+            "/api/testCreation/general/getGeneralDraftTestResultsData/" + testId;
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
@@ -51,7 +51,7 @@
     ) {
         const deletingAction: () => Promise<string | null> = async () => {
             const url =
-                "/api/testCreation/general/deleteGeneralDraftTestResult/" +
+                "/api/testCreation/general/deleteDraftGeneralTestResult/" +
                 resultId;
             const response = await fetch(url, {
                 method: "DELETE",
