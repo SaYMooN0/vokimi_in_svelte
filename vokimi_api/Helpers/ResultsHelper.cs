@@ -6,6 +6,8 @@ namespace vokimi_api.Helpers
     {
         public static IResult BadRequestWithErr(string err) =>
             TypedResults.BadRequest(new { Error = err });
+        public static IResult BadRequestSaveChangesTryAgain() =>
+            BadRequestWithErr("Server error. Save existing changes and try to refresh the page");
         public static IResult BadRequestUnknownTest() =>
             BadRequestWithErr("Unknown Test");
         public static IResult BadRequestMaxImgSizeIs3MB() =>

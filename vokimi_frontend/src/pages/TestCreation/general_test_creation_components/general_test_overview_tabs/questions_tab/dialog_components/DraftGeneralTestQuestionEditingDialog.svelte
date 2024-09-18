@@ -5,7 +5,10 @@
         GeneralTestAnswerType,
         GeneralTestAnswerTypeUtils,
     } from "../../../../../../ts/enums/GeneralTestAnswerType";
+    import type { Err } from "../../../../../../ts/Err";
+    import { getErrorFromResponse } from "../../../../../../ts/ErrorResponse";
     import { DraftGeneralTestQuestionEditingData } from "../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/DraftGenralTestQuestionEditingData";
+    import { ImgUtils } from "../../../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import TextWithOptionalImageInput from "../../../../creation_shared_components/TextWithOptionalImageInput.svelte";
@@ -86,8 +89,11 @@
         }
         return null;
     }
-    async function saveQuestionImage(file: File): Promise<string | null> {
-        return "not implemented";
+    async function saveQuestionImage(file: File): Promise<string | Err> {
+        return await ImgUtils.saveImage(
+            file,
+            `saveDraftGeneralTestQuestionImage/${questionId}`,
+        );
     }
 </script>
 
@@ -99,7 +105,7 @@
         <div class="dialog-content">
             <TextWithOptionalImageInput
                 bind:text={questionData.text}
-                bind:image={questionData.imagePath}
+                bind:imagePath={questionData.imagePath}
                 textInputLabel="Question Text"
                 saveImageFunction={saveQuestionImage}
             />

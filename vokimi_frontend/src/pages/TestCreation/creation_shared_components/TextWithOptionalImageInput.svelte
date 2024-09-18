@@ -1,51 +1,67 @@
 <script lang="ts">
     import BasicTextAreaInput from "../../../components/shared/BasicTextAreaInput.svelte";
+    import { Err } from "../../../ts/Err";
     import { ImgUtils } from "../../../ts/utils/ImgUtils";
+    import { StringUtils } from "../../../ts/utils/StringUtils";
 
     export let text: string = "";
     export let textInputLabel: string = "Text:";
-    export let image: string | null = null;
-    export let saveImageFunction: (file: File) => Promise<string | null>;
+    export let imagePath: string | null = null;
+    export let saveImageFunction: (file: File) => Promise<string | Err>;
 
     let imageUploadingErr: string = "";
-    function anyImageAdded(): boolean {
-        return image !== null;
-    }
 
-    function saveImage(file: File) {
-        if (image === null) {
+
+    async function saveImage(event: Event) {
+        const input = event.target as HTMLInputElement;
+        let file: File | null = null;
+        if (input.files && input.files.length > 0) {
+            file = input.files[0];
+        }
+
+        if (file === null) {
             imageUploadingErr = "Please choose an image first";
             return;
         }
-        saveImageFunction(file).then((imgSavingErr: string | null) => {
-            if (imgSavingErr !== null) {
-                imageUploadingErr = imgSavingErr;
-                return;
-            }
-        });
+        const saveImageData: string | Err = await saveImageFunction(file);
+
+        if (typeof saveImageData === "string") {
+            console.log("before", imagePath);
+            imagePath = saveImageData;
+            console.log("after", imagePath);
+        } else {
+            imageUploadingErr = saveImageData.toString();
+        }
     }
-    function removeImage() {}
+    function removeImage() {
+        imagePath = null;
+    }
 </script>
 
-<div class:horizontal={anyImageAdded()} class:vertical={!anyImageAdded()}>
+<div class:horizontal={!StringUtils.isNullOrWhiteSpace(imagePath)} class:vertical={StringUtils.isNullOrWhiteSpace(imagePath)}>
     <div class="text-input-part">
         <label class="text-input-label" for="text-input-textarea">
             {textInputLabel}
         </label>
         <BasicTextAreaInput bind:text id="text-input-textarea" />
     </div>
-    <input type="file" id="img-input" accept=".jpg,.png,.webp" hidden />
-    {#if anyImageAdded()}
+    <input
+        type="file"
+        id="img-input"
+        accept=".jpg,.png,.webp"
+        hidden
+        on:change={saveImage}
+    />
+    {#if !StringUtils.isNullOrWhiteSpace(imagePath)}
         <div class="image-editing-part">
             <div class="img-display">
                 <img
                     src={ImgUtils.imgUrlWithVersion(
-                        image === null ? "" : image,
+                        imagePath === null ? "" : imagePath,
                     )}
                     alt="Image"
                 />
             </div>
-            <label class="img-uploading-error">{imageUploadingErr}</label>
             <div class="img-editing-btns">
                 <label for="img-input" class="change-btn">Change</label>
                 <label class="remove-btn" on:click={removeImage}>
@@ -82,6 +98,7 @@
             </svg>
         </label>
     {/if}
+    <label class="img-uploading-error">{imageUploadingErr}</label>
 </div>
 
 <style>
@@ -141,5 +158,13 @@
 
     .add-img-btn:hover {
         background-color: var(--primary-hov);
+    }
+    .img-editing-btns{
+        display: flex;
+        gap: 8px;
+        flex-direction: column;
+    }
+    .img-editing-btns label{
+        background-color: var(--primary);
     }
 </style>

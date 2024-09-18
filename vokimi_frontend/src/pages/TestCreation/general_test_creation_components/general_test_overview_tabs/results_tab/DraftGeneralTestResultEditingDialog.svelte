@@ -1,5 +1,7 @@
 <script lang="ts">
-    import { DraftGeneralTestResultEditingData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/results/DraftGenralTestResultEditingData";
+    import type { Err } from "../../../../../ts/Err";
+    import { DraftGeneralTestResultEditingData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/results/DraftGeneralTestResultEditingData";
+    import { ImgUtils } from "../../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import TextWithOptionalImageInput from "../../../creation_shared_components/TextWithOptionalImageInput.svelte";
@@ -65,8 +67,11 @@
     function checkFormDataForError(): string | null {
         return null;
     }
-    async function saveResultImage(file: File): Promise<string | null> {
-        return "not implemented";
+    async function saveResultImage(file: File): Promise<string | Err> {
+        return await ImgUtils.saveImage(
+            file,
+            `saveDraftGeneralTestResultImage/${resultId}`,
+        );
     }
     let resultNameInputId: string;
 </script>
@@ -89,7 +94,7 @@
             </p>
             <TextWithOptionalImageInput
                 bind:text={resultData.text}
-                bind:image={resultData.imagePath}
+                bind:imagePath={resultData.imagePath}
                 textInputLabel="Result Text"
                 saveImageFunction={saveResultImage}
             />

@@ -15,11 +15,11 @@ namespace vokimi_api.Endpoints
     {
         public static async Task<IResult> GetImgFromStorage(string fileKey, VokimiStorageService storageService) =>
             (await storageService.GetImgFromStorage(fileKey)) ?? Results.Problem("Unable to get image");
- 
+
         public static async Task<IResult> UpdateDraftTestQuestionCover(string testId,
-                                                           IFormFile file,
-                                                           IDbContextFactory<AppDbContext> dbFactory,
-                                                           VokimiStorageService vokimiStorage) {
+                                                                       IFormFile file,
+                                                                       IDbContextFactory<AppDbContext> dbFactory,
+                                                                       VokimiStorageService vokimiStorage) {
             DraftTestId id;
             if (Guid.TryParse(testId, out Guid testGuid)) {
                 id = new(testGuid);
@@ -55,17 +55,45 @@ namespace vokimi_api.Endpoints
             }
         }
         public static async Task<IResult> SaveDraftGeneralTestAnswerImage(string questionId,
-                                                                   IFormFile file,
-                                                                   VokimiStorageService storageService) {
+                                                                          IFormFile file,
+                                                                          VokimiStorageService storageService) {
             DraftGeneralTestQuestionId qId;
             if (Guid.TryParse(questionId, out Guid guid)) {
                 qId = new(guid);
             } else {
-                return ResultsHelper.BadRequestWithErr(
-                    "Server error. Save existing changes and try to refresh the page");
+                return ResultsHelper.BadRequestSaveChangesTryAgain();
             }
             string key = $"{ImgOperationsConsts.DraftGeneralTestAnswersFolder}/" +
                          $"{qId.Value.ToString()}" +
+                         $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
+            return await ImgOperationsHelper.IResultSaveImgToStorage(key, file, storageService);
+        }
+
+        public static async Task<IResult> SaveDraftGeneralTestQuestionImage(string questionId,
+                                                                           IFormFile file,
+                                                                           VokimiStorageService storageService) {
+            DraftGeneralTestQuestionId qId;
+            if (Guid.TryParse(questionId, out Guid guid)) {
+                qId = new(guid);
+            } else {
+                return ResultsHelper.BadRequestSaveChangesTryAgain();
+            }
+            string key = $"{ImgOperationsConsts.DraftGeneralTestQuestionsFolder}/" +
+                         $"{qId.Value.ToString()}" +
+                         $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
+            return await ImgOperationsHelper.IResultSaveImgToStorage(key, file, storageService);
+        }
+        public static async Task<IResult> SaveDraftGeneralTestResultImage(string resultId,
+                                                                          IFormFile file,
+                                                                          VokimiStorageService storageService) {
+            DraftGeneralTestResultId rId;
+            if (Guid.TryParse(resultId, out Guid guid)) {
+                rId = new(guid);
+            } else {
+                return ResultsHelper.BadRequestSaveChangesTryAgain();
+            }
+            string key = $"{ImgOperationsConsts.DraftGeneralTestResultsFolder}/" +
+                         $"{rId.Value.ToString()}" +
                          $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
             return await ImgOperationsHelper.IResultSaveImgToStorage(key, file, storageService);
         }

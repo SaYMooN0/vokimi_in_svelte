@@ -1,5 +1,4 @@
-﻿using vokimi_api.Src.db_related.db_entities_ids;
-
+﻿
 namespace vokimi_api.Src.constants_store_classes
 {
     public class ImgOperationsConsts
@@ -12,8 +11,9 @@ namespace vokimi_api.Src.constants_store_classes
             //draft tests
             DraftTestCoversFolder = "draft_tests_covers",
             // draft general tests
-            DraftTestQuestionsFolder = "draft_general_tests_questions",
-            DraftGeneralTestAnswersFolder = "draft_general_tests_answers";
+            DraftGeneralTestQuestionsFolder = "draft_general_tests_questions",
+            DraftGeneralTestAnswersFolder = "draft_general_tests_answers",
+            DraftGeneralTestResultsFolder = "draft_general_tests_results";
 
         public static string DefaultTestCoverImg => $"{GeneralFolder}/test_cover_default.webp";
         public static string DefaultProfilePicture => $"{GeneralFolder}/default_profile_picture.webp";
