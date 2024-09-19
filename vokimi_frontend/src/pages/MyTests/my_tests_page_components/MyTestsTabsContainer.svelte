@@ -4,7 +4,6 @@
     import type { MyTestsPageTestViewModel } from "../../../ts/MyTestsPageTestViewModel";
     import NewTestCreationDialog from "./NewTestCreationDialog.svelte";
 
-
     enum MyTestsPageTabs {
         DraftTests = "Draft Tests",
         PublishedTests = "Published Tests",
@@ -34,9 +33,9 @@
     </div>
     <div class="tab-content-container">
         {#if currentActiveTab === MyTestsPageTabs.DraftTests}
-            <DraftTestsTab {draftTests} />
+            <DraftTestsTab bind:draftTests />
         {:else if currentActiveTab === MyTestsPageTabs.PublishedTests}
-            <PublishedTestsTab {publishedTests} />
+            <PublishedTestsTab bind:publishedTests />
         {:else}
             <p>Something went wrong</p>
         {/if}
@@ -82,7 +81,7 @@
         text-decoration-thickness: 2px;
         text-underline-offset: 4px;
     }
-    .create-new-btn{
+    .create-new-btn {
         width: 200px;
         height: 44px;
         border-radius: 4px;

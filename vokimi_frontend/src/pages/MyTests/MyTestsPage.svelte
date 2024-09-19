@@ -2,7 +2,10 @@
     import AuthorizeView from "../../components/AuthorizeView.svelte";
     import MyTestsTabsContainer from "./my_tests_page_components/MyTestsTabsContainer.svelte";
     import LoadingMessage from "../../components/shared/LoadingMessage.svelte";
+    
 </script>
+
+
 
 <AuthorizeView>
     <div slot="loading">
