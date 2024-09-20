@@ -3,6 +3,7 @@
     import type { DraftGeneralTestQuestionBriefInfo } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
     import ElementEditDeleteActions from "../../../creation_shared_components/ElementEditDeleteActions.svelte";
 
+    export let refreshParentComponentAction: () => void;
     export let question: DraftGeneralTestQuestionBriefInfo;
     export let openQuestionEditingDialog: (questionId: string) => void;
     export let openQuestionDeletingDialog: (
@@ -10,8 +11,29 @@
         questionText: string,
     ) => void;
 
-    async function MoveQuestionUpInOrder() {}
-    async function MoveQuestionDownInOrder() {}
+    async function MoveQuestionUpInOrder() {
+        if(question.orderInTest===0){
+            return;
+        }
+        const url =
+            "/api/testCreation/general/moveQuestionUpInOrder/" + question.id;
+        const response = await fetch(url, {
+            method: "POST",
+        });
+        if (response.ok) {
+            await refreshParentComponentAction();
+        }
+    }
+    async function MoveQuestionDownInOrder() {
+        const url =
+            "/api/testCreation/general/moveQuestionDownInOrder/" + question.id;
+        const response = await fetch(url, {
+            method: "POST",
+        });
+        if (response.ok) {
+            await refreshParentComponentAction();
+        }
+    }
 </script>
 
 <div class="question-container">

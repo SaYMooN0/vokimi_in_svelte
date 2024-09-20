@@ -13,13 +13,14 @@
     } else {
         fetchDraftTests();
     }
-
 </script>
 
 {#if fetched}
     <h2 class="your-draft-tests-label">Your draft tests:</h2>
     {#each draftTests as test}
-        <p>{test.name}</p>
+        <a href="/testCreation/{test.id}/main-info-view">
+            <p>{test.name}</p>
+        </a>
     {/each}
 {:else}
     <div class="loading-div">

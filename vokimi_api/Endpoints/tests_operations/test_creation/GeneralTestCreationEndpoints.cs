@@ -234,5 +234,91 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
 
             return ResultsHelper.BadRequestWithErr("Not implemented");
         }
+
+        public static IResult MoveQuestionUpInOrder(string questionId,
+                                                    IDbContextFactory<AppDbContext> dbFactory) {
+            DraftGeneralTestQuestionId questionToMoveId;
+            if (!Guid.TryParse(questionId, out _)) {
+                return ResultsHelper.BadRequestServerError();
+            }
+            questionToMoveId = new(new(questionId));
+            using (var db = dbFactory.CreateDbContext()) {
+                using (var transaction = db.Database.BeginTransaction()) {
+                    try {
+                        DraftGeneralTestQuestion? questionToMoveUp = db.DraftGeneralTestQuestions
+                            .FirstOrDefault(q => q.Id == questionToMoveId);
+                        if (questionToMoveUp is null) {
+                            return ResultsHelper.BadRequestServerError();
+                        }
+                        if (questionToMoveUp.OrderInTest == 0) {
+                            return ResultsHelper.BadRequestServerError();
+                        }
+                        var testQuestions = db.DraftGeneralTestQuestions.Where(q => q.TestId == questionToMoveUp.TestId);
+
+                        ushort questionToMoveUpCurrentOrder = questionToMoveUp.OrderInTest;
+                        DraftGeneralTestQuestion? questionToMoveDown =
+                            testQuestions.FirstOrDefault(q => q.OrderInTest == questionToMoveUpCurrentOrder - 1);
+                        if (questionToMoveDown is not null) {
+                            questionToMoveDown.UpdateOrderInTest(questionToMoveUpCurrentOrder);
+                            db.DraftGeneralTestQuestions.Update(questionToMoveDown);
+                        }
+                        questionToMoveUp.UpdateOrderInTest((ushort)(questionToMoveUpCurrentOrder - 1));
+                        db.DraftGeneralTestQuestions.Update(questionToMoveUp);
+
+                        db.SaveChanges();
+                        transaction.Commit();
+                        return Results.Ok();
+
+                    } catch {
+                        transaction.Rollback();
+                        return ResultsHelper.BadRequestServerError();
+                    }
+                }
+            }
+        }
+        public static IResult MoveQuestionDownInOrder(string questionId,
+                                              IDbContextFactory<AppDbContext> dbFactory) {
+            DraftGeneralTestQuestionId questionToMoveId;
+            if (!Guid.TryParse(questionId, out _)) {
+                return ResultsHelper.BadRequestServerError();
+            }
+            questionToMoveId = new(new(questionId));
+            using (var db = dbFactory.CreateDbContext()) {
+                using (var transaction = db.Database.BeginTransaction()) {
+                    try {
+                        DraftGeneralTestQuestion? questionToMoveDown = db.DraftGeneralTestQuestions
+                            .FirstOrDefault(q => q.Id == questionToMoveId);
+                        if (questionToMoveDown is null) {
+                            return ResultsHelper.BadRequestServerError();
+                        }
+
+                        var testQuestions = db.DraftGeneralTestQuestions.Where(q => q.TestId == questionToMoveDown.TestId);
+
+                        ushort questionToMoveDownCurrentOrder = questionToMoveDown.OrderInTest;
+                        DraftGeneralTestQuestion? questionToMoveUp =
+                            testQuestions.FirstOrDefault(q => q.OrderInTest == questionToMoveDownCurrentOrder + 1);
+                        if (questionToMoveUp is null) {
+                            return ResultsHelper.BadRequestServerError();
+                        }
+                        questionToMoveUp.UpdateOrderInTest(questionToMoveDownCurrentOrder);
+                        questionToMoveDown.UpdateOrderInTest((ushort)(questionToMoveDownCurrentOrder + 1));
+
+                        db.DraftGeneralTestQuestions.Update(questionToMoveUp);
+                        db.DraftGeneralTestQuestions.Update(questionToMoveDown);
+
+                        db.SaveChanges();
+                        transaction.Commit();
+                        return Results.Ok();
+
+                    } catch {
+                        transaction.Rollback();
+                        return ResultsHelper.BadRequestServerError();
+                    }
+                }
+            }
+        }
+
+
+
     }
 }

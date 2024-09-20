@@ -106,6 +106,10 @@ namespace vokimi_api
              GeneralTestCreationEndpoints.DeleteGeneralDraftTestQuestion);
             app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestQuestion",
                 GeneralTestCreationEndpoints.SaveChangesForDraftGeneralTestQuestion);
+            app.MapPost("/testCreation/general/moveQuestionUpInOrder/{questionId}",
+                GeneralTestCreationEndpoints.MoveQuestionUpInOrder);
+            app.MapPost("/testCreation/general/moveQuestionDownInOrder/{questionId}",
+                GeneralTestCreationEndpoints.MoveQuestionDownInOrder);
 
             app.MapGet("/testCreation/general/getResultsIdNameDictionary/{testId}",
                 GeneralTestCreationEndpoints.GetResultsIdNameDictionary);

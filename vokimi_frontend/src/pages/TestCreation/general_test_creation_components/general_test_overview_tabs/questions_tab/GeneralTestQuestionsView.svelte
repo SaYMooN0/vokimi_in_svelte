@@ -43,7 +43,7 @@
                 questionDeletingDialog.close();
                 return null;
             } else {
-                const errorMessage =await getErrorFromResponse(response);
+                const errorMessage = await getErrorFromResponse(response);
                 return errorMessage;
             }
         };
@@ -91,6 +91,7 @@
         <div class="tab-content">
             {#each questionsData.questions.sort((a, b) => a.orderInTest - b.orderInTest) as question}
                 <DraftGeneralTestQuestionViewElement
+                    refreshParentComponentAction={loadData}
                     {question}
                     {openQuestionEditingDialog}
                     {openQuestionDeletingDialog}
