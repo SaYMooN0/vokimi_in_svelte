@@ -15,6 +15,7 @@ using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.requests.test_creation.templates_shared;
 using vokimi_api.Src.dtos.responses;
 using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
+using vokimi_api.Src.dtos.shared.test_creation_shared;
 using vokimi_api.Src.enums;
 
 namespace vokimi_api.Endpoints.tests_operations.test_creation
@@ -77,11 +78,11 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
         }
 
         public static IResult GetDraftTestMainInfoData(IDbContextFactory<AppDbContext> dbFactory, string testId) {
-            if (string.IsNullOrEmpty(testId)) { return Results.BadRequest(); }
+            if (string.IsNullOrEmpty(testId)) { return ResultsHelper.BadRequestServerError(); }
 
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out _)) {
-                return Results.BadRequest();
+                return ResultsHelper.BadRequestServerError();
             }
             draftTestId = new(new(testId));
 
@@ -89,7 +90,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 BaseDraftTest? test = db.DraftTestsSharedInfo
                         .Include(t => t.MainInfo)
                         .FirstOrDefault(t => t.Id == draftTestId);
-                if (test is null || test.MainInfo is null) { return Results.BadRequest(); }
+                if (test is null || test.MainInfo is null) { return ResultsHelper.BadRequestServerError(); }
                 return Results.Ok(DraftTestMainInfoDataResponse.FromDraftTest(test));
             }
         }
@@ -145,6 +146,24 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 }
             } catch {
                 return ResultsHelper.BadRequestServerError();
+            }
+        }
+
+        public static IResult GetDraftTestConclusionData(IDbContextFactory<AppDbContext> dbFactory, string testId) {
+            if (string.IsNullOrEmpty(testId)) { return ResultsHelper.BadRequestServerError(); }
+
+            DraftTestId draftTestId;
+            if (!Guid.TryParse(testId, out _)) {
+                return ResultsHelper.BadRequestServerError();
+            }
+            draftTestId = new(new(testId));
+
+            using (var db = dbFactory.CreateDbContext()) {
+                BaseDraftTest? test = db.DraftTestsSharedInfo
+                        .Include(t => t.Conclusion)
+                        .FirstOrDefault(t => t.Id == draftTestId);
+                if (test is null) { return ResultsHelper.BadRequestServerError(); }
+                return Results.Ok(DraftTestConclusionData.FromConclusion(test.Conclusion));
             }
         }
     }

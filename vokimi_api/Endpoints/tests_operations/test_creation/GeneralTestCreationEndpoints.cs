@@ -232,7 +232,26 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             IDbContextFactory<AppDbContext> dbFactory,
             VokimiStorageService storageService) {
 
-            return ResultsHelper.BadRequestWithErr("Not implemented");
+            DraftGeneralTestResultId resId;
+            if (Guid.TryParse(newResData.Id, out var guid)) {
+                resId = new(guid);
+            } else {
+                return ResultsHelper.BadRequestWithErr("Unable to save changes. Please try again later");
+            }
+            using (var db = dbFactory.CreateDbContext()) {
+                DraftGeneralTestResult? res = db.DraftGeneralTestResults.FirstOrDefault(r => r.Id == resId);
+                if (res is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown result");
+                }
+                Err validationErr = newResData.CheckForErr();
+                if(validationErr.NotNone()) {
+                    return ResultsHelper.BadRequestWithErr(validationErr.ToString());
+                }
+                res.Update(newResData.Name, newResData.Text, newResData.ImagePath);
+                db.Update(res);
+                db.SaveChanges();
+                return Results.Ok();
+            }
         }
 
         public static IResult MoveQuestionUpInOrder(string questionId,

@@ -23,7 +23,6 @@
     }
 
     async function createNewResult() {
-        console.log("create new result");
         const resultName =
             "New Draft General Test Result #" +
             (resultsData.results.length + 1);
