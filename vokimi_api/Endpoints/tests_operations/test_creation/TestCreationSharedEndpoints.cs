@@ -150,7 +150,6 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
         }
 
         public static IResult GetDraftTestConclusionData(IDbContextFactory<AppDbContext> dbFactory, string testId) {
-            if (string.IsNullOrEmpty(testId)) { return ResultsHelper.BadRequestServerError(); }
 
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out _)) {
@@ -164,6 +163,63 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                         .FirstOrDefault(t => t.Id == draftTestId);
                 if (test is null) { return ResultsHelper.BadRequestServerError(); }
                 return Results.Ok(DraftTestConclusionData.FromConclusion(test.Conclusion));
+            }
+        }
+        public static IResult CreateDraftTestConclusion(IDbContextFactory<AppDbContext> dbFactory, string testId) {
+            DraftTestId draftTestId;
+            if (!Guid.TryParse(testId, out _)) {
+                return ResultsHelper.BadRequestServerError();
+            }
+            draftTestId = new(new(testId));
+            using (var db = dbFactory.CreateDbContext()) {
+                BaseDraftTest? test = db.DraftTestsSharedInfo
+                    .Include(t => t.Conclusion)
+                    .FirstOrDefault(t => t.Id == draftTestId);
+                if (test is null) {
+                    return ResultsHelper.BadRequestServerError();
+                }
+                if (test.Conclusion is not null) {
+                    return Results.Ok();
+                } else {
+                    try {
+
+                        TestConclusion conclusion = TestConclusion.CreateNew();
+                        db.TestConclusions.Add(conclusion);
+                        test.SetConclusion(conclusion);
+                        db.SaveChanges();
+                        return Results.Ok();
+                    } catch {
+                        return ResultsHelper.BadRequestServerError();
+                    }
+                }
+            }
+        }
+        public static IResult UpdateDraftTestConclusion(IDbContextFactory<AppDbContext> dbFactory,
+                                                        [FromBody] DraftTestConclusionData data) {
+            TestConclusionId id;
+            if (!Guid.TryParse(data.Id, out var _)) {
+                return ResultsHelper.BadRequestWithErr("Unable to update conclusion. Please try again later");
+            }
+            id = new(new(data.Id));
+            using (var db = dbFactory.CreateDbContext()) {
+                TestConclusion? conclusion = db.TestConclusions.FirstOrDefault(c => c.Id == id);
+                if (conclusion is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown conclusion");
+                }
+                Err validationErr = data.CheckForErr();
+                if (validationErr.NotNone()) {
+                    return ResultsHelper.BadRequestWithErr(validationErr.Message);
+                }
+                conclusion.Update(
+                    data.Text,
+                    data.AdditionalImage,
+                    data.AnyFeedback,
+                    data.FeedbackText,
+                    data.maxFeedbackLength
+                );
+                db.Update(conclusion);
+                db.SaveChanges();
+                return Results.Ok();
             }
         }
     }

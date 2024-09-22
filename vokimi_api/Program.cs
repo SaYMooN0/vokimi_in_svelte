@@ -96,7 +96,9 @@ namespace vokimi_api
             app.MapPost("/testCreation/setDraftTestCoverToDefault/{testId}",
                 TestCreationSharedEndpoints.SetDraftTestCoverToDefault);
             app.MapGet("/testCreation/getDraftTestConclusionData/{testId}",
-              TestCreationSharedEndpoints.GetDraftTestConclusionData);
+              TestCreationSharedEndpoints.GetDraftTestConclusionData);          
+            app.MapPost("/testCreation/createDraftTestConclusion/{testId}",
+              TestCreationSharedEndpoints.CreateDraftTestConclusion);
 
             app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}",
                 GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);

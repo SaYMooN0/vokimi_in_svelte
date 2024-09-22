@@ -1,4 +1,5 @@
-﻿using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
+﻿using vokimi_api.Src.constants_store_classes;
+using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 
 namespace vokimi_api.Src.dtos.shared.test_creation_shared
 {
@@ -22,5 +23,26 @@ namespace vokimi_api.Src.dtos.shared.test_creation_shared
                 conclusion.FeedbackText,
                 conclusion.MaxFeedbackLength
             );
+        public Err CheckForErr() {
+            int textLength = string.IsNullOrWhiteSpace(Text) ? 0 : Text.Length;
+            if (textLength > BaseTestCreationConsts.ConclusionMaxTextLength) {
+                return new Err($"Conclusion text cannot be longer than {BaseTestCreationConsts.ConclusionMaxTextLength} characters");
+            }
+            if (textLength == 0 && string.IsNullOrWhiteSpace(AdditionalImage)) {
+                return new Err($"Conclusion must have either text or image");
+            }
+            if (AnyFeedback) {
+                int feedbackAccomplyingTextLength = string.IsNullOrWhiteSpace(FeedbackText) ? 0 : FeedbackText.Length;
+                if (feedbackAccomplyingTextLength > BaseTestCreationConsts.ConclusionMaxAccompanyingFeedbackTextLength) {
+                    return new Err("Maximal length of the feedback accompanying text is" +
+                        $"{BaseTestCreationConsts.ConclusionMaxAccompanyingFeedbackTextLength} characters");
+                }
+                if (maxFeedbackLength > BaseTestCreationConsts.ConclusionMaxFeedbackLength) {
+                    return new Err("Maximal feedback length cannot be more than " +
+                        $"{BaseTestCreationConsts.ConclusionMaxFeedbackLength} characters");
+                }
+            }
+            return Err.None;
+        }
     }
 }

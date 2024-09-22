@@ -9,19 +9,21 @@ namespace vokimi_api.Src.db_related.db_entities.draft_published_tests_shared
         public string Text { get; private set; }
         public string? AdditionalImage { get; private set; }
         public bool AnyFeedback { get; private set; }
-        public string FeedbackText { get; private set; }
+        public string? FeedbackText { get; private set; }
         public uint MaxFeedbackLength { get; private set; }
         public static TestConclusion CreateNew() => new() {
             Id = new(),
             Text = "Text of the conclusion for the test",
             AdditionalImage = null,
             AnyFeedback = false,
+            FeedbackText = null,
             MaxFeedbackLength = 64
         };
-        public void Update(string text, string? additionalImage, bool anyFeedback, uint maxFeedbackLength) {
+        public void Update(string text, string? additionalImage, bool anyFeedback, string feedbackText, uint maxFeedbackLength) {
             Text = text;
             AdditionalImage = additionalImage;
             AnyFeedback = anyFeedback;
+            FeedbackText = feedbackText;
             MaxFeedbackLength = maxFeedbackLength;
         }
 

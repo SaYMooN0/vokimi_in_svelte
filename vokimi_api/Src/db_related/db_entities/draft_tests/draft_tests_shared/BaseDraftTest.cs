@@ -17,5 +17,10 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared
         public TestTemplate Template { get; init; }
         public TestStylesSheetId StylesSheetId { get; protected set; }
         public virtual TestStylesSheet StylesSheet { get; protected set; }
+
+        public void SetConclusion(TestConclusion conclusion) {
+            this.ConclusionId = conclusion.Id;
+            this.Conclusion = conclusion;
+        }
     }
 }
