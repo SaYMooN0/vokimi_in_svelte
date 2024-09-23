@@ -96,9 +96,10 @@ namespace vokimi_api
             app.MapPost("/testCreation/setDraftTestCoverToDefault/{testId}",
                 TestCreationSharedEndpoints.SetDraftTestCoverToDefault);
             app.MapGet("/testCreation/getDraftTestConclusionData/{testId}",
-              TestCreationSharedEndpoints.GetDraftTestConclusionData);          
+              TestCreationSharedEndpoints.GetDraftTestConclusionData);
             app.MapPost("/testCreation/createDraftTestConclusion/{testId}",
               TestCreationSharedEndpoints.CreateDraftTestConclusion);
+            app.MapPost("testCreation/updateDraftTestConclusion", TestCreationSharedEndpoints.UpdateDraftTestConclusion);
 
             app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}",
                 GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
@@ -136,6 +137,8 @@ namespace vokimi_api
                 ImgOperationsEndpoints.SaveDraftGeneralTestQuestionImage).DisableAntiforgery();
             app.MapPost("/saveimg/saveDraftGeneralTestResultImage/{resultId}",
                 ImgOperationsEndpoints.SaveDraftGeneralTestResultImage).DisableAntiforgery();
+            app.MapPost("/saveimg/saveTestConclusionImage/{conclusionId}",
+                ImgOperationsEndpoints.SaveTestConclusionImage).DisableAntiforgery();
         }
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
 

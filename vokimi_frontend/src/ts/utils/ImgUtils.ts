@@ -1,3 +1,4 @@
+import { Err } from "../Err";
 import { getErrorFromResponse } from "../ErrorResponse";
 import { StringUtils } from "./StringUtils";
 

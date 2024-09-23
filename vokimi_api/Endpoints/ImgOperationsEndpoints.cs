@@ -97,6 +97,20 @@ namespace vokimi_api.Endpoints
                          $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
             return await ImgOperationsHelper.IResultSaveImgToStorage(key, file, storageService);
         }
+        public static async Task<IResult> SaveTestConclusionImage(string conclusionId,
+                                                                  IFormFile file,
+                                                                  VokimiStorageService storageService) {
+            TestConclusionId cId;
+            if (Guid.TryParse(conclusionId, out Guid guid)) {
+                cId = new(guid);
+            } else {
+                return ResultsHelper.BadRequestSaveChangesTryAgain();
+            }
+            string key = $"{ImgOperationsConsts.TestConclusionsFolder}/" +
+                         $"{cId.Value.ToString()}" +
+                         $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
+            return await ImgOperationsHelper.IResultSaveImgToStorage(key, file, storageService);
+        }
 
     }
 }

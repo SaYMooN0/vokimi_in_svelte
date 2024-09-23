@@ -1,10 +1,12 @@
 <script lang="ts">
+    import ActionConfirmationDialog from "../../../../components/shared/ActionConfirmationDialog.svelte";
+    import { Err } from "../../../../ts/Err";
     import { TestCreationConclusionTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
     import TabHeaderWithButton from "../../creation_shared_components/TabHeaderWithButton.svelte";
     import TabViewDataLoader from "../../creation_shared_components/TabViewDataLoader.svelte";
-    import TextWithOptionalImageInput from "../../creation_shared_components/TextWithOptionalImageInput.svelte";
+    import ConclusionEditingDialog from "./ConclusionEditingDialog.svelte";
 
     export let conclusionData: TestCreationConclusionTabData;
     export let testId: string;
@@ -41,7 +43,19 @@
                 "Failed to create conclusion. Please refresh the page and try again";
         }
     }
+    async function openConclusionDeletingDialog() {
+        let conclusionDeletingAction: () => Promise<Err> = async () => {
+            await loadData();
+            return Err.none();
+        };
+        actionConfirmationDialog.open(
+            conclusionDeletingAction,
+            "Do you really want to remove test conclusion?",
+        );
+    }
     let dataFetchingErr: string = "";
+    let conclusionEditingDialog: ConclusionEditingDialog;
+    let actionConfirmationDialog: ActionConfirmationDialog;
 </script>
 
 <TabViewDataLoader {loadData} isEmpty={() => conclusionData.isEmpty()}>
@@ -52,9 +66,31 @@
         </button>
         <p class="error-message">{dataFetchingErr}</p>
     </div>
-    <div slot="content" class="conlusion-data">
-        <TabHeaderWithButton tabName="Test Conclusion:" />
-        <p>
+    <div slot="content" class="conclusion-data">
+        <ConclusionEditingDialog
+            bind:this={conclusionEditingDialog}
+            updateParentElementData={loadData}
+        />
+        <ActionConfirmationDialog bind:this={actionConfirmationDialog} />
+        <div class="content-header">
+            <TabHeaderWithButton tabName="Test Conclusion:" />
+            <div class="header-btns">
+                <button
+                    class="edit-btn"
+                    on:click={() =>
+                        conclusionEditingDialog.open(conclusionData)}
+                >
+                    Edit Conclusion
+                </button>
+                <button
+                    class="remove-btn"
+                    on:click={openConclusionDeletingDialog}
+                >
+                    Remove
+                </button>
+            </div>
+        </div>
+        <p class="prop-name-val-p">
             <span class="property-name">Conclusion text:</span>
             <span class="property-value">{conclusionData.text}</span>
         </p>
@@ -65,25 +101,34 @@
                 )}
                 class="conclusion-img"
             />
+        {:else}
+            <p class="prop-name-val-p">
+                <span class="property-name">Conclusion Image:</span>
+                <span class="property-value">(Not added)</span>
+            </p>
         {/if}
         {#if conclusionData.anyFeedback}
             <p class="feedback-p">Feedback:</p>
-            <p>
+            <p class="prop-name-val-p">
                 <span class="property-name">Feedback accompanying text:</span>
                 <span class="property-value"
                     >{conclusionData.feedbackText}
                 </span>
             </p>
-            <p>
+            <p class="prop-name-val-p">
                 <span class="property-name">Max feedback length:</span>
                 <span class="property-value">
                     {conclusionData.maxFeedbackLength}
                 </span>
             </p>
         {:else}
-            <p class="no-feedback">Conclusion does not imply any feedback</p>
+            <p class="prop-name-val-p">
+                <span class="property-name">Feedback:</span>
+                <span class="property-value"
+                    >Conclusion does not imply any feedback</span
+                >
+            </p>
         {/if}
-        <p>{JSON.stringify(conclusionData)}</p>
     </div>
 </TabViewDataLoader>
 
@@ -110,5 +155,66 @@
     }
     .add-conclusion-btn:active {
         transform: scale(0.98);
+    }
+    .conclusion-data {
+        padding: 4px 12px;
+    }
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .header-btns {
+        margin-left: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .header-btns button {
+        padding: 8px 16px;
+        color: var(--back-main);
+        font-size: 20px;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 4px;
+        border: none;
+        outline: none;
+        transition: all 0.12s ease-in;
+    }
+
+    .edit-btn {
+        background-color: var(--primary);
+    }
+
+    .edit-btn:hover {
+        background-color: var(--primary-hov);
+    }
+
+    .remove-btn {
+        background-color: var(--text-faded);
+    }
+
+    .remove-btn:hover {
+        background-color: var(--red-del);
+    }
+
+    .prop-name-val-p {
+        gap: 20px;
+    }
+    .prop-name-val-p .property-name {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text-faded);
+    }
+    .prop-name-val-p .property-value {
+        font-size: 18px;
+        color: var(--text);
+    }
+    .feedback-p {
+        margin-left: 10px;
+        font-size: 20px;
     }
 </style>

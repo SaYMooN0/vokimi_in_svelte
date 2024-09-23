@@ -128,7 +128,7 @@
             </svg>
         </label>
     {/if}
-    <label class="img-uploading-error">{imageUploadingErr}</label>
+    <p class="img-uploading-error">{imageUploadingErr}</p>
 </div>
 
 <style>
@@ -235,5 +235,13 @@
         height: 28px;
         aspect-ratio: 1/1;
         transition: transform 0.24s ease-in;
+    }
+    .img-uploading-error {
+        color: var(--red-del);
+        font-size: 18px;
+        font-weight: 500;
+        margin-top: 4px;
+        width: 100%;
+        text-align: center;
     }
 </style>

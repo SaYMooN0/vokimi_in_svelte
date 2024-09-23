@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { Err } from "../../ts/Err";
     import { StringUtils } from "../../ts/utils/StringUtils";
     import BaseDialog from "../BaseDialog.svelte";
 
@@ -8,22 +9,16 @@
     export function close() {
         dialogElement.close();
     }
-    export function open(
-        confirmAction: () => Promise<string | null>,
-        text: string,
-    ) {
+    export function open(confirmAction: () => Promise<Err>, text: string) {
         confirmationText = text;
         onConfirmAction = confirmAction;
         dialogElement.open();
     }
     async function onConfirmButtonClicked() {
         const result = await onConfirmAction();
-        if (result === null) {
-            return;
-        }
-        errorString = result;
+        errorString = result.notNone() ? "" : result.toString();
     }
-    let onConfirmAction: () => Promise<string | null>;
+    let onConfirmAction: () => Promise<Err>;
     let dialogElement: BaseDialog;
     let confirmationText = "";
     let errorString: string;

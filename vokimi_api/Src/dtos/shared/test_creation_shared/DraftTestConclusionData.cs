@@ -20,7 +20,7 @@ namespace vokimi_api.Src.dtos.shared.test_creation_shared
                 conclusion.Text,
                 conclusion.AdditionalImage,
                 conclusion.AnyFeedback,
-                conclusion.FeedbackText,
+                conclusion.FeedbackAccompanyingText ?? "",
                 conclusion.MaxFeedbackLength
             );
         public Err CheckForErr() {

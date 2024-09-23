@@ -7,6 +7,7 @@
     import DraftGeneralTestQuestionViewElement from "./DraftGeneralTestQuestionViewElement.svelte";
     import ActionConfirmationDialog from "../../../../../components/shared/ActionConfirmationDialog.svelte";
     import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
+    import { Err } from "../../../../../ts/Err";
 
     export let questionsData: GeneralTestCreationQuestionsTabData;
     export let testId: string;
@@ -31,7 +32,7 @@
         questionId: string,
         questionText: string,
     ) {
-        const deletingAction: () => Promise<string | null> = async () => {
+        const deletingAction: () => Promise<Err> = async () => {
             const url =
                 "/api/testCreation/general/deleteGeneralDraftTestQuestion/" +
                 questionId;
@@ -41,10 +42,10 @@
             if (response.ok) {
                 await loadData();
                 questionDeletingDialog.close();
-                return null;
+                return Err.none();
             } else {
                 const errorMessage = await getErrorFromResponse(response);
-                return errorMessage;
+                return new Err(errorMessage);
             }
         };
         questionDeletingDialog.open(

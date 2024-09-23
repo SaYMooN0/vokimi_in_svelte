@@ -1,5 +1,6 @@
 <script lang="ts">
     import ActionConfirmationDialog from "../../../../../components/shared/ActionConfirmationDialog.svelte";
+    import { Err } from "../../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
     import { GeneralTestCreationResultsTabData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";
     import TabHeaderWithButton from "../../../creation_shared_components/TabHeaderWithButton.svelte";
@@ -12,7 +13,8 @@
 
     async function loadData() {
         const url =
-            "/api/testCreation/general/getGeneralDraftTestResultsData/" + testId;
+            "/api/testCreation/general/getGeneralDraftTestResultsData/" +
+            testId;
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
@@ -48,7 +50,7 @@
         resultId: string,
         resultName: string,
     ) {
-        const deletingAction: () => Promise<string | null> = async () => {
+        const deletingAction: () => Promise<Err> = async () => {
             const url =
                 "/api/testCreation/general/deleteDraftGeneralTestResult/" +
                 resultId;
@@ -58,10 +60,10 @@
             if (response.ok) {
                 await loadData();
                 resultDeletingDialog.close();
-                return null;
+                return Err.none();
             } else {
                 const errorMessage = await getErrorFromResponse(response);
-                return errorMessage;
+                return new Err(errorMessage);
             }
         };
 
