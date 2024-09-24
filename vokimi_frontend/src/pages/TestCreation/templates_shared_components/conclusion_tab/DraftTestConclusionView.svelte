@@ -95,11 +95,14 @@
             <span class="property-value">{conclusionData.text}</span>
         </p>
         {#if !StringUtils.isNullOrWhiteSpace(conclusionData.additionalImage)}
+            <p class="prop-name-val-p">
+                <span class="property-name">Conclusion Image:</span>
+            </p>
             <img
+                class="conclusion-img"
                 src={ImgUtils.imgUrlWithVersion(
                     conclusionData.additionalImage ?? "",
                 )}
-                class="conclusion-img"
             />
         {:else}
             <p class="prop-name-val-p">
@@ -216,5 +219,14 @@
     .feedback-p {
         margin-left: 10px;
         font-size: 20px;
+    }
+    .conclusion-img {
+        max-width: min(60vw, 1200px);
+        max-height: 400px;
+        width: auto;
+        height: auto;
+        border-radius: 12px;
+        object-fit: contain;
+        margin-left: 20px;
     }
 </style>

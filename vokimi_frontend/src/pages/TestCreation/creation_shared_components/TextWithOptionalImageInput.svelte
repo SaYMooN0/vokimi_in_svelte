@@ -56,14 +56,12 @@
     />
     {#if !StringUtils.isNullOrWhiteSpace(imagePath)}
         <div class="image-editing-part">
-            <div class="img-display">
-                <img
-                    src={ImgUtils.imgUrlWithVersion(
-                        imagePath === null ? "" : imagePath,
-                    )}
-                    alt="Image"
-                />
-            </div>
+            <img
+                src={ImgUtils.imgUrlWithVersion(
+                    imagePath === null ? "" : imagePath,
+                )}
+                alt="Image"
+            />
             <div class="img-editing-btns">
                 <label for="img-input" class="img-change-btn">
                     <svg
@@ -164,6 +162,16 @@
     .horizontal .text-input-part > :global(textarea) {
         max-height: 480px;
         height: 480px;
+    }
+    .image-editing-part {
+        max-width: min(560px, 60vw);
+        padding-top: 12px;
+    }
+    .image-editing-part img {
+        border-radius: 8px;
+        object-fit: contain;
+        width: 100%;
+        max-height: min(420px, 70vh);
     }
     .add-img-btn {
         margin-top: 12px;

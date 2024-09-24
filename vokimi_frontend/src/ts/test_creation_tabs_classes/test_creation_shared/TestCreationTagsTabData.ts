@@ -1,8 +1,11 @@
 export class TestCreationTagsTabData {
-    isEmpty(): boolean {
-        return false;
+    public readonly tags: string[];
+    constructor(
+        tags: string[] = []
+    ) {
+        this.tags = tags;
     }
     static empty(): TestCreationTagsTabData {
-        return new TestCreationTagsTabData();
+        return new TestCreationTagsTabData([]);
     }
 }

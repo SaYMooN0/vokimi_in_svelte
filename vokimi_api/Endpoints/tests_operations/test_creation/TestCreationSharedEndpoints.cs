@@ -194,13 +194,15 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 }
             }
         }
-        public static IResult UpdateDraftTestConclusion(IDbContextFactory<AppDbContext> dbFactory,
-                                                        [FromBody] DraftTestConclusionData data) {
+        public static async Task<IResult> UpdateDraftTestConclusion(IDbContextFactory<AppDbContext> dbFactory,
+                                                                    [FromBody] DraftTestConclusionData data,
+                                                                    VokimiStorageService vokimiStorage) {
             TestConclusionId id;
             if (!Guid.TryParse(data.Id, out var _)) {
                 return ResultsHelper.BadRequestWithErr("Unable to update conclusion. Please try again later");
             }
             id = new(new(data.Id));
+
             using (var db = dbFactory.CreateDbContext()) {
                 TestConclusion? conclusion = db.TestConclusions.FirstOrDefault(c => c.Id == id);
                 if (conclusion is null) {
@@ -217,10 +219,20 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                     data.FeedbackText,
                     data.maxFeedbackLength
                 );
+                string unusedImgPrefix = $"{ImgOperationsConsts.TestConclusionsFolder}/{id.Value.ToString()}/";
+                string[] reservedKeys =
+                    string.IsNullOrWhiteSpace(data.AdditionalImage) ?
+                    Array.Empty<string>() :
+                    [data.AdditionalImage];
+                Err imgClearingErr = await vokimiStorage.ClearUnusedImages(unusedImgPrefix, reservedKeys);
+                if (imgClearingErr.NotNone()) {
+                    return ResultsHelper.BadRequestServerError();
+                }
                 db.Update(conclusion);
                 db.SaveChanges();
                 return Results.Ok();
             }
+
         }
     }
 }

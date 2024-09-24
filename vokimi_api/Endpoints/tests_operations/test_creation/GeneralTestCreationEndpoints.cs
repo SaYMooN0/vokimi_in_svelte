@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using vokimi_api.Helpers;
 using vokimi_api.Services;
 using vokimi_api.Src;
+using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.requests.test_creation.general_template;
 using vokimi_api.Src.dtos.responses.test_creation_responses.general;
 using vokimi_api.Src.dtos.shared.general_test_creation;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace vokimi_api.Endpoints.tests_operations.test_creation
 {
@@ -227,10 +229,10 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
 
         }
 
-        public static IResult SaveChangesForDraftGeneralTestResult(
+        public async static Task<IResult> SaveChangesForDraftGeneralTestResult(
             [FromBody] DraftGeneralTestResultData newResData,
             IDbContextFactory<AppDbContext> dbFactory,
-            VokimiStorageService storageService) {
+            VokimiStorageService vokimiStorage) {
 
             DraftGeneralTestResultId resId;
             if (Guid.TryParse(newResData.Id, out var guid)) {
@@ -248,6 +250,15 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                     return ResultsHelper.BadRequestWithErr(validationErr.ToString());
                 }
                 res.Update(newResData.Name, newResData.Text, newResData.ImagePath);
+                string unusedImgPrefix = $"{ImgOperationsConsts.DraftGeneralTestResultsFolder}/{resId.Value.ToString()}/";
+                string[] reservedKeys =
+                    string.IsNullOrWhiteSpace(newResData.ImagePath) ?
+                    Array.Empty<string>() :
+                    [newResData.ImagePath];
+                Err imgClearingErr = await vokimiStorage.ClearUnusedImages(unusedImgPrefix, reservedKeys);
+                if (imgClearingErr.NotNone()) {
+                    return ResultsHelper.BadRequestServerError();
+                }
                 db.Update(res);
                 db.SaveChanges();
                 return Results.Ok();

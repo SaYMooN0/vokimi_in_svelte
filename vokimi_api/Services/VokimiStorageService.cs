@@ -45,5 +45,49 @@ namespace vokimi_api.Services
                 return null;
             }
         }
+        public async Task<Err> ClearUnusedImages(string prefix, IEnumerable<string>? reservedKeys = null) {
+            try {
+                var listRequest = new ListObjectsV2Request {
+                    BucketName = _bucketName,
+                    Prefix = prefix
+                };
+
+                ListObjectsV2Response listResponse;
+                do {
+                    listResponse = await _s3Client.ListObjectsV2Async(listRequest);
+
+                    List<KeyVersion> objectsToDelete;
+
+                    if (reservedKeys is null || reservedKeys.Count() == 0) {
+                        objectsToDelete = listResponse.S3Objects
+                            .Select(o => new KeyVersion { Key = o.Key })
+                            .ToList();
+                    } else {
+                        objectsToDelete = listResponse.S3Objects
+                            .Where(o => (reservedKeys == null || !reservedKeys.Contains(o.Key)))
+                            .Select(o => new KeyVersion { Key = o.Key })
+                            .ToList();
+                    }
+
+                    if (objectsToDelete.Any()) {
+                        var deleteRequest = new DeleteObjectsRequest {
+                            BucketName = _bucketName,
+                            Objects = objectsToDelete
+                        };
+
+                        var deleteResponse = await _s3Client.DeleteObjectsAsync(deleteRequest);
+
+                        if (deleteResponse.HttpStatusCode != System.Net.HttpStatusCode.OK) {
+                            return new Err("Failed to delete some unused images");
+                        }
+                    }
+
+                    listRequest.ContinuationToken = listResponse.NextContinuationToken;
+                } while (listResponse.IsTruncated);
+            } catch {
+                return serverErr;
+            }
+            return Err.None;
+        }
     }
 }

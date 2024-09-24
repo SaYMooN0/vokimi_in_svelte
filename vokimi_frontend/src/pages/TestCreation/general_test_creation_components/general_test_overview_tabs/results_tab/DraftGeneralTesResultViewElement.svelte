@@ -40,14 +40,18 @@
     </div>
     <div class:hiddenContent={isHidden} class:resultInnerContent={!isHidden}>
         <label class="result-text">
-            {StringUtils.isNullOrWhiteSpace(result.text)
-                ? "(No result text added)"
-                : result.text}
+            Result Text:
+            <span class="res-text-span">
+                {StringUtils.isNullOrWhiteSpace(result.text)
+                    ? "(No result text added)"
+                    : result.text}
+            </span>
         </label>
         {#if StringUtils.isNullOrWhiteSpace(result.imagePath)}
             <p class="no-result-image">(No result image added)</p>
         {:else}
             <img
+                class="result-image"
                 src={ImgUtils.imgUrl(result.imagePath ?? "")}
                 alt="result image"
             />
@@ -79,6 +83,7 @@
     }
     .result-name {
         margin: 8px 16px;
+        font-size: 20px;
     }
     .hide-content-btn {
         margin-right: 6px;
@@ -108,7 +113,7 @@
     }
     .resultInnerContent {
         display: grid;
-        grid-template-columns: 1fr 300px auto;
+        grid-template-columns: 1fr min(420px, 40vw) auto;
         padding: 12px;
         gap: 10px;
         box-sizing: border-box;
@@ -118,6 +123,20 @@
         display: none;
     }
     .result-text {
+        color: var(--text-faded);
+        font-weight: 500;
+        font-size: 18px;
+    }
+    .res-text-span {
+        color: var(--text);
+        font-weight: 400;
+        font-size: 20px;
+    }
+    .result-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
     }
     .no-result-image {
         text-align: center;
