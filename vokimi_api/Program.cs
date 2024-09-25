@@ -38,7 +38,7 @@ namespace vokimi_api
                 var services = scope.ServiceProvider;
                 try {
                     var appDbContext = services.GetRequiredService<AppDbContext>();
-                    await DbInitializer.InitializeDbAsync(appDbContext);
+                    await DbInitializer.InitializeDb(appDbContext);
                 } catch (Exception ex) {
                     app.Logger.LogError(ex, "An error occurred while initializing the database.");
                     throw; // Re-throw the exception to stop the application start-up

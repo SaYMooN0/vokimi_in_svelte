@@ -2,8 +2,8 @@
 {
     public static class TestTagsConsts
     {
-        //public const int MaxTagLength = 30;
-        //public const int MaxTagsForTestCount = 12;
+        public const int MaxTagLength = 30;
+        public const int MaxTagsForTestCount = 30;
 
     }
 }

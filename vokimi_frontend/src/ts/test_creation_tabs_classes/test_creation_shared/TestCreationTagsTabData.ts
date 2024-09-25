@@ -1,11 +1,17 @@
 export class TestCreationTagsTabData {
-    public readonly tags: string[];
+    public tags: string[];
+    public readonly maxTagsForTestCount: number;
+    public readonly maxTagNameLength: number;
     constructor(
-        tags: string[] = []
+        tags: string[] = [],
+        maxTagsForTestCount: number,
+        maxTagNameLength: number
     ) {
         this.tags = tags;
+        this.maxTagsForTestCount = maxTagsForTestCount;
+        this.maxTagNameLength = maxTagNameLength;
     }
     static empty(): TestCreationTagsTabData {
-        return new TestCreationTagsTabData([]);
+        return new TestCreationTagsTabData([], 10, 10);
     }
 }

@@ -1,4 +1,5 @@
-﻿using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.enums;
 
@@ -8,7 +9,6 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
     {
         public virtual ICollection<DraftGeneralTestQuestion> Questions { get; private set; } = [];
         public virtual ICollection<DraftGeneralTestResult> PossibleResults { get; set; } = [];
-
         public DraftGeneralTest() {
             Template = TestTemplate.General;
         }

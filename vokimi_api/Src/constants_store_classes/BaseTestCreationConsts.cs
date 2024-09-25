@@ -11,7 +11,6 @@ namespace vokimi_api.Src.constants_store_classes
             ConclusionMaxTextLength = 255,
             ConclusionMaxAccompanyingFeedbackTextLength = 255,
             ConclusionMaxFeedbackLength = 255;
-
         public const string DefaultAccentColor = "#796cfa";
     }
 }
