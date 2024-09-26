@@ -6,28 +6,33 @@
 
     export let tagsData: TestCreationTagsTabData;
     export let testId: string;
-    let fetchedCorrectly: boolean = false;
     let tagsEditingDialog: TagsEditingDialog;
 
     async function loadData() {
-        const url = "/api/testCreation/getDraftTestTagsData/" + testId;
+        console.log("----", tagsData);
+        const url = "/api/tags/getDraftTestTagsData/" + testId;
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
+            console.log(data);
             tagsData = new TestCreationTagsTabData(
                 data.tags,
                 data.maxTagsForTestCount,
                 data.maxTagNameLength,
             );
-            fetchedCorrectly = true;
+            console.log("true, must be rerendered");
         } else {
             tagsData = TestCreationTagsTabData.empty();
-            fetchedCorrectly = false;
         }
     }
 </script>
 
-<TabViewDataLoader {loadData} isEmpty={() => fetchedCorrectly}>
+<TabViewDataLoader
+    {loadData}
+    isEmpty={() => {
+        return tagsData.isEmpty();
+    }}
+>
     <div slot="empty" class="no-conclusion-div">
         <h2>Unable to fetch data. Please try again later.</h2>
     </div>
@@ -35,6 +40,7 @@
         <TagsEditingDialog
             bind:this={tagsEditingDialog}
             updateParentElementData={loadData}
+            {testId}
         />
         <TabHeaderWithButton
             tabName="Test Tags ({tagsData.tags.length === 0

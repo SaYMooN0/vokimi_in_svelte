@@ -1,14 +1,18 @@
 <script lang="ts">
+    import { onDestroy } from "svelte";
     import type { TestCreationTagsTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
 
     export let updateParentElementData: () => void;
+    export let testId: string;
 
     let tagsData: TestCreationTagsTabData;
     let dialogElement: BaseDraftTestEditingDialog;
     let tagsToChooseFrom: string[] = [];
-    let tagSearchInput: string;
+    let searchTimeout: ReturnType<typeof setTimeout>;
+    let tagSearchInput: string = "";
+    let errorMessage: string = "";
 
     export function open(tags: TestCreationTagsTabData) {
         dialogElement.setErrorMessage("");
@@ -17,13 +21,16 @@
     }
 
     async function saveData() {
-        const response = await fetch("/api/testCreation/updateDraftTestTags", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            "/api/tags/updateDraftTestTags/" + testId,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(tagsData.tags),
             },
-            body: JSON.stringify(tagsData.tags),
-        });
+        );
         if (response.ok) {
             await updateParentElementData();
             dialogElement.close();
@@ -37,6 +44,42 @@
     function removeTag(tag: string) {
         tagsData.tags = tagsData.tags.filter((t) => t !== tag);
     }
+    async function searchTags(tag: string) {
+        console.log("searching", tag);
+        errorMessage = "";
+        try {
+            const response = await fetch(
+                `/api/tags/searchTags/${encodeURIComponent(tag)}`,
+            );
+            if (!response.ok) {
+                throw new Error("Failed to search tags");
+            }
+            if (response.ok) {
+                const data = await response.json();
+                tagsToChooseFrom = data.tags;
+            } else {
+                throw new Error("Failed to search tags");
+            }
+        } catch (error) {
+            errorMessage =
+                "Failed to create conclusion. Please refresh the page and try again";
+        }
+    }
+    $: if (!StringUtils.isNullOrWhiteSpace(tagSearchInput)) {
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        searchTimeout = setTimeout(() => {
+            searchTags(tagSearchInput);
+        }, 210);
+    }
+
+    onDestroy(() => {
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+    });
 </script>
 
 <BaseDraftTestEditingDialog
@@ -78,11 +121,11 @@
                     />
                     <svg
                         class="reset-button"
-                        on:click={(tagSearchInput = "")}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                         stroke-width="2"
+                        on:click={() => (tagSearchInput = "")}
                     >
                         <path
                             stroke-linecap="round"
@@ -297,7 +340,7 @@
         box-sizing: border-box;
         padding: 4px;
         color: var(--back);
-        background-color: var(--grey);
+        background-color: var(--back-secondary);
         border-radius: 16%;
         cursor: pointer;
         transition: all 0.08s ease-in;

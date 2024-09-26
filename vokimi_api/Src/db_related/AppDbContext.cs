@@ -7,13 +7,14 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
 using vokimi_api.Src.db_related.db_entities.users;
 using VokimiShared.src.models.db_classes.test.test_types;
+using vokimi_api.Src.db_related.db_entities.tests_related;
 
 namespace vokimi_api.Src.db_related
 {
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-        
+
         //users
         public DbSet<UnconfirmedAppUser> UnconfirmedAppUsers { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
@@ -33,11 +34,13 @@ namespace vokimi_api.Src.db_related
         public DbSet<TestStylesSheet> TestStyles { get; set; }
         public DbSet<GeneralTestAnswerTypeSpecificInfo> AnswerTypeSpecificInfo { get; set; }
         //published tests only
-        //public DbSet<BaseTest> TestsSharedInfo { get; set; }
-        //public DbSet<TestGeneralType> TestsGeneralType { get; set; }
+        public DbSet<BaseTest> TestsSharedInfo { get; set; }
+        public DbSet<TestGeneralType> TestsGeneralType { get; set; }
         //public DbSet<GeneralTestQuestion> GeneralTestQuestions { get; set; }
         //public DbSet<GeneralTestAnswer> GeneralTestAnswers { get; set; }
         //public DbSet<GeneralTestResult> GeneralTestResults { get; set; }
+        //test tags
+        public DbSet<TestTag> TestTags { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
@@ -64,7 +67,9 @@ namespace vokimi_api.Src.db_related
             modelBuilder.ConfigureDraftGeneralTestAnswers();
             modelBuilder.ConfigureDraftGeneralTestResults();
 
-
+            //published tests
+            modelBuilder.ConfigureBaseTest();
+            modelBuilder.ConfigureTestTags();
         }
 
     }

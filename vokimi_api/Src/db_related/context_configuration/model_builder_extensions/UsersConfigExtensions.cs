@@ -14,13 +14,13 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(x => x.LoginInfoId).HasConversion(v => v.Value, v => new LoginInfoId(v));
                 entity.Property(x => x.UserAdditionalInfoId).HasConversion(v => v.Value, v => new UserAdditionalInfoId(v));
 
-                //entity.HasMany(x => x.DraftTests)
-                //      .WithOne()
-                //      .HasForeignKey(x => x.CreatorId);
+                entity.HasMany(x => x.DraftTests)
+                      .WithOne()
+                      .HasForeignKey(x => x.CreatorId);
 
-                //entity.HasMany(x => x.PublishedTests)
-                //    .WithOne(x => x.Creator)
-                //    .HasForeignKey(x => x.CreatorId);
+                entity.HasMany(x => x.PublishedTests)
+                    .WithOne(x => x.Creator)
+                    .HasForeignKey(x => x.CreatorId);
 
                 entity.HasMany(x => x.Friends)
                       .WithMany()

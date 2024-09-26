@@ -23,10 +23,12 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared
         [NotMapped]
         public IEnumerable<string> Tags
         {
-            get { return tagsString.Split('|'); }
-            set { tagsString = string.Join("|", value); }
+            get { return string.IsNullOrWhiteSpace(tagsString) ? [] : tagsString.Split('|'); }
+            protected set { tagsString = string.Join("|", value); }
         }
-
+        public void SetTags(IEnumerable<string> tags) {
+            Tags = tags;
+        }
         public void SetConclusion(TestConclusion conclusion) {
             this.ConclusionId = conclusion.Id;
             this.Conclusion = conclusion;

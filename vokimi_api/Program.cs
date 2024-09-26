@@ -139,6 +139,11 @@ namespace vokimi_api
                 ImgOperationsEndpoints.SaveDraftGeneralTestResultImage).DisableAntiforgery();
             app.MapPost("/saveimg/saveTestConclusionImage/{conclusionId}",
                 ImgOperationsEndpoints.SaveTestConclusionImage).DisableAntiforgery();
+
+
+            app.MapGet("/tags/getDraftTestTagsData/{testId}", TestTagsEndpoints.GetDraftTestTagsData);
+            app.MapGet("/tags/searchTags/{tagToSearch}", TestTagsEndpoints.SearchTags);
+            app.MapPost("/tags/updateDraftTestTags/{testId}", TestTagsEndpoints.UpdateDraftTestTags);
         }
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
 

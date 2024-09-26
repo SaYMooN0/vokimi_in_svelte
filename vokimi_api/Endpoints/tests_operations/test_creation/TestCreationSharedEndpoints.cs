@@ -227,12 +227,13 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 Err imgClearingErr = await vokimiStorage.ClearUnusedImages(unusedImgPrefix, reservedKeys);
                 if (imgClearingErr.NotNone()) {
                     return ResultsHelper.BadRequestServerError();
-                }
+                }   
                 db.Update(conclusion);
                 db.SaveChanges();
                 return Results.Ok();
             }
 
         }
+
     }
 }

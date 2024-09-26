@@ -18,7 +18,6 @@
             }
         } catch (error) {
             hasError = true;
-            console.error(error);
         } finally {
             isLoading = false;
         }
@@ -31,7 +30,7 @@
     <LoadingMessage />
 {:else if hasError}
     <ErrorMessageInCenter
-        errorMessage="An error has occurred. Please refresh the page. If it doen't work, please try again later."
+        errorMessage="An error has occurred. Please refresh the page. If it doesn't work, please try again later."
     />
 {:else if isEmpty()}
     <slot name="empty"></slot>

@@ -7,8 +7,8 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_rel
     {
         public override TestTemplate Template => TestTemplate.General;
 
-        public virtual List<GeneralTestQuestion> Questions { get; init; } = [];
-        public virtual ICollection<GeneralTestResult> PossibleResults { get; init; } = [];
+        //public virtual List<GeneralTestQuestion> Questions { get; init; } = [];
+        //public virtual ICollection<GeneralTestResult> PossibleResults { get; init; } = [];
         //public static TestGeneralType CreateNew(TestPublishingDto dto,
         //    List<GeneralTestQuestion> questions,
         //    ICollection<GeneralTestResult> possibleResults) =>
