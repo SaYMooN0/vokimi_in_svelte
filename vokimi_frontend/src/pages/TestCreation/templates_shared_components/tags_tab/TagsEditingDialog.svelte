@@ -44,6 +44,9 @@
     function removeTag(tag: string) {
         tagsData.tags = tagsData.tags.filter((t) => t !== tag);
     }
+    function addTag(tag: string) {
+        tagsData.tags = [...tagsData.tags, tag];
+    }
     async function searchTags(tag: string) {
         console.log("searching", tag);
         errorMessage = "";
@@ -56,7 +59,7 @@
             }
             if (response.ok) {
                 const data = await response.json();
-                tagsToChooseFrom = data.tags;
+                tagsToChooseFrom = data;
             } else {
                 throw new Error("Failed to search tags");
             }
@@ -151,7 +154,7 @@
                             {:else}
                                 <svg
                                     class="add-btn"
-                                    on:click={() => tagsData.tags.push(tag)}
+                                    on:click={() => addTag(tag)}
                                     viewBox="0 0 24 24"
                                     fill="none"
                                 >
@@ -166,10 +169,10 @@
                             {/if}
                         </div>
                     {/each}
-                    <label class="continue-typing"
-                        >If you don't find the tag you need continue entering
-                        the name of the tag</label
-                    >
+                    <label class="continue-typing">
+                        If you don't find the tag you need continue entering the
+                        name of the tag
+                    </label>
                 </div>
             </div>
             <div class="right-part">
@@ -216,8 +219,16 @@
         align-items: center;
     }
     .add-tags-header label {
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+        margin-top: 12px;
     }
     .add-tags-header p {
+        margin-top: 4px;
+        color: var(--text-faded);
+        font-size: 20px;
     }
     .tags-adding-container {
         width: 100%;
@@ -339,8 +350,8 @@
         aspect-ratio: 1/1;
         box-sizing: border-box;
         padding: 4px;
-        color: var(--back);
-        background-color: var(--back-secondary);
+        color: var(--back-main);
+        background-color: var(--text-faded);
         border-radius: 16%;
         cursor: pointer;
         transition: all 0.08s ease-in;

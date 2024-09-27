@@ -45,9 +45,72 @@
         <TabHeaderWithButton
             tabName="Test Tags ({tagsData.tags.length === 0
                 ? 'No tags added yet'
-                : tagsData.tags.length + 1}):"
+                : tagsData.tags.length}):"
             buttonText="Open Tags Editor"
             onButtonClick={() => tagsEditingDialog.open(tagsData)}
         />
+        {#if tagsData.tags.length > 0}
+            <p class="chosen-tags-p">Chosen Tags:</p>
+            <div class="tags-display">
+                {#each tagsData.tags as tag}
+                    <div class="tag-display">
+                        <label>#{tag}</label>
+                    </div>
+                {/each}
+            </div>
+        {:else}
+            <div class="no-tags-display">
+                <label>You have not added any tags yet</label>
+                <p>Start adding tags to your test</p>
+                <button on:click={() => tagsEditingDialog.open(tagsData)}>
+                    Open Tags Editor
+                </button>
+            </div>
+        {/if}
     </div>
 </TabViewDataLoader>
+
+<style>
+    .chosen-tags-p {
+        font-size: 24px;
+        margin: 8px 0;
+        color: var(--text);
+    }
+    .tags-display {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-left: 8px;
+    }
+    .tag-display {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: var(--back-secondary);
+        width: fit-content;
+        padding: 4px 8px;
+        border-radius: 8px;
+        border: 2px solid var(--primary);
+    }
+    .no-tags-display {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: min(420px, 40vw);
+        height: min(180px, 40vh);
+        border: 2px dashed var(--primary);
+        background-color: var(--back-secondary);
+        border-radius: 8px;
+    }
+    .no-tags-display label {
+        font-size: 20px;
+    }
+    .no-tags-display p {
+        font-size: 20px;
+    }
+</style>
