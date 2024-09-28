@@ -73,9 +73,12 @@
                     Editing of the "<label>{testName}</label>" draft test
                 </p>
                 <div class="tab-links-container">
-                    {#each Object.entries(getTabLinks(template)) as [label, path]}
-                        <Link to="{basepath}/{path}">
+                    {#each Object.entries(getTabLinks(template)) as [label, linkData]}
+                        <Link to="{basepath}/{linkData.id}">
                             <div class="tab-link">
+                                {#if linkData.icon}
+                                    <svelte:component this={linkData.icon} />
+                                {/if}
                                 {label}
                             </div>
                         </Link>
@@ -135,14 +138,23 @@
     }
     .tab-link {
         border-bottom: 2px solid transparent;
+        padding-bottom: 2px;
         background-color: transparent;
         color: var(--primary);
         font-weight: 500;
         font-size: 18px;
         cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+    }
+    .tab-link > :global(svg) {
+        height: 24px;
+        color: inherit;
     }
     .tab-link:hover {
-        color: var(--primary-hov);
+        color: var(--primary-hov);  
         border-bottom: 2px solid var(--primary-hov);
     }
 

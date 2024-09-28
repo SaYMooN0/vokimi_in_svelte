@@ -227,12 +227,36 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 Err imgClearingErr = await vokimiStorage.ClearUnusedImages(unusedImgPrefix, reservedKeys);
                 if (imgClearingErr.NotNone()) {
                     return ResultsHelper.BadRequestServerError();
-                }   
+                }
                 db.Update(conclusion);
                 db.SaveChanges();
                 return Results.Ok();
             }
 
+        }
+        public static IResult DeleteDraftTestConclusion(IDbContextFactory<AppDbContext> dbFactory, string testId) {
+            DraftTestId draftTestId;
+            if (!Guid.TryParse(testId, out _)) {
+                return ResultsHelper.BadRequestServerError();
+            }
+            draftTestId = new(new(testId));
+            using (var db = dbFactory.CreateDbContext()) {
+                BaseDraftTest? test = db.DraftTestsSharedInfo
+                     .Include(t => t.Conclusion)
+                     .FirstOrDefault(c => c.Id == draftTestId);
+                if (test is null) {
+                    return ResultsHelper.BadRequestUnknownTest();
+                }
+                if (test.Conclusion is null) {
+                    return Results.Ok();
+                }
+
+                db.TestConclusions.Remove(test.Conclusion);
+                test.SetConclusion(null);
+                db.Update(test);
+                db.SaveChanges();
+                return Results.Ok();
+            }
         }
 
     }

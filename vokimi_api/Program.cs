@@ -100,6 +100,7 @@ namespace vokimi_api
             app.MapPost("/testCreation/createDraftTestConclusion/{testId}",
               TestCreationSharedEndpoints.CreateDraftTestConclusion);
             app.MapPost("testCreation/updateDraftTestConclusion", TestCreationSharedEndpoints.UpdateDraftTestConclusion);
+            app.MapDelete("/testCreation/deleteDraftTestConclusion/{testId}", TestCreationSharedEndpoints.DeleteDraftTestConclusion);
 
             app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}",
                 GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
@@ -142,7 +143,7 @@ namespace vokimi_api
 
 
             app.MapGet("/tags/getDraftTestTagsData/{testId}", TestTagsEndpoints.GetDraftTestTagsData);
-            app.MapGet("/tags/searchTags/{tagToSearch}", TestTagsEndpoints.SearchTags);
+            app.MapGet("/tags/searchTags/{*tagToSearch}", TestTagsEndpoints.SearchTags);
             app.MapPost("/tags/updateDraftTestTags/{testId}", TestTagsEndpoints.UpdateDraftTestTags);
         }
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {

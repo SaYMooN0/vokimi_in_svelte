@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using vokimi_api.Helpers;
+using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities_ids;
@@ -29,6 +31,16 @@ namespace vokimi_api.Endpoints
         }
         public static IResult SearchTags(IDbContextFactory<AppDbContext> dbFactory,
                                          string tagToSearch) {
+
+            Regex tagRegex = new Regex(@"^[a-zA-Zа-яА-Я0-9]{1," + TestTagsConsts.MaxTagLength + "}$");
+
+
+            if (string.IsNullOrEmpty(tagToSearch)) {
+                return Results.Ok(Array.Empty<string>());
+            }
+            if (!tagRegex.IsMatch(tagToSearch)) {
+                return ResultsHelper.BadRequestWithErr($"Invalid tag. Tag must contain only Cyrillic, Latin letters or digits and be no longer than {TestTagsConsts.MaxTagLength} characters.");
+            }
             using (var db = dbFactory.CreateDbContext()) {
                 var tags = db.TestTags
                     .Where(t => t.Value.Contains(tagToSearch) && t.Value != tagToSearch)

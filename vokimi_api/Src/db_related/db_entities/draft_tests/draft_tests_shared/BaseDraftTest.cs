@@ -21,17 +21,21 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared
         [Column("TagsString")]
         public string tagsString { get; set; } = "";
         [NotMapped]
-        public IEnumerable<string> Tags
-        {
+        public IEnumerable<string> Tags {
             get { return string.IsNullOrWhiteSpace(tagsString) ? [] : tagsString.Split('|'); }
             protected set { tagsString = string.Join("|", value); }
         }
         public void SetTags(IEnumerable<string> tags) {
             Tags = tags;
         }
-        public void SetConclusion(TestConclusion conclusion) {
-            this.ConclusionId = conclusion.Id;
-            this.Conclusion = conclusion;
+        public void SetConclusion(TestConclusion? conclusion) {
+            if (conclusion is null) {
+                this.ConclusionId = null;
+                this.Conclusion = null;
+            } else {
+                this.ConclusionId = conclusion.Id;
+                this.Conclusion = conclusion;
+            }
         }
 
     }

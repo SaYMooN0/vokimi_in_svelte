@@ -1,6 +1,7 @@
 <script lang="ts">
     import ActionConfirmationDialog from "../../../../components/shared/ActionConfirmationDialog.svelte";
     import { Err } from "../../../../ts/Err";
+    import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import { TestCreationConclusionTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
@@ -44,18 +45,28 @@
         }
     }
     async function openConclusionDeletingDialog() {
-        let conclusionDeletingAction: () => Promise<Err> = async () => {
-            await loadData();
-            return Err.none();
+        const conclusionDeletingAction: () => Promise<Err> = async () => {
+            const url = "/api/testCreation/deleteDraftTestConclusion/" + testId;
+            const response = await fetch(url, {
+                method: "DELETE",
+            });
+            if (response.ok) {
+                await loadData();
+                conclusionDeletingDialog.close();
+                return Err.none();
+            } else {
+                const errorMessage = await getErrorFromResponse(response);
+                return new Err(errorMessage);
+            }
         };
-        actionConfirmationDialog.open(
+        conclusionDeletingDialog.open(
             conclusionDeletingAction,
             "Do you really want to remove test conclusion?",
         );
     }
     let dataFetchingErr: string = "";
     let conclusionEditingDialog: ConclusionEditingDialog;
-    let actionConfirmationDialog: ActionConfirmationDialog;
+    let conclusionDeletingDialog: ActionConfirmationDialog;
 </script>
 
 <TabViewDataLoader {loadData} isEmpty={() => conclusionData.isEmpty()}>
@@ -71,7 +82,7 @@
             bind:this={conclusionEditingDialog}
             updateParentElementData={loadData}
         />
-        <ActionConfirmationDialog bind:this={actionConfirmationDialog} />
+        <ActionConfirmationDialog bind:this={conclusionDeletingDialog} />
         <div class="content-header">
             <TabHeaderWithButton tabName="Test Conclusion:" />
             <div class="header-btns">

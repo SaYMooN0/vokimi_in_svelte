@@ -3,6 +3,7 @@
     import type { TestCreationTagsTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
+    import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
 
     export let updateParentElementData: () => void;
     export let testId: string;
@@ -12,7 +13,6 @@
     let tagsToChooseFrom: string[] = [];
     let searchTimeout: ReturnType<typeof setTimeout>;
     let tagSearchInput: string = "";
-    let errorMessage: string = "";
 
     export function open(tags: TestCreationTagsTabData) {
         dialogElement.setErrorMessage("");
@@ -48,24 +48,19 @@
         tagsData.tags = [...tagsData.tags, tag];
     }
     async function searchTags(tag: string) {
-        console.log("searching", tag);
-        errorMessage = "";
-        try {
-            const response = await fetch(
-                `/api/tags/searchTags/${encodeURIComponent(tag)}`,
-            );
-            if (!response.ok) {
-                throw new Error("Failed to search tags");
-            }
-            if (response.ok) {
-                const data = await response.json();
-                tagsToChooseFrom = data;
-            } else {
-                throw new Error("Failed to search tags");
-            }
-        } catch (error) {
-            errorMessage =
-                "Failed to create conclusion. Please refresh the page and try again";
+        dialogElement.setErrorMessage("");
+        const response = await fetch(
+            `/api/tags/searchTags/${encodeURIComponent(tag)}`,
+        );
+        if (response.ok) {
+            const data = await response.json();
+            tagsToChooseFrom = data;
+        } else if (response.status === 400) {
+            const errorMessage = await getErrorFromResponse(response);
+            console.log(errorMessage);
+            dialogElement.setErrorMessage(errorMessage);
+        } else {
+            throw new Error("Unknown error");
         }
     }
     $: if (!StringUtils.isNullOrWhiteSpace(tagSearchInput)) {
@@ -201,8 +196,8 @@
                 {/each}
             </div>
         </div>
-    </div></BaseDraftTestEditingDialog
->
+    </div>
+</BaseDraftTestEditingDialog>
 
 <style>
     .dialog-content {

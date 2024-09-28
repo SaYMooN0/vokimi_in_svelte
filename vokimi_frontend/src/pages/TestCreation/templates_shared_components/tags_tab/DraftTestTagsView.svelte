@@ -42,15 +42,15 @@
             updateParentElementData={loadData}
             {testId}
         />
-        <TabHeaderWithButton
-            tabName="Test Tags ({tagsData.tags.length === 0
-                ? 'No tags added yet'
-                : tagsData.tags.length}):"
-            buttonText="Open Tags Editor"
-            onButtonClick={() => tagsEditingDialog.open(tagsData)}
-        />
+
         {#if tagsData.tags.length > 0}
-            <p class="chosen-tags-p">Chosen Tags:</p>
+            <TabHeaderWithButton
+                tabName="Chosen Tags: ({tagsData.tags.length === 0
+                    ? 'No tags added yet'
+                    : tagsData.tags.length}):"
+                buttonText="Open Tags Editor"
+                onButtonClick={() => tagsEditingDialog.open(tagsData)}
+            />
             <div class="tags-display">
                 {#each tagsData.tags as tag}
                     <div class="tag-display">
@@ -61,8 +61,11 @@
         {:else}
             <div class="no-tags-display">
                 <label>You have not added any tags yet</label>
-                <p>Start adding tags to your test</p>
-                <button on:click={() => tagsEditingDialog.open(tagsData)}>
+                <p>Tags will help users to find your test</p>
+                <button
+                    on:click={() => tagsEditingDialog.open(tagsData)}
+                    class="open-tags-editor-btn"
+                >
                     Open Tags Editor
                 </button>
             </div>
@@ -71,16 +74,12 @@
 </TabViewDataLoader>
 
 <style>
-    .chosen-tags-p {
-        font-size: 24px;
-        margin: 8px 0;
-        color: var(--text);
-    }
     .tags-display {
         display: flex;
         flex-direction: column;
         gap: 8px;
         padding-left: 8px;
+        margin-top: 12px;
     }
     .tag-display {
         display: flex;
@@ -109,8 +108,28 @@
     }
     .no-tags-display label {
         font-size: 20px;
+        color: var(--text-faded);
     }
     .no-tags-display p {
-        font-size: 20px;
+        margin-top: 4px;
+        font-size: 22px;
+        color: var(--text);
+    }
+    .open-tags-editor-btn {
+        background-color: var(--primary);
+        color: var(--back-main);
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-size: 16px;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.12s ease-in;
+    }
+    .open-tags-editor-btn:hover {
+        background-color: var(--primary-hov);
+    }
+    .open-tags-editor-btn:active {
+        transform: scale(0.98);
     }
 </style>
