@@ -38,6 +38,7 @@
         bind:stylesTabData
         tagsTabPath="view-tags"
         bind:tagsTabData
+        publishingTabPath="view-publish"
     />
     <Route path="view-questions">
         <GeneralTestQuestionsView

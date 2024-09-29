@@ -15,8 +15,10 @@
     let tagSearchInput: string = "";
 
     export function open(tags: TestCreationTagsTabData) {
+        tagSearchInput = "";
+        tagsToChooseFrom = [];
         dialogElement.setErrorMessage("");
-        tagsData = tags;
+        tagsData = tags.copy();
         dialogElement.open();
     }
 
@@ -57,7 +59,6 @@
             tagsToChooseFrom = data;
         } else if (response.status === 400) {
             const errorMessage = await getErrorFromResponse(response);
-            console.log(errorMessage);
             dialogElement.setErrorMessage(errorMessage);
         } else {
             throw new Error("Unknown error");

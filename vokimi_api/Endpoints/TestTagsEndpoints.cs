@@ -55,6 +55,9 @@ namespace vokimi_api.Endpoints
         public static IResult UpdateDraftTestTags(IDbContextFactory<AppDbContext> dbFactory,
                                                   string testId,
                                                   [FromBody] List<string> tags) {
+            if (tags.Count > TestTagsConsts.MaxTagsForTestCount) {
+                return ResultsHelper.BadRequestWithErr($"Tags count must not exceed {TestTagsConsts.MaxTagsForTestCount}");
+            }
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out _)) {
                 return ResultsHelper.BadRequestServerError();

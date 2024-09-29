@@ -25,9 +25,7 @@
         const saveImageData: string | Err = await saveImageFunction(file);
 
         if (typeof saveImageData === "string") {
-            console.log("before", imagePath);
             imagePath = saveImageData;
-            console.log("after", imagePath);
         } else {
             imageUploadingErr = saveImageData.toString();
         }
@@ -153,6 +151,8 @@
     }
 
     .text-input-part > :global(textarea) {
+        font-family: "Inter", sans-serif;
+
         box-sizing: border-box;
         resize: vertical;
         width: 100%;

@@ -4,8 +4,6 @@
     import AuthorizeView from "../../components/AuthorizeView.svelte";
 
     export let path: string;
-
-    console.log(path);
 </script>
 
 <AuthorizeView>

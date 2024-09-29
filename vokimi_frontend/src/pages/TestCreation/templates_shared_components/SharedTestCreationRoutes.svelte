@@ -8,6 +8,8 @@
     import type { TestCreationConclusionTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
     import type { TestCreationStylesTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
     import type { TestCreationTagsTabData } from "../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
+    import DraftTestPublishing from "./publishing_tab/DraftTestPublishingView.svelte";
+    import DraftTestPublishingView from "./publishing_tab/DraftTestPublishingView.svelte";
 
     export let testId: string;
     export let updateTestName: (name: string) => void;
@@ -23,6 +25,8 @@
 
     export let tagsTabPath: string;
     export let tagsTabData: TestCreationTagsTabData;
+
+    export let publishingTabPath: string;
 </script>
 
 <Route path={mainInfoTabPath}>
@@ -40,4 +44,8 @@
 </Route>
 <Route path={tagsTabPath}>
     <DraftTestTagsView bind:tagsData={tagsTabData} {testId} />
+</Route>
+
+<Route path={publishingTabPath}>
+    <DraftTestPublishingView {testId} />
 </Route>

@@ -9,7 +9,6 @@
     export let testId: string;
 
     export function open() {
-        console.log("in");
         dialogElement.open();
     }
 

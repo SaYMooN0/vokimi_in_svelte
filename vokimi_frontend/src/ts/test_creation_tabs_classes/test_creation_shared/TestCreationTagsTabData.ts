@@ -15,9 +15,12 @@ export class TestCreationTagsTabData {
         this.maxTagNameLength = maxTagNameLength;
     }
 
+    copy(): TestCreationTagsTabData {
+        return new TestCreationTagsTabData(this.tags.slice(), this.maxTagsForTestCount, this.maxTagNameLength);
+    }
     isEmpty(): boolean {
         return this.maxTagsForTestCount == maxTagsForTestCountForEmptyData;
-    }   
+    }
     static empty(): TestCreationTagsTabData {
         return new TestCreationTagsTabData([], maxTagsForTestCountForEmptyData, 10);
     }

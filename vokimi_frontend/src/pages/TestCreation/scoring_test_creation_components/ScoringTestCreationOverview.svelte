@@ -29,6 +29,7 @@
         bind:stylesTabData
         tagsTabPath="view-tags"
         bind:tagsTabData
+        publishingTabPath="view-publish"
     />
     <Route>An error has occured. Please go to a previous page</Route>
 </Router>

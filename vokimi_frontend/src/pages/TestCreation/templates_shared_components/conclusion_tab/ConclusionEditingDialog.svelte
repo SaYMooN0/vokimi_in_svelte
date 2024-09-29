@@ -12,8 +12,8 @@
     let dialogElement: BaseDraftTestEditingDialog;
 
     export function open(conclusion: TestCreationConclusionTabData) {
+        conclusionData = conclusion.copy();
         dialogElement.setErrorMessage("");
-        conclusionData = conclusion;
         dialogElement.open();
     }
 

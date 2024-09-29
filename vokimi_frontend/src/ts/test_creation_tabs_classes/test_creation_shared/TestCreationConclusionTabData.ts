@@ -27,6 +27,16 @@ export class TestCreationConclusionTabData {
     isEmpty(): boolean {
         return StringUtils.isNullOrWhiteSpace(this.id) && StringUtils.isNullOrWhiteSpace(this.text);
     }
+    copy(): TestCreationConclusionTabData {
+        return new TestCreationConclusionTabData(
+            this.id,
+            this.text,
+            this.additionalImage,
+            this.anyFeedback,
+            this.feedbackText,
+            this.maxFeedbackLength
+        );
+    }
     static empty(): TestCreationConclusionTabData {
         return new TestCreationConclusionTabData(
             "", "", null, false, "Feedback", 64

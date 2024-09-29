@@ -9,18 +9,15 @@
     let tagsEditingDialog: TagsEditingDialog;
 
     async function loadData() {
-        console.log("----", tagsData);
         const url = "/api/tags/getDraftTestTagsData/" + testId;
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             tagsData = new TestCreationTagsTabData(
                 data.tags,
                 data.maxTagsForTestCount,
                 data.maxTagNameLength,
             );
-            console.log("true, must be rerendered");
         } else {
             tagsData = TestCreationTagsTabData.empty();
         }
