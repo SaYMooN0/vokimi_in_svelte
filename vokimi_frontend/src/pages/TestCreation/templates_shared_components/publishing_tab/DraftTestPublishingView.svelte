@@ -16,10 +16,10 @@
     <p class="warning">
         Publishing the test will allow other users to see this test and take it
         (unless, of course, the privacy settings prohibit it). After publishing,
-        you will not be able to edit most part of the test, but you will still be
-        able to change tags and privacy settings at any time.
+        you will not be able to edit most part of the test, but you will still
+        be able to change tags and privacy settings at any time.
     </p>
-    <button on:click={publishBtnPressed} class="publish-btn">Publish</button>
+    <button on:click={publishBtnPressed} class="publish-btn"> Publish </button>
 </div>
 
 <style>
@@ -40,7 +40,7 @@
         color: var(--back-main);
         padding: 8px 20px;
         border-radius: 6px;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 600;
         letter-spacing: 2px;
     }
@@ -48,5 +48,24 @@
     .warning {
         color: var(--text);
         font-size: 20px;
+    }
+
+    .publish-btn {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        gap: 8px;
+        background-color: var(--primary);
+        color: var(--back-main);
+        border: none;
+        border-radius: 6px;
+        padding: 8px 24px;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.12s ease-in;
+    }
+    .publish-btn:hover {
+        background-color: var(--primary-hov);
     }
 </style>

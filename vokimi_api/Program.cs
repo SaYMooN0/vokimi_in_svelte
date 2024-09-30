@@ -123,7 +123,7 @@ namespace vokimi_api
             app.MapGet("/testCreation/general/getGeneralDraftTestResultsData/{testId}",
                 GeneralTestCreationEndpoints.GetDraftGeneralTestResultsData);
             app.MapGet("/testCreation/general/getDraftGeneralTestResultDataToEdit/{resultId}",
-            GeneralTestCreationEndpoints.GetDraftGeneralTestResultDataToEdit);
+                GeneralTestCreationEndpoints.GetDraftGeneralTestResultDataToEdit);
             app.MapDelete("/testCreation/general/deleteDraftGeneralTestResult/{resultId}",
                 GeneralTestCreationEndpoints.DeleteGeneralDraftTestResult);
             app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestResult",

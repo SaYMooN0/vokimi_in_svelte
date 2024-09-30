@@ -84,18 +84,23 @@
     .create-new-btn {
         width: 200px;
         height: 44px;
-        border-radius: 4px;
+        border-radius: 6px;
         background-color: var(--primary);
         color: var(--back-main);
+        font-size: 20px;
         display: flex;
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        transition: all 0.1s;
+        transition: all 0.12s ease-in;
         position: fixed;
         bottom: 6px;
         left: 50%;
         transform: translateX(-50%);
         margin-bottom: 40px;
+    }
+    .create-new-btn:hover {
+        width: 220px;
+        background-color: var(--primary-hov);
     }
 </style>

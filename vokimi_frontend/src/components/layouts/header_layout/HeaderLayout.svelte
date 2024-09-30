@@ -9,7 +9,6 @@
         const response = await fetch("/api/getUsernameWithProfilePicture");
 
         if (response.status == 200) {
-            //#TODO: create object
             let j = await response.json();
             username = j.username;
             profilePicture = j.profilePicture;
@@ -30,7 +29,14 @@
         <div></div>
     {:then authenticated}
         {#if authenticated}
-            <div>{username}</div>
+            <div class="acc-div">
+                <img
+                    src={profilePicture}
+                    alt="Profile Picture"
+                    class="acc-img"
+                />
+                {username}
+            </div>
         {:else}
             <a href="/auth/login" class="login-button">Login</a>
         {/if}
@@ -72,7 +78,24 @@
         font-size: 18px;
         border-radius: 20px;
     }
-    .login-button:hover{
+    .login-button:hover {
         background-color: var(--primary-hov);
+    }
+
+    .acc-div {
+        background-color: var(--back-secondary);
+        height: 62%;
+        margin: auto 0;
+        padding: 4px 0;
+        width: 100%;
+        border: 2px solid var(--back-secondary);
+        border-radius: 100px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+    .acc-div:hover {
+        border: 2px solid var(--primary);
     }
 </style>

@@ -80,42 +80,67 @@
     onSaveButtonClicked={saveData}
     bind:this={dialogElement}
 >
-    <label for="testName" class="property-label">Test name:</label>
-    <input
-        id="testName"
-        type="text"
-        bind:value={testName}
-        name="testName-{StringUtils.randomString()}"
-    />
+    <div class="dialog-content">
+        <label for="testName" class="property-label">Test name:</label>
+        <input
+            id="testName"
+            type="text"
+            bind:value={testName}
+            name="testName-{StringUtils.randomString()}"
+        />
 
-    <label for="description" class="property-label">Test description: </label>
-    <textarea
-        id="description"
-        bind:value={description}
-        placeholder="Test description is optional"
-    />
+        <label for="description" class="property-label"
+            >Test description:
+        </label>
+        <textarea
+            class="test-description"
+            id="description"
+            bind:value={description}
+            placeholder="Test description is optional"
+        />
 
-    <label for="language" class="property-label">Language:</label>
-    <select id="language" bind:value={language}>
-        {#each Object.values(Language) as language}
-            <option value={language}>
-                {LanguageUtils.getFullName(language)}
-            </option>
-        {/each}
-    </select>
+        <label for="language" class="property-label">Language:</label>
+        <select id="language" bind:value={language}>
+            {#each Object.values(Language) as language}
+                <option value={language}>
+                    {LanguageUtils.getFullName(language)}
+                </option>
+            {/each}
+        </select>
 
-    <label for="privacy" class="property-label">Privacy:</label>
-    <select id="privacy" bind:value={privacy}>
-        {#each Object.values(TestPrivacy) as privacy}
-            <option value={privacy}>
-                {TestPrivacyUtils.getFullName(privacy)}
-            </option>
-        {/each}
-    </select>
+        <label for="privacy" class="property-label">Privacy:</label>
+        <select id="privacy" bind:value={privacy}>
+            {#each Object.values(TestPrivacy) as privacy}
+                <option value={privacy}>
+                    {TestPrivacyUtils.getFullName(privacy)}
+                </option>
+            {/each}
+        </select>
+    </div>
 </BaseDraftTestEditingDialog>
 
 <style>
+    .dialog-content {
+        width: min(1400px, 72vw);
+        display: flex;
+        flex-direction: column;
+        padding: 8px 12px;
+    }
     .property-label {
         color: var(--text-faded);
+    }
+    .test-description {
+        background-color: var(--back-secondary);
+        color: var(--text);
+        max-height: max(12vh, 400px);
+        resize: vertical;
+        outline: none;
+        border: 2px solid var(--back-secondary);
+        border-radius: 8px;
+        box-sizing: border-box;
+        padding: 4px 8px;
+    }
+    .test-description:focus {
+        border-color: var(--primary);
     }
 </style>

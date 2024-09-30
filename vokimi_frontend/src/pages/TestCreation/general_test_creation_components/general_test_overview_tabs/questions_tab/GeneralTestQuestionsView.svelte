@@ -8,6 +8,7 @@
     import ActionConfirmationDialog from "../../../../../components/shared/ActionConfirmationDialog.svelte";
     import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
     import { Err } from "../../../../../ts/Err";
+    import { StringUtils } from "../../../../../ts/utils/StringUtils";
 
     export let questionsData: GeneralTestCreationQuestionsTabData;
     export let testId: string;
@@ -66,10 +67,12 @@
     {testId}
 />
 <TabViewDataLoader {loadData} isEmpty={() => questionsData.isEmpty()}>
-    <div slot="empty">
-        <h2>It seems like there is no questions added yet</h2>
+    <div slot="empty" class="no-questions-div">
+        <label>It seems like you have not added any questions yet</label>
         <a on:click={loadData}>Refresh</a>
-        <p class="error-message">{errorMessage}</p>
+        {#if !StringUtils.isNullOrWhiteSpace(errorMessage)}
+            <p class="error-message">{errorMessage}</p>
+        {/if}
         <button on:click={() => questionCreationDialog.open()}>
             Create First Question
         </button>
@@ -103,6 +106,54 @@
 </TabViewDataLoader>
 
 <style>
-    .tab-content {
+    .no-questions-div {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        max-width: min(640px, 60vw);
+        padding: 10px 20px;
+        border: 2px dashed var(--primary);
+        background-color: var(--back-secondary);
+        border-radius: 8px;
+    }
+    .no-questions-div label {
+        font-size: 26px;
+        color: var(--text);
+        text-align: center;
+        margin: 12px 20px 8px 20px;
+        font-weight: 500;
+    }
+    .no-questions-div a {
+        color: var(--text-faded);
+        font-size: 18px;
+    }
+    .no-questions-div a:hover {
+        color: var(--primary);
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    .no-questions-div .error-message {
+        color: var(--text-faded);
+        font-weight: 500;
+        font-size: 18px;
+        margin: 4px;
+    }
+    .no-questions-div button {
+        margin-top: 24px;
+        background-color: var(--primary);
+        color: var(--back-main);
+        border: none;
+        padding: 8px 24px;
+        border-radius: 4px;
+        font-size: 18px;
+        cursor: pointer;
+    }
+    .no-questions-div button:hover {
+        background-color: var(--primary-hov);
     }
 </style>
