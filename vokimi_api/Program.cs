@@ -101,6 +101,8 @@ namespace vokimi_api
               TestCreationSharedEndpoints.CreateDraftTestConclusion);
             app.MapPost("testCreation/updateDraftTestConclusion", TestCreationSharedEndpoints.UpdateDraftTestConclusion);
             app.MapDelete("/testCreation/deleteDraftTestConclusion/{testId}", TestCreationSharedEndpoints.DeleteDraftTestConclusion);
+            app.MapGet("/testCreation/getDraftTestStylesData/{testId}",
+              TestCreationSharedEndpoints.GetDraftTestStylesData);
 
             app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}",
                 GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
