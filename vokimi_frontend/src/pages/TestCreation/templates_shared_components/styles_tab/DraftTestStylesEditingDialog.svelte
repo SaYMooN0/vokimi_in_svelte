@@ -5,24 +5,25 @@
 
     export let updateParentElementData: () => void;
 
-    let stylesData: TestCreationStylesTabData;
+    let stylesDataToEdit: TestCreationStylesTabData;
+    let defaultStylesData: TestCreationStylesTabData | null = null;
     let dialogElement: BaseDraftTestEditingDialog;
 
     export function open(styles: TestCreationStylesTabData) {
-        stylesData = styles.copy();
+        stylesDataToEdit = styles.copy();
         dialogElement.setErrorMessage("");
         dialogElement.open();
     }
 
     async function saveData() {
         const response = await fetch(
-            "/api/testCreation/updateDraftTestStyles",
+            "/api/testStyles/updateDraftTestStyles",
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(stylesData),
+                body: JSON.stringify(stylesDataToEdit),
             },
         );
         if (response.ok) {
@@ -33,6 +34,22 @@
             dialogElement.setErrorMessage(data.error);
         } else {
             dialogElement.setErrorMessage("Unknown error");
+        }
+    }
+    async function setDefaultValues() {
+        if (defaultStylesData === null) {
+            const response = await fetch(
+                "/api/testStyles/getDefaultStylesData",
+            );
+            if (response.ok) {
+                defaultStylesData = await response.json();
+            } else {
+                dialogElement.setErrorMessage("Unknown error");
+                return;
+            }
+        }
+        if (defaultStylesData) {
+            stylesDataToEdit = defaultStylesData.copy();
         }
     }
 </script>

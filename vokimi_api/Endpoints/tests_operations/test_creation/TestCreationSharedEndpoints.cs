@@ -15,6 +15,7 @@ using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.requests.test_creation.templates_shared;
 using vokimi_api.Src.dtos.responses;
 using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
+using vokimi_api.Src.dtos.shared;
 using vokimi_api.Src.dtos.shared.test_creation_shared;
 using vokimi_api.Src.enums;
 
@@ -258,22 +259,5 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 return Results.Ok();
             }
         }
-        public static IResult GetDraftTestStylesData(IDbContextFactory<AppDbContext> dbFactory, string testId) {
-
-            DraftTestId draftTestId;
-            if (!Guid.TryParse(testId, out _)) {
-                return ResultsHelper.BadRequestServerError();
-            }
-            draftTestId = new(new(testId));
-
-            using (var db = dbFactory.CreateDbContext()) {
-                BaseDraftTest? test = db.DraftTestsSharedInfo
-                        .Include(t => t.Conclusion)
-                        .FirstOrDefault(t => t.Id == draftTestId);
-                if (test is null) { return ResultsHelper.BadRequestServerError(); }
-                return Results.Ok(DraftTestConclusionData.FromConclusion(test.Conclusion));
-            }
-        }
-
     }
 }
