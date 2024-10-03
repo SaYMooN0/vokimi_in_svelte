@@ -67,7 +67,7 @@ namespace vokimi_api.Endpoints
 
                     return Results.Json(new {
                         Username = user.Username,
-                        ProfilePicture = ImgOperationsConsts.ImgUrl(user.ProfilePicturePath)
+                        ProfilePicture = user.ProfilePicturePath
                     });
                 }
             }

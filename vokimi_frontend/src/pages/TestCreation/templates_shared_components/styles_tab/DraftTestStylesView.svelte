@@ -16,7 +16,6 @@
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             const arrow = TestStylesArrowTypeUtils.fromId(data.arrowType);
             const accentColor = data.accentColor;
             stylesData = new TestCreationStylesTabData(accentColor, arrow);
@@ -38,15 +37,21 @@
             bind:this={dialogElement}
             updateParentElementData={loadData}
         />
-        <TabHeaderWithButton tabName="Test Styles:" />
+        <TabHeaderWithButton
+            tabName="Test Styles:"
+            onButtonClick={() => dialogElement.open(stylesData)}
+            buttonText="Edit Styles"
+        />
         <div class="prop-name-val-p">
             <span class="property-name">Chosen accent color:</span>
+            <span
+                style="background-color:{stylesData.accentColor}"
+                class="accent-color"
+            ></span>
             <span class="property-value">{stylesData.accentColor}</span>
-            <span style="color:{stylesData.accentColor}"> </span>
         </div>
         <div class="prop-name-val-p">
             <span class="property-name">Chosen arrow type:</span>
-            <span class="property-value">{stylesData.arrowType}</span>
             <div class="arrows-container">
                 <svelte:component
                     this={TestStylesArrowTypeUtils.getIcon(
@@ -59,18 +64,19 @@
                     )}
                 />
             </div>
+            <span class="property-value">
+                ({TestStylesArrowTypeUtils.getFullName(stylesData.arrowType)})
+            </span>
         </div>
     </div>
 </TabViewDataLoader>
 
 <style>
     .unable-to-fetch {
+        position: absolute;
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-    .unable-to-fetch {
-        position: absolute;
         top: 40%;
         left: 50%;
         transform: translateX(-50%);
@@ -81,12 +87,43 @@
         padding: 10px 20px;
         border-radius: 8px;
     }
+    .prop-name-val-p {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 44px;
+        margin: 4px 8px;
+        gap: 12px;
+    }
+    .prop-name-val-p .property-name {
+        font-weight: 500;
+        font-size: 18px;
+    }
+    .prop-name-val-p .property-value {
+        font-size: 20px;
+    }
+
+    .accent-color {
+        display: flex;
+        width: max(12vw, 120px);
+        height: 80%;
+        border-radius: 8px;
+    }
     .arrows-container {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 4px;
+        gap: 8px;
+        height: 100%;
     }
-    .arrows-container {
+    .arrows-container :global(svg) {
+        height: 90%;
+        aspect-ratio: 1/1;
+        border-radius: 24%;
+        color: var(--text);
+        border: 2px solid var(--text);
+    }
+    .arrows-container :global(svg:nth-child(2)) {
+        transform: rotate(180deg);
     }
 </style>

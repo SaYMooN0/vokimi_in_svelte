@@ -1,6 +1,7 @@
 <script lang="ts">
     import NavMenu from "./NavMenu.svelte";
     import vokimiLogo from "../../../assets/vokimi-logo.svg";
+    import { ImgUtils } from "../../../ts/utils/ImgUtils";
 
     let username: string = "";
     let profilePicture: string = "";
@@ -26,12 +27,12 @@
     <NavMenu />
 
     {#await IsAuthenticated()}
-        <div></div>
+        <div>Loading...</div>
     {:then authenticated}
         {#if authenticated}
             <div class="acc-div">
                 <img
-                    src={profilePicture}
+                    src={ImgUtils.imgUrl(profilePicture)}
                     alt="Profile Picture"
                     class="acc-img"
                 />
@@ -83,19 +84,27 @@
     }
 
     .acc-div {
+        justify-self: center;
         background-color: var(--back-secondary);
-        height: 62%;
         margin: auto 0;
-        padding: 4px 0;
-        width: 100%;
+        padding: 4px 12px;
+        width: fit-content;
         border: 2px solid var(--back-secondary);
         border-radius: 100px;
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 8px;
         cursor: pointer;
     }
     .acc-div:hover {
         border: 2px solid var(--primary);
+    }
+
+    .acc-img {
+        height: 44px;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        border-radius: 12px;
     }
 </style>
