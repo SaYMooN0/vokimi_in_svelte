@@ -34,6 +34,7 @@
     </div>
     <div slot="content" class="conclusion-data">
         <DraftTestStylesEditingDialog
+            {testId}
             bind:this={dialogElement}
             updateParentElementData={loadData}
         />
@@ -121,7 +122,6 @@
         aspect-ratio: 1/1;
         border-radius: 24%;
         color: var(--text);
-        border: 2px solid var(--text);
     }
     .arrows-container :global(svg:nth-child(2)) {
         transform: rotate(180deg);

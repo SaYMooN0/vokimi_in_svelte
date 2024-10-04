@@ -104,7 +104,7 @@ namespace vokimi_api
 
             app.MapGet("/testStyles/getDraftTestStylesData/{testId}", TestStylesEndpoints.GetDraftTestStylesData);
             app.MapGet("/testStyles/getDefaultStylesData", TestStylesEndpoints.GetDefaultStylesData);
-            app.MapGet("/testStyles/updateDraftTestStyles/{testId}", TestStylesEndpoints.UpdateDraftTestStylesData);
+            app.MapPost("/testStyles/updateDraftTestStyles/{testId}", TestStylesEndpoints.UpdateDraftTestStylesData);
 
             app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}",
                 GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);

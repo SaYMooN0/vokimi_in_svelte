@@ -33,7 +33,7 @@ namespace vokimi_api.Src.dtos.shared
             if (CheckForErr().NotNone()) {
                 return null;
             }
-            ArrowIconType? arrowType = ArrowIconTypeExtensions.FromId(this.AccentColor);
+            ArrowIconType? arrowType = ArrowIconTypeExtensions.FromId(this.ArrowType);
             if (arrowType is null) {
                 return null;
             }

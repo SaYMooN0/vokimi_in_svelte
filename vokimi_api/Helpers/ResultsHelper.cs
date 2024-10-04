@@ -1,4 +1,5 @@
-﻿using vokimi_api.Src.constants_store_classes;
+﻿using vokimi_api.Src;
+using vokimi_api.Src.constants_store_classes;
 
 namespace vokimi_api.Helpers
 {
@@ -6,6 +7,8 @@ namespace vokimi_api.Helpers
     {
         public static IResult BadRequestWithErr(string err) =>
             TypedResults.BadRequest(new { Error = err });
+        public static IResult BadRequestWithErr(Err err) =>
+          TypedResults.BadRequest(new { Error = err.Message });
         public static IResult BadRequestSaveChangesTryAgain() =>
             BadRequestWithErr("Server error. Save existing changes and try to refresh the page");
         public static IResult BadRequestUnknownTest() =>

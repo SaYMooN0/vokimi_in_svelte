@@ -117,7 +117,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
 
             Err formValidatingErr = request.GetError();
             if (formValidatingErr.NotNone()) {
-                return ResultsHelper.BadRequestWithErr(formValidatingErr.Message);
+                return ResultsHelper.BadRequestWithErr(formValidatingErr);
             }
             DraftTestId testId = new(new(request.TestId));
             try {
@@ -247,7 +247,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 }
                 Err validationErr = newResData.CheckForErr();
                 if(validationErr.NotNone()) {
-                    return ResultsHelper.BadRequestWithErr(validationErr.ToString());
+                    return ResultsHelper.BadRequestWithErr(validationErr);
                 }
                 res.Update(newResData.Name, newResData.Text, newResData.ImagePath);
                 string unusedImgPrefix = $"{ImgOperationsConsts.DraftGeneralTestResultsFolder}/{resId.Value.ToString()}/";

@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type { TestCreationConclusionTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
-    import type { TestCreationStylesTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
+    import { TestCreationStylesTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import AccentColorPicker from "./editing_dialog_components/AccentColorPicker.svelte";
     import ArrowsTypePicker from "./editing_dialog_components/ArrowsTypePicker.svelte";
 
     export let updateParentElementData: () => void;
+    export let testId: string;
 
     let stylesDataToEdit: TestCreationStylesTabData;
     let defaultStylesData: TestCreationStylesTabData | null = null;
@@ -18,7 +18,9 @@
     }
 
     async function saveData() {
-        const response = await fetch("/api/testStyles/updateDraftTestStyles", {
+        const url = "/api/testStyles/updateDraftTestStyles/" + testId;
+        console.log(url);
+        const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -32,7 +34,7 @@
             const data = await response.json();
             dialogElement.setErrorMessage(data.error);
         } else {
-            dialogElement.setErrorMessage("Unknown error");
+            dialogElement.setErrorMessage("Unknown server error");
         }
     }
     async function setDefaultValues() {
@@ -41,14 +43,21 @@
                 "/api/testStyles/getDefaultStylesData",
             );
             if (response.ok) {
-                defaultStylesData = await response.json();
+                const data = await response.json();
+                defaultStylesData = new TestCreationStylesTabData(
+                    data.accentColor,
+                    data.arrowType,
+                );
             } else {
-                dialogElement.setErrorMessage("Unknown error");
+                dialogElement.setErrorMessage(
+                    "An error occurred during setting styles to default. Try again later",
+                );
                 return;
             }
         }
         if (defaultStylesData) {
             stylesDataToEdit = defaultStylesData.copy();
+            console.log(stylesDataToEdit);
         }
     }
 </script>
@@ -73,4 +82,29 @@
 </BaseDraftTestEditingDialog>
 
 <style>
+    .dialog-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .dialog-title {
+        margin-top: 20px;
+        margin-bottom: 4px;
+    }
+    .set-default-btn {
+        margin-bottom: 4px;
+        cursor: pointer;
+        font-size: 18px;
+        color: var(--text-faded);
+    }
+    .set-default-btn:hover {
+        color: var(--primary);
+        text-decoration: underline;
+    }
+    .choose-p {
+        margin-top: 16px;
+        margin-bottom: 8px;
+        color: var(--text);
+        font-size: 24px;
+    }
 </style>
