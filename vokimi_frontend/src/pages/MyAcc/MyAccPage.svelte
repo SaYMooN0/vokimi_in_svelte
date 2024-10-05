@@ -1,1 +1,0 @@
-<div>my acc page</div>

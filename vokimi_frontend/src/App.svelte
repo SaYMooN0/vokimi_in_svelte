@@ -4,13 +4,13 @@
 
   import AuthPage from "./pages/Auth/AuthPage.svelte";
   import FriendsPage from "./pages/Friends/FriendsPage.svelte";
-  import MyAccPage from "./pages/MyAcc/MyAccPage.svelte";
   import CollectionsPage from "./pages/Collections/CollectionsPage.svelte";
   import MyTestsPage from "./pages/MyTests/MyTestsPage.svelte";
   import TestsCatalogPage from "./pages/TestsCatalog/TestsCatalogPage.svelte";
   import ConfirmRegistrationPage from "./pages/ConfirmRegistrationPage.svelte";
   import TestCreationPage from "./pages/TestCreation/TestCreationPage.svelte";
   import Page404 from "./pages/Page404.svelte";
+  import UserPage from "./pages/User/UserPage.svelte";
 </script>
 
 <Router>
@@ -24,7 +24,9 @@
       <Route path="/auth/:path" let:params>
         <AuthPage path={params.path} />
       </Route>
-      <Route path="/my-acc" component={MyAccPage} />
+      <Route path="/user/:userId" let:params>
+        <UserPage userId={params.userId} />
+      </Route>
       <Route path="/collections" component={CollectionsPage} />
       <Route path="/my-tests" component={MyTestsPage} />
 

@@ -133,6 +133,8 @@ namespace vokimi_api
             app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestResult",
                 GeneralTestCreationEndpoints.SaveChangesForDraftGeneralTestResult);
 
+            app.MapGet("/users/doesUserExist/{userId}", UserEndpoints.DoesUserExist);
+
             app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
             app.MapPost("/testCreation/updateDraftTestQuestionCover/{testId}",
                 ImgOperationsEndpoints.UpdateDraftTestQuestionCover).DisableAntiforgery();

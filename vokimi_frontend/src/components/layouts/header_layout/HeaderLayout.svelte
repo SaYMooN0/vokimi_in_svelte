@@ -2,6 +2,7 @@
     import NavMenu from "./NavMenu.svelte";
     import vokimiLogo from "../../../assets/vokimi-logo.svg";
     import { ImgUtils } from "../../../ts/utils/ImgUtils";
+    import { Link } from "svelte-routing";
 
     let username: string = "";
     let profilePicture: string = "";
@@ -30,14 +31,16 @@
         <div>Loading...</div>
     {:then authenticated}
         {#if authenticated}
-            <div class="acc-div">
-                <img
-                    src={ImgUtils.imgUrl(profilePicture)}
-                    alt="Profile Picture"
-                    class="acc-img"
-                />
-                {username}
-            </div>
+            <Link to="/user">
+                <div class="acc-div">
+                    <img
+                        src={ImgUtils.imgUrl(profilePicture)}
+                        alt="Profile Picture"
+                        class="acc-img"
+                    />
+                    {username}
+                </div>
+            </Link>
         {:else}
             <a href="/auth/login" class="login-button">Login</a>
         {/if}
@@ -99,6 +102,9 @@
     }
     .acc-div:hover {
         border: 2px solid var(--primary);
+    }
+    .acc-div:active {
+        transform: scale(0.98);
     }
 
     .acc-img {
