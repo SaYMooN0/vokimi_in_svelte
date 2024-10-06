@@ -13,6 +13,7 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new AppUserId(v));
                 entity.Property(x => x.LoginInfoId).HasConversion(v => v.Value, v => new LoginInfoId(v));
                 entity.Property(x => x.UserAdditionalInfoId).HasConversion(v => v.Value, v => new UserAdditionalInfoId(v));
+                entity.Property(x => x.UserPageSettingsId).HasConversion(v => v.Value, v => new UserPageSettingsId(v));
 
                 entity.HasMany(x => x.DraftTests)
                       .WithOne()
@@ -21,6 +22,10 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.HasMany(x => x.PublishedTests)
                     .WithOne(x => x.Creator)
                     .HasForeignKey(x => x.CreatorId);
+
+                entity.HasMany(x => x.PagePosts)
+                    .WithOne()
+                    .HasForeignKey(x => x.UserId);
 
                 entity.HasMany(x => x.Friends)
                       .WithMany()
@@ -35,6 +40,7 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                           j => j.HasOne(uf => uf.Follower).WithMany().HasForeignKey(uf => uf.FollowerId),
                           j => j.HasOne(uf => uf.User).WithMany().HasForeignKey(uf => uf.UserId)
                       );
+
             });
         }
 
@@ -51,7 +57,6 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new UserAdditionalInfoId(v));
             });
         }
-
         internal static void ConfigureUnconfirmedAppUser(this ModelBuilder modelBuilder) {
             modelBuilder.Entity<UnconfirmedAppUser>(entity => {
                 entity.HasKey(x => x.Id);

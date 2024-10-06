@@ -3,7 +3,7 @@
     import TabViewDataLoader from "../../creation_shared_components/TabViewDataLoader.svelte";
     import { TestTemplateUtils } from "../../../../ts/enums/TestTemplate";
     import { LanguageUtils } from "../../../../ts/enums/Language";
-    import { TestPrivacyUtils } from "../../../../ts/enums/TestPrivacy";
+    import { TestPrivacyUtils } from "../../../../ts/enums/PrivacyValues";
     import MainInfoViewLeftPart from "./MainInfoViewLeftPart.svelte";
     import MainInfoViewRightPart from "./MainInfoViewRightPart.svelte";
     import ErrorMessageInCenter from "../../creation_shared_components/ErrorMessageInCenter.svelte";

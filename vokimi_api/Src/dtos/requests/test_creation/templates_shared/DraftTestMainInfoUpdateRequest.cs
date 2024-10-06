@@ -26,7 +26,7 @@ namespace vokimi_api.Src.dtos.requests.test_creation.templates_shared
             {
                 return new Err("Please choose a language");
             }
-            if (TestPrivacyExtensions.FromId(Privacy) is null)
+            if (PrivacyValuesExtensions.FromId(Privacy) is null)
             {
                 return new Err("Please choose test privacy");
             }
@@ -55,7 +55,7 @@ namespace vokimi_api.Src.dtos.requests.test_creation.templates_shared
                 Name,
                 Description,
                 LanguageExtensions.FromId(Language).Value,
-                TestPrivacyExtensions.FromId(Privacy).Value
+                PrivacyValuesExtensions.FromId(Privacy).Value
             );
 
         }
@@ -65,6 +65,6 @@ namespace vokimi_api.Src.dtos.requests.test_creation.templates_shared
         string Name,
         string Description,
         Language Language,
-        TestPrivacy Privacy
+        PrivacyValues Privacy
     );
 }

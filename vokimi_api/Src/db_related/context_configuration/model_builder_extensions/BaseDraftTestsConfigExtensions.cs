@@ -18,12 +18,12 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                       .HasForeignKey<BaseDraftTest>(x => x.MainInfoId);
 
                 entity.HasOne(x => x.Conclusion)
-                      .WithMany()
-                      .HasForeignKey(x => x.ConclusionId);
+                      .WithOne()
+                      .HasForeignKey<BaseDraftTest>(x => x.ConclusionId);
 
                 entity.HasOne(x => x.StylesSheet)
-                      .WithMany()
-                      .HasForeignKey(x => x.StylesSheetId);
+                      .WithOne()
+                      .HasForeignKey<BaseDraftTest>(x => x.StylesSheetId);
             });
         }
 

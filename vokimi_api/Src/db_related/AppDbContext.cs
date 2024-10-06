@@ -8,6 +8,7 @@ using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related
 using vokimi_api.Src.db_related.db_entities.users;
 using VokimiShared.src.models.db_classes.test.test_types;
 using vokimi_api.Src.db_related.db_entities.tests_related;
+using vokimi_api.Src.db_related.db_entities.user_page.posts;
 
 namespace vokimi_api.Src.db_related
 {
@@ -20,6 +21,11 @@ namespace vokimi_api.Src.db_related
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<LoginInfo> LoginInfo { get; set; }
         public DbSet<UserAdditionalInfo> UserAdditionalInfo { get; set; }
+
+        //users page
+        public DbSet<UserPageSettings> UserPageSettings { get; set; }
+        public DbSet<BaseUserPost> BaseUserPosts { get; set; }
+        public DbSet<UserPostTestCreated> UserPostsTestCreated { get; set; }
 
         //draft tests shared
         public DbSet<BaseDraftTest> DraftTestsSharedInfo { get; set; }
@@ -51,6 +57,11 @@ namespace vokimi_api.Src.db_related
             modelBuilder.ConfigureLoginInfo();
             modelBuilder.ConfigureUserAdditionalInfo();
             modelBuilder.ConfigureUnconfirmedAppUser();
+
+            //users page
+            modelBuilder.ConfigureAllUserPagePosts();
+            modelBuilder.ConfigureUserPageSettings();
+
 
             //draft and published tests shared
             modelBuilder.ConfigureTestConclusion();

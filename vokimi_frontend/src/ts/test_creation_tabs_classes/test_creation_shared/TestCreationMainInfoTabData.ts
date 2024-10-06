@@ -1,4 +1,4 @@
-import { TestPrivacy } from "../../enums/TestPrivacy";
+import { PrivacyValues } from "../../enums/PrivacyValues";
 import { Language } from "../../enums/Language";
 import { TestTemplate } from "../../enums/TestTemplate";
 
@@ -7,14 +7,14 @@ export class TestCreationMainInfoTabData {
     public readonly name: string;
     public readonly description: string;
     public readonly language: Language;
-    public readonly privacy: TestPrivacy;
+    public readonly privacy: PrivacyValues;
     public readonly imgPath: string;
 
     constructor(
         template: TestTemplate,
         name: string,
         language: Language,
-        privacy: TestPrivacy,
+        privacy: PrivacyValues,
         description: string,
         imgPath: string
     ) {
@@ -35,7 +35,7 @@ export class TestCreationMainInfoTabData {
             TestTemplate.General,
             "",
             Language.Other,
-            TestPrivacy.ForMyself,
+            PrivacyValues.ForMyself,
             "",
             ""
         );

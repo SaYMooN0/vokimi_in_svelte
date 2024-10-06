@@ -19,5 +19,5 @@
     {
         public UserAdditionalInfoId() : this(Guid.NewGuid()) { }
         public override string ToString() => Value.ToString();
-    }
+    } 
 }

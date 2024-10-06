@@ -15,7 +15,7 @@ namespace VokimiShared.src.models.db_classes.test.test_types
         public string Cover { get; init; }
         public string? Description { get; init; }
         public Language Language { get; init; }
-        public TestPrivacy Privacy { get; init; }
+        public PrivacyValues Privacy { get; init; }
         public DateTime CreationDate { get; init; }
         public DateTime PublicationDate { get; init; }
 

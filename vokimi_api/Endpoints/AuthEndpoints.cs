@@ -135,7 +135,9 @@ namespace vokimi_api.Endpoints
 
             var loginInfo = LoginInfo.CreateNew(unconfirmed.Email, unconfirmed.PasswordHash);
             var additionalInfo = UserAdditionalInfo.CreateNew(unconfirmed.RegistrationDate);
-            var newUser = AppUser.CreateNew(unconfirmed.Username, loginInfo.Id, additionalInfo.Id);
+            var pageSettings = UserPageSettings.CreateNew();
+
+            var newUser = AppUser.CreateNew(unconfirmed.Username, loginInfo.Id, additionalInfo.Id, pageSettings.Id);
 
             using var transaction = await db.Database.BeginTransactionAsync();
             try {

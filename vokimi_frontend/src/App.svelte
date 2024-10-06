@@ -24,8 +24,8 @@
       <Route path="/auth/:path" let:params>
         <AuthPage path={params.path} />
       </Route>
-      <Route path="/user/:userId" let:params>
-        <UserPage userId={params.userId} />
+      <Route path="/user/*" let:params>
+        <UserPage userId={params["*"]} />
       </Route>
       <Route path="/collections" component={CollectionsPage} />
       <Route path="/my-tests" component={MyTestsPage} />

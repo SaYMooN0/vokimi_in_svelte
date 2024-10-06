@@ -15,7 +15,6 @@
     }
     let accPageState: AccPageState;
     async function setAccPageState() {
-        console.log("setAccPageState userId: " + userId);
         const authData = await getAuthData();
         if (StringUtils.isNullOrWhiteSpace(userId)) {
             if (authData !== null) {
@@ -29,7 +28,9 @@
         if (response.ok) {
             const data = await response.json();
             if (data.exists) {
-                if (authData !== null) {
+                if (userId === authData?.UserId) {
+                    accPageState = AccPageState.MyPageViewer;
+                } else if (authData !== null) {
                     accPageState = AccPageState.ViewerAuthenticated;
                 } else {
                     accPageState = AccPageState.ViewerUnauthenticated;
@@ -53,7 +54,7 @@
     {:else if accPageState === AccPageState.ViewerUnauthenticated}
         <UserPageUnauthenticatedView />
     {:else if accPageState === AccPageState.UserNotFound}
-        <p>User not found</p>
+        <div class="user-not-found">User not found</div>
     {:else if accPageState === AccPageState.DataFetchingErr}
         <div class="unable-to-fetch">Unable to fetch data</div>
     {/if}

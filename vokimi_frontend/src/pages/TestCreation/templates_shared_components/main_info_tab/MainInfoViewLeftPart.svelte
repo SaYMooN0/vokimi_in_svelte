@@ -7,7 +7,7 @@
     import {
         TestPrivacy,
         TestPrivacyUtils,
-    } from "../../../../ts/enums/TestPrivacy";
+    } from "../../../../ts/enums/PrivacyValues";
 
     export let template: TestTemplate;
     export let testName: string;

@@ -3,7 +3,7 @@
     import {
         TestPrivacy,
         TestPrivacyUtils,
-    } from "../../../../ts/enums/TestPrivacy";
+    } from "../../../../ts/enums/PrivacyValues";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
 

@@ -6,12 +6,13 @@ namespace vokimi_api.Src.db_related
     public class DbInitializer
     {
         public static async Task InitializeDb(AppDbContext dbContext) {
-            //await dbContext.Database.EnsureDeletedAsync();
+            await dbContext.Database.EnsureDeletedAsync();
             await dbContext.Database.EnsureCreatedAsync();
             if (dbContext.AppUsers.Any() || dbContext.UnconfirmedAppUsers.Any()) {
                 return;
             } else {
                 await AddNewFakeUser(dbContext, "admin@admin.admin", "admin@admin.admin", "adminUser");
+                await AddNewFakeUser(dbContext, "fake@fake.fake", "fake@fake.fake", "fakeUser");
             }
         }
         private async static Task AddNewFakeUser(
@@ -25,10 +26,14 @@ namespace vokimi_api.Src.db_related
                 try {
                     var loginInfo = LoginInfo.CreateNew(email, BCrypt.Net.BCrypt.HashPassword(password));
                     var additionalInfo = UserAdditionalInfo.CreateNew(DateTime.UtcNow);
-                    var user = AppUser.CreateNew(username, loginInfo.Id, additionalInfo.Id);
+                    var pageSettings = UserPageSettings.CreateNew();
+                    var user = AppUser.CreateNew(username, loginInfo.Id, additionalInfo.Id, pageSettings.Id);
+
                     dbContext.UserAdditionalInfo.Add(additionalInfo);
                     dbContext.LoginInfo.Add(loginInfo);
                     dbContext.AppUsers.Add(user);
+                    dbContext.UserPageSettings.Add(pageSettings);
+
                     await dbContext.SaveChangesAsync();
                     await transaction.CommitAsync();
                 } catch {
