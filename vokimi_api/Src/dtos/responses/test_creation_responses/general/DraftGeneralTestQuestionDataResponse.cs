@@ -3,29 +3,31 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_answers;
 using vokimi_api.Src.enums;
 
-namespace vokimi_api.Src.dtos.shared.general_test_creation
+namespace vokimi_api.Src.dtos.responses.test_creation_responses.general
 {
-    public record class DraftGeneralTestQuestionData(
+    public record class DraftGeneralTestQuestionDataResponse(
         string Id,
         string Text,
         string? imagePath,
         bool shuffleAnswers,
         string answersType,
+        bool isMultiple,
         ushort minAnswersCount,
         ushort maxAnswersCount,
-        List<BaseDraftGeneralTestAnswerFormData> answers
+        BaseDraftGeneralTestAnswerFormData[] answers
     )
     {
-        public static DraftGeneralTestQuestionData FromDraftTestQuestion(DraftGeneralTestQuestion question) =>
+        public static DraftGeneralTestQuestionDataResponse FromDraftTestQuestion(DraftGeneralTestQuestion question) =>
             new(
                 question.Id.Value.ToString(),
                 question.Text,
                 question.ImagePath,
                 question.ShuffleAnswers,
                 question.AnswersType.GetId(),
+                !question.IsSingleChoice,
                 question.MinAnswersCount,
                 question.MaxAnswersCount,
-                ExtractAnswers(question).ToList()
+                ExtractAnswers(question).ToArray()
             );
         private static IEnumerable<BaseDraftGeneralTestAnswerFormData> ExtractAnswers(
             DraftGeneralTestQuestion question)
@@ -36,22 +38,19 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation
             switch (question.AnswersType)
             {
                 case GeneralTestAnswerType.TextOnly:
-                    return question.Answers.Select(a =>
-                        DraftGeneralTestTextOnlyAnswerFormData.New(
+                    return question.Answers.Select(a => new DraftGeneralTestTextOnlyAnswerFormData(
                             (a.AdditionalInfo as TextOnlyAnswerAdditionalInfo).Text,
                             a.RelatedResults.ToDictionary(r => r.Id, r => r.Name)
                         )
                     );
                 case GeneralTestAnswerType.ImageOnly:
-                    return question.Answers.Select(a =>
-                       DraftGeneralTestImageOnlyAnswerFormData.New(
+                    return question.Answers.Select(a => new DraftGeneralTestImageOnlyAnswerFormData(
                            (a.AdditionalInfo as ImageOnlyAnswerAdditionalInfo).ImagePath,
                            a.RelatedResults.ToDictionary(r => r.Id, r => r.Name)
                        )
                     );
                 case GeneralTestAnswerType.TextAndImage:
-                    return question.Answers.Select(a =>
-                       DraftGeneralTestTextAndImageAnswerFormData.New(
+                    return question.Answers.Select(a => new DraftGeneralTestTextAndImageAnswerFormData(
                            (a.AdditionalInfo as TextAndImageAnswerAdditionalInfo).Text,
                            (a.AdditionalInfo as TextAndImageAnswerAdditionalInfo).ImagePath,
                            a.RelatedResults.ToDictionary(r => r.Id, r => r.Name)

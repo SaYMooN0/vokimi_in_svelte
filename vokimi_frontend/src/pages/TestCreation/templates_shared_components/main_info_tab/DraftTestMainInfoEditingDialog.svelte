@@ -1,8 +1,8 @@
 <script lang="ts">
     import { Language, LanguageUtils } from "../../../../ts/enums/Language";
     import {
-        TestPrivacy,
-        TestPrivacyUtils,
+        PrivacyValues,
+        PrivacyValuesUtils,
     } from "../../../../ts/enums/PrivacyValues";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
@@ -14,7 +14,7 @@
         testNameVal: string,
         descriptionVal: string,
         languageVal: Language,
-        privacyVal: TestPrivacy,
+        privacyVal: PrivacyValues,
     ) {
         testName = testNameVal;
         description = descriptionVal;
@@ -26,7 +26,7 @@
     let testName: string = "";
     let description: string = "";
     let language: Language;
-    let privacy: TestPrivacy;
+    let privacy: PrivacyValues;
 
     let dialogElement: BaseDraftTestEditingDialog;
 
@@ -110,9 +110,9 @@
 
         <label for="privacy" class="property-label">Privacy:</label>
         <select id="privacy" bind:value={privacy}>
-            {#each Object.values(TestPrivacy) as privacy}
+            {#each Object.values(PrivacyValues) as privacy}
                 <option value={privacy}>
-                    {TestPrivacyUtils.getFullName(privacy)}
+                    {PrivacyValuesUtils.getFullName(privacy)}
                 </option>
             {/each}
         </select>

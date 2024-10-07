@@ -8,6 +8,7 @@ using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.requests.test_creation.general_template;
+using vokimi_api.Src.dtos.requests.test_creation.general_template.question_update;
 using vokimi_api.Src.dtos.responses.test_creation_responses.general;
 using vokimi_api.Src.dtos.shared.general_test_creation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -84,15 +85,29 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                     if (question is null) {
                         return Results.BadRequest("Question not found");
                     }
-                    return Results.Ok(DraftGeneralTestQuestionData.FromDraftTestQuestion(question));
+                    return Results.Ok(DraftGeneralTestQuestionDataResponse.FromDraftTestQuestion(question));
                 }
             } catch {
                 return Results.BadRequest();
             }
 
         }
-        public static IResult SaveChangesForDraftGeneralTestQuestion(
-            [FromBody] DraftGeneralTestQuestionData newQuestionData,
+        public static IResult UpdateDraftGeneralTestQuestionWithTextOnlyAnswers(
+            [FromBody] QuestionWithTextOnlyAnswersUpdateRequest data,
+            IDbContextFactory<AppDbContext> dbFactory,
+            VokimiStorageService storageService) {
+
+            return ResultsHelper.BadRequestWithErr("Not implemented");
+        }
+        public static IResult UpdateDraftGeneralTestQuestionWithImageOnlyAnswers(
+            [FromBody] QuestionWithImageOnlyAnswersUpdateRequest data,
+            IDbContextFactory<AppDbContext> dbFactory,
+            VokimiStorageService storageService) {
+
+            return ResultsHelper.BadRequestWithErr("Not implemented");
+        }
+        public static IResult UpdateDraftGeneralTestQuestionWithTextAndImageAnswers(
+            [FromBody] QuestionWithTextAndImageAnswersUpdateRequest data,
             IDbContextFactory<AppDbContext> dbFactory,
             VokimiStorageService storageService) {
 
@@ -246,7 +261,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                     return ResultsHelper.BadRequestWithErr("Unknown result");
                 }
                 Err validationErr = newResData.CheckForErr();
-                if(validationErr.NotNone()) {
+                if (validationErr.NotNone()) {
                     return ResultsHelper.BadRequestWithErr(validationErr);
                 }
                 res.Update(newResData.Name, newResData.Text, newResData.ImagePath);

@@ -10,4 +10,7 @@ export class DraftGeneralTestTextOnlyAnswerFormData implements IDraftGeneralTest
         this.text = text;
         this.relatedResults = relatedResults;
     }
+    static empty(): DraftGeneralTestTextOnlyAnswerFormData {
+        return new DraftGeneralTestTextOnlyAnswerFormData("", {});
+    }
 }

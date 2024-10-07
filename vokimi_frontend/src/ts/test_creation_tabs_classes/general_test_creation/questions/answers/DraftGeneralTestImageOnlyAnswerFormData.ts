@@ -12,4 +12,7 @@ export class DraftGeneralTestImageOnlyAnswerFormData implements IDraftGeneralTes
         this.imagePath = imagePath;
         this.relatedResults = relatedResults;
     }
+    static empty(): DraftGeneralTestImageOnlyAnswerFormData {
+        return new DraftGeneralTestImageOnlyAnswerFormData("", {});
+    }
 }

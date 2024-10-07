@@ -18,5 +18,5 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
                 );
             }
         }
-    };
+    }
 }

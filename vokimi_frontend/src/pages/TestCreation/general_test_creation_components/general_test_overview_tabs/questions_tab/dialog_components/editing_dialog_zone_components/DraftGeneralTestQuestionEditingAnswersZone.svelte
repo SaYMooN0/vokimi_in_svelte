@@ -19,15 +19,11 @@
         const newAnswer: IDraftGeneralTestAnswerFormData = (() => {
             switch (answersType) {
                 case GeneralTestAnswerType.TextOnly:
-                    return new DraftGeneralTestTextOnlyAnswerFormData("", {});
+                    return DraftGeneralTestTextOnlyAnswerFormData.empty();
                 case GeneralTestAnswerType.TextAndImage:
-                    return new DraftGeneralTestTextAndImageAnswerFormData(
-                        "",
-                        "",
-                        {},
-                    );
+                    return DraftGeneralTestTextAndImageAnswerFormData.empty();
                 case GeneralTestAnswerType.ImageOnly:
-                    return new DraftGeneralTestImageOnlyAnswerFormData("", {});
+                    return DraftGeneralTestImageOnlyAnswerFormData.empty();
                 default:
                     throw new Error("Unknown answer type");
             }
@@ -55,12 +51,14 @@
 <div class="answers-zone">
     <p class="answers-title">
         Answers ({answers.length})
-        <label
-            class="answers-visibility-toggle"
-            on:click={() => (showAnswers = !showAnswers)}
-        >
-            {showAnswers ? "Hide" : "Show"}
-        </label>
+        {#if answers.length > 0}
+            <label
+                class="answers-visibility-toggle"
+                on:click={() => (showAnswers = !showAnswers)}
+            >
+                {showAnswers ? "Hide" : "Show"}
+            </label>
+        {/if}
     </p>
     <div class="answers-container" class:hide-answers={!showAnswers}>
         {#each answers as answer, index}
@@ -227,7 +225,7 @@
         color: inherit;
         height: 28px;
     }
-    .add-answer-button:hover{
+    .add-answer-button:hover {
         background-color: var(--primary-hov);
     }
 </style>

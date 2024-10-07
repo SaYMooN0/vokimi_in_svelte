@@ -31,7 +31,7 @@
         <div>Loading...</div>
     {:then authenticated}
         {#if authenticated}
-            <Link to="/user">
+            <a href="/user">
                 <div class="acc-div">
                     <img
                         src={ImgUtils.imgUrl(profilePicture)}
@@ -40,7 +40,7 @@
                     />
                     {username}
                 </div>
-            </Link>
+            </a>
         {:else}
             <a href="/auth/login" class="login-button">Login</a>
         {/if}

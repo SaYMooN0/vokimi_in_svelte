@@ -1,8 +1,9 @@
 <script lang="ts">
+    import { Link } from "svelte-routing";
 </script>
 
 <div class="nav-links-container">
-    <a href="/" class="nav-link">
+    <Link to="/">
         <svg
             class="nav-icon"
             xmlns="http://www.w3.org/2000/svg"
@@ -31,9 +32,9 @@
                 stroke-linejoin="round"
             />
         </svg>
-        <label>Tests Catalog</label>
-    </a>
-    <a href="/my-tests" class="nav-link">
+        <label class="link-label">Tests Catalog</label>
+    </Link>
+    <Link to="/my-tests">
         <svg
             class="nav-icon"
             xmlns="http://www.w3.org/2000/svg"
@@ -61,9 +62,9 @@
                 stroke-linecap="round"
             />
         </svg>
-        <label>My Tests</label>
-    </a>
-    <a href="/collections" class="nav-link">
+        <label class="link-label">My Tests</label>
+    </Link>
+    <Link to="/collections">
         <svg
             class="nav-icon"
             xmlns="http://www.w3.org/2000/svg"
@@ -91,9 +92,9 @@
                 stroke-linejoin="round"
             />
         </svg>
-        <label>Collections</label>
-    </a>
-    <a href="/friends" class="nav-link">
+        <label class="link-label">Collections</label>
+    </Link>
+    <Link to="/friends">
         <svg
             class="nav-icon"
             xmlns="http://www.w3.org/2000/svg"
@@ -126,8 +127,8 @@
                 stroke-linejoin="round"
             />
         </svg>
-        <label>Friends</label>
-    </a>
+        <label class="link-label">Friends</label>
+    </Link>
 </div>
 
 <style>
@@ -137,7 +138,7 @@
         justify-content: center;
         gap: 12px;
     }
-    .nav-link {
+    .nav-links-container :global(a) {
         height: 44px;
         width: fit-content;
         padding: 4px 20px;
@@ -148,27 +149,23 @@
         justify-content: center;
         align-items: center;
         background-color: var(--back-main);
+        color: var(--primary);
         text-decoration: none;
     }
-    .nav-link:hover {
+    .nav-links-container :global(a:hover) {
         background-color: var(--back-secondary);
+        color: var(--primary-hov);
     }
-    .nav-link label {
+    .nav-links-container .link-label {
         cursor: pointer;
-        color: var(--primary);
+        color: inherit;
         font-size: 24px;
         font-weight: 500;
         margin-left: 5px;
     }
-    .nav-link:hover label {
-        color: var(--primary-hov);
-    }
     .nav-icon {
         height: 90%;
         box-sizing: border-box;
-        color: var(--primary);
-    }
-    .nav-link:hover .nav-icon {
-        color: var(--primary-hov);
+        color: inherit;
     }
 </style>

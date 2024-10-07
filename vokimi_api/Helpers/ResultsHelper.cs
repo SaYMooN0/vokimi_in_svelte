@@ -13,6 +13,9 @@ namespace vokimi_api.Helpers
             BadRequestWithErr("Server error. Save existing changes and try to refresh the page");
         public static IResult BadRequestUnknownTest() =>
             BadRequestWithErr("Unknown Test");
+
+        public static IResult BadRequestUserDoesnotExist() =>
+            BadRequestWithErr("User doesn't exist");
         public static IResult BadRequestMaxImgSizeIs3MB() =>
             BadRequestWithErr($"File is too big. Max allowed size: {ImgOperationsConsts.MaxImageSizeInMB}MB");
         public static IResult BadRequestServerError() =>

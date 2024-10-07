@@ -4,8 +4,6 @@
     import MyUserPageView from "./my_user_page_view/MyUserPageView.svelte";
     import UserPageAuthenticatedView from "./user_page_authenticated_view/UserPageAuthenticatedView.svelte";
     import UserPageUnauthenticatedView from "./user_page_unauthenticated.view/UserPageUnauthenticatedView.svelte";
-    export let userId: string;
-
     enum AccPageState {
         MyPageViewer,
         ViewerAuthenticated,
@@ -13,8 +11,11 @@
         UserNotFound,
         DataFetchingErr,
     }
+
+    export let userId: string;
     let accPageState: AccPageState;
     async function setAccPageState() {
+        console.log(userId);
         const authData = await getAuthData();
         if (StringUtils.isNullOrWhiteSpace(userId)) {
             if (authData !== null) {

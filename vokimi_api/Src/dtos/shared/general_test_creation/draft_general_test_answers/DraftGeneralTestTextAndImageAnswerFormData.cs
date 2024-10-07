@@ -1,4 +1,5 @@
-﻿using vokimi_api.Src.db_related.db_entities_ids;
+﻿using System.Text.Json.Serialization;
+using vokimi_api.Src.db_related.db_entities_ids;
 
 namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_answers
 {
@@ -6,16 +7,15 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
     {
         public string Text { get; init; }
         public string Image { get; init; }
-        public static DraftGeneralTestTextAndImageAnswerFormData New(
+        public DraftGeneralTestTextAndImageAnswerFormData(
             string text,
             string image,
             Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName
-        ) => new()
-        {
-            Text = text,
-            Image = image,
-            RelatedResultsIdName = relatedResultsIdName
-        };
+        ) {
+            Text = text;
+            Image = image;
+            RelatedResultsIdName = relatedResultsIdName;
+        }
     }
 
 }

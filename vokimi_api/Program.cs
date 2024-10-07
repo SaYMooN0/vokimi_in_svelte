@@ -10,6 +10,8 @@ using vokimi_api.Src.enums;
 using vokimi_api.Src.dtos.responses;
 using vokimi_api.Endpoints.tests_operations;
 using vokimi_api.Endpoints.tests_operations.test_creation;
+using vokimi_api.Helpers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace vokimi_api
 {
@@ -114,8 +116,19 @@ namespace vokimi_api
                 GeneralTestCreationEndpoints.GetDraftGeneralTestQuestionDataToEdit);
             app.MapDelete("/testCreation/general/deleteGeneralDraftTestQuestion/{questionId}",
              GeneralTestCreationEndpoints.DeleteGeneralDraftTestQuestion);
-            app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestQuestion",
-                GeneralTestCreationEndpoints.SaveChangesForDraftGeneralTestQuestion);
+            app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestQuestion/{answersType}",
+                (IDbContextFactory<AppDbContext> dbFactory, VokimiStorageService imgStorage,[FromBody] data, string answersType) => {
+                    GeneralTestAnswerType? t = GeneralTestAnswerTypeExtensions.FromId(answersType);
+                    return t switch {
+                        GeneralTestAnswerType.TextOnly =>
+                            GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestionWithTextOnlyAnswers(data, dbFactory, imgStorage),
+                        GeneralTestAnswerType.ImageOnly => 
+                            GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestionWithImageOnlyAnswers(data, dbFactory, imgStorage),
+                        GeneralTestAnswerType.TextAndImage => 
+                            GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestionWithTextAndImageAnswers(data, dbFactory, imgStorage),
+                        _ => ResultsHelper.BadRequestWithErr("Unknown answers type")
+                    };
+                });
             app.MapPost("/testCreation/general/moveQuestionUpInOrder/{questionId}",
                 GeneralTestCreationEndpoints.MoveQuestionUpInOrder);
             app.MapPost("/testCreation/general/moveQuestionDownInOrder/{questionId}",

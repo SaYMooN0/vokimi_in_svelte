@@ -19,4 +19,7 @@ export class DraftGeneralTestTextAndImageAnswerFormData implements IDraftGeneral
         this.text = text;
         this.relatedResults = relatedResults;
     }
+    static empty(): DraftGeneralTestTextAndImageAnswerFormData {
+        return new DraftGeneralTestTextAndImageAnswerFormData("", "", {});
+    }
 }

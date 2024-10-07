@@ -5,7 +5,7 @@
         GeneralTestAnswerType,
         GeneralTestAnswerTypeUtils,
     } from "../../../../../../ts/enums/GeneralTestAnswerType";
-    import type { Err } from "../../../../../../ts/Err";
+    import { Err } from "../../../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../../../ts/ErrorResponse";
     import { DraftGeneralTestQuestionEditingData } from "../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/DraftGenralTestQuestionEditingData";
     import { ImgUtils } from "../../../../../../ts/utils/ImgUtils";
@@ -58,21 +58,21 @@
     }
 
     async function saveData() {
-        const dataErr: string | null = checkFormDataForError();
-        if (dataErr !== null) {
-            dialogElement.setErrorMessage(dataErr);
+        const dataErr: Err = checkFormDataForError();
+        if (dataErr.notNone()) {
+            dialogElement.setErrorMessage(dataErr.toString());
             return;
         }
-        const response = await fetch(
-            "/api/testCreation/general/saveChangesForDraftGeneralTestQuestion",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(questionData),
+        const url =
+            "/api/testCreation/general/saveChangesForDraftGeneralTestQuestion/" +
+            questionData.answersType;
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-        );
+            body: JSON.stringify(questionData),
+        });
         if (response.ok) {
             await updateParentElementData();
             dialogElement.close();
@@ -83,11 +83,28 @@
             dialogElement.setErrorMessage("Unknown error");
         }
     }
-    function checkFormDataForError(): string | null {
+    function checkFormDataForError(): Err {
         if (StringUtils.isNullOrWhiteSpace(questionData.text)) {
-            return "Question text cannot be empty";
+            return new Err("Question text cannot be empty");
         }
-        return null;
+        if (questionData.isMultiple) {
+            if (questionData.maxAnswersCount > questionData.minAnswersCount) {
+                return new Err(
+                    "Maximum answers count cannot be more than minimum answers count",
+                );
+            }
+            if (questionData.answers.length < questionData.minAnswersCount) {
+                return new Err(
+                    "Minimum answers count cannot be less than total number of answers",
+                );
+            }
+            if (questionData.maxAnswersCount > questionData.answers.length) {
+                return new Err(
+                    "Maximum answers count cannot be more than total number of answers",
+                );
+            }
+        }
+        return Err.none();
     }
     async function saveQuestionImage(file: File): Promise<string | Err> {
         return await ImgUtils.saveImage(
@@ -112,19 +129,19 @@
             <div class="input-label">
                 Shuffle Answers:
                 <BasicToolTip text={"Shuffle Answers"} />
-                <CustomCheckbox isChecked={questionData.shuffleAnswers} />
+                <CustomCheckbox bind:isChecked={questionData.shuffleAnswers} />
             </div>
 
             <DraftGeneralTestQuestionEditingMultipleChoiceZone
-                isMultiple={questionData.isMultiple}
-                minAnswersCount={questionData.minAnswersCount}
-                maxAnswersCount={questionData.maxAnswersCount}
+                bind:isMultiple={questionData.isMultiple}
+                bind:minAnswersCount={questionData.minAnswersCount}
+                bind:maxAnswersCount={questionData.maxAnswersCount}
             />
             <DraftGeneralTestQuestionEditingAnswersZone
                 {testId}
                 {questionId}
                 answersType={questionData.answersType}
-                answers={questionData.answers}
+                bind:answers={questionData.answers}
             />
         </div>
     {:else}

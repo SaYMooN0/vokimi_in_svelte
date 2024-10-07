@@ -4,16 +4,13 @@
         TestTemplateUtils,
     } from "../../../../ts/enums/TestTemplate";
     import { Language, LanguageUtils } from "../../../../ts/enums/Language";
-    import {
-        TestPrivacy,
-        TestPrivacyUtils,
-    } from "../../../../ts/enums/PrivacyValues";
+    import { PrivacyValues, PrivacyValuesUtils } from "../../../../ts/enums/PrivacyValues";
 
     export let template: TestTemplate;
     export let testName: string;
     export let description: string;
     export let language: Language;
-    export let privacy: TestPrivacy;
+    export let privacy: PrivacyValues;
 </script>
 
 <p class="test-template">
@@ -41,7 +38,7 @@
     </div>
     <div class="priv-div">
         <span class="property-label">Privacy: </span>
-        {TestPrivacyUtils.getFullName(privacy)}
+        {PrivacyValuesUtils.getFullName(privacy)}
     </div>
 </div>
 
