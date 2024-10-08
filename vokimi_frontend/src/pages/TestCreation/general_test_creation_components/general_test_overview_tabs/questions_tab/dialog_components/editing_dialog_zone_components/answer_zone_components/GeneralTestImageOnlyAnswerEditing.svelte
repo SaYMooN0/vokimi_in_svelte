@@ -23,7 +23,7 @@
 
             if (response.ok) {
                 const data = await response.json();
-                answerData.imagePath = data.imgPath;
+                answerData.image = data.imgPath;
                 errorString = "";
             } else if (response.status === 400) {
                 errorString = await getErrorFromResponse(response);
@@ -44,8 +44,8 @@
 </script>
 
 <div class="answer-main-content">
-    {#if !StringUtils.isNullOrWhiteSpace(answerData.imagePath)}
-        <img src={ImgUtils.imgUrlWithVersion(answerData.imagePath)} />
+    {#if !StringUtils.isNullOrWhiteSpace(answerData.image)}
+        <img src={ImgUtils.imgUrlWithVersion(answerData.image)} />
     {/if}
     <input
         type="file"
@@ -54,7 +54,7 @@
         hidden
         on:change={handleImageInputChange}
     />
-    {#if !StringUtils.isNullOrWhiteSpace(answerData.imagePath)}
+    {#if !StringUtils.isNullOrWhiteSpace(answerData.image)}
         <label for={id} class="change-btn unselectable">Change Image</label>
     {:else}
         <label for={id} class="add-img-btn">

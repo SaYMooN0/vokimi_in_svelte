@@ -1,37 +1,38 @@
 <script lang="ts">
+    import TestBriefInfoViewComponent from "../../../../components/shared/TestBriefInfoViewComponent.svelte";
+import { Err } from "../../../../ts/Err";
+    import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import { MyTestsPageTestViewModel } from "../../../../ts/MyTestsPageTestViewModel";
+    import TestsTabContentWrapper from "./TestsTabContentWrapper.svelte";
+
     export let draftTests: MyTestsPageTestViewModel[] = [];
+    async function fetchDraftTests(skipLengthCheck: boolean): Promise<Err> {
+        if (draftTests.length > 0 && !skipLengthCheck) {
+            return Err.none();
+        }
 
-    async function fetchDraftTests() {
-        fetched = true;
-    }
-    let fetched: boolean = false;
-
-    fetched = false;
-    if (draftTests.length == 0) {
-        fetched = true;
-    } else {
-        fetchDraftTests();
+        const response = await fetch("/api/tests/getUserDraftTestsBriefInfo");
+        if (response.status == 200) {
+            let j = await response.json();
+            draftTests = j;
+            return Err.none();
+        } else if (response.status == 404) {
+            return new Err(await getErrorFromResponse(response));
+        } else {
+            draftTests = [];
+            return new Err("Something went wrong...");
+        }
     }
 </script>
 
-{#if fetched}
-    <h2 class="your-draft-tests-label">Your draft tests:</h2>
+<TestsTabContentWrapper
+    fetchTestsFunc={fetchDraftTests}
+    yourTestsLabel="Your draft tests:"
+>
     {#each draftTests as test}
+    <TestBriefInfoViewComponent/>
         <a href="/testCreation/{test.id}/main-info-view">
             <p>{test.name}</p>
         </a>
     {/each}
-{:else}
-    <div class="loading-div">
-        <h2>Receiving information from server...</h2>
-        <p>Please wait</p>
-    </div>
-{/if}
-
-<style>
-    .your-draft-tests-label {
-        margin: 20px auto 0 auto;
-        width: fit-content;
-    }
-</style>
+</TestsTabContentWrapper>

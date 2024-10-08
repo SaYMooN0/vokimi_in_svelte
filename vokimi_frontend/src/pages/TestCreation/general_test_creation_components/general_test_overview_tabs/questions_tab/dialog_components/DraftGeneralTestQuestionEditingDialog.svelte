@@ -6,7 +6,6 @@
         GeneralTestAnswerTypeUtils,
     } from "../../../../../../ts/enums/GeneralTestAnswerType";
     import { Err } from "../../../../../../ts/Err";
-    import { getErrorFromResponse } from "../../../../../../ts/ErrorResponse";
     import { DraftGeneralTestQuestionEditingData } from "../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/DraftGenralTestQuestionEditingData";
     import { ImgUtils } from "../../../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../../../ts/utils/StringUtils";
@@ -88,9 +87,9 @@
             return new Err("Question text cannot be empty");
         }
         if (questionData.isMultiple) {
-            if (questionData.maxAnswersCount > questionData.minAnswersCount) {
+            if (questionData.maxAnswersCount < questionData.minAnswersCount) {
                 return new Err(
-                    "Maximum answers count cannot be more than minimum answers count",
+                    "Minimum answers count cannot be more than maximum answers count",
                 );
             }
             if (questionData.answers.length < questionData.minAnswersCount) {

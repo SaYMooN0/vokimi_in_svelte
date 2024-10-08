@@ -8,15 +8,16 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using Microsoft.AspNetCore.Mvc;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.dtos.requests.test_creation.templates_shared;
+using vokimi_api.Helpers;
 
 namespace vokimi_api.Endpoints.tests_operations
 {
-    public static class DraftTestEndpoints
+    public static class TestEndpoints
     {
-
-        //TODO: Rewrite to first package and remaining
-        public static async Task<IResult> GetUsersDraftTestsVms(
-            HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory) {
+        private readonly static IResult UnaithorizedUserTestFetchingErr =
+            ResultsHelper.BadRequestWithErr("Unable to get tests info. Please log out and log in again");
+        public static async Task<IResult> GetUserDraftTestsBriefInfo(HttpContext httpContext,
+                                                                     IDbContextFactory<AppDbContext> dbFactory) {
             var cntxUser = httpContext.User;
 
             if (cntxUser.Identity?.IsAuthenticated ?? false) {
@@ -26,20 +27,24 @@ namespace vokimi_api.Endpoints.tests_operations
                 if (!string.IsNullOrEmpty(userIdStr)) {
                     userId = new(new Guid(userIdStr));
                 } else {
-                    return Results.Unauthorized();
+                    return UnaithorizedUserTestFetchingErr;
                 }
                 using (var db = dbFactory.CreateDbContext()) {
-                    AppUser? user = await db.AppUsers
-                        .Include(u => u.DraftTests)
-                        .FirstOrDefaultAsync(u => u.Id == userId);
-                    if (user is null) {
-                        return Results.BadRequest(new { Err = "Unknown user" });
-                    }
-                    return Results.Ok(user.DraftTests.Select(UsersTestsVm.FromDraftTest));
+
+                    TestBriefInfoResponse[] responseData = db.DraftTestsSharedInfo
+                        .Where(t => t.CreatorId == userId)
+                        .Include(t=>t.MainInfo)
+                        .Select(TestBriefInfoResponse.FromDraftTest)
+                        .ToArray();
+                    return Results.Ok(responseData);
                 }
             } else {
-                return Results.BadRequest();
+                return UnaithorizedUserTestFetchingErr;
             }
+        }
+        public static async Task<IResult> GetUserPublishedTestsBriefInfo(HttpContext httpContext,
+                                                                     IDbContextFactory<AppDbContext> dbFactory) {
+            return ResultsHelper.BadRequestWithErr("Not implemented");
         }
         public static IResult GetDraftTestOverviewInfo(
             IDbContextFactory<AppDbContext> dbFactory, [FromBody] DraftTestOverviewInfoRequest request) {

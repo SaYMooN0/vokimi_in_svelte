@@ -1,11 +1,11 @@
 import type { IDraftGeneralTestAnswerFormData } from "./IDraftGeneralTestAnswerFormData";
 
 export class DraftGeneralTestTextAndImageAnswerFormData implements IDraftGeneralTestAnswerFormData {
-    imagePath: string;
+    image: string;
     text: string;
     relatedResults: { [key: string]: string };
     checkForErr() {
-        if (this.imagePath === "" || this.imagePath === null) {
+        if (this.image === "" || this.image === null) {
             return "Image path can't be empty";
         };
         if (this.text === "" || this.text === null) {
@@ -15,7 +15,7 @@ export class DraftGeneralTestTextAndImageAnswerFormData implements IDraftGeneral
     };
 
     constructor(imagePath: string, text: string, relatedResults: { [key: string]: string }) {
-        this.imagePath = imagePath;
+        this.image = imagePath;
         this.text = text;
         this.relatedResults = relatedResults;
     }

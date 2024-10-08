@@ -6,17 +6,27 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
     public abstract class BaseDraftGeneralTestAnswerFormData
     {
         [JsonIgnore]
-        public Dictionary<DraftGeneralTestResultId, string> RelatedResultsIdName { get; init; } = [];
+        public Dictionary<DraftGeneralTestResultId, string> RelatedResultsIdName { get; set; } = [];
         [JsonPropertyName("relatedResults")]
         public Dictionary<string, string> RelatedResultsStringified
         {
-            get
-            {
+            get {
                 return RelatedResultsIdName.ToDictionary(
                     kvp => kvp.Key.Value.ToString(),
                     kvp => kvp.Value
                 );
             }
+            set {
+                if (value is null) {
+                    RelatedResultsIdName = new Dictionary<DraftGeneralTestResultId, string>();
+                } else {
+                    RelatedResultsIdName = value.ToDictionary(
+                        kvp => new DraftGeneralTestResultId(Guid.Parse(kvp.Key)),
+                        kvp => kvp.Value
+                    );
+                }
+            }
         }
+
     }
 }

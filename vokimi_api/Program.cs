@@ -4,14 +4,7 @@ using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using vokimi_api.Src.db_related;
 using vokimi_api.Services;
-using vokimi_api.Endpoints;
-using Amazon.S3.Model;
-using vokimi_api.Src.enums;
-using vokimi_api.Src.dtos.responses;
-using vokimi_api.Endpoints.tests_operations;
-using vokimi_api.Endpoints.tests_operations.test_creation;
-using vokimi_api.Helpers;
-using Microsoft.AspNetCore.Mvc;
+using vokimi_api.EndpointsMappers;
 
 namespace vokimi_api
 {
@@ -70,101 +63,16 @@ namespace vokimi_api
             app.Run();
         }
         public static void MapEndpoints(WebApplication app) {
-            app.MapGet("/pingauth", AuthEndpoints.PingAuth);
-            app.MapGet("/getUsernameWithProfilePicture", AuthEndpoints.GetUsernameWithProfilePicture);
-            app.MapPost("/signup", AuthEndpoints.Signup);
-            app.MapPost("/confirmRegistration", AuthEndpoints.ConfirmRegistration);
-            app.MapPost("/login", AuthEndpoints.Login);
-            app.MapPost("/logout", AuthEndpoints.Logout);
-
-            app.MapGet("/usersDraftTestsFirstPackage", DraftTestEndpoints.GetUsersDraftTestsVms);
-            app.MapPost("/getDraftTestOverviewInfo", DraftTestEndpoints.GetDraftTestOverviewInfo);
-
-            app.MapGet("/usersPublishedTestFirstPackage", async (_) => new List<UsersTestsVm>() { });
-            app.MapPost("/createNewTest/{template}",
-                async (HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory, string template) => {
-                    TestTemplate? parsedTemplate = TestTemplateExtensions.FromId(template);
-                    if (parsedTemplate is null) {
-                        return Results.BadRequest("Invalid template specified.");
-                    }
-                    return await TestCreationSharedEndpoints.CreateNewTest(httpContext, dbFactory, parsedTemplate.Value);
-
-                });
-
-            app.MapGet("/testCreation/getDraftTestMainInfoData/{testId}",
-                TestCreationSharedEndpoints.GetDraftTestMainInfoData);
-            app.MapPost("/testCreation/updateDraftTestMainInfoData",
-                TestCreationSharedEndpoints.UpdateDraftTestMainInfo);
-            app.MapPost("/testCreation/setDraftTestCoverToDefault/{testId}",
-                TestCreationSharedEndpoints.SetDraftTestCoverToDefault);
-            app.MapGet("/testCreation/getDraftTestConclusionData/{testId}",
-              TestCreationSharedEndpoints.GetDraftTestConclusionData);
-            app.MapPost("/testCreation/createDraftTestConclusion/{testId}",
-              TestCreationSharedEndpoints.CreateDraftTestConclusion);
-            app.MapPost("testCreation/updateDraftTestConclusion", TestCreationSharedEndpoints.UpdateDraftTestConclusion);
-            app.MapDelete("/testCreation/deleteDraftTestConclusion/{testId}", TestCreationSharedEndpoints.DeleteDraftTestConclusion);
-
-            app.MapGet("/testStyles/getDraftTestStylesData/{testId}", TestStylesEndpoints.GetDraftTestStylesData);
-            app.MapGet("/testStyles/getDefaultStylesData", TestStylesEndpoints.GetDefaultStylesData);
-            app.MapPost("/testStyles/updateDraftTestStyles/{testId}", TestStylesEndpoints.UpdateDraftTestStylesData);
-
-            app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}",
-                GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
-            app.MapPost("/testCreation/general/createGeneralTestQuestion",
-                GeneralTestCreationEndpoints.CreateGeneralTestQuestion);
-            app.MapGet("/testCreation/general/getDraftGeneralTestQuestionDataToEdit/{questionId}",
-                GeneralTestCreationEndpoints.GetDraftGeneralTestQuestionDataToEdit);
-            app.MapDelete("/testCreation/general/deleteGeneralDraftTestQuestion/{questionId}",
-             GeneralTestCreationEndpoints.DeleteGeneralDraftTestQuestion);
-            app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestQuestion/{answersType}",
-                (IDbContextFactory<AppDbContext> dbFactory, VokimiStorageService imgStorage,[FromBody] data, string answersType) => {
-                    GeneralTestAnswerType? t = GeneralTestAnswerTypeExtensions.FromId(answersType);
-                    return t switch {
-                        GeneralTestAnswerType.TextOnly =>
-                            GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestionWithTextOnlyAnswers(data, dbFactory, imgStorage),
-                        GeneralTestAnswerType.ImageOnly => 
-                            GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestionWithImageOnlyAnswers(data, dbFactory, imgStorage),
-                        GeneralTestAnswerType.TextAndImage => 
-                            GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestionWithTextAndImageAnswers(data, dbFactory, imgStorage),
-                        _ => ResultsHelper.BadRequestWithErr("Unknown answers type")
-                    };
-                });
-            app.MapPost("/testCreation/general/moveQuestionUpInOrder/{questionId}",
-                GeneralTestCreationEndpoints.MoveQuestionUpInOrder);
-            app.MapPost("/testCreation/general/moveQuestionDownInOrder/{questionId}",
-                GeneralTestCreationEndpoints.MoveQuestionDownInOrder);
-
-            app.MapGet("/testCreation/general/getResultsIdNameDictionary/{testId}",
-                GeneralTestCreationEndpoints.GetResultsIdNameDictionary);
-            app.MapPost("/testCreation/general/createNewResult", GeneralTestCreationEndpoints.CreateNewResultForTest);
-            app.MapGet("/testCreation/general/getGeneralDraftTestResultsData/{testId}",
-                GeneralTestCreationEndpoints.GetDraftGeneralTestResultsData);
-            app.MapGet("/testCreation/general/getDraftGeneralTestResultDataToEdit/{resultId}",
-                GeneralTestCreationEndpoints.GetDraftGeneralTestResultDataToEdit);
-            app.MapDelete("/testCreation/general/deleteDraftGeneralTestResult/{resultId}",
-                GeneralTestCreationEndpoints.DeleteGeneralDraftTestResult);
-            app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestResult",
-                GeneralTestCreationEndpoints.SaveChangesForDraftGeneralTestResult);
-
-            app.MapGet("/users/doesUserExist/{userId}", UserEndpoints.DoesUserExist);
-
-            app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
-            app.MapPost("/testCreation/updateDraftTestQuestionCover/{testId}",
-                ImgOperationsEndpoints.UpdateDraftTestQuestionCover).DisableAntiforgery();
-            app.MapPost("/saveimg/saveDraftGeneralTestAnswerImage/{questionId}",
-                ImgOperationsEndpoints.SaveDraftGeneralTestAnswerImage).DisableAntiforgery();
-            app.MapPost("/saveimg/saveDraftGeneralTestQuestionImage/{questionId}",
-                ImgOperationsEndpoints.SaveDraftGeneralTestQuestionImage).DisableAntiforgery();
-            app.MapPost("/saveimg/saveDraftGeneralTestResultImage/{resultId}",
-                ImgOperationsEndpoints.SaveDraftGeneralTestResultImage).DisableAntiforgery();
-            app.MapPost("/saveimg/saveTestConclusionImage/{conclusionId}",
-                ImgOperationsEndpoints.SaveTestConclusionImage).DisableAntiforgery();
-
-
-            app.MapGet("/tags/getDraftTestTagsData/{testId}", TestTagsEndpoints.GetDraftTestTagsData);
-            app.MapGet("/tags/searchTags/{*tagToSearch}", TestTagsEndpoints.SearchTags);
-            app.MapPost("/tags/updateDraftTestTags/{testId}", TestTagsEndpoints.UpdateDraftTestTags);
+            AuthEndpointsMapper.MapAll(app);
+            TestEndpointsMapper.MapAll(app);
+            TestCreationEndpointsMapper.MapAll(app);
+            TestStylesEndpointsMapper.MapAll(app);
+            GeneralTestCreationEndpointsMapper.MapAll(app);
+            ImgOperationsEndpointsMapper.MapAll(app);
+            TestTagsEndpointsMapper.MapAll(app);
+            UserEndpointsMapper.MapAll(app);
         }
+
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
 
 

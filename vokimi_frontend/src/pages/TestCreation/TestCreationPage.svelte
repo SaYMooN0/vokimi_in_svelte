@@ -23,7 +23,7 @@
         }
 
         try {
-            const response = await fetch("/api/getDraftTestOverviewInfo", {
+            const response = await fetch("/api/tests/getDraftTestOverviewInfo", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

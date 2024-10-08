@@ -22,7 +22,7 @@
 
             if (response.ok) {
                 const data = await response.json();
-                answerData.imagePath = data.imgPath;
+                answerData.image = data.imgPath;
                 errorString = "";
             } else if (response.status === 400) {
                 errorString = await getErrorFromResponse(response);
@@ -48,8 +48,8 @@
         placeholder="Type here text of the answer..."
     />
     <div class="image-input-container">
-        {#if !StringUtils.isNullOrWhiteSpace(answerData.imagePath)}
-            <img src={ImgUtils.imgUrlWithVersion(answerData.imagePath)} />
+        {#if !StringUtils.isNullOrWhiteSpace(answerData.image)}
+            <img src={ImgUtils.imgUrlWithVersion(answerData.image)} />
         {/if}
         <input
             type="file"
@@ -61,7 +61,7 @@
 
         <label class="error-string">{errorString}</label>
         <label for={id} class="change-img-btn">
-            {StringUtils.isNullOrWhiteSpace(answerData.imagePath)
+            {StringUtils.isNullOrWhiteSpace(answerData.image)
                 ? "Add image"
                 : "Change"}
         </label>

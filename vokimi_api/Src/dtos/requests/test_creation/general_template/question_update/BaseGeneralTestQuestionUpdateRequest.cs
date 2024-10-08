@@ -1,6 +1,4 @@
 ﻿using vokimi_api.Src.constants_store_classes;
-using vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_answers;
-
 namespace vokimi_api.Src.dtos.requests.test_creation.general_template.question_update
 {
     public record class BaseGeneralTestQuestionUpdateRequest(
@@ -22,8 +20,8 @@ namespace vokimi_api.Src.dtos.requests.test_creation.general_template.question_u
                                $"{GeneralTestCreationConsts.QuestionTextMinLength} characters");
             }
             if (IsMultiple) {
-                if (MaxAnswersCount > MinAnswersCount) {
-                    return new Err("Maximum answers count cannot be more than minimum answers count");
+                if (MaxAnswersCount < MinAnswersCount) {
+                    return new Err("Minimum answers count cannot be more than maximum answers count");
                 }
                 if (answersCount < MinAnswersCount) {
                     return new Err("Minimum answers count cannot be less than total number of answers");

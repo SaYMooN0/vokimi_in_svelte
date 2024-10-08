@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using vokimi_api.Helpers;
 using vokimi_api.Services;
 using vokimi_api.Src;
@@ -11,6 +12,7 @@ using vokimi_api.Src.dtos.requests.test_creation.general_template;
 using vokimi_api.Src.dtos.requests.test_creation.general_template.question_update;
 using vokimi_api.Src.dtos.responses.test_creation_responses.general;
 using vokimi_api.Src.dtos.shared.general_test_creation;
+using vokimi_api.Src.enums;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace vokimi_api.Endpoints.tests_operations.test_creation
@@ -92,26 +94,69 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             }
 
         }
+
+        public static async Task<IResult> UpdateDraftGeneralTestQuestion(
+            HttpContext httpContext,
+            IDbContextFactory<AppDbContext> dbFactory,
+            VokimiStorageService storageService,
+            string answersType) {
+            string requestBody;
+            using (var reader = new StreamReader(httpContext.Request.Body)) {
+                requestBody = await reader.ReadToEndAsync();
+            }
+
+            var options = new JsonSerializerOptions {
+                PropertyNameCaseInsensitive = true
+            };
+
+            GeneralTestAnswerType? answerType = GeneralTestAnswerTypeExtensions.FromId(answersType);
+
+            BaseGeneralTestQuestionUpdateRequest? requestData = answerType switch {
+                GeneralTestAnswerType.TextOnly => JsonSerializer
+                    .Deserialize<QuestionWithTextOnlyAnswersUpdateRequest>(requestBody, options),
+                GeneralTestAnswerType.ImageOnly => JsonSerializer
+                    .Deserialize<QuestionWithImageOnlyAnswersUpdateRequest>(requestBody, options),
+                GeneralTestAnswerType.TextAndImage => JsonSerializer
+                    .Deserialize<QuestionWithTextAndImageAnswersUpdateRequest>(requestBody, options),
+                _ => null
+            };
+
+            if (requestData is null) {
+                return ResultsHelper.BadRequestWithErr("Unknown or invalid answers type.");
+            }
+
+            return requestData switch {
+                QuestionWithTextOnlyAnswersUpdateRequest textOnlyRequest =>
+                    UpdateDraftGeneralTestQuestionWithTextOnlyAnswers(textOnlyRequest, dbFactory, storageService),
+                QuestionWithImageOnlyAnswersUpdateRequest imageOnlyRequest =>
+                    UpdateDraftGeneralTestQuestionWithImageOnlyAnswers(imageOnlyRequest, dbFactory, storageService),
+                QuestionWithTextAndImageAnswersUpdateRequest textAndImageRequest =>
+                    UpdateDraftGeneralTestQuestionWithTextAndImageAnswers(textAndImageRequest, dbFactory, storageService),
+                _ => ResultsHelper.BadRequestWithErr("Invalid request type.")
+            };
+        }
         public static IResult UpdateDraftGeneralTestQuestionWithTextOnlyAnswers(
             [FromBody] QuestionWithTextOnlyAnswersUpdateRequest data,
             IDbContextFactory<AppDbContext> dbFactory,
             VokimiStorageService storageService) {
+            //validate
 
-            return ResultsHelper.BadRequestWithErr("Not implemented");
+            return ResultsHelper.BadRequestWithErr("Not implemented TextOnly");
         }
         public static IResult UpdateDraftGeneralTestQuestionWithImageOnlyAnswers(
             [FromBody] QuestionWithImageOnlyAnswersUpdateRequest data,
             IDbContextFactory<AppDbContext> dbFactory,
             VokimiStorageService storageService) {
+            //validate
 
-            return ResultsHelper.BadRequestWithErr("Not implemented");
+            return ResultsHelper.BadRequestWithErr("Not implemented ImageOnly");
         }
         public static IResult UpdateDraftGeneralTestQuestionWithTextAndImageAnswers(
             [FromBody] QuestionWithTextAndImageAnswersUpdateRequest data,
             IDbContextFactory<AppDbContext> dbFactory,
             VokimiStorageService storageService) {
-
-            return ResultsHelper.BadRequestWithErr("Not implemented");
+            //validate
+            return ResultsHelper.BadRequestWithErr("Not implemented TextAndImage");
         }
         public static IResult GetResultsIdNameDictionary(string testId, IDbContextFactory<AppDbContext> dbFactory) {
             DraftTestId draftTestId;
