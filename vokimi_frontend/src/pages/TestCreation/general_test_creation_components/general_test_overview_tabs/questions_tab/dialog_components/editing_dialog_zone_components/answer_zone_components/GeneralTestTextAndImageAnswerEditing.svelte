@@ -1,9 +1,9 @@
 <script lang="ts">
     import BasicTextAreaInput from "../../../../../../../../components/shared/BasicTextAreaInput.svelte";
     import { ImgUtils } from "../../../../../../../../ts/utils/ImgUtils";
-    import type { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
     import { StringUtils } from "../../../../../../../../ts/utils/StringUtils";
     import { getErrorFromResponse } from "../../../../../../../../ts/ErrorResponse";
+    import type { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
     export let answerData: DraftGeneralTestTextAndImageAnswerFormData;
     export let questionId: string;
     let id: string = StringUtils.randomString(8);

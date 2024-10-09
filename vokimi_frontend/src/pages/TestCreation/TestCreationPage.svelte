@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { TestTemplate } from "../../ts/enums/TestTemplate";
     import AuthorizeView from "../../components/AuthorizeView.svelte";
     import GeneralTestCreationOverview from "./general_test_creation_components/GeneralTestCreationOverview.svelte";
-    import { GeneralTestCreationOverviewTabs } from "../../ts/test_creation_overview_tabs/generalTestCreationOverviewTabs";
     import ScoringTestCreationOverview from "./scoring_test_creation_components/ScoringTestCreationOverview.svelte";
-    import { ScoringTestCreationOverviewTabs } from "../../ts/test_creation_overview_tabs/scoringTestCreationOverviewTabs";
     import { Link } from "svelte-routing";
+    import { GeneralTestCreationOverviewTabs } from "../../ts/my_tests_page/test_creation_overview_tabs/generalTestCreationOverviewTabs";
+    import { ScoringTestCreationOverviewTabs } from "../../ts/my_tests_page/test_creation_overview_tabs/scoringTestCreationOverviewTabs";
+    import { TestTemplate } from "../../ts/enums/TestTemplate";
 
     export let testId: string;
 
@@ -23,13 +23,16 @@
         }
 
         try {
-            const response = await fetch("/api/tests/getDraftTestOverviewInfo", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            const response = await fetch(
+                "/api/tests/getDraftTestOverviewInfo",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ testId, viewerId }),
                 },
-                body: JSON.stringify({ testId, viewerId }),
-            });
+            );
 
             if (response.status === 200) {
                 const data = await response.json();
@@ -154,7 +157,7 @@
         color: inherit;
     }
     .tab-link:hover {
-        color: var(--primary-hov);  
+        color: var(--primary-hov);
         border-bottom: 2px solid var(--primary-hov);
     }
 

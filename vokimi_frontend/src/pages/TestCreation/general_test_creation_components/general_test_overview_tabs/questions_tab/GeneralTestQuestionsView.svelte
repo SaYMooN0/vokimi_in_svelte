@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { GeneralTestCreationQuestionsTabData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
     import TabViewDataLoader from "../../../creation_shared_components/TabViewDataLoader.svelte";
     import TabHeaderWithButton from "../../../creation_shared_components/TabHeaderWithButton.svelte";
     import DraftGeneralTestQuestionEditingDialog from "./dialog_components/DraftGeneralTestQuestionEditingDialog.svelte";
@@ -9,6 +8,7 @@
     import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
     import { Err } from "../../../../../ts/Err";
     import { StringUtils } from "../../../../../ts/utils/StringUtils";
+    import { GeneralTestCreationQuestionsTabData } from "../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
 
     export let questionsData: GeneralTestCreationQuestionsTabData;
     export let testId: string;

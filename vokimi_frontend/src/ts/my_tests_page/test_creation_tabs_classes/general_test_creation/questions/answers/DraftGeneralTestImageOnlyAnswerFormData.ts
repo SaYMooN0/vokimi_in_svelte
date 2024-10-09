@@ -1,4 +1,4 @@
-import { StringUtils } from "../../../../utils/StringUtils";
+import { StringUtils } from "../../../../../utils/StringUtils";
 import type { IDraftGeneralTestAnswerFormData } from "./IDraftGeneralTestAnswerFormData";
 
 export class DraftGeneralTestImageOnlyAnswerFormData implements IDraftGeneralTestAnswerFormData {

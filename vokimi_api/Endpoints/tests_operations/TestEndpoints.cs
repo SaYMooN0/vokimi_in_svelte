@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.dtos.requests.test_creation.templates_shared;
 using vokimi_api.Helpers;
+using vokimi_api.Src.dtos.responses.my_tests_page;
 
 namespace vokimi_api.Endpoints.tests_operations
 {
@@ -16,7 +17,7 @@ namespace vokimi_api.Endpoints.tests_operations
     {
         private readonly static IResult UnaithorizedUserTestFetchingErr =
             ResultsHelper.BadRequestWithErr("Unable to get tests info. Please log out and log in again");
-        public static async Task<IResult> GetUserDraftTestsBriefInfo(HttpContext httpContext,
+        public static IResult GetUserDraftTestsBriefInfo(HttpContext httpContext,
                                                                      IDbContextFactory<AppDbContext> dbFactory) {
             var cntxUser = httpContext.User;
 
@@ -31,10 +32,10 @@ namespace vokimi_api.Endpoints.tests_operations
                 }
                 using (var db = dbFactory.CreateDbContext()) {
 
-                    TestBriefInfoResponse[] responseData = db.DraftTestsSharedInfo
+                    DraftTestBriefInfoResponse[] responseData = db.DraftTestsSharedInfo
                         .Where(t => t.CreatorId == userId)
-                        .Include(t=>t.MainInfo)
-                        .Select(TestBriefInfoResponse.FromDraftTest)
+                        .Include(t => t.MainInfo)
+                        .Select(DraftTestBriefInfoResponse.FromDraftTest)
                         .ToArray();
                     return Results.Ok(responseData);
                 }
@@ -44,7 +45,7 @@ namespace vokimi_api.Endpoints.tests_operations
         }
         public static async Task<IResult> GetUserPublishedTestsBriefInfo(HttpContext httpContext,
                                                                      IDbContextFactory<AppDbContext> dbFactory) {
-            return ResultsHelper.BadRequestWithErr("Not implemented");
+            return ResultsHelper.BadRequestWithErr("Not implemented GetUserPublishedTestsBriefInfo");
         }
         public static IResult GetDraftTestOverviewInfo(
             IDbContextFactory<AppDbContext> dbFactory, [FromBody] DraftTestOverviewInfoRequest request) {

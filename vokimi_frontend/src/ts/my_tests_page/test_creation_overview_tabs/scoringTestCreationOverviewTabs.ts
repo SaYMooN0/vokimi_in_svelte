@@ -1,4 +1,4 @@
-import ResultIconSvg from '../../pages/TestCreation/tab_links_icons/ResultIconSvg.svelte';
+import ResultIconSvg from '../../../pages/TestCreation/tab_links_icons/ResultIconSvg.svelte';
 import { SharedTestCreationOverviewTabs } from './sharedTestCreationOverviewTabs';
 
 export const ScoringTestCreationOverviewTabs = {

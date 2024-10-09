@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { TestCreationTagsTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
+    import { TestCreationTagsTabData } from "../../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
     import TabHeaderWithButton from "../../creation_shared_components/TabHeaderWithButton.svelte";
     import TabViewDataLoader from "../../creation_shared_components/TabViewDataLoader.svelte";
     import TagsEditingDialog from "./TagsEditingDialog.svelte";

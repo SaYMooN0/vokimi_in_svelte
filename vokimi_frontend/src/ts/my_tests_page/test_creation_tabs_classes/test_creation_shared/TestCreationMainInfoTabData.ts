@@ -1,6 +1,6 @@
-import { PrivacyValues } from "../../enums/PrivacyValues";
-import { Language } from "../../enums/Language";
-import { TestTemplate } from "../../enums/TestTemplate";
+import { PrivacyValues } from "../../../enums/PrivacyValues";
+import { Language } from "../../../enums/Language";
+import { TestTemplate } from "../../../enums/TestTemplate";
 
 export class TestCreationMainInfoTabData {
     public readonly template: TestTemplate;

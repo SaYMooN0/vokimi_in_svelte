@@ -1,4 +1,4 @@
-import { StringUtils } from "../../utils/StringUtils";
+import { StringUtils } from "../../../utils/StringUtils";
 
 export class TestCreationConclusionTabData {
     public readonly id: string;

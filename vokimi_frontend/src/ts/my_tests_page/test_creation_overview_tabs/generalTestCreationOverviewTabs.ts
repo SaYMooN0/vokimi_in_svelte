@@ -1,5 +1,5 @@
-import QuestionIconSvg from '../../pages/TestCreation/tab_links_icons/QuestionIconSvg.svelte';
-import ResultIconSvg from '../../pages/TestCreation/tab_links_icons/ResultIconSvg.svelte';
+import QuestionIconSvg from '../../../pages/TestCreation/tab_links_icons/QuestionIconSvg.svelte';
+import ResultIconSvg from '../../../pages/TestCreation/tab_links_icons/ResultIconSvg.svelte';
 import { SharedTestCreationOverviewTabs } from './sharedTestCreationOverviewTabs';
 
 export const GeneralTestCreationOverviewTabs = {

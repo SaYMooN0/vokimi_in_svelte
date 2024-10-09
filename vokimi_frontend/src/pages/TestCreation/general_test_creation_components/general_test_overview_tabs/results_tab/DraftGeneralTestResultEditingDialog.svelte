@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Err } from "../../../../../ts/Err";
-    import { DraftGeneralTestResultEditingData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/results/DraftGeneralTestResultEditingData";
+    import { DraftGeneralTestResultEditingData } from "../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/results/DraftGeneralTestResultEditingData";
     import { ImgUtils } from "../../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";

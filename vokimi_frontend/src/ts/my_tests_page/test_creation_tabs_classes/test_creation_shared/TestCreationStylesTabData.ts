@@ -1,4 +1,4 @@
-import { TestStylesArrowType } from "../../enums/TestStylesArrowType";
+import { TestStylesArrowType } from "../../../enums/TestStylesArrowType";
 
 export class TestCreationStylesTabData {
     accentColor: string;

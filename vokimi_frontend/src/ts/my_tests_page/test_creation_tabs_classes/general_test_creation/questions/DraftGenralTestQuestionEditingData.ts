@@ -1,4 +1,4 @@
-import type { GeneralTestAnswerType } from "../../../enums/GeneralTestAnswerType";
+import type { GeneralTestAnswerType } from "../../../../enums/GeneralTestAnswerType";
 import type { IDraftGeneralTestAnswerFormData } from "./answers/IDraftGeneralTestAnswerFormData";
 
 export class DraftGeneralTestQuestionEditingData {

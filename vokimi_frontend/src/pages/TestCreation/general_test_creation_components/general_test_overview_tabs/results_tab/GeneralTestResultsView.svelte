@@ -2,7 +2,7 @@
     import ActionConfirmationDialog from "../../../../../components/shared/ActionConfirmationDialog.svelte";
     import { Err } from "../../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
-    import { GeneralTestCreationResultsTabData } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";
+    import { GeneralTestCreationResultsTabData } from "../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";
     import TabHeaderWithButton from "../../../creation_shared_components/TabHeaderWithButton.svelte";
     import TabViewDataLoader from "../../../creation_shared_components/TabViewDataLoader.svelte";
     import DraftGeneralTesResultViewElement from "./DraftGeneralTesResultViewElement.svelte";

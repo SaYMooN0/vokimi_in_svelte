@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { TestCreationMainInfoTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
     import TabViewDataLoader from "../../creation_shared_components/TabViewDataLoader.svelte";
     import { TestTemplateUtils } from "../../../../ts/enums/TestTemplate";
     import { LanguageUtils } from "../../../../ts/enums/Language";
@@ -9,6 +8,7 @@
     import ErrorMessageInCenter from "../../creation_shared_components/ErrorMessageInCenter.svelte";
     import TabHeaderWithButton from "../../creation_shared_components/TabHeaderWithButton.svelte";
     import DraftTestMainInfoEditingDialog from "./DraftTestMainInfoEditingDialog.svelte";
+    import { TestCreationMainInfoTabData } from "../../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
 
     export let mainInfoData: TestCreationMainInfoTabData;
     export let testId: string;

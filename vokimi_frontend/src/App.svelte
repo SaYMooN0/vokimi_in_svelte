@@ -3,7 +3,7 @@
   import HeaderLayout from "./components/layouts/header_layout/HeaderLayout.svelte";
 
   import AuthPage from "./pages/Auth/AuthPage.svelte";
-  import FriendsPage from "./pages/Friends/FriendsPage.svelte";
+  import CreatorsPage from "./pages/Creators/CreatorsPage.svelte";
   import CollectionsPage from "./pages/Collections/CollectionsPage.svelte";
   import MyTestsPage from "./pages/MyTests/MyTestsPage.svelte";
   import TestsCatalogPage from "./pages/TestsCatalog/TestsCatalogPage.svelte";
@@ -20,7 +20,7 @@
       <Route component={Page404} />
       <Route path="/" component={TestsCatalogPage} />
       <Route path="/catalog" component={TestsCatalogPage} />
-      <Route path="/friends" component={FriendsPage} />
+      <Route path="/creators" component={CreatorsPage} />
       <Route path="/auth/:path" let:params>
         <AuthPage path={params.path} />
       </Route>
