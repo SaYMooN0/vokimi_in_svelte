@@ -7,14 +7,12 @@ export class DraftTestBriefInfo {
     readonly description: string;
     readonly cover: string;
     readonly template: TestTemplate;
-    readonly privacy: PrivacyValues;
 
-    constructor(id: string, name: string, description: string, cover: string, template: TestTemplate, privacy: PrivacyValues) {
+    constructor(id: string, name: string, description: string, cover: string, template: TestTemplate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.cover = cover;
         this.template = template;
-        this.privacy = privacy;
     }
 }

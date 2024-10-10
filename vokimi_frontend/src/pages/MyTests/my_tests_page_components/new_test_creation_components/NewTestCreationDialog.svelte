@@ -1,10 +1,7 @@
 <script lang="ts">
-    import BaseDialog from "../../../components/BaseDialog.svelte";
-    import {
-        TestTemplate,
-        TestTemplateUtils,
-    } from "../../../ts/enums/TestTemplate";
-    import TemplateCard from "./new_test_creation_components/TemplateCard.svelte";
+    import BaseDialog from "../../../../components/BaseDialog.svelte";
+    import { TestTemplate } from "../../../../ts/enums/TestTemplate";
+    import TemplateCard from "./TemplateCard.svelte";
     import { navigate } from "svelte-routing";
 
     let dialogElement: BaseDialog;

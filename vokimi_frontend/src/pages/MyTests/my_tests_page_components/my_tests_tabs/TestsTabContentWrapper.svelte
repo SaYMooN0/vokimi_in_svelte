@@ -17,7 +17,7 @@
         </div>
     {:else}
         <h2 class="your-draft-tests-label">{yourTestsLabel}</h2>
-        <div class="refresh-btn" on:click={() => fetchTestsFunc(true)}>
+        <div class="refresh-btn unselectable" on:click={() => fetchTestsFunc(true)}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

@@ -49,6 +49,7 @@
 
 <style>
     .header-layout {
+        z-index: 100;
         position: fixed;
         top: 0;
         width: 100vw;
@@ -59,6 +60,7 @@
         align-items: center;
         height: var(--header-height);
         background-color: var(--back-main);
+        box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 2px 0px;
         transition: all 0.04s;
     }
     .logo-container {

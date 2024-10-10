@@ -6,17 +6,17 @@ namespace vokimi_api.Src.dtos.responses.my_tests_page
     public record class DraftTestBriefInfoResponse(
         string Id,
         string Name,
+        string? Description,
         string Cover,
-        string Template,
-        string Privacy
+        string Template
     )
     {
         public static DraftTestBriefInfoResponse FromDraftTest(BaseDraftTest test) => new(
             test.Id.Value.ToString(),
             test.MainInfo.Name,
+            test.MainInfo.Description,
             test.MainInfo.CoverImagePath,
-            test.Template.GetId(),
-            test.MainInfo.Privacy.GetId()
+            test.Template.GetId()
         );
     }
 }

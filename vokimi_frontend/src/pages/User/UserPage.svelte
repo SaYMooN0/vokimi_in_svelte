@@ -15,11 +15,11 @@
     export let userId: string;
     let accPageState: AccPageState;
     async function setAccPageState() {
-        console.log(userId);
         const authData = await getAuthData();
         if (StringUtils.isNullOrWhiteSpace(userId)) {
             if (authData !== null) {
                 accPageState = AccPageState.MyPageViewer;
+                userId = authData.UserId ?? "";
             } else {
                 accPageState = AccPageState.UserNotFound;
             }
@@ -49,7 +49,7 @@
     <p>Loading...</p>
 {:then}
     {#if accPageState === AccPageState.MyPageViewer}
-        <MyUserPageView />
+        <MyUserPageView {userId} />
     {:else if accPageState === AccPageState.ViewerAuthenticated}
         <UserPageAuthenticatedView />
     {:else if accPageState === AccPageState.ViewerUnauthenticated}

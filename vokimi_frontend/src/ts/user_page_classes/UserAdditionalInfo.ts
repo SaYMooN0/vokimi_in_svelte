@@ -5,7 +5,7 @@ class UserAdditionalInfo {
     birthDate?: Date;
     links: { [key: string]: string | null };
 
-    private constructor(id: string, registrationDate: Date) {
+    constructor(id: string, registrationDate: Date) {
         this.id = id;
         this.realName = '';
         this.registrationDate = registrationDate;

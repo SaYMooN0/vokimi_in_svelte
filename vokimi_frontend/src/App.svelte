@@ -48,10 +48,10 @@
 
 <style>
   :root {
-    --header-height: 80px;
+    --header-height: 64px;
   }
   .page-content {
-    padding-top: var(--header-height);
+    padding-top: calc(var(--header-height) + 12px);
   }
 
   @media (max-width: 1100px) {

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { GeneralTestAnswerTypeUtils } from "../../../../../ts/enums/GeneralTestAnswerType";
-    import type { DraftGeneralTestQuestionBriefInfo } from "../../../../../ts/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
+    import type { DraftGeneralTestQuestionBriefInfo } from "../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
     import ElementEditDeleteActions from "../../../creation_shared_components/ElementEditDeleteActions.svelte";
 
     export let refreshParentComponentAction: () => void;
@@ -12,7 +12,7 @@
     ) => void;
 
     async function MoveQuestionUpInOrder() {
-        if(question.orderInTest===0){
+        if (question.orderInTest === 0) {
             return;
         }
         const url =
