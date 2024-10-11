@@ -3,6 +3,7 @@
     import { navigate } from "svelte-routing";
     import ActionConfirmationDialog from "../../../../components/shared/ActionConfirmationDialog.svelte";
     import { Err } from "../../../../ts/Err";
+    import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
 
     let currentTestId: string;
     let menuPosition = { top: 0, left: 0 };
@@ -34,7 +35,18 @@
 
     function DeleteAction() {
         const testDeletingAction = async () => {
-            return Err.none();
+            const url = "/api/tests/deleteDraftTest/" + currentTestId;
+            const response = await fetch(url, {
+                method: "DELETE",
+            });
+            if (response.ok) {
+                actionConfirmationDialog.close();
+                return Err.none();
+            } else if (response.status === 400) {
+                const errorMessage = await getErrorFromResponse(response);
+                return new Err(errorMessage);
+            }
+            return new Err("Something went wrong...");
         };
         actionConfirmationDialog.open(
             testDeletingAction,

@@ -24,16 +24,8 @@
 
         try {
             const response = await fetch(
-                "/api/tests/getDraftTestOverviewInfo",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ testId, viewerId }),
-                },
+                "/api/tests/getDraftTestOverviewInfo/" + testId,
             );
-
             if (response.status === 200) {
                 const data = await response.json();
                 isCreator = data.isViewerCreator;

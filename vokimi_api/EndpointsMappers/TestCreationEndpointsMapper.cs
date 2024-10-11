@@ -17,6 +17,7 @@ namespace vokimi_api.EndpointsMappers
                 return await TestCreationSharedEndpoints.CreateNewTest(httpContext, dbFactory, parsedTemplate.Value);
             });
 
+            //rewrite to check for creator
             app.MapGet("/testCreation/getDraftTestMainInfoData/{testId}", TestCreationSharedEndpoints.GetDraftTestMainInfoData);
             app.MapPost("/testCreation/updateDraftTestMainInfoData", TestCreationSharedEndpoints.UpdateDraftTestMainInfo);
             app.MapPost("/testCreation/setDraftTestCoverToDefault/{testId}", TestCreationSharedEndpoints.SetDraftTestCoverToDefault);

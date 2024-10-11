@@ -26,12 +26,12 @@
 
 <BaseDialog {dialogId} bind:this={dialogElement}>
     <div class="dialog-content">
-        <label class="confirm-action-label">Confirm your action</label>
+        <label class="confirm-action-label unselectable">Confirm your action</label>
         <p class="dialog-message">{confirmationText}</p>
         {#if !StringUtils.isNullOrWhiteSpace(errorString)}
             <p class="error-string">{errorString}</p>
         {/if}
-        <div class="dialog-buttons">
+        <div class="dialog-buttons unselectable">
             <button class="cancel-btn" on:click={() => dialogElement.close()}>
                 {cancelBtnText}
             </button>

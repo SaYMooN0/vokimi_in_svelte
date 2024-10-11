@@ -44,10 +44,11 @@
                 await loadData();
                 questionDeletingDialog.close();
                 return Err.none();
-            } else {
+            } else if (response.status === 400) {
                 const errorMessage = await getErrorFromResponse(response);
                 return new Err(errorMessage);
             }
+            return new Err("Something went wrong...");
         };
         questionDeletingDialog.open(
             deletingAction,

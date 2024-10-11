@@ -13,6 +13,8 @@ namespace vokimi_api.Helpers
             BadRequestWithErr("Server error. Save existing changes and try to refresh the page");
         public static IResult BadRequestUnknownTest() =>
             BadRequestWithErr("Unknown Test");
+        public static IResult BadRequestNotCreator() =>
+            BadRequestWithErr("You have to be the creator to perform this action");
 
         public static IResult BadRequestUserDoesnotExist() =>
             BadRequestWithErr("User doesn't exist");
