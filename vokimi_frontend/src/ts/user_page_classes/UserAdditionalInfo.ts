@@ -1,15 +1,21 @@
 class UserAdditionalInfo {
-    id: string;
     realName: string;
-    registrationDate: Date;
-    birthDate?: Date;
+    registrationDate: Date | null;
+    birthDate: Date | null;
     links: { [key: string]: string | null };
 
-    constructor(id: string, registrationDate: Date) {
-        this.id = id;
-        this.realName = '';
+    constructor(
+        realName: string,
+        registrationDate: Date | null,
+        birthDate: Date | null,
+        links: { [key: string]: string | null }
+    ) {
+        this.realName = realName;
         this.registrationDate = registrationDate;
-        this.birthDate = undefined;
-        this.links = {};
+        this.birthDate = birthDate;
+        this.links = links;
+    }
+    static empty(): UserAdditionalInfo {
+        return new UserAdditionalInfo("", null, null, {});
     }
 }

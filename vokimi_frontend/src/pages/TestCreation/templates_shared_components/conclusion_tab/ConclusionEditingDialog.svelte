@@ -7,6 +7,7 @@
     import TextWithOptionalImageInput from "../../creation_shared_components/TextWithOptionalImageInput.svelte";
 
     export let updateParentElementData: () => void;
+    export let testId: string;
 
     let conclusionData: TestCreationConclusionTabData;
     let dialogElement: BaseDraftTestEditingDialog;
@@ -41,7 +42,7 @@
     async function saveConclusionImage(file: File): Promise<string | Err> {
         return await ImgUtils.saveImage(
             file,
-            `saveTestConclusionImage/${conclusionData.id}`,
+            `saveDraftTestConclusionImage/${testId}`,
         );
     }
 </script>

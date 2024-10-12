@@ -79,6 +79,7 @@
     </div>
     <div slot="content" class="conclusion-data">
         <ConclusionEditingDialog
+            {testId}
             bind:this={conclusionEditingDialog}
             updateParentElementData={loadData}
         />

@@ -3,14 +3,13 @@
     import { Err } from "../../../ts/Err";
     import { getErrorFromResponse } from "../../../ts/ErrorResponse";
     import { ImgUtils } from "../../../ts/utils/ImgUtils";
-    import UserAdditionalInfoDialog from "./UserAdditionalInfoDialog.svelte";
 
     export let userId: string = "";
+    export let openUserAdditionalInfoDialog: () => void;
     let profilePicturePath: string = "";
     let username: string = "";
     let bannerColor: string = "";
 
-    let dialogElement: UserAdditionalInfoDialog;
     async function fetchData(): Promise<Err> {
         const url = "/api/users/getUserPageTopInfoData/" + userId;
         console.log(url);
@@ -36,7 +35,6 @@
         <div class="err-message">{fetchingErr.toString()}</div>
     {:else}
         <div class="user-info">
-            <UserAdditionalInfoDialog bind:this={dialogElement} {userId} />
             <div class="banner" style="background-color:{bannerColor};">
                 <slot name="banner-slot" />
             </div>
@@ -51,7 +49,7 @@
                     <p class="username">{username}</p>
                     <label
                         class="additional-info-label"
-                        on:click={dialogElement.open}
+                        on:click={openUserAdditionalInfoDialog}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

@@ -1,13 +1,11 @@
 <script lang="ts">
     import getAuthData from "../../ts/stores/authStore";
     import { StringUtils } from "../../ts/utils/StringUtils";
-    import MyUserPageView from "./my_user_page_view/MyUserPageView.svelte";
-    import UserPageAuthenticatedView from "./user_page_authenticated_view/UserPageAuthenticatedView.svelte";
-    import UserPageUnauthenticatedView from "./user_page_unauthenticated.view/UserPageUnauthenticatedView.svelte";
+    import MyUserPageView from "./my_user_page/MyUserPageView.svelte";
+    import UserPageView from "./user_page/UserPageView.svelte";
     enum AccPageState {
         MyPageViewer,
-        ViewerAuthenticated,
-        ViewerUnauthenticated,
+        UserPage,
         UserNotFound,
         DataFetchingErr,
     }
@@ -31,10 +29,8 @@
             if (data.exists) {
                 if (userId === authData?.UserId) {
                     accPageState = AccPageState.MyPageViewer;
-                } else if (authData !== null) {
-                    accPageState = AccPageState.ViewerAuthenticated;
                 } else {
-                    accPageState = AccPageState.ViewerUnauthenticated;
+                    accPageState = AccPageState.UserPage;
                 }
             } else {
                 accPageState = AccPageState.UserNotFound;
@@ -50,10 +46,8 @@
 {:then}
     {#if accPageState === AccPageState.MyPageViewer}
         <MyUserPageView {userId} />
-    {:else if accPageState === AccPageState.ViewerAuthenticated}
-        <UserPageAuthenticatedView />
-    {:else if accPageState === AccPageState.ViewerUnauthenticated}
-        <UserPageUnauthenticatedView />
+    {:else if accPageState === AccPageState.UserPage}
+        <UserPageView pageOwnerId={userId} />
     {:else if accPageState === AccPageState.UserNotFound}
         <div class="user-not-found">User not found</div>
     {:else if accPageState === AccPageState.DataFetchingErr}

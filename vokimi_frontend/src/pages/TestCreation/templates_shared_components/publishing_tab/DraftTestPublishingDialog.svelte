@@ -2,6 +2,7 @@
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import BaseDialog from "../../../../components/BaseDialog.svelte";
     import EditingDialogCloseButton from "../../creation_shared_components/editing_dialog_components/EditingDialogCloseButton.svelte";
+    import { navigate } from "svelte-routing";
 
     export let testId: string;
     let dialogElement: BaseDialog;
@@ -42,7 +43,7 @@
             },
         );
         if (response.ok) {
-            //redirect
+            navigate("/my-tests")
             dialogElement.close();
         } else if (response.status === 400) {
             errorMessage = await getErrorFromResponse(response);
