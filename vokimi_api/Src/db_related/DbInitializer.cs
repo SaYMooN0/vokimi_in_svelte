@@ -25,7 +25,7 @@ namespace vokimi_api.Src.db_related
 
                 try {
                     var loginInfo = LoginInfo.CreateNew(email, BCrypt.Net.BCrypt.HashPassword(password));
-                    var additionalInfo = UserAdditionalInfo.CreateNew(DateTime.UtcNow);
+                    var additionalInfo = UserAdditionalInfo.CreateNew(DateOnly.FromDateTime(DateTime.UtcNow));
                     var pageSettings = UserPageSettings.CreateNew();
                     var user = AppUser.CreateNew(username, loginInfo.Id, additionalInfo.Id, pageSettings.Id);
 

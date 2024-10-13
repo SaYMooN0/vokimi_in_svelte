@@ -18,6 +18,7 @@ using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
 using vokimi_api.Src.dtos.shared;
 using vokimi_api.Src.dtos.shared.test_creation_shared;
 using vokimi_api.Src.enums;
+using vokimi_api.Src.extension_classes;
 
 namespace vokimi_api.Endpoints.tests_operations.test_creation
 {
@@ -78,7 +79,11 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             return test.Id;
         }
 
-        public static IResult GetDraftTestMainInfoData(IDbContextFactory<AppDbContext> dbFactory, string testId) {
+        public static IResult GetDraftTestMainInfoData(
+            IDbContextFactory<AppDbContext> dbFactory,
+            string testId,
+            HttpContext httpContext
+        ) {
             if (string.IsNullOrEmpty(testId)) { return ResultsHelper.BadRequestServerError(); }
 
             DraftTestId draftTestId;
@@ -91,16 +96,21 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 BaseDraftTest? test = db.DraftTestsSharedInfo
                         .Include(t => t.MainInfo)
                         .FirstOrDefault(t => t.Id == draftTestId);
-                if (test is null || test.MainInfo is null) { return ResultsHelper.BadRequestServerError(); }
+
+                if (test is null || test.MainInfo is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown test");
+                }
+                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                    return ResultsHelper.BadRequestNotCreator();
+                }
                 return Results.Ok(DraftTestMainInfoDataResponse.FromDraftTest(test));
             }
         }
         public static IResult UpdateDraftTestMainInfo(
             IDbContextFactory<AppDbContext> dbFactory,
-            [FromBody] DraftTestMainInfoUpdateRequest request) {
-
-
-
+            [FromBody] DraftTestMainInfoUpdateRequest request,
+            HttpContext httpContext
+        ) {
             Err validationErr = request.CheckForErr();
             if (validationErr.NotNone()) {
                 return ResultsHelper.BadRequestWithErr(validationErr.Message);
@@ -117,6 +127,9 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                     if (test is null) {
                         return ResultsHelper.BadRequestUnknownTest();
                     }
+                    if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                        return ResultsHelper.BadRequestNotCreator();
+                    }
                     test.MainInfo.Update(newData.Name, newData.Description, newData.Language, newData.Privacy);
                     db.SaveChanges();
                     return Results.Ok();
@@ -125,7 +138,11 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 return ResultsHelper.BadRequestServerError();
             }
         }
-        public static IResult SetDraftTestCoverToDefault(string testId, IDbContextFactory<AppDbContext> dbFactory) {
+        public static IResult SetDraftTestCoverToDefault(
+            string testId,
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext
+        ) {
             DraftTestId draftTestId;
             if (Guid.TryParse(testId, out var testGuid)) {
                 draftTestId = new(testGuid);
@@ -140,6 +157,10 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                     if (test is null) {
                         return ResultsHelper.BadRequestUnknownTest();
                     }
+                    if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                        return ResultsHelper.BadRequestNotCreator();
+                    }
+
                     string imgPath = ImgOperationsConsts.DefaultTestCoverImg;
                     test.MainInfo.UpdateCoverImage(imgPath);
                     db.SaveChanges();
@@ -150,7 +171,11 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             }
         }
 
-        public static IResult GetDraftTestConclusionData(IDbContextFactory<AppDbContext> dbFactory, string testId) {
+        public static IResult GetDraftTestConclusionData(
+            IDbContextFactory<AppDbContext> dbFactory,
+            string testId,
+            HttpContext httpContext
+        ) {
 
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out _)) {
@@ -163,10 +188,17 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                         .Include(t => t.Conclusion)
                         .FirstOrDefault(t => t.Id == draftTestId);
                 if (test is null) { return ResultsHelper.BadRequestServerError(); }
+                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                    return ResultsHelper.BadRequestNotCreator();
+                }
                 return Results.Ok(DraftTestConclusionData.FromConclusion(test.Conclusion));
             }
         }
-        public static IResult CreateDraftTestConclusion(IDbContextFactory<AppDbContext> dbFactory, string testId) {
+        public static IResult CreateDraftTestConclusion(
+            IDbContextFactory<AppDbContext> dbFactory,
+            string testId,
+            HttpContext httpContext
+        ) {
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out _)) {
                 return ResultsHelper.BadRequestServerError();
@@ -178,6 +210,9 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                     .FirstOrDefault(t => t.Id == draftTestId);
                 if (test is null) {
                     return ResultsHelper.BadRequestServerError();
+                }
+                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                    return ResultsHelper.BadRequestNotCreator();
                 }
                 if (test.Conclusion is not null) {
                     return Results.Ok();
@@ -195,32 +230,46 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 }
             }
         }
-        public static async Task<IResult> UpdateDraftTestConclusion(IDbContextFactory<AppDbContext> dbFactory,
-                                                                    [FromBody] DraftTestConclusionData data,
-                                                                    VokimiStorageService vokimiStorage) {
-            TestConclusionId id;
-            if (!Guid.TryParse(data.Id, out var _)) {
+        public static async Task<IResult> UpdateDraftTestConclusion(
+            IDbContextFactory<AppDbContext> dbFactory,
+            [FromBody] DraftTestConclusionData data,
+            VokimiStorageService vokimiStorage,
+            HttpContext httpContext,
+            string testId
+        ) {
+            DraftTestId draftTestId;
+            if (!Guid.TryParse(testId, out var _)) {
                 return ResultsHelper.BadRequestWithErr("Unable to update conclusion. Please try again later");
             }
-            id = new(new(data.Id));
+            draftTestId = new(new(testId));
 
             using (var db = dbFactory.CreateDbContext()) {
-                TestConclusion? conclusion = db.TestConclusions.FirstOrDefault(c => c.Id == id);
-                if (conclusion is null) {
-                    return ResultsHelper.BadRequestWithErr("Unknown conclusion");
+                BaseDraftTest? test = db.DraftTestsSharedInfo
+                    .Include(t => t.Conclusion)
+                    .FirstOrDefault(t => t.Id == draftTestId);
+                if (test is null) {
+                    return ResultsHelper.BadRequestUnknownTest();
+                }
+                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                    return ResultsHelper.BadRequestNotCreator();
                 }
                 Err validationErr = data.CheckForErr();
                 if (validationErr.NotNone()) {
                     return ResultsHelper.BadRequestWithErr(validationErr.Message);
                 }
-                conclusion.Update(
+                if (test.Conclusion is null) {
+                    TestConclusion newConclusion = TestConclusion.CreateNew();
+                    db.TestConclusions.Add(newConclusion);
+                    test.SetConclusion(newConclusion);
+                }
+                test.Conclusion.Update(
                     data.Text,
                     data.AdditionalImage,
                     data.AnyFeedback,
                     data.FeedbackText,
                     data.maxFeedbackLength
                 );
-                string unusedImgPrefix = $"{ImgOperationsConsts.TestConclusionsFolder}/{id.Value.ToString()}/";
+                string unusedImgPrefix = $"{ImgOperationsConsts.TestConclusionsFolder}/{test.Conclusion.Id.Value.ToString()}/";
                 string[] reservedKeys =
                     string.IsNullOrWhiteSpace(data.AdditionalImage) ?
                     Array.Empty<string>() :
@@ -229,13 +278,17 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 if (imgClearingErr.NotNone()) {
                     return ResultsHelper.BadRequestServerError();
                 }
-                db.Update(conclusion);
+                db.Update(test.Conclusion);
                 db.SaveChanges();
                 return Results.Ok();
             }
 
         }
-        public static IResult DeleteDraftTestConclusion(IDbContextFactory<AppDbContext> dbFactory, string testId) {
+        public static IResult DeleteDraftTestConclusion(
+            IDbContextFactory<AppDbContext> dbFactory,
+            string testId,
+            HttpContext httpContext
+        ) {
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out _)) {
                 return ResultsHelper.BadRequestServerError();
@@ -247,6 +300,9 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                      .FirstOrDefault(c => c.Id == draftTestId);
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();
+                }
+                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                    return ResultsHelper.BadRequestNotCreator();
                 }
                 if (test.Conclusion is null) {
                     return Results.Ok();

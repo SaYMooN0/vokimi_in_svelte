@@ -1,7 +1,8 @@
 <script lang="ts">
-    import SignupForm from "./SignupForm.svelte";
-    import LoginForm from "./LoginForm.svelte";
     import AuthorizeView from "../../components/AuthorizeView.svelte";
+    import AlreadyLoggedIn from "../../components/AlreadyLoggedIn.svelte";
+    import SignupForm from "./SignUpForm.svelte";
+    import LoginForm from "./LogInForm.svelte";
 
     export let path: string;
 </script>

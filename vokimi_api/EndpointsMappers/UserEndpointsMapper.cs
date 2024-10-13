@@ -7,6 +7,7 @@ namespace vokimi_api.EndpointsMappers
         public static void MapAll(WebApplication app) {
             app.MapGet("/users/doesUserExist/{userId}", UserEndpoints.DoesUserExist);
             app.MapGet("/users/getUserPageTopInfoData/{userId}", UserEndpoints.GetUserPageTopInfoData);
+            app.MapGet("/users/getUserPageAdditionalInfo/{userId}", UserEndpoints.GetUserPageAdditionalInfoData);
         }
     }
 }

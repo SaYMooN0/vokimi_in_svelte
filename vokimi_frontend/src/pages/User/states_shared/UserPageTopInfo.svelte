@@ -5,14 +5,13 @@
     import { ImgUtils } from "../../../ts/utils/ImgUtils";
 
     export let userId: string = "";
-    export let openUserAdditionalInfoDialog: () => void;
+    export let openUserAdditionalInfoDialog: () => Promise<void>;
     let profilePicturePath: string = "";
     let username: string = "";
     let bannerColor: string = "";
 
     async function fetchData(): Promise<Err> {
         const url = "/api/users/getUserPageTopInfoData/" + userId;
-        console.log(url);
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
@@ -35,9 +34,7 @@
         <div class="err-message">{fetchingErr.toString()}</div>
     {:else}
         <div class="user-info">
-            <div class="banner" style="background-color:{bannerColor};">
-                <slot name="banner-slot" />
-            </div>
+            <div class="banner" style="background-color:{bannerColor};"></div>
             <div class="info">
                 <div class="profile-picture">
                     <img

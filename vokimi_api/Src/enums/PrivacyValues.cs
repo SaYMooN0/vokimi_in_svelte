@@ -23,5 +23,14 @@
             "anyone" => PrivacyValues.Anyone,
             _ => null
         };
+        public static bool IsVisibleTo(this PrivacyValues itemVal, PrivacyValues viewerVal) {
+            return (itemVal, viewerVal) switch {
+                (PrivacyValues.Anyone, _) => true,
+                (_, PrivacyValues.ForMyself) => true,
+                (PrivacyValues.FriendsAndFollowers, PrivacyValues.FriendsAndFollowers or PrivacyValues.FriendsOnly) => true,
+                (PrivacyValues.FriendsOnly, PrivacyValues.FriendsOnly) => true,
+                _ => false
+            };
+        }
     }
 }

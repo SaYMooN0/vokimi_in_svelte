@@ -7,8 +7,6 @@ namespace vokimi_api.EndpointsMappers
         public static void MapAll(WebApplication app) {
             app.MapGet("/testStyles/getDraftTestStylesData/{testId}", TestStylesEndpoints.GetDraftTestStylesData);
             app.MapGet("/testStyles/getDefaultStylesData", TestStylesEndpoints.GetDefaultStylesData);
-            
-            //rewrite to check for creator
             app.MapPost("/testStyles/updateDraftTestStyles/{testId}", TestStylesEndpoints.UpdateDraftTestStylesData);
         }
     }

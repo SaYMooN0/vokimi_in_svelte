@@ -10,8 +10,8 @@ namespace vokimi_api.Src.db_related.db_entities.users
         public UserPageSettingsId Id { get; init; }
         public string AboutMe { get; private set; } = string.Empty;
         public string BannerColor { get; private set; }
-        public UserPagePrivacySettings PrivacySettings { get; private set; } = UserPagePrivacySettings.Default;
         //icons or chosen badges
+        public UserPagePrivacySettings PrivacySettings { get; private set; } = UserPagePrivacySettings.Default;
         public Err ChangeUserPageColor(string color) {
             if (string.IsNullOrWhiteSpace(color) || !Regex.IsMatch(color, "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")) {
                 return new Err("Invalid color format. Please use a valid hex code.");

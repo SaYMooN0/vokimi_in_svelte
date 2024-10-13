@@ -11,9 +11,9 @@
 <UserPageViewFrame>
     <UserPageTopInfo
         userId={pageOwnerId}
-        openUserAdditionalInfoDialog={dialogElement.opens}
+        openUserAdditionalInfoDialog={() => dialogElement.open()}
     >
-        <div slot="banner-slot">
+        <div slot="right-side-slot">
             <button class="edit-profile-btn">Follow</button>
         </div>
     </UserPageTopInfo>

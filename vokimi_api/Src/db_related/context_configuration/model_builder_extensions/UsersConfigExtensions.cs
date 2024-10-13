@@ -56,6 +56,7 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new UserAdditionalInfoId(v));
                 entity.OwnsOne(u => u.Links);
+                entity.OwnsOne(u => u.PrivacySettings);
             });
         }
         internal static void ConfigureUnconfirmedAppUser(this ModelBuilder modelBuilder) {

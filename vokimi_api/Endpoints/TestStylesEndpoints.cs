@@ -8,6 +8,7 @@ using vokimi_api.Src.dtos.shared;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using vokimi_api.Src;
 using vokimi_api.Src.enums;
+using vokimi_api.Src.extension_classes;
 
 namespace vokimi_api.Endpoints
 {
@@ -29,9 +30,12 @@ namespace vokimi_api.Endpoints
                 return Results.Ok(TestStylesDataDto.FromTestStylesSheet(test.StylesSheet));
             }
         }
-        public static IResult UpdateDraftTestStylesData(IDbContextFactory<AppDbContext> dbFactory,
-                                                        [FromBody] TestStylesDataDto data,
-                                                        string testId) {
+        public static IResult UpdateDraftTestStylesData(
+            IDbContextFactory<AppDbContext> dbFactory,
+            [FromBody] TestStylesDataDto data,
+            string testId,
+            HttpContext httpContext
+        ) {
             Err validationErr = data.CheckForErr();
             if (validationErr.NotNone()) {
                 return ResultsHelper.BadRequestWithErr(validationErr);
@@ -51,6 +55,9 @@ namespace vokimi_api.Endpoints
                         .FirstOrDefault(t => t.Id == draftTestId);
                 if (test is null) {
                     return ResultsHelper.BadRequestServerError();
+                }
+                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                    return ResultsHelper.BadRequestNotCreator();
                 }
                 test.StylesSheet.Update(
                     dataWithTypes.Value.accentColor,

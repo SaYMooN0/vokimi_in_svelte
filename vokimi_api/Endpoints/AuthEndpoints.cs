@@ -134,7 +134,7 @@ namespace vokimi_api.Endpoints
             }
 
             var loginInfo = LoginInfo.CreateNew(unconfirmed.Email, unconfirmed.PasswordHash);
-            var additionalInfo = UserAdditionalInfo.CreateNew(unconfirmed.RegistrationDate);
+            var additionalInfo = UserAdditionalInfo.CreateNew(DateOnly.FromDateTime(unconfirmed.RegistrationDate));
             var pageSettings = UserPageSettings.CreateNew();
 
             var newUser = AppUser.CreateNew(unconfirmed.Username, loginInfo.Id, additionalInfo.Id, pageSettings.Id);

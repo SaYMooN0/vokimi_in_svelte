@@ -1,7 +1,6 @@
 import { StringUtils } from "../../../utils/StringUtils";
 
 export class TestCreationConclusionTabData {
-    public readonly id: string;
     public readonly text: string;
     public readonly additionalImage: string | null;
     public readonly anyFeedback: boolean;
@@ -9,14 +8,12 @@ export class TestCreationConclusionTabData {
     public readonly maxFeedbackLength: number;
 
     constructor(
-        id: string,
         text: string,
         additionalImage: string | null,
         anyFeedback: boolean,
         feedbackText: string,
         maxFeedbackLength: number
     ) {
-        this.id = id;
         this.text = text;
         this.additionalImage = additionalImage;
         this.anyFeedback = anyFeedback;
@@ -25,11 +22,12 @@ export class TestCreationConclusionTabData {
     }
 
     isEmpty(): boolean {
-        return StringUtils.isNullOrWhiteSpace(this.id) && StringUtils.isNullOrWhiteSpace(this.text);
+        return StringUtils.isNullOrWhiteSpace(this.text)
+            && StringUtils.isNullOrWhiteSpace(this.additionalImage)
+            && StringUtils.isNullOrWhiteSpace(this.feedbackText)
     }
     copy(): TestCreationConclusionTabData {
         return new TestCreationConclusionTabData(
-            this.id,
             this.text,
             this.additionalImage,
             this.anyFeedback,
@@ -39,7 +37,7 @@ export class TestCreationConclusionTabData {
     }
     static empty(): TestCreationConclusionTabData {
         return new TestCreationConclusionTabData(
-            "", "", null, false, "Feedback", 64
+            "", null, false, "Feedback", 64
         );
     }
 }

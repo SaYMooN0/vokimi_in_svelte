@@ -16,14 +16,12 @@ namespace vokimi_api.EndpointsMappers
                 }
                 return await TestCreationSharedEndpoints.CreateNewTest(httpContext, dbFactory, parsedTemplate.Value);
             });
-
-            //rewrite to check for creator
             app.MapGet("/testCreation/getDraftTestMainInfoData/{testId}", TestCreationSharedEndpoints.GetDraftTestMainInfoData);
             app.MapPost("/testCreation/updateDraftTestMainInfoData", TestCreationSharedEndpoints.UpdateDraftTestMainInfo);
             app.MapPost("/testCreation/setDraftTestCoverToDefault/{testId}", TestCreationSharedEndpoints.SetDraftTestCoverToDefault);
             app.MapGet("/testCreation/getDraftTestConclusionData/{testId}", TestCreationSharedEndpoints.GetDraftTestConclusionData);
             app.MapPost("/testCreation/createDraftTestConclusion/{testId}", TestCreationSharedEndpoints.CreateDraftTestConclusion);
-            app.MapPost("testCreation/updateDraftTestConclusion", TestCreationSharedEndpoints.UpdateDraftTestConclusion);
+            app.MapPost("testCreation/updateDraftTestConclusion/{testId}", TestCreationSharedEndpoints.UpdateDraftTestConclusion);
             app.MapDelete("/testCreation/deleteDraftTestConclusion/{testId}", TestCreationSharedEndpoints.DeleteDraftTestConclusion);
         }
     }
