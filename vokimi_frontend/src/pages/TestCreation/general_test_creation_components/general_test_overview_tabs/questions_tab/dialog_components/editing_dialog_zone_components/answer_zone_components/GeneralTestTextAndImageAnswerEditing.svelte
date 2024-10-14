@@ -116,6 +116,6 @@
     }
 
     .change-img-btn:active {
-        width: 96%;
+        letter-spacing: 1px;
     }
 </style>

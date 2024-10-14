@@ -3,6 +3,11 @@
     import { getErrorFromResponse } from "../../../ts/ErrorResponse";
     import { UserAdditionalInfo } from "../../../ts/user_page_classes/UserAdditionalInfo";
     import { StringUtils } from "../../../ts/utils/StringUtils";
+    import FacebookIcon from "../social_icons/FacebookIcon.svelte";
+    import OtherLinkIcon from "../social_icons/OtherLinkIcon.svelte";
+    import TelegramIcon from "../social_icons/TelegramIcon.svelte";
+    import XIcon from "../social_icons/XIcon.svelte";
+    import YouTubeIcon from "../social_icons/YouTubeIcon.svelte";
 
     export let userId: string;
     let userInfo: UserAdditionalInfo = UserAdditionalInfo.empty();
@@ -28,6 +33,17 @@
             fetchingErr = "Unknown error";
         }
         dialogElement.open();
+    }
+    function getLinkIcon(linkKey: string) {
+        const linksKeyValues: Record<string, any> = {
+            Telegram: TelegramIcon,
+            YouTube: YouTubeIcon,
+            Facebook: FacebookIcon,
+            X: XIcon,
+            Other1: OtherLinkIcon,
+            Other2: OtherLinkIcon,
+        };
+        return linksKeyValues[linkKey];
     }
 </script>
 
@@ -58,16 +74,28 @@
             <p class="dialog-header">User links:</p>
             <div class="user-links">
                 {#each Object.entries(userInfo.links) as linkKVP}
-                    <p class="icon-p">
-                        icon from <label>{linkKVP[0]}</label>
-                        <label>{linkKVP[1]}</label>
-                    </p>
+                    <div class="link-div">
+                        <div class="link-icon">
+                            <svelte:component this={getLinkIcon(linkKVP[0])} />
+                        </div>
+                        {#if linkKVP[1].startsWith("http://") || linkKVP[1].startsWith("https://")}
+                            <a
+                                href={linkKVP[1]}
+                                target="_blank"
+                                class="link-val"
+                            >
+                                {linkKVP[1]}
+                            </a>
+                        {:else}
+                            <label class="link-no-val">{linkKVP[1]}</label>
+                        {/if}
+                    </div>
                 {/each}
             </div>
         {:else if StringUtils.isNullOrWhiteSpace(userInfo.linksMassage)}
-            <p class="no-links-set">User has not set any links</p>
+            <label class="no-links-message">User has not set any links</label>
         {:else}
-            <p class="links-no-acsess">{userInfo.linksMassage}</p>
+            <label class="no-links-message">{userInfo.linksMassage}</label>
         {/if}
         <slot></slot>
     </div>
@@ -117,13 +145,44 @@
         justify-self: end;
     }
     .user-links {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
-    .link-p {
+    .link-div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 28px;
     }
     .link-icon {
+        height: 100%;
+    }
+    .link-icon :global(svg) {
+        height: 100%;
+        margin-right: 8px;
+        color: var(--primary);
     }
     .link-val {
+        font-size: 20px;
+        color: var(--primary);
     }
-    .no-links-set {
+    .link-val:hover {
+        text-decoration: underline;
+    }
+    .link-val:active {
+        color: var(--primary-hov);
+    }
+    .link-no-val {
+        font-size: 20px;
+        color: var(--text-faded);
+    }
+    .no-links-message {
+        margin: 12px 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        font-size: 18px;
+        color: var(--text-faded);
     }
 </style>

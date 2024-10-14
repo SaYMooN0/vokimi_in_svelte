@@ -5,14 +5,15 @@
     import ResultCreationContent from "./ResultCreationContent.svelte";
 
     export async function open(
-        chosenResults: { [key: string]: string },
-        addResultAction: (key: string, value: string) => void,
+        alreadyChosenResults: { [key: string]: string },
+        chooseResults: (chosenResults: { [key: string]: string }) => void,
     ) {
-        resultsFetched = false;
         dialogElement.open();
         dialogElement.setErrorMessage("");
-        chosenResultsRef = chosenResults;
-        addResult = addResultAction;
+
+        chosenResults = { ...alreadyChosenResults };
+        updateChosenResults = chooseResults;
+
         isResultCreationState = false;
         await fetchResults();
     }
@@ -20,15 +21,15 @@
 
     let dialogElement: BaseDraftTestEditingDialog;
     let resultCreationElement: ResultCreationContent;
-    let resultAssigningElement: ResultAssigningContent;
 
     let isResultCreationState: boolean = false;
-    let chosenResultsRef: { [key: string]: string } = {};
-    let addResult: (key: string, value: string) => void;
+    let chosenResults: { [key: string]: string } = {};
+    let updateChosenResults: (chosenResults: { [key: string]: string }) => void;
     let allResults: { [key: string]: string } = {};
     let resultsFetched: boolean = false;
 
     async function fetchResults() {
+        resultsFetched = false;
         const url =
             "/api/testCreation/general/getResultsIdNameDictionary/" + testId;
         const response = await fetch(url);
@@ -44,26 +45,19 @@
         }
         resultsFetched = true;
     }
-    function getAllResultWithoutChosen(): { [key: string]: string } {
-        return Object.keys(allResults)
-            .filter((key) => !chosenResultsRef[key])
-            .reduce((res: { [key: string]: string }, key: string) => {
-                res[key] = allResults[key];
-                return res;
-            }, {});
-    }
+
     async function onSaveButtonClicked() {
         if (isResultCreationState) {
             await resultCreationElement.onCreateButtonClick();
         } else {
-            const chosenRes = resultAssigningElement.getChosenResult();
-            if (chosenRes === undefined) {
-                dialogElement.setErrorMessage("Please choose a result");
-            } else {
-                const [key, value] = chosenRes;
-                addResult(key, value);
-                dialogElement.close();
+            if (Object.entries(chosenResults).length > 5) {
+                dialogElement.setErrorMessage(
+                    "Cannot assign more than 5 results.",
+                );
+                return;
             }
+            updateChosenResults(chosenResults);
+            dialogElement.close();
         }
     }
 </script>
@@ -89,10 +83,8 @@
                 />
             {:else}
                 <ResultAssigningContent
-                    bind:this={resultAssigningElement}
-                    resultsToChooseFrom={Object.entries(
-                        getAllResultWithoutChosen(),
-                    )}
+                    {allResults}
+                    bind:chosenResults
                     changeStateToResultCreation={() =>
                         (isResultCreationState = true)}
                 />

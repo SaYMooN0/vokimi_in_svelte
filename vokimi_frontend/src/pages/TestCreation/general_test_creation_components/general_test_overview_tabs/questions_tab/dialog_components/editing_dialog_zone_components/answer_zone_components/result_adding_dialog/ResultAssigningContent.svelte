@@ -1,39 +1,49 @@
 <script lang="ts">
     import { StringUtils } from "../../../../../../../../../ts/utils/StringUtils";
 
-    let resultsRadioInputName: string =
+    let resultsCheckboxInputName: string =
         "results-" + StringUtils.randomString(4);
-    export let resultsToChooseFrom: [string, string][];
+    export let allResults: { [key: string]: string };
     export let changeStateToResultCreation: () => void;
 
-    export let chosenResultName: [string, string] | undefined = undefined;
+    export let chosenResults: { [key: string]: string } = {};
 
-    export function getChosenResult(): [string, string] | undefined {
-        return chosenResultName;
+    function toggleSelection(key: string, value: string) {
+        if (chosenResults[key]) {
+            delete chosenResults[key];
+        } else {
+            chosenResults[key] = value;
+        }
     }
 </script>
 
 <div class="result-assigning-state">
-    <p class="result-assigning-title">Choose a result from the following:</p>
+    <p class="result-assigning-title">Choose results from the following:</p>
     <div class="results-options">
-        {#if resultsToChooseFrom.length === 0}
+        {#if Object.keys(allResults).length === 0}
             <p class="no-results-label">There are no results to choose from</p>
         {:else}
-            {#each resultsToChooseFrom as [key, value]}
+            {#each Object.entries(allResults) as [key, value]}
                 <input
-                    bind:group={chosenResultName}
-                    value={[key, value]}
-                    type="radio"
-                    name={resultsRadioInputName}
-                    id={resultsRadioInputName + key}
+                    type="checkbox"
+                    name={resultsCheckboxInputName}
+                    id={resultsCheckboxInputName + key}
+                    on:change={() => toggleSelection(key, value)}
+                    checked={key in chosenResults}
                 />
-                <label class="result-option" for={resultsRadioInputName + key}>
+                <label
+                    class="result-option"
+                    for={resultsCheckboxInputName + key}
+                >
                     {value}
                 </label>
             {/each}
         {/if}
 
-        <div class="create-res-btn unselectable" on:click={changeStateToResultCreation}>
+        <div
+            class="create-res-btn unselectable"
+            on:click={changeStateToResultCreation}
+        >
             Create New
         </div>
     </div>

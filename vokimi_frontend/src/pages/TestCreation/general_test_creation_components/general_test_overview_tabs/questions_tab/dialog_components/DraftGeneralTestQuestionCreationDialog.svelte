@@ -46,18 +46,73 @@
     onSaveButtonClicked={createNewQuestion}
     bind:this={dialogElement}
 >
-    <label for="answersType" class="property-label">
-        Choose type of the answers for the question (you won't be able to change
-        it):
-    </label>
-    <select id="answersType" bind:value={answersType}>
-        {#each Object.values(GeneralTestAnswerType) as type}
-            <option value={type}>
-                {GeneralTestAnswerTypeUtils.getFullName(type)}
-            </option>
-        {/each}
-    </select>
+    <div class="dialog-content">
+        <p class="choose-label">Choose type of the answers for the question</p>
+        <p class="no-changes-label">(You won't be able to change it)</p>
+        <div class="answer-type-select">
+            <select bind:value={answersType}>
+                {#each Object.values(GeneralTestAnswerType) as type}
+                    <option value={type}>
+                        {GeneralTestAnswerTypeUtils.getFullName(type)}
+                    </option>
+                {/each}
+            </select>
+        </div>
+    </div>
 </BaseDraftTestEditingDialog>
 
 <style>
+    .dialog-content {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding: 12px 24px;
+    }
+    .choose-label {
+        margin: 4px auto;
+        font-size: 24px;
+        color: var(--text);
+    }
+    .no-changes-label {
+        margin: 0 auto;
+        margin-bottom: 12px;
+        font-size: 20px;
+        color: var(--text-faded);
+    }
+    .answer-type-select {
+        position: relative;
+        width: fit-content;
+    }
+    .answer-type-select select {
+        appearance: none;
+        font-size: 18px;
+        padding: 12px 40px 12px 16px;
+        background-color: var(--back-main);
+        border: 2px solid var(--text);
+        border-radius: 6px;
+        cursor: pointer;
+        outline: none;
+    }
+    .answer-type-select::before,
+    .answer-type-select::after {
+        --size: 5px;
+        content: "";
+        position: absolute;
+        right: 12px;
+        pointer-events: none;
+    }
+
+    .answer-type-select::before {
+        border-left: var(--size) solid transparent;
+        border-right: var(--size) solid transparent;
+        border-bottom: var(--size) solid var(--text);
+        top: 35%;
+    }
+
+    .answer-type-select::after {
+        border-left: var(--size) solid transparent;
+        border-right: var(--size) solid transparent;
+        border-top: var(--size) solid var(--text);
+        top: 60%;
+    }
 </style>

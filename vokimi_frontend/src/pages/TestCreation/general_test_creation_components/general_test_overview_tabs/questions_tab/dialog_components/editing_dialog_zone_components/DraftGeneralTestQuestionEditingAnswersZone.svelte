@@ -35,12 +35,11 @@
     function removeAnswer(answer: IDraftGeneralTestAnswerFormData) {
         answers = answers.filter((a) => a !== answer);
     }
-    function addRelatedResultToAnswer(
+    function addRelatedResultsToAnswer(
         answer: IDraftGeneralTestAnswerFormData,
-        key: string,
-        value: string,
+        chosenResults: { [key: string]: string },
     ) {
-        answer.relatedResults = { ...answer.relatedResults, [key]: value };
+        answer.relatedResults = chosenResults;
         answers = answers;
     }
     let showAnswers: boolean = false;
@@ -66,8 +65,8 @@
                 <label class="answer-number">#{index + 1}</label>
                 <AnswerResultsEditingComponent
                     openResultAssigningDialog={(chosenResults) =>
-                        resultsDialog.open(chosenResults, (key, val) =>
-                            addRelatedResultToAnswer(answer, key, val),
+                        resultsDialog.open(chosenResults, (chosenResults) =>
+                            addRelatedResultsToAnswer(answer, chosenResults),
                         )}
                     bind:relatedResults={answer.relatedResults}
                 />

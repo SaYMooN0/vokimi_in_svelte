@@ -62,24 +62,18 @@ namespace vokimi_api.Endpoints
                 return ResultsHelper.BadRequestWithErr("Unknown user");
             }
 
-            if (!httpContext.TryGetUserId(out AppUserId viewerId)) {
-                return Results.Ok(UserPageAdditionalInfoData.ForAnyOne(user.UserAdditionalInfo));
-            }
+            bool isViewerAuthenticated = httpContext.TryGetUserId(out AppUserId viewerId);
 
-            if (viewerId == user.Id) {
-                return Results.Ok(UserPageAdditionalInfoData.ForMyself(user.UserAdditionalInfo));
-            }
-
-            if (user.Friends.Any(friend => friend.Id == viewerId)) {
-                return Results.Ok(UserPageAdditionalInfoData.ForFriends(user.UserAdditionalInfo));
-            }
-
-            if (user.Followers.Any(follower => follower.Id == viewerId)) {
-                return Results.Ok(UserPageAdditionalInfoData.ForFollowers(user.UserAdditionalInfo));
-            }
-
-            return Results.Ok(UserPageAdditionalInfoData.ForAnyOne(user.UserAdditionalInfo));
+            return (isViewerAuthenticated, viewerId, user) switch {
+                (true, var vId, { Id: var id }) when id == vId =>
+                    Results.Ok(UserPageAdditionalInfoData.ForMyself(user.UserAdditionalInfo)),
+                (true, var vId, { Friends: var friends }) when friends.Any(friend => friend.Id == vId) =>
+                    Results.Ok(UserPageAdditionalInfoData.ForFriends(user.UserAdditionalInfo)),
+                (true, var vId, { Followers: var followers }) when followers.Any(follower => follower.Id == vId) =>
+                    Results.Ok(UserPageAdditionalInfoData.ForFollowers(user.UserAdditionalInfo)),
+                _ =>
+                    Results.Ok(UserPageAdditionalInfoData.ForAnyOne(user.UserAdditionalInfo))
+            };
         }
-
     }
 }

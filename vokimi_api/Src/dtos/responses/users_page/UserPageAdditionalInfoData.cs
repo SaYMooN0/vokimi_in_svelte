@@ -22,7 +22,7 @@ namespace vokimi_api.Src.dtos.responses.users_page
 
         private static UserPageAdditionalInfoData GetUserData(UserAdditionalInfo userData, PrivacyValues viewerPrivacyLevel) {
             string realName = userData.PrivacySettings.RealNamePrivacy.IsVisibleTo(viewerPrivacyLevel)
-                ? userData.RealName
+                ? string.IsNullOrEmpty(userData.RealName) ? "(Not set)" : userData.RealName
                 : GetPrivacyString(userData.PrivacySettings.RealNamePrivacy);
 
             string registrationDate = userData.PrivacySettings.RegistrationDatePrivacy.IsVisibleTo(viewerPrivacyLevel)
@@ -49,7 +49,7 @@ namespace vokimi_api.Src.dtos.responses.users_page
         }
 
         public static UserPageAdditionalInfoData ForMyself(UserAdditionalInfo userData) => new(
-            userData.RealName,
+            string.IsNullOrEmpty(userData.RealName) ? "(Not set)" : userData.RealName,
             userData.RegistrationDate.ToString("dd.MM.yyyy"),
             userData.BirthDate?.ToString("dd.MM.yyyy") ?? "(Not set)",
             userData.Links.ToDictionary()
