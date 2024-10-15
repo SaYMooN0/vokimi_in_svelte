@@ -11,6 +11,7 @@ namespace vokimi_api.Src.dtos.requests.test_creation.general_template.question_u
         bool IsMultiple,
         ushort MinAnswersCount,
         ushort MaxAnswersCount,
+        ushort OrderInQuestion,
         DraftGeneralTestImageOnlyAnswerFormData[] Answers
     ) : BaseGeneralTestQuestionUpdateRequest
         (
@@ -21,10 +22,11 @@ namespace vokimi_api.Src.dtos.requests.test_creation.general_template.question_u
             AnswersType,
             IsMultiple,
             MinAnswersCount,
-            MaxAnswersCount
+            MaxAnswersCount,
+            OrderInQuestion
         )
     {
-
-
+        public Err CheckForErr() =>
+            CheckForErr(Answers);
     }
 }

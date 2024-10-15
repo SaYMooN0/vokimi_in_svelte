@@ -66,7 +66,7 @@
     dialogId="result-assigning-dialog"
     {onSaveButtonClicked}
     bind:this={dialogElement}
-    saveButtonText={isResultCreationState ? "Create" : "Assign"}
+    saveButtonText={isResultCreationState ? "Create" : "Save Results"}
 >
     <div class="dialog-content">
         {#if resultsFetched}

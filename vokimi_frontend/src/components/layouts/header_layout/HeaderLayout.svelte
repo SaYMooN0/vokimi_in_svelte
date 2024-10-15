@@ -2,7 +2,6 @@
     import NavMenu from "./NavMenu.svelte";
     import vokimiLogo from "../../../assets/vokimi-logo.svg";
     import { ImgUtils } from "../../../ts/utils/ImgUtils";
-    import { Link } from "svelte-routing";
 
     let username: string = "";
     let profilePicture: string = "";

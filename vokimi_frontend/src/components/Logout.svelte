@@ -1,7 +1,7 @@
 <script lang='ts'>
     
     async function logout() {
-      const response = await fetch('/logout', { method: 'POST' });
+      const response = await fetch('/api/logout', { method: 'POST' });
       if (response.ok) {
         window.location.href = '/';
       }

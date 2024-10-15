@@ -23,6 +23,7 @@
     let dialogElement: BaseDraftTestEditingDialog;
 
     export async function open(questionIdVal: string) {
+        dialogElement.setErrorMessage("");
         fetchingDataErr = "";
         questionId = questionIdVal;
         const url =
@@ -30,7 +31,7 @@
             questionId;
         const response = await fetch(url);
         if (response.ok) {
-            const data = await response.json();
+            const data = JSON.parse(await response.json());
             const answersType: GeneralTestAnswerType | null =
                 GeneralTestAnswerTypeUtils.fromId(data.answersType);
             if (answersType === null) {
@@ -62,6 +63,7 @@
             dialogElement.setErrorMessage(dataErr.toString());
             return;
         }
+        console.log(JSON.stringify(questionData));
         const url =
             "/api/testCreation/general/saveChangesForDraftGeneralTestQuestion/" +
             questionData.answersType;
@@ -98,6 +100,10 @@
                 );
             }
             if (questionData.maxAnswersCount > questionData.answers.length) {
+                console.log(
+                    questionData.maxAnswersCount,
+                    questionData.answers.length,
+                );
                 return new Err(
                     "Maximum answers count cannot be more than total number of answers",
                 );

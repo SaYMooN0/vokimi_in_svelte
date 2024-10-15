@@ -17,6 +17,6 @@
             AnswerTextMinLength = 6,
             AnswerTextMaxLength = 255;
 
-        //public const int MaxResultsCountForAnswer = 5;
+        public const int MaxResultsCountForAnswer = 5;
     }
 }

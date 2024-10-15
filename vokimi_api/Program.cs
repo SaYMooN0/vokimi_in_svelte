@@ -22,7 +22,6 @@ namespace vokimi_api
                               .AllowCredentials();
                     });
             });
-
             ConfigureServices(builder.Services, builder.Configuration);
 
             var app = builder.Build();
@@ -75,6 +74,7 @@ namespace vokimi_api
 
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
 
+ 
 
             ConfigureDbContextFactory(services, configuration);
             ConfigureS3(services, configuration);

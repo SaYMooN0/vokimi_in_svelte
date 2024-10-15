@@ -8,12 +8,12 @@ namespace vokimi_api.Src.dtos.responses.test_creation_responses.general
     public record class DraftGeneralTestQuestionDataResponse(
         string Id,
         string Text,
-        string? imagePath,
-        bool shuffleAnswers,
-        string answersType,
-        bool isMultiple,
-        ushort minAnswersCount,
-        ushort maxAnswersCount,
+        string? ImagePath,
+        bool ShuffleAnswers,
+        string AnswersType,
+        bool IsMultiple,
+        ushort MinAnswersCount,
+        ushort MaxAnswersCount,
         BaseDraftGeneralTestAnswerFormData[] answers
     )
     {

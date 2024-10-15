@@ -1,4 +1,5 @@
 ﻿using vokimi_api.Src.db_related.db_entities_ids;
+using vokimi_api.Src.dtos.requests.test_creation.general_template.question_update;
 using vokimi_api.Src.enums;
 
 namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
@@ -32,6 +33,20 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
             };
         public bool IsSingleChoice => MinAnswersCount == 1 && MaxAnswersCount == 1;
         public void UpdateOrderInTest(ushort orderInTest) => OrderInTest = orderInTest;
+        public void UpdateAsMultipleChoice(BaseGeneralTestQuestionUpdateRequest data) {
+            Text = data.Text;
+            ImagePath = data.ImagePath;
+            ShuffleAnswers = data.ShuffleAnswers;
+            MinAnswersCount = data.MinAnswersCount;
+            MaxAnswersCount = data.MaxAnswersCount;
+        }
+        public void UpdateAsSingleChoice(BaseGeneralTestQuestionUpdateRequest data) {
+            Text = data.Text;
+            ImagePath = data.ImagePath;
+            ShuffleAnswers = data.ShuffleAnswers;
+            MinAnswersCount = 1;
+            MaxAnswersCount = 1;
+        }
     }
 }
 

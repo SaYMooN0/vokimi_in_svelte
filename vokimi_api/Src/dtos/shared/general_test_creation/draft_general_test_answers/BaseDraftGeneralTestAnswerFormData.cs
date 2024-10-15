@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related.db_entities_ids;
 
 namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_answers
@@ -7,7 +8,7 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
     {
         [JsonIgnore]
         public Dictionary<DraftGeneralTestResultId, string> RelatedResultsIdName { get; set; } = [];
-        [JsonPropertyName("relatedResults")]
+        [JsonProperty("relatedResults")]
         public Dictionary<string, string> RelatedResultsStringified
         {
             get {
@@ -27,6 +28,13 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
                 }
             }
         }
-
+        protected Err CheckForResultsCount() {
+            if (RelatedResultsIdName.Count > GeneralTestCreationConsts.MaxResultsCountForAnswer) {
+                return new Err($"Answer has too many related results ({RelatedResultsIdName.Count}). " +
+                               $"Maximal related results for answer is {GeneralTestCreationConsts.MaxResultsCountForAnswer}");
+            }
+            return Err.None;
+        }
+        public abstract Err CheckForErr(int answerNumber);
     }
 }

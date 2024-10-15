@@ -1,12 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Transactions;
+using System.Xml;
 using vokimi_api.Helpers;
 using vokimi_api.Services;
 using vokimi_api.Src;
 using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related;
+using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared.general_test_answers;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
+using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.requests.test_creation.general_template;
 using vokimi_api.Src.dtos.requests.test_creation.general_template.question_update;
@@ -68,8 +77,10 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 return Results.StatusCode(500);
             }
         }
-        public static IResult GetDraftGeneralTestQuestionDataToEdit(IDbContextFactory<AppDbContext> dbFactory,
-                                                                    string questionId) {
+        public static IResult GetDraftGeneralTestQuestionDataToEdit(
+            IDbContextFactory<AppDbContext> dbFactory,
+            string questionId
+        ) {
             if (string.IsNullOrEmpty(questionId)) { return Results.BadRequest(); }
 
             DraftGeneralTestQuestionId draftTestQuestionId;
@@ -82,12 +93,22 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 using (var db = dbFactory.CreateDbContext()) {
                     DraftGeneralTestQuestion? question = db.DraftGeneralTestQuestions
                         .Include(q => q.Answers)
-                        .ThenInclude(a => a.RelatedResults)
+                            .ThenInclude(a => a.RelatedResults)
+                        .Include(q => q.Answers)
+                            .ThenInclude(a => a.AdditionalInfo)
                         .FirstOrDefault(q => q.Id == draftTestQuestionId);
                     if (question is null) {
                         return Results.BadRequest("Question not found");
                     }
-                    return Results.Ok(DraftGeneralTestQuestionDataResponse.FromDraftTestQuestion(question));
+
+                    string jsonOutput = JsonConvert.SerializeObject(
+                        DraftGeneralTestQuestionDataResponse.FromDraftTestQuestion(question),
+                        new JsonSerializerSettings() {
+                            Formatting = Newtonsoft.Json.Formatting.Indented,
+                            ContractResolver = new CamelCasePropertyNamesContractResolver()
+                        }
+                    );
+                    return Results.Ok(jsonOutput);
                 }
             } catch {
                 return Results.BadRequest();
@@ -99,7 +120,8 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory,
             VokimiStorageService storageService,
-            string answersType) {
+            string answersType
+        ) {
             string requestBody;
             using (var reader = new StreamReader(httpContext.Request.Body)) {
                 requestBody = await reader.ReadToEndAsync();
@@ -112,11 +134,11 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             GeneralTestAnswerType? answerType = GeneralTestAnswerTypeExtensions.FromId(answersType);
 
             BaseGeneralTestQuestionUpdateRequest? requestData = answerType switch {
-                GeneralTestAnswerType.TextOnly => JsonSerializer
+                GeneralTestAnswerType.TextOnly => System.Text.Json.JsonSerializer
                     .Deserialize<QuestionWithTextOnlyAnswersUpdateRequest>(requestBody, options),
-                GeneralTestAnswerType.ImageOnly => JsonSerializer
+                GeneralTestAnswerType.ImageOnly => System.Text.Json.JsonSerializer
                     .Deserialize<QuestionWithImageOnlyAnswersUpdateRequest>(requestBody, options),
-                GeneralTestAnswerType.TextAndImage => JsonSerializer
+                GeneralTestAnswerType.TextAndImage => System.Text.Json.JsonSerializer
                     .Deserialize<QuestionWithTextAndImageAnswersUpdateRequest>(requestBody, options),
                 _ => null
             };
@@ -124,10 +146,9 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             if (requestData is null) {
                 return ResultsHelper.BadRequestWithErr("Unknown or invalid answers type.");
             }
-
             return requestData switch {
                 QuestionWithTextOnlyAnswersUpdateRequest textOnlyRequest =>
-                    UpdateDraftGeneralTestQuestionWithTextOnlyAnswers(textOnlyRequest, dbFactory, storageService),
+                    UpdateDraftGeneralTestQuestionWithTextOnlyAnswers(textOnlyRequest, dbFactory),
                 QuestionWithImageOnlyAnswersUpdateRequest imageOnlyRequest =>
                     UpdateDraftGeneralTestQuestionWithImageOnlyAnswers(imageOnlyRequest, dbFactory, storageService),
                 QuestionWithTextAndImageAnswersUpdateRequest textAndImageRequest =>
@@ -137,25 +158,104 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
         }
         public static IResult UpdateDraftGeneralTestQuestionWithTextOnlyAnswers(
             [FromBody] QuestionWithTextOnlyAnswersUpdateRequest data,
-            IDbContextFactory<AppDbContext> dbFactory,
-            VokimiStorageService storageService) {
-            //validate
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
+            Err validationErr = data.CheckForErr();
+            if (validationErr.NotNone()) {
+                return ResultsHelper.BadRequestWithErr(validationErr.ToString());
+            }
+            if (!Guid.TryParse(data.Id, out var qGuid)) {
+                return ResultsHelper.BadRequestServerError();
+            }
+            DraftGeneralTestQuestionId qId = new(qGuid);
+            using (var db = dbFactory.CreateDbContext()) {
+                DraftGeneralTestQuestion? q = db.DraftGeneralTestQuestions.Find(qId);
+                if (q is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown question");
+                }
+                using (var transaction = db.Database.BeginTransaction()) {
+                    try {
+                        if (data.IsMultiple) {
+                            q.UpdateAsMultipleChoice(data);
+                        } else {
+                            q.UpdateAsSingleChoice(data);
+                        }
+                        q.Answers.Clear();
+                        foreach (var answer in data.Answers) {
+                            var answerTypeInfo = TextOnlyAnswerAdditionalInfo.CreateNew(answer.Text);
+                            db.AnswerTypeSpecificInfo.Add(answerTypeInfo);
+                            var dbAnswer = DraftGeneralTestAnswer.CreateNew(qId, data.OrderInQuestion, answerTypeInfo.Id);
+                            foreach (var relatedResult in answer.RelatedResultsIdName) {
+                                DraftGeneralTestResultId relatedResId = relatedResult.Key;
+                                DraftGeneralTestResult? relatedRes = db.DraftGeneralTestResults.Find(relatedResId);
+                                if (relatedRes is null) {
+                                    relatedRes = DraftGeneralTestResult.CreateNew(q.TestId, relatedResult.Value);
+                                    db.DraftGeneralTestResults.Add(relatedRes);
+                                }
+                                dbAnswer.RelatedResults.Add(relatedRes);
+                            }
+                            db.DraftGeneralTestAnswers.Add(dbAnswer);
+                            q.Answers.Add(dbAnswer);
+                        }
+                        db.SaveChanges();
+                        transaction.Commit();
 
-            return ResultsHelper.BadRequestWithErr("Not implemented TextOnly");
+                    } catch {
+                        transaction.Rollback();
+                        return ResultsHelper.BadRequestServerError();
+                    }
+                }
+            }
+            return Results.Ok();
         }
         public static IResult UpdateDraftGeneralTestQuestionWithImageOnlyAnswers(
             [FromBody] QuestionWithImageOnlyAnswersUpdateRequest data,
             IDbContextFactory<AppDbContext> dbFactory,
-            VokimiStorageService storageService) {
-            //validate
+            VokimiStorageService storageService
+        ) {
+            Err validationErr = data.CheckForErr();
+            if (validationErr.NotNone()) {
+                return ResultsHelper.BadRequestWithErr(validationErr.ToString());
+            }
+            if (!Guid.TryParse(data.Id, out var qGuid)) {
+                return ResultsHelper.BadRequestServerError();
+            }
+            DraftGeneralTestQuestionId qId = new(qGuid);
+            using (var db = dbFactory.CreateDbContext()) {
+                DraftGeneralTestQuestion? q = db.DraftGeneralTestQuestions.Find(qId);
+                if (q is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown question");
+                }
+                using (var transaction = db.Database.BeginTransaction()) {
+                    try {
+                        if (q.IsSingleChoice) {
+                            q.UpdateAsSingleChoice(data);
+                        } else {
+                            q.UpdateAsMultipleChoice(data);
+                        }
+                        q.Answers.Clear();
+                        foreach (var answer in data.Answers) {
+                            TextOnlyAnswerAdditionalInfo answerTypeInfo;
+                            throw new NotImplementedException();
+                        }
 
+                    } catch {
+                        transaction.Rollback();
+                        return ResultsHelper.BadRequestServerError();
+                    }
+                }
+            }
             return ResultsHelper.BadRequestWithErr("Not implemented ImageOnly");
         }
         public static IResult UpdateDraftGeneralTestQuestionWithTextAndImageAnswers(
             [FromBody] QuestionWithTextAndImageAnswersUpdateRequest data,
             IDbContextFactory<AppDbContext> dbFactory,
-            VokimiStorageService storageService) {
-            //validate
+            VokimiStorageService storageService
+        ) {
+            Err validationErr = data.CheckForErr();
+            if (validationErr.NotNone()) {
+                return ResultsHelper.BadRequestWithErr(validationErr.ToString());
+            }
             return ResultsHelper.BadRequestWithErr("Not implemented TextAndImage");
         }
         public static IResult GetResultsIdNameDictionary(string testId, IDbContextFactory<AppDbContext> dbFactory) {
@@ -220,8 +320,10 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 return Results.Ok(DraftGeneralTestResultData.FromResult(result));
             }
         }
-        public static IResult DeleteGeneralDraftTestQuestion(string questionId,
-                                                            IDbContextFactory<AppDbContext> dbFactory) {
+        public static IResult DeleteGeneralDraftTestQuestion(
+            string questionId,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
             DraftGeneralTestQuestionId questionToDeleteId;
             if (!Guid.TryParse(questionId, out _)) {
                 return ResultsHelper.BadRequestWithErr("An error has occurred. Please refresh the page and try again");
@@ -325,8 +427,10 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             }
         }
 
-        public static IResult MoveQuestionUpInOrder(string questionId,
-                                                    IDbContextFactory<AppDbContext> dbFactory) {
+        public static IResult MoveQuestionUpInOrder(
+            string questionId,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
             DraftGeneralTestQuestionId questionToMoveId;
             if (!Guid.TryParse(questionId, out _)) {
                 return ResultsHelper.BadRequestServerError();
@@ -366,8 +470,10 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 }
             }
         }
-        public static IResult MoveQuestionDownInOrder(string questionId,
-                                              IDbContextFactory<AppDbContext> dbFactory) {
+        public static IResult MoveQuestionDownInOrder(
+            string questionId,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
             DraftGeneralTestQuestionId questionToMoveId;
             if (!Guid.TryParse(questionId, out _)) {
                 return ResultsHelper.BadRequestServerError();
@@ -407,8 +513,6 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                 }
             }
         }
-
-
 
     }
 }

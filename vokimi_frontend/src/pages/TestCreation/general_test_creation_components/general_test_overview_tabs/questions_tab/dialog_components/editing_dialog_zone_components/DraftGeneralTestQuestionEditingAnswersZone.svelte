@@ -44,6 +44,26 @@
     }
     let showAnswers: boolean = false;
     let resultsDialog: ResultAddingDialog;
+
+    function isTextOnlyAnswer(
+        answer: IDraftGeneralTestAnswerFormData,
+    ): answer is DraftGeneralTestTextOnlyAnswerFormData {
+        return answersType === GeneralTestAnswerType.TextOnly;
+    }
+
+    function isTextAndImageAnswer(
+        answer: IDraftGeneralTestAnswerFormData,
+    ): answer is DraftGeneralTestTextAndImageAnswerFormData {
+        return answersType === GeneralTestAnswerType.TextAndImage;
+    }
+
+    function isImageOnlyAnswer(
+        answer: IDraftGeneralTestAnswerFormData,
+    ): answer is DraftGeneralTestImageOnlyAnswerFormData {
+        return answersType === GeneralTestAnswerType.ImageOnly;
+    }
+
+    console.log(answers);
 </script>
 
 <ResultAddingDialog bind:this={resultsDialog} {testId} />
@@ -70,16 +90,16 @@
                         )}
                     bind:relatedResults={answer.relatedResults}
                 />
-                {#if answer instanceof DraftGeneralTestTextOnlyAnswerFormData}
+                {#if isTextOnlyAnswer(answer)}
                     <GeneralTestTextOnlyAnswerEditing
                         bind:answerData={answer}
                     />
-                {:else if answer instanceof DraftGeneralTestTextAndImageAnswerFormData}
+                {:else if isTextAndImageAnswer(answer)}
                     <GeneralTestTextAndImageAnswerEditing
                         {questionId}
                         bind:answerData={answer}
                     />
-                {:else if answer instanceof DraftGeneralTestImageOnlyAnswerFormData}
+                {:else if isImageOnlyAnswer(answer)}
                     <GeneralTestImageOnlyAnswerEditing
                         {questionId}
                         bind:answerData={answer}
