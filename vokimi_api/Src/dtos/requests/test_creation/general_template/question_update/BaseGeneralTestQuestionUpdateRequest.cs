@@ -2,7 +2,7 @@
 using vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_answers;
 namespace vokimi_api.Src.dtos.requests.test_creation.general_template.question_update
 {
-    public record class BaseGeneralTestQuestionUpdateRequest(
+    public abstract record class BaseGeneralTestQuestionUpdateRequest(
         string Id,
         string Text,
         string? ImagePath,
@@ -14,7 +14,12 @@ namespace vokimi_api.Src.dtos.requests.test_creation.general_template.question_u
         ushort OrderInQuestion
     )
     {
-        protected Err CheckForErr(BaseDraftGeneralTestAnswerFormData[] answers) {
+        public abstract BaseDraftGeneralTestAnswerFormData[] GetAnswers
+        {
+            get;
+        }
+        public Err CheckForErr() {
+            BaseDraftGeneralTestAnswerFormData[] answers = GetAnswers;
             int textLen = string.IsNullOrWhiteSpace(Text) ? 0 : Text.Length;
             if (textLen > GeneralTestCreationConsts.QuestionTextMaxLength ||
                 textLen < GeneralTestCreationConsts.QuestionTextMinLength) {

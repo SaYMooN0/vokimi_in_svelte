@@ -10,13 +10,15 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
         public string Text { get; init; }
         public DraftGeneralTestTextOnlyAnswerFormData(
             string text,
-            Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName
+            Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName,
+            ushort orderInQuestion
         ) {
             Text = text;
             RelatedResultsIdName = relatedResultsIdName;
+            OrderInQuestion = orderInQuestion;
         }
         public override Err CheckForErr(int answerNumber) {
-            string errPrefix = $"Error ${answerNumber} answer: ";
+            string errPrefix = $"Error #{answerNumber} answer: ";
             Err resultsCountErr = CheckForResultsCount();
             if (resultsCountErr.NotNone()) {
                 return new Err(errPrefix, resultsCountErr);

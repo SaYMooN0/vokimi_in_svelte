@@ -11,14 +11,16 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
         public DraftGeneralTestTextAndImageAnswerFormData(
             string text,
             string image,
-            Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName
+            Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName,
+            ushort orderInQuestion
         ) {
             Text = text;
             Image = image;
             RelatedResultsIdName = relatedResultsIdName;
+            OrderInQuestion = orderInQuestion;
         }
         public override Err CheckForErr(int answerNumber) {
-            string errPrefix = $"Error ${answerNumber} answer: ";
+            string errPrefix = $"Error #{answerNumber} answer: ";
             Err resultsCountErr = CheckForResultsCount();
             if (resultsCountErr.NotNone()) {
                 return new Err(errPrefix, resultsCountErr);
@@ -27,7 +29,7 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
             if (textLen > GeneralTestCreationConsts.ResultMaxTextLength ||
                 textLen < GeneralTestCreationConsts.ResultMinTextLength) {
                 Err textLenErr = new(
-                    $"Length of the text must be from {GeneralTestCreationConsts.ResultMinTextLength} to" +
+                    $"Length of the text must be from {GeneralTestCreationConsts.ResultMinTextLength} to " +
                     $"{GeneralTestCreationConsts.ResultMaxTextLength} characters. Current length: {textLen}"
                 );
                 return new Err(errPrefix, textLenErr);

@@ -26,7 +26,6 @@ namespace vokimi_api.Src.dtos.requests.test_creation.general_template.question_u
             OrderInQuestion
         )
     {
-        public Err CheckForErr() =>
-           CheckForErr(Answers);
+        public override BaseDraftGeneralTestAnswerFormData[] GetAnswers { get => this.Answers; }
     }
 }

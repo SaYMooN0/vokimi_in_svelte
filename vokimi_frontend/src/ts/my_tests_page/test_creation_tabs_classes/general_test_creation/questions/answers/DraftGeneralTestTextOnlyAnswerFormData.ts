@@ -3,14 +3,20 @@ import type { IDraftGeneralTestAnswerFormData } from "./IDraftGeneralTestAnswerF
 export class DraftGeneralTestTextOnlyAnswerFormData implements IDraftGeneralTestAnswerFormData {
     text: string;
     relatedResults: { [key: string]: string };
+    orderInQuestion: number;
     checkForErr() {
         return (this.text === "" || this.text === null) ? "Text can't be empty" : null;
     };
-    constructor(text: string, relatedResults: { [key: string]: string }) {
+    constructor(
+        text: string,
+        relatedResults: { [key: string]: string },
+        orderInQuestion: number
+    ) {
         this.text = text;
         this.relatedResults = relatedResults;
+        this.orderInQuestion = orderInQuestion
     }
     static empty(): DraftGeneralTestTextOnlyAnswerFormData {
-        return new DraftGeneralTestTextOnlyAnswerFormData("", {});
+        return new DraftGeneralTestTextOnlyAnswerFormData("", {}, 0);
     }
 }

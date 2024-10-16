@@ -4,6 +4,8 @@ export class DraftGeneralTestTextAndImageAnswerFormData implements IDraftGeneral
     image: string;
     text: string;
     relatedResults: { [key: string]: string };
+    orderInQuestion: number;
+
     checkForErr() {
         if (this.image === "" || this.image === null) {
             return "Image path can't be empty";
@@ -14,12 +16,18 @@ export class DraftGeneralTestTextAndImageAnswerFormData implements IDraftGeneral
         return null;
     };
 
-    constructor(imagePath: string, text: string, relatedResults: { [key: string]: string }) {
+    constructor(
+        imagePath: string,
+        text: string,
+        relatedResults: { [key: string]: string },
+        orderInQuestion: number
+    ) {
         this.image = imagePath;
         this.text = text;
         this.relatedResults = relatedResults;
+        this.orderInQuestion = orderInQuestion;
     }
     static empty(): DraftGeneralTestTextAndImageAnswerFormData {
-        return new DraftGeneralTestTextAndImageAnswerFormData("", "", {});
+        return new DraftGeneralTestTextAndImageAnswerFormData("", "", {}, 0);
     }
 }

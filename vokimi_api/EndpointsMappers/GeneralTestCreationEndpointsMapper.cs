@@ -1,4 +1,4 @@
-﻿using vokimi_api.Endpoints.tests_operations.test_creation;
+﻿using vokimi_api.Endpoints.tests_operations.test_creation.general_test_creation;
 
 namespace vokimi_api.EndpointsMappers
 {
@@ -6,19 +6,35 @@ namespace vokimi_api.EndpointsMappers
     {
         public static void MapAll(WebApplication app) {
             //rewrite to check for creator
-            app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}", GeneralTestCreationEndpoints.GetGeneralDraftTestQuestionsData);
-            app.MapPost("/testCreation/general/createGeneralTestQuestion", GeneralTestCreationEndpoints.CreateGeneralTestQuestion);
-            app.MapGet("/testCreation/general/getDraftGeneralTestQuestionDataToEdit/{questionId}", GeneralTestCreationEndpoints.GetDraftGeneralTestQuestionDataToEdit);
-            app.MapDelete("/testCreation/general/deleteGeneralDraftTestQuestion/{questionId}", GeneralTestCreationEndpoints.DeleteGeneralDraftTestQuestion);
-            app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestQuestion/{answersType}", GeneralTestCreationEndpoints.UpdateDraftGeneralTestQuestion);
-            app.MapPost("/testCreation/general/moveQuestionUpInOrder/{questionId}", GeneralTestCreationEndpoints.MoveQuestionUpInOrder);
-            app.MapPost("/testCreation/general/moveQuestionDownInOrder/{questionId}", GeneralTestCreationEndpoints.MoveQuestionDownInOrder);
-            app.MapGet("/testCreation/general/getResultsIdNameDictionary/{testId}", GeneralTestCreationEndpoints.GetResultsIdNameDictionary);
-            app.MapPost("/testCreation/general/createNewResult", GeneralTestCreationEndpoints.CreateNewResultForTest);
-            app.MapGet("/testCreation/general/getGeneralDraftTestResultsData/{testId}", GeneralTestCreationEndpoints.GetDraftGeneralTestResultsData);
-            app.MapGet("/testCreation/general/getDraftGeneralTestResultDataToEdit/{resultId}", GeneralTestCreationEndpoints.GetDraftGeneralTestResultDataToEdit);
-            app.MapDelete("/testCreation/general/deleteDraftGeneralTestResult/{resultId}", GeneralTestCreationEndpoints.DeleteGeneralDraftTestResult);
-            app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestResult", GeneralTestCreationEndpoints.SaveChangesForDraftGeneralTestResult);
+
+            //questions
+            app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}",
+                GeneralTestQuestionCreationEndpoints.GetGeneralDraftTestQuestionsData);
+            app.MapPost("/testCreation/general/createGeneralTestQuestion",
+                GeneralTestQuestionCreationEndpoints.CreateGeneralTestQuestion);
+            app.MapGet("/testCreation/general/getDraftGeneralTestQuestionDataToEdit/{questionId}",
+                GeneralTestQuestionCreationEndpoints.GetDraftGeneralTestQuestionDataToEdit);
+            app.MapDelete("/testCreation/general/deleteGeneralDraftTestQuestion/{questionId}",
+                GeneralTestQuestionCreationEndpoints.DeleteDraftGeneralTestQuestion);
+            app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestQuestion/{answersType}",
+                GeneralTestQuestionCreationEndpoints.UpdateDraftGeneralTestQuestion);
+            app.MapPost("/testCreation/general/moveQuestionUpInOrder/{questionId}",
+                GeneralTestQuestionCreationEndpoints.MoveQuestionUpInOrder);
+            app.MapPost("/testCreation/general/moveQuestionDownInOrder/{questionId}",
+                GeneralTestQuestionCreationEndpoints.MoveQuestionDownInOrder);
+            //results
+            app.MapGet("/testCreation/general/getResultsIdNameDictionary/{testId}",
+                GeneralTestResultsCreationEndpoints.GetResultsIdNameDictionary);
+            app.MapPost("/testCreation/general/createNewResult",
+                GeneralTestResultsCreationEndpoints.CreateNewResultForTest);
+            app.MapGet("/testCreation/general/getGeneralDraftTestResultsData/{testId}",
+                GeneralTestResultsCreationEndpoints.GetDraftGeneralTestResultsData);
+            app.MapGet("/testCreation/general/getDraftGeneralTestResultDataToEdit/{resultId}",
+                GeneralTestResultsCreationEndpoints.GetDraftGeneralTestResultDataToEdit);
+            app.MapDelete("/testCreation/general/deleteDraftGeneralTestResult/{resultId}",
+                GeneralTestResultsCreationEndpoints.DeleteGeneralDraftTestResult);
+            app.MapPost("/testCreation/general/saveChangesForDraftGeneralTestResult",
+                GeneralTestResultsCreationEndpoints.SaveChangesForDraftGeneralTestResult);
         }
     }
 

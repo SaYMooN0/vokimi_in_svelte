@@ -6,7 +6,7 @@
         GeneralTestAnswerTypeUtils,
     } from "../../../../../../ts/enums/GeneralTestAnswerType";
     import { Err } from "../../../../../../ts/Err";
-    import { DraftGeneralTestQuestionEditingData } from "../../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/DraftGenralTestQuestionEditingData";
+    import { DraftGeneralTestQuestionEditingData } from "../../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/DraftGeneralTestQuestionEditingData";
     import { ImgUtils } from "../../../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";

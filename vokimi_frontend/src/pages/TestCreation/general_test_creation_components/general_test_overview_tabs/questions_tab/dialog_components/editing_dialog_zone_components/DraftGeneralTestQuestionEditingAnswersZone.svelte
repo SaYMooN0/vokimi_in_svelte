@@ -80,7 +80,7 @@
         {/if}
     </p>
     <div class="answers-container" class:hide-answers={!showAnswers}>
-        {#each answers as answer, index}
+        {#each answers.sort((a, b) => a.orderInQuestion - b.orderInQuestion) as answer, index}
             <div class="answer-element">
                 <label class="answer-number">#{index + 1}</label>
                 <AnswerResultsEditingComponent

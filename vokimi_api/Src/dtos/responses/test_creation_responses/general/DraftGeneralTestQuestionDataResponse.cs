@@ -30,33 +30,34 @@ namespace vokimi_api.Src.dtos.responses.test_creation_responses.general
                 ExtractAnswers(question).ToArray()
             );
         private static IEnumerable<BaseDraftGeneralTestAnswerFormData> ExtractAnswers(
-            DraftGeneralTestQuestion question)
-        {
+            DraftGeneralTestQuestion question) {
             if (question.Answers.Count == 0)
                 return [];
 
-            switch (question.AnswersType)
-            {
+            switch (question.AnswersType) {
                 case GeneralTestAnswerType.TextOnly:
                     return question.Answers.Select(a => new DraftGeneralTestTextOnlyAnswerFormData(
-                            (a.AdditionalInfo as TextOnlyAnswerAdditionalInfo).Text,
-                            a.RelatedResults.ToDictionary(r => r.Id, r => r.Name)
-                        )
+                        (a.AdditionalInfo as TextOnlyAnswerAdditionalInfo).Text,
+                        a.RelatedResults.ToDictionary(r => r.Id, r => r.Name),
+                        a.OrderInQuestion
+                       )
                     );
                 case GeneralTestAnswerType.ImageOnly:
                     return question.Answers.Select(a => new DraftGeneralTestImageOnlyAnswerFormData(
-                           (a.AdditionalInfo as ImageOnlyAnswerAdditionalInfo).ImagePath,
-                           a.RelatedResults.ToDictionary(r => r.Id, r => r.Name)
+                        (a.AdditionalInfo as ImageOnlyAnswerAdditionalInfo).ImagePath,
+                        a.RelatedResults.ToDictionary(r => r.Id, r => r.Name),
+                        a.OrderInQuestion
                        )
                     );
                 case GeneralTestAnswerType.TextAndImage:
                     return question.Answers.Select(a => new DraftGeneralTestTextAndImageAnswerFormData(
-                           (a.AdditionalInfo as TextAndImageAnswerAdditionalInfo).Text,
-                           (a.AdditionalInfo as TextAndImageAnswerAdditionalInfo).ImagePath,
-                           a.RelatedResults.ToDictionary(r => r.Id, r => r.Name)
+                        (a.AdditionalInfo as TextAndImageAnswerAdditionalInfo).Text,
+                        (a.AdditionalInfo as TextAndImageAnswerAdditionalInfo).ImagePath,
+                        a.RelatedResults.ToDictionary(r => r.Id, r => r.Name),
+                        a.OrderInQuestion
                        )
                     );
-                default: { throw new NotImplementedException(); }
+                default: { throw new ArgumentException("Incorrect question.AnswersType"); }
             }
         }
     }

@@ -7,10 +7,12 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
         public string Image { get; init; }
         public DraftGeneralTestImageOnlyAnswerFormData(
             string image,
-            Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName
+            Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName,
+            ushort orderInQuestion
         ) {
             Image = image;
             RelatedResultsIdName = relatedResultsIdName;
+            OrderInQuestion = orderInQuestion;
         }
         public override Err CheckForErr(int answerNumber) {
             string errPrefix = $"Error #{answerNumber} answer: ";
