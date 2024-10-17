@@ -6,7 +6,7 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
 {
     public abstract class BaseDraftGeneralTestAnswerFormData
     {
-        public ushort OrderInQuestion { get; set; }
+        public int OrderInQuestion { get; set; }
         //system text for deserialization
         //newtons soft for serialization
 
@@ -36,9 +36,9 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
             }
         }
         protected Err CheckForResultsCount() {
-            if (RelatedResultsIdName.Count > GeneralTestCreationConsts.MaxResultsCountForAnswer) {
+            if (RelatedResultsIdName.Count > GeneralTestCreationConsts.MaxRelatedResultsForAnswerCount) {
                 return new Err($"Answer has too many related results ({RelatedResultsIdName.Count}). " +
-                               $"Maximal related results for answer is {GeneralTestCreationConsts.MaxResultsCountForAnswer}");
+                               $"Maximal related results for answer is {GeneralTestCreationConsts.MaxRelatedResultsForAnswerCount}");
             }
             return Err.None;
         }

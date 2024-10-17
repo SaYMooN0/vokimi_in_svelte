@@ -24,12 +24,12 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasConversion(v => v.Value, v => new(v));
             });
-            modelBuilder.Entity<ImageOnlyAnswerAdditionalInfo>()
-                        .ToTable("AnswerAdditionalForInfoImageOnly");
-            modelBuilder.Entity<TextAndImageAnswerAdditionalInfo>()
-                        .ToTable("AnswerAdditionalForTextAndImage");
-            modelBuilder.Entity<TextOnlyAnswerAdditionalInfo>()
-                        .ToTable("AnswerAdditionalForTextOnly");
+            modelBuilder.Entity<ImageOnlyAnswerTypeSpecificInfo>()
+                        .ToTable("AnswerTypeSpecificInfoForImageOnly");
+            modelBuilder.Entity<TextAndImageAnswerTypeSpecificInfo>()
+                        .ToTable("AnswerTypeSpecificInfoForTextAndImage");
+            modelBuilder.Entity<TextOnlyAnswerTypeSpecificInfo>()
+                        .ToTable("AnswerTypeSpecificInfoForTextOnly");
         }
 
     }

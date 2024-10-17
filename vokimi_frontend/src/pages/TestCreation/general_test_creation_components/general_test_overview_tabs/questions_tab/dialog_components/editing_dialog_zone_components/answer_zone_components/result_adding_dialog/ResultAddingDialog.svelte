@@ -18,6 +18,7 @@
         await fetchResults();
     }
     export let testId: string;
+    export let maxRelatedResultsForAnswerCount: number;
 
     let dialogElement: BaseDraftTestEditingDialog;
     let resultCreationElement: ResultCreationContent;
@@ -50,9 +51,12 @@
         if (isResultCreationState) {
             await resultCreationElement.onCreateButtonClick();
         } else {
-            if (Object.entries(chosenResults).length > 5) {
+            if (
+                Object.entries(chosenResults).length >
+                maxRelatedResultsForAnswerCount
+            ) {
                 dialogElement.setErrorMessage(
-                    "Cannot assign more than 5 results.",
+                    `Cannot assign more than ${maxRelatedResultsForAnswerCount} results for answer.`,
                 );
                 return;
             }

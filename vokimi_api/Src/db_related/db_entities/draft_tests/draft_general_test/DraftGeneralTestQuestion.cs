@@ -16,21 +16,22 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
         public ushort MaxAnswersCount { get; private set; }
         public virtual ICollection<DraftGeneralTestAnswer> Answers { get; private set; } = [];
         public DraftTestId TestId { get; init; }
-        public static DraftGeneralTestQuestion CreateNew(DraftTestId testId,
-                                                         GeneralTestAnswerType answersType,
-                                                         ushort orderInTest) =>
-            new() {
-                Id = new(),
-                Text = $"General Test Question #{orderInTest + 1}",
-                ImagePath = null,
-                ShuffleAnswers = false,
-                AnswersType = answersType,
-                OrderInTest = orderInTest,
-                MinAnswersCount = 1,
-                MaxAnswersCount = 1,
-                TestId = testId,
-                Answers = []
-            };
+        public static DraftGeneralTestQuestion CreateNew(
+            DraftTestId testId,
+            GeneralTestAnswerType answersType,
+            ushort orderInTest
+        ) => new() {
+            Id = new(),
+            Text = $"General Test Question #{orderInTest + 1}",
+            ImagePath = null,
+            ShuffleAnswers = false,
+            AnswersType = answersType,
+            OrderInTest = orderInTest,
+            MinAnswersCount = 1,
+            MaxAnswersCount = 1,
+            TestId = testId,
+            Answers = []
+        };
         public bool IsSingleChoice => MinAnswersCount == 1 && MaxAnswersCount == 1;
         public void UpdateOrderInTest(ushort orderInTest) => OrderInTest = orderInTest;
         public void UpdateAsMultipleChoice(BaseGeneralTestQuestionUpdateRequest data) {

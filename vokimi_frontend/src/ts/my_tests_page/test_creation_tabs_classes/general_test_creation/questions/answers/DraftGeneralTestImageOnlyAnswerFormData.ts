@@ -18,7 +18,4 @@ export class DraftGeneralTestImageOnlyAnswerFormData implements IDraftGeneralTes
         this.relatedResults = relatedResults;
         this.orderInQuestion = orderInQuestion
     }
-    static empty(): DraftGeneralTestImageOnlyAnswerFormData {
-        return new DraftGeneralTestImageOnlyAnswerFormData("", {}, 0);
-    }
 }

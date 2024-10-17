@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { TestCreationStylesTabData } from "../../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
+    import { TestCreationStylesTabData } from "../../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import AccentColorPicker from "./editing_dialog_components/AccentColorPicker.svelte";
     import ArrowsTypePicker from "./editing_dialog_components/ArrowsTypePicker.svelte";
@@ -19,7 +19,6 @@
 
     async function saveData() {
         const url = "/api/testStyles/updateDraftTestStyles/" + testId;
-        console.log(url);
         const response = await fetch(url, {
             method: "POST",
             headers: {

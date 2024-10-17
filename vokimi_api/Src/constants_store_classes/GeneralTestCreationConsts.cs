@@ -3,7 +3,6 @@
     public static class GeneralTestCreationConsts
     {
         public const int
-            MaxResultsForTestCount = 30,
             ResultMinTextLength = 8,
             ResultMaxTextLength = 500,
             ResultNameMinLength = 8,
@@ -17,6 +16,8 @@
             AnswerTextMinLength = 6,
             AnswerTextMaxLength = 255;
 
-        public const int MaxResultsCountForAnswer = 5;
+        public const ushort MaxRelatedResultsForAnswerCount = 5;
+
+        public const ushort MaxAnswersForQuestionCount = 30;
     }
 }

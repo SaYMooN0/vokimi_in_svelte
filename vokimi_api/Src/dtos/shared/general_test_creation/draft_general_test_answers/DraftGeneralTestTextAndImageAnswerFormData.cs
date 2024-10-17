@@ -12,7 +12,7 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
             string text,
             string image,
             Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName,
-            ushort orderInQuestion
+            int orderInQuestion
         ) {
             Text = text;
             Image = image;

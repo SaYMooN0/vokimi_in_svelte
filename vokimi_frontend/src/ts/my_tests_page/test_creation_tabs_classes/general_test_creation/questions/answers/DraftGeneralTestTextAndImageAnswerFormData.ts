@@ -27,7 +27,4 @@ export class DraftGeneralTestTextAndImageAnswerFormData implements IDraftGeneral
         this.relatedResults = relatedResults;
         this.orderInQuestion = orderInQuestion;
     }
-    static empty(): DraftGeneralTestTextAndImageAnswerFormData {
-        return new DraftGeneralTestTextAndImageAnswerFormData("", "", {}, 0);
-    }
 }

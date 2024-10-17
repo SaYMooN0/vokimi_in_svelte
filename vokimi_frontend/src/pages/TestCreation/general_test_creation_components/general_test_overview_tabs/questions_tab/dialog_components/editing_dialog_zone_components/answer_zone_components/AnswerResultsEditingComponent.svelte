@@ -1,4 +1,5 @@
 <script lang="ts">
+    export let maxRelatedResultsForAnswerCount: number;
     export let relatedResults: { [key: string]: string };
     export let openResultAssigningDialog: (chosenResults: {
         [key: string]: string;
@@ -32,7 +33,7 @@
             </svg>
         </div>
     {/each}
-    {#if Object.keys(relatedResults).length < 5}
+    {#if Object.keys(relatedResults).length < maxRelatedResultsForAnswerCount}
         <div
             class="add-new-result-btn"
             on:click={() => openResultAssigningDialog(relatedResults)}

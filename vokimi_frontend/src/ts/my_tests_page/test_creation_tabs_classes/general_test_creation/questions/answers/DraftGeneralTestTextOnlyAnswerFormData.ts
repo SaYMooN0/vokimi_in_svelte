@@ -16,7 +16,4 @@ export class DraftGeneralTestTextOnlyAnswerFormData implements IDraftGeneralTest
         this.relatedResults = relatedResults;
         this.orderInQuestion = orderInQuestion
     }
-    static empty(): DraftGeneralTestTextOnlyAnswerFormData {
-        return new DraftGeneralTestTextOnlyAnswerFormData("", {}, 0);
-    }
 }

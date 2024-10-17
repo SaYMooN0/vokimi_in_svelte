@@ -141,7 +141,7 @@ namespace vokimi_api.Endpoints
                 }
                 AppUserId? creatorId = db.DraftTestsSharedInfo
                     .FirstOrDefault(t => t.Id == testId)?.CreatorId ?? null;
-                if (httpContext.IfAuthenticatedUserIdEquals(creatorId)) {
+                if (!httpContext.IfAuthenticatedUserIdEquals(creatorId)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
             }

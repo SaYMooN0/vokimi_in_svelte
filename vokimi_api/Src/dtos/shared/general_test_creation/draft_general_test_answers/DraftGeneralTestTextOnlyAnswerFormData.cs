@@ -11,7 +11,7 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
         public DraftGeneralTestTextOnlyAnswerFormData(
             string text,
             Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName,
-            ushort orderInQuestion
+            int orderInQuestion
         ) {
             Text = text;
             RelatedResultsIdName = relatedResultsIdName;

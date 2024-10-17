@@ -8,7 +8,7 @@ namespace vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_an
         public DraftGeneralTestImageOnlyAnswerFormData(
             string image,
             Dictionary<DraftGeneralTestResultId, string> relatedResultsIdName,
-            ushort orderInQuestion
+            int orderInQuestion
         ) {
             Image = image;
             RelatedResultsIdName = relatedResultsIdName;

@@ -11,6 +11,8 @@ export class DraftGeneralTestQuestionEditingData {
     minAnswersCount: number;
     maxAnswersCount: number;
     answers: IDraftGeneralTestAnswerFormData[];
+    maxAnswersForQuestionCount: number;
+    maxRelatedResultsForAnswerCount: number;
 
     constructor(
         id: string,
@@ -20,7 +22,9 @@ export class DraftGeneralTestQuestionEditingData {
         answersType: GeneralTestAnswerType,
         minAnswersCount: number,
         maxAnswersCount: number,
-        answers: IDraftGeneralTestAnswerFormData[]
+        answers: IDraftGeneralTestAnswerFormData[],
+        maxAnswersForQuestionCount: number,
+        maxRelatedResultsForAnswerCount: number
     ) {
         this.id = id;
         this.text = text;
@@ -31,5 +35,7 @@ export class DraftGeneralTestQuestionEditingData {
         this.minAnswersCount = minAnswersCount;
         this.maxAnswersCount = maxAnswersCount;
         this.answers = answers;
+        this.maxAnswersForQuestionCount = maxAnswersForQuestionCount;
+        this.maxRelatedResultsForAnswerCount = maxRelatedResultsForAnswerCount;
     }
 }

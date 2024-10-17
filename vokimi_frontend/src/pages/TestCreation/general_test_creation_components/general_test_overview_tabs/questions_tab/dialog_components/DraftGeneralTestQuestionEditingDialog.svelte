@@ -47,6 +47,8 @@
                 data.minAnswersCount,
                 data.maxAnswersCount,
                 data.answers,
+                data.maxAnswersForQuestionCount,
+                data.maxRelatedResultsForAnswerCount,
             );
         } else if (response.status === 400) {
             const data = await response.json();
@@ -87,6 +89,12 @@
     function checkFormDataForError(): Err {
         if (StringUtils.isNullOrWhiteSpace(questionData.text)) {
             return new Err("Question text cannot be empty");
+        }
+        if (questionData.answers.length > questionData.maxAnswersForQuestionCount) {
+            return new Err(
+                `Maximum answers count cannot be more than ${questionData.maxAnswersForQuestionCount}. 
+                Current answers count is ${questionData.answers.length}`,
+            );
         }
         if (questionData.isMultiple) {
             if (questionData.maxAnswersCount < questionData.minAnswersCount) {
@@ -143,6 +151,8 @@
                 bind:maxAnswersCount={questionData.maxAnswersCount}
             />
             <DraftGeneralTestQuestionEditingAnswersZone
+                maxAnswersForQuestionCount={questionData.maxAnswersForQuestionCount}
+                maxRelatedResultsForAnswerCount={questionData.maxRelatedResultsForAnswerCount}
                 {testId}
                 {questionId}
                 answersType={questionData.answersType}

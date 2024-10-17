@@ -1,6 +1,6 @@
 <script lang="ts">
     export let accentColor: string;
-    let isCustomChosen = false;
+
     const defaultColors = [
         "#796cfa",
         "#ff6c1f",
@@ -8,12 +8,20 @@
         "#6d88f4",
         "#f05593",
     ];
-    let lastCustom = isCustomChosen ? accentColor : "#bbbbbb";
+    let isCustomChosen: boolean = !defaultColors.includes(accentColor);
     function chooseColor(newColor: string) {
         accentColor = newColor;
     }
-    $: isCustomChosen = !defaultColors.includes(accentColor);
-    $: accentColor = lastCustom;
+    $: {
+        isCustomChosen = !defaultColors.includes(accentColor);
+    }
+    let lastCustom = !defaultColors.includes(accentColor)
+        ? accentColor
+        : "#7197b7";
+
+    if (isCustomChosen) {
+        lastCustom = accentColor;
+    }
 </script>
 
 <div class="color-picker">
@@ -41,7 +49,12 @@
             }}
         >
             <div>
-                <input id="customColor" type="color" bind:value={lastCustom} />
+                <input
+                    id="customColor"
+                    type="color"
+                    on:change={() => (accentColor = lastCustom)}
+                    bind:value={lastCustom}
+                />
                 <label for="customColor">My Color</label>
             </div>
             <p class="color-label">{lastCustom}</p>

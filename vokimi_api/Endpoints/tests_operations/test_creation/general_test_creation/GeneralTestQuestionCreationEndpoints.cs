@@ -73,8 +73,8 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
             }
         }
         public static IResult GetDraftGeneralTestQuestionDataToEdit(
-          IDbContextFactory<AppDbContext> dbFactory,
-          string questionId
+            IDbContextFactory<AppDbContext> dbFactory,
+            string questionId
         ) {
             if (string.IsNullOrEmpty(questionId)) { return Results.BadRequest(); }
 
@@ -90,7 +90,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
                         .Include(q => q.Answers)
                             .ThenInclude(a => a.RelatedResults)
                         .Include(q => q.Answers)
-                            .ThenInclude(a => a.AdditionalInfo)
+                            .ThenInclude(a => a.TypeSpecificInfo)
                         .FirstOrDefault(q => q.Id == draftTestQuestionId);
                     if (question is null) {
                         return Results.BadRequest("Question not found");
@@ -125,13 +125,13 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
                     try {
                         DraftGeneralTestQuestion? question = db.DraftGeneralTestQuestions
                                         .Include(q => q.Answers)
-                                        .ThenInclude(a => a.AdditionalInfo)
+                                        .ThenInclude(a => a.TypeSpecificInfo)
                                         .FirstOrDefault(q => q.Id == questionToDeleteId);
                         if (question is null) {
                             return ResultsHelper.BadRequestWithErr("Unknown questions");
                         }
                         foreach (var answer in question.Answers) {
-                            db.AnswerTypeSpecificInfo.Remove(answer.AdditionalInfo);
+                            db.AnswerTypeSpecificInfo.Remove(answer.TypeSpecificInfo);
                             db.DraftGeneralTestAnswers.Remove(answer);
                         }
                         db.DraftGeneralTestQuestions.Remove(question);
@@ -301,7 +301,10 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
             VokimiStorageService storageService
         ) {
             using var db = dbFactory.CreateDbContext();
-            DraftGeneralTestQuestion? question = await db.DraftGeneralTestQuestions.FindAsync(questionToUpdateId);
+            DraftGeneralTestQuestion? question = await db.DraftGeneralTestQuestions
+                .Include(q => q.Answers)
+                    .ThenInclude(a => a.TypeSpecificInfo)
+                .FirstOrDefaultAsync(q => q.Id == questionToUpdateId);
             if (question is null) {
                 return ResultsHelper.BadRequestWithErr("Unknown question");
             }
@@ -314,8 +317,10 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
                     question.UpdateAsSingleChoice(updateData);
                 }
 
-                question.Answers.Clear();
-                throw new NotImplementedException("Answer clearing is not done");
+                foreach (var a in question.Answers) {
+                    db.AnswerTypeSpecificInfo.Remove(a.TypeSpecificInfo);
+                    db.DraftGeneralTestAnswers.Remove(a);
+                }
 
                 var usedAnswerImgs = CreateAnswersForQuestionUpdate(
                     updateData.GetAnswers,
@@ -361,7 +366,11 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
             DraftTestId testId
         ) {
             List<string> imagesForAnswers = [];
-            foreach (var answer in answers) {
+            ushort currentAnswerOrder = 0;
+            foreach (var answer in answers
+                .OrderBy(a => a.OrderInQuestion == -1 ? int.MaxValue : a.OrderInQuestion)
+            //for answers with 0 order to go to the end 
+            ) {
                 GeneralTestAnswerTypeSpecificInfo specificInfo = CreateAnswerTypeSpecificInfo(answer);
                 if (specificInfo is IAnswerTypeSpecificInfoWithImage specificInfoWithImage) {
                     imagesForAnswers.Add(specificInfoWithImage.ImagePath);
@@ -370,9 +379,11 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
                 db.AnswerTypeSpecificInfo.Add(specificInfo);
                 var dbAnswer = DraftGeneralTestAnswer.CreateNew(
                     questionId,
-                    answer.OrderInQuestion,
+                    currentAnswerOrder,
                     specificInfo.Id
                 );
+                currentAnswerOrder++;
+
                 foreach (var relatedResult in answer.RelatedResultsIdName) {
                     DraftGeneralTestResult? resToMarkAsRelated = db.DraftGeneralTestResults.Find(relatedResult.Key);
                     if (resToMarkAsRelated is null) {
@@ -388,11 +399,11 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
         private static GeneralTestAnswerTypeSpecificInfo CreateAnswerTypeSpecificInfo(BaseDraftGeneralTestAnswerFormData answer) =>
             answer switch {
                 DraftGeneralTestTextOnlyAnswerFormData textOnly =>
-                    TextOnlyAnswerAdditionalInfo.CreateNew(textOnly.Text),
+                    TextOnlyAnswerTypeSpecificInfo.CreateNew(textOnly.Text),
                 DraftGeneralTestImageOnlyAnswerFormData imageOnly =>
-                    ImageOnlyAnswerAdditionalInfo.CreateNew(imageOnly.Image),
+                    ImageOnlyAnswerTypeSpecificInfo.CreateNew(imageOnly.Image),
                 DraftGeneralTestTextAndImageAnswerFormData textAndImage =>
-                    TextAndImageAnswerAdditionalInfo.CreateNew(textAndImage.Text, textAndImage.Image),
+                    TextAndImageAnswerTypeSpecificInfo.CreateNew(textAndImage.Text, textAndImage.Image),
                 _ => throw new ArgumentException("Unknown type of answer form data")
             };
     }

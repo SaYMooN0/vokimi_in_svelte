@@ -1,7 +1,7 @@
 <script lang="ts">
     import { TestStylesArrowTypeUtils } from "../../../../ts/enums/TestStylesArrowType";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
-    import  { TestCreationStylesTabData } from "../../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
+    import { TestCreationStylesTabData } from "../../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
     import TabHeaderWithButton from "../../creation_shared_components/TabHeaderWithButton.svelte";
     import TabViewDataLoader from "../../creation_shared_components/TabViewDataLoader.svelte";
     import DraftTestStylesEditingDialog from "./DraftTestStylesEditingDialog.svelte";
@@ -48,7 +48,8 @@
             <span
                 style="background-color:{stylesData.accentColor}"
                 class="accent-color"
-            ></span>
+            >
+            </span>
             <span class="property-value">{stylesData.accentColor}</span>
         </div>
         <div class="prop-name-val-p">

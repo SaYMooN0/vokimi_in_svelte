@@ -10,20 +10,37 @@
     import GeneralTestTextOnlyAnswerEditing from "./answer_zone_components/GeneralTestTextOnlyAnswerEditing.svelte";
     import ResultAddingDialog from "./answer_zone_components/result_adding_dialog/ResultAddingDialog.svelte";
 
+    export let maxRelatedResultsForAnswerCount: number;
+    export let maxAnswersForQuestionCount: number;
     export let answers: IDraftGeneralTestAnswerFormData[];
     export let answersType: GeneralTestAnswerType;
     export let questionId: string;
     export let testId: string;
 
     function createAnswer() {
+        const newAnswerOrder = answers.length;
         const newAnswer: IDraftGeneralTestAnswerFormData = (() => {
             switch (answersType) {
                 case GeneralTestAnswerType.TextOnly:
-                    return DraftGeneralTestTextOnlyAnswerFormData.empty();
+                    return new DraftGeneralTestTextOnlyAnswerFormData(
+                        "",
+                        {},
+                        newAnswerOrder,
+                    );
                 case GeneralTestAnswerType.TextAndImage:
-                    return DraftGeneralTestTextAndImageAnswerFormData.empty();
+                    return new DraftGeneralTestTextAndImageAnswerFormData(
+                        "",
+                        "",
+                        {},
+                        newAnswerOrder,
+                    );
                 case GeneralTestAnswerType.ImageOnly:
-                    return DraftGeneralTestImageOnlyAnswerFormData.empty();
+                    return new DraftGeneralTestImageOnlyAnswerFormData(
+                        "",
+                        {},
+                        newAnswerOrder,
+                    );
+
                 default:
                     throw new Error("Unknown answer type");
             }
@@ -66,10 +83,14 @@
     console.log(answers);
 </script>
 
-<ResultAddingDialog bind:this={resultsDialog} {testId} />
+<ResultAddingDialog
+    bind:this={resultsDialog}
+    {maxRelatedResultsForAnswerCount}
+    {testId}
+/>
 <div class="answers-zone">
     <p class="answers-title">
-        Answers ({answers.length})
+        Answers ({answers.length} / {maxAnswersForQuestionCount})
         {#if answers.length > 0}
             <label
                 class="answers-visibility-toggle"
@@ -84,6 +105,7 @@
             <div class="answer-element">
                 <label class="answer-number">#{index + 1}</label>
                 <AnswerResultsEditingComponent
+                    {maxRelatedResultsForAnswerCount}
                     openResultAssigningDialog={(chosenResults) =>
                         resultsDialog.open(chosenResults, (chosenResults) =>
                             addRelatedResultsToAnswer(answer, chosenResults),
