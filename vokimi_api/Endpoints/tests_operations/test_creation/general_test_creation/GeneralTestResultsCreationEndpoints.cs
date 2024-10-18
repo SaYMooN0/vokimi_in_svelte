@@ -42,6 +42,17 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
             DraftTestId testId = new(new(request.TestId));
             try {
                 using (var db = dbFactory.CreateDbContext()) {
+                    DraftGeneralTest? test = db.DraftGeneralTests
+                        .Include(t => t.PossibleResults)
+                        .FirstOrDefault(t => t.Id == testId);
+                    if (test is null) {
+                        return ResultsHelper.BadRequestUnknownTest();
+                    }
+                    if (test.PossibleResults.Count >= GeneralTestCreationConsts.MaxResultsForTestCount) {
+                        return ResultsHelper.BadRequestWithErr(
+                            $"Test cannot have more than {GeneralTestCreationConsts.MaxResultsForTestCount} results"
+                        );
+                    }
                     DraftGeneralTestResult result = DraftGeneralTestResult.CreateNew(testId, request.ResultName);
                     db.DraftGeneralTestResults.Add(result);
                     db.SaveChanges();

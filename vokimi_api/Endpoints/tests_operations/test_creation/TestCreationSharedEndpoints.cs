@@ -16,6 +16,7 @@ using vokimi_api.Src.dtos.requests.test_creation.templates_shared;
 using vokimi_api.Src.dtos.responses;
 using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
 using vokimi_api.Src.dtos.shared;
+using vokimi_api.Src.dtos.shared.general_test_creation;
 using vokimi_api.Src.dtos.shared.test_creation_shared;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.extension_classes;
@@ -24,9 +25,11 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
 {
     public static class TestCreationSharedEndpoints
     {
-        public static async Task<IResult> CreateNewTest(HttpContext httpContext,
-                                                        IDbContextFactory<AppDbContext> dbFactory,
-                                                        TestTemplate template) {
+        public static async Task<IResult> CreateNewTest(
+            HttpContext httpContext,
+            IDbContextFactory<AppDbContext> dbFactory,
+            TestTemplate template
+        ) {
 
             IResult authErrResponse = Results.BadRequest(new { Error = "Please log out and log in again" });
 
@@ -66,7 +69,10 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
             }
         }
 
-        private static async Task<DraftTestId> CreateNewGeneralTest(AppDbContext db, AppUserId creatorId) {
+        private static async Task<DraftTestId> CreateNewGeneralTest(
+            AppDbContext db,
+            AppUserId creatorId
+        ) {
             DraftTestMainInfo mainInfo = DraftTestMainInfo.CreateNewFromName("New Draft General Test");
             TestStylesSheet styles = TestStylesSheet.CreateNew();
             BaseDraftTest test = DraftGeneralTest.CreateNew(creatorId, mainInfo.Id, styles.Id);
