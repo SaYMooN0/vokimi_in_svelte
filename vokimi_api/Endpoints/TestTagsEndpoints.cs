@@ -69,9 +69,7 @@ namespace vokimi_api.Endpoints
 
             foreach (var tag in tags) {
                 if (!TestTagsConsts.TagRegex.IsMatch(tag)) {
-                    return ResultsHelper.BadRequestWithErr(
-                        $"Invalid tag '{tag}'. Tag must contain only Cyrillic, Latin letters, or digits, " +
-                        $"and be no longer than {TestTagsConsts.MaxTagLength} characters.");
+                    return ResultsHelper.BadRequestWithErr(TestTagsConsts.InvalidTagMessage(tag));
                 }
             }
 

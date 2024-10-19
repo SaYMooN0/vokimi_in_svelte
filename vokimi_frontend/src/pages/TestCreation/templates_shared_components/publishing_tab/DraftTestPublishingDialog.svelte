@@ -6,22 +6,24 @@
 
     export let testId: string;
     let dialogElement: BaseDialog;
-    let publishingErrors: { category: string; message: string }[] = [];
+    let publishingProblems: { category: string; message: string }[] = [];
     let errorMessage: string = "";
 
     export async function open() {
         errorMessage = "";
+        await fetchPublishingErrors();
         await dialogElement.open();
     }
     async function fetchPublishingErrors() {
-        if (publishingErrors.length > 0) {
+        if (publishingProblems.length > 0) {
             return;
         }
         const response = await fetch(
-            "/api/testCreation/checkDraftTestForErrors/" + testId,
+            "/api/testCreation/checkDraftTestForPublishingErrors/" + testId,
         );
         if (response.ok) {
-            publishingErrors = await response.json();
+            publishingProblems = await response.json();
+            console.log(publishingProblems);
         } else if (response.status === 400) {
             errorMessage = await getErrorFromResponse(response);
         } else {
@@ -29,10 +31,6 @@
         }
     }
     async function publishTest() {
-        await fetchPublishingErrors();
-        if (publishingErrors.length > 0) {
-            return;
-        }
         const response = await fetch(
             "/api/testCreation/publishTest/" + testId,
             {
@@ -43,7 +41,7 @@
             },
         );
         if (response.ok) {
-            navigate("/my-tests")
+            navigate("/my-tests");
             dialogElement.close();
         } else if (response.status === 400) {
             errorMessage = await getErrorFromResponse(response);
@@ -56,28 +54,31 @@
 <BaseDialog dialogId="publishing-dialog" bind:this={dialogElement}>
     <EditingDialogCloseButton onClose={() => dialogElement.close()} />
     <div class="dialog-content">
-        {#if publishingErrors.length > 0}
+        {#if publishingProblems.length > 0}
             <p class="test-has-errors">
                 Test cannot be published because of the following errors. Please
                 fix them before publishing.
             </p>
             <div class="errors-list">
-                {#each publishingErrors as error}
+                {#each publishingProblems as p}
                     <span class="error-category">
-                        {error.category}
+                        {p.category}
                     </span>
                     <span class="error-message">
-                        {error.message}
+                        {p.message}
                     </span>
                 {/each}
             </div>
         {:else}
-            <p class="test-is-published">Test is ready to be published</p>
+            <div class="no-problems-found">
+                <label>No problems were found in the test.</label>
+                <p class="test-is-published">Test is ready to be published</p>
+            </div>
         {/if}
         <p class="error-message">{errorMessage}</p>
         <button
             class="publish-btn"
-            class:publishBtnDisabled={publishingErrors.length > 0}
+            class:publishBtnDisabled={publishingProblems.length > 0}
             on:click={publishTest}
         >
             Publish
@@ -103,5 +104,16 @@
         opacity: 0.8;
         background-color: var(--text-faded) !important;
         cursor: not-allowed;
+    }
+    .errors-list {
+        max-height: 600px;
+        min-width: 700px;
+        max-width: 1200px;
+        padding: 20px;
+        border-radius: 10px 20px;
+        overflow-y: auto;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-row-gap: 12px;
     }
 </style>

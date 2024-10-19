@@ -6,12 +6,14 @@ using vokimi_api.Src;
 using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
+using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared.general_test_answers;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
 using vokimi_api.Src.dtos.shared.general_test_creation;
 using vokimi_api.Src.enums;
+using vokimi_api.Src.extension_classes;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace vokimi_api.Endpoints.tests_operations
@@ -29,31 +31,57 @@ namespace vokimi_api.Endpoints.tests_operations
             }
             draftTestId = new(testGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
-                if (CheckDraftTestForPublilshingProblems(db, draftTestId).Count == 0) {
+                BaseDraftTest? testToPublish = await db.DraftTestsSharedInfo.FindAsync(draftTestId);
+                if (testToPublish is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown draft test");
+                }
+                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(testToPublish)) {
+                    return ResultsHelper.BadRequestWithErr("Only test creator can publish it");
+                }
+                if (GetTestPublilshingProblems(db, draftTestId, testToPublish.Template).Count == 0) {
                     return ResultsHelper.BadRequestWithErr("Test has some publishing problems. Please fix them");
                 }
+
                 return ResultsHelper.BadRequestWithErr("Not implemented yet");
             }
 
             return Results.Ok();
         }
-
-        private static List<TestPublishingProblem> CheckDraftTestForPublilshingProblems(
-            AppDbContext db,
-            DraftTestId testId
+        public async static Task<IResult> CheckDraftTestForPublishingProblems(
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext,
+            string testId
         ) {
-            BaseDraftTest? t = db.DraftTestsSharedInfo.Find(testId);
-            if (t is null) {
-                return [new("Test error", "Test not found")];
+            DraftTestId draftTestId;
+            if (!Guid.TryParse(testId, out Guid testGuid)) {
+                return ResultsHelper.BadRequestWithErr("Unable to check test for problems. Please refresh the page and try again");
             }
-            return (t.Template) switch {
-                TestTemplate.General => CheckDraftGeneralTestForPublilshingProblems(db, testId),
-                _ => throw new ArgumentException("Unknown test template")
-            };
+            draftTestId = new(testGuid);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseDraftTest? testToPublish = await db.DraftTestsSharedInfo.FindAsync(draftTestId);
+                if (testToPublish is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown draft test");
+                }
+                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(testToPublish)) {
+                    return ResultsHelper.BadRequestWithErr("Only test creator can view this information");
+                }
 
+                var problems = GetTestPublilshingProblems(db, draftTestId, testToPublish.Template).ToArray();
+                return Results.Ok(problems);
+            }
 
         }
-        private static List<TestPublishingProblem> CheckDraftGeneralTestForPublilshingProblems(
+        private static List<TestPublishingProblem> GetTestPublilshingProblems(
+            AppDbContext db,
+            DraftTestId testId,
+            TestTemplate template
+        ) => template switch {
+            TestTemplate.General => GetGeneralTestPublilshingProblems(db, testId),
+            _ => throw new ArgumentException("Unknown test template")
+        };
+
+
+        private static List<TestPublishingProblem> GetGeneralTestPublilshingProblems(
             AppDbContext db,
             DraftTestId testId
         ) {
@@ -62,10 +90,12 @@ namespace vokimi_api.Endpoints.tests_operations
                 .Include(t => t.Conclusion)
                 .Include(t => t.Questions)
                     .ThenInclude(q => q.Answers)
-                    .ThenInclude(a => a.TypeSpecificInfo)
+                        .ThenInclude(a => a.TypeSpecificInfo)
+                .Include(t => t.Questions)
+                    .ThenInclude(q => q.Answers)
+                        .ThenInclude(a => a.RelatedResults)
                 .Include(t => t.PossibleResults)
                 .FirstOrDefault(t => t.Id == testId);
-            //check if answ leading to res are fetched
             if (test is null) {
                 return [TestPublishingProblem.TestNotFound()];
             }
@@ -73,8 +103,9 @@ namespace vokimi_api.Endpoints.tests_operations
             if (test.Conclusion is not null) {
                 problems.AddRange(CheckTestConcluisonForProblems(test.Conclusion));
             }
+            problems.AddRange(CheckTestTagsForProblems(test.Tags));
             problems.AddRange(CheckGeneralTestResultsForProblems(test.PossibleResults));
-            problems.AddRange(CheckGeneralTestQuestionsForProblems(test.Questions));
+            problems.AddRange(CheckGeneralTestQuestionsForProblems(test.Questions.ToList()));
             return problems;
 
         }
@@ -126,6 +157,19 @@ namespace vokimi_api.Endpoints.tests_operations
             }
             return problems.Select(TestPublishingProblem.ForConclusionCategory).ToList();
         }
+        private static List<TestPublishingProblem> CheckTestTagsForProblems(string[] tags) {
+            List<string> problems = [];
+            if (tags.Length > TestTagsConsts.MaxTagsForTestCount) {
+                problems.Add($"Tags count must not exceed {TestTagsConsts.MaxTagsForTestCount}");
+            }
+
+            foreach (var tag in tags) {
+                if (!TestTagsConsts.TagRegex.IsMatch(tag)) {
+                    problems.Add(TestTagsConsts.InvalidTagMessage(tag));
+                }
+            }
+            return problems.Select(TestPublishingProblem.ForTagsCategory).ToList();
+        }
         private static List<TestPublishingProblem> CheckGeneralTestResultsForProblems(ICollection<DraftGeneralTestResult> results) {
             List<string> problems = [];
             if (results.Count < 2) {
@@ -150,10 +194,93 @@ namespace vokimi_api.Endpoints.tests_operations
             }
             return problems.Select(TestPublishingProblem.ForResultsCategory).ToList();
         }
-        private static List<TestPublishingProblem> CheckGeneralTestQuestionsForProblems(ICollection<DraftGeneralTestQuestion> questions) {
-            return [];
+        private static List<TestPublishingProblem> CheckGeneralTestQuestionsForProblems(
+            List<DraftGeneralTestQuestion> questions
+        ) {
+            List<string> problems = [];
+            for (int i = 0; i < questions.Count; i++) {
+                DraftGeneralTestQuestion q = questions[i];
+                Func<string, string> withErrPrefix = (string err) => $"Question #{i + 1}: {err}";
+                int textLen = string.IsNullOrWhiteSpace(q.Text) ? 0 : q.Text.Length;
+
+                if (textLen < GeneralTestCreationConsts.QuestionTextMinLength
+                    || textLen > GeneralTestCreationConsts.QuestionTextMaxLength
+                ) {
+                    problems.Add(withErrPrefix(
+                        $"Text of the question is {textLen} characters long. " +
+                        $"The length must be from {GeneralTestCreationConsts.QuestionTextMinLength} " +
+                        $"to {GeneralTestCreationConsts.QuestionTextMaxLength} characters")
+                    );
+                }
+
+                if (!q.IsSingleChoice) {
+                    problems.Add(withErrPrefix("question is multiple choice but don't have needed multiple choice data"));
+                    if (q.MaxAnswersCount > q.Answers.Count) {
+                        problems.Add(withErrPrefix("maximum answers count cannot be less than total answers count"));
+                    }
+                    if (q.MinAnswersCount > q.Answers.Count) {
+                        problems.Add(withErrPrefix("minimum answers count cannot be more than total answers count"));
+                    }
+                    if (q.MinAnswersCount < 1) {
+                        problems.Add(withErrPrefix("minimum answers count cannot be less than 1"));
+                    }
+                    if (q.MinAnswersCount > q.MaxAnswersCount) {
+                        problems.Add(withErrPrefix("minimum answers count cannot be more than maximum answers count"));
+                    }
+                }
+
+                problems.AddRange(
+                  CheckQuestionAnswersForProblems(q.Answers)
+                  .Select(e => withErrPrefix(e))
+              );
+            }
+            return problems.Select(TestPublishingProblem.ForQuestionsCategory).ToList();
+        }
+        private static IEnumerable<string> CheckQuestionAnswersForProblems(
+            ICollection<DraftGeneralTestAnswer> answers
+        ) {
+            List<string> problems = [];
+
+            foreach (var answer in answers) {
+                string? answerProblem = answer.TypeSpecificInfo switch {
+                    TextOnlyAnswerTypeSpecificInfo textOnlyInfo => CheckTextOnlyAnswerForProblems(textOnlyInfo),
+                    ImageOnlyAnswerTypeSpecificInfo imageOnlyInfo => CheckImageOnlyAnswerForProblems(imageOnlyInfo),
+                    TextAndImageAnswerTypeSpecificInfo textAndImageInfo => CheckTextAndImageAnswerForProblems(textAndImageInfo),
+                    _ => throw new ArgumentException("Unknown answer type")
+                };
+                if (!string.IsNullOrEmpty(answerProblem)) {
+                    yield return answerProblem;
+                }
+            }
         }
 
+        private static string? CheckTextOnlyAnswerForProblems(TextOnlyAnswerTypeSpecificInfo info) {
+            int textLen = string.IsNullOrWhiteSpace(info.Text) ? 0 : info.Text.Length;
+            if (textLen < GeneralTestCreationConsts.AnswerTextMinLength
+                || textLen > GeneralTestCreationConsts.AnswerTextMaxLength
+            ) {
+                return $"Text of the answer is {textLen} characters long. " +
+                    $"The length must be from {GeneralTestCreationConsts.AnswerTextMinLength} " +
+                    $"to {GeneralTestCreationConsts.AnswerTextMaxLength} characters";
+            }
+            return null;
+        }
+        private static string? CheckImageOnlyAnswerForProblems(ImageOnlyAnswerTypeSpecificInfo info) =>
+        string.IsNullOrWhiteSpace(info.ImagePath) ? "Answer must contain image" : null;
+        private static string? CheckTextAndImageAnswerForProblems(TextAndImageAnswerTypeSpecificInfo info) {
+            int textLen = string.IsNullOrWhiteSpace(info.Text) ? 0 : info.Text.Length;
+            if (textLen < GeneralTestCreationConsts.AnswerTextMinLength
+                || textLen > GeneralTestCreationConsts.AnswerTextMaxLength
+            ) {
+                return $"Text of the answer is {textLen} characters long. " +
+                    $"The length must be from {GeneralTestCreationConsts.AnswerTextMinLength} " +
+                    $"to {GeneralTestCreationConsts.AnswerTextMaxLength} characters";
+            }
+            if (string.IsNullOrWhiteSpace(info.ImagePath)) {
+                return "Answer must contain image";
+            }
+            return null;
+        }
 
     }
 }

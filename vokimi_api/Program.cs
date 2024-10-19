@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using vokimi_api.Src.db_related;
 using vokimi_api.Services;
 using vokimi_api.EndpointsMappers;
+using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
 
 namespace vokimi_api
 {
@@ -70,11 +71,12 @@ namespace vokimi_api
             ImgOperationsEndpointsMapper.MapAll(app);
             TestTagsEndpointsMapper.MapAll(app);
             UserEndpointsMapper.MapAll(app);
+            DraftTestPublishingEndpointsMapper.MapAll(app);
         }
 
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
 
- 
+
 
             ConfigureDbContextFactory(services, configuration);
             ConfigureS3(services, configuration);
