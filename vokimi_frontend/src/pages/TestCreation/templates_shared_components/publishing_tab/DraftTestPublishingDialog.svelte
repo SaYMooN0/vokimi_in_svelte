@@ -31,6 +31,9 @@
         }
     }
     async function publishTest() {
+        if (publishingProblems.length > 0) {
+            return;
+        }
         const response = await fetch(
             "/api/testCreation/publishTest/" + testId,
             {
@@ -55,29 +58,30 @@
     <EditingDialogCloseButton onClose={() => dialogElement.close()} />
     <div class="dialog-content">
         {#if publishingProblems.length > 0}
-            <p class="test-has-errors">
-                Test cannot be published because of the following errors. Please
-                fix them before publishing.
+            <p class="test-has-problems">
+                Test cannot be published because of the following problems
             </p>
+            <span class="fix-problems">Please fix them before publishing</span>
             <div class="errors-list">
+                <span class="problem-list-col-label">Category</span>
+                <span class="problem-list-col-label">Problem message</span>
                 {#each publishingProblems as p}
-                    <span class="error-category">
+                    <span class="problem-category">
                         {p.category}
                     </span>
-                    <span class="error-message">
+                    <span class="problem-message">
                         {p.message}
                     </span>
                 {/each}
             </div>
         {:else}
-            <div class="no-problems-found">
-                <label>No problems were found in the test.</label>
-                <p class="test-is-published">Test is ready to be published</p>
-            </div>
+            <p class="no-problems-found">No problems were found in the test</p>
+            <p class="test-is-ready">Test is ready to be published</p>
         {/if}
         <p class="error-message">{errorMessage}</p>
         <button
             class="publish-btn"
+            disabled={publishingProblems.length > 0}
             class:publishBtnDisabled={publishingProblems.length > 0}
             on:click={publishTest}
         >
@@ -87,33 +91,81 @@
 </BaseDialog>
 
 <style>
+    .dialog-content {
+        padding: 8px 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .test-has-problems {
+        font-size: 22px;
+        color: var(--text);
+        margin: 8px 12px;
+        margin-top: 22px;
+    }
+    .fix-problems {
+        font-size: 20px;
+        color: var(--text-faded);
+    }
+    .errors-list {
+        max-height: 600px;
+        max-width: min(80vw, 1200px);
+        padding: 8px 0px;
+        margin: 8px 0;
+        overflow-y: auto;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-row-gap: 12px;
+        grid-column-gap: 20px;
+    }
+    .problem-list-col-label {
+        font-size: 22px;
+        color: var(--text);
+        font-weight: 600;
+    }
+    .problem-category {
+        font-size: 18px;
+        color: var(--text);
+    }
+    .problem-message {
+        font-size: 18px;
+        color: var(--text);
+    }
+    .no-problems-found {
+        font-size: 22px;
+        color: var(--text-faded);
+        margin: 0;
+        margin-top: 12px;
+    }
+    .test-is-ready {
+        margin-top: 12px;
+        margin-bottom: 48px;
+        font-size: 32px;
+        color: var(--text);
+        font-weight: 600;
+    }
+    .error-message {
+        font-size: 18px;
+        color: var(--text-faded);
+        margin: 8px 12px;
+    }
     .publish-btn {
+        margin: 0 auto;
         background-color: var(--primary);
         color: var(--back-main);
         border: none;
         border-radius: 4px;
-        padding: 8px 20px;
-        font-size: 20px;
+        padding: 8px 24px;
+        font-size: 22px;
         cursor: pointer;
         transition: all 0.12s ease-in;
     }
     .publish-btn:hover {
         background-color: var(--primary-hov);
     }
-    .publishBtnDisabled {
+    .publish-btn:disabled {
         opacity: 0.8;
         background-color: var(--text-faded) !important;
         cursor: not-allowed;
-    }
-    .errors-list {
-        max-height: 600px;
-        min-width: 700px;
-        max-width: 1200px;
-        padding: 20px;
-        border-radius: 10px 20px;
-        overflow-y: auto;
-        display: grid;
-        grid-template-columns: auto 1fr;
-        grid-row-gap: 12px;
     }
 </style>

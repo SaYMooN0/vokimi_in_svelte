@@ -6,7 +6,7 @@ namespace vokimi_api.EndpointsMappers
     {
         public static void MapAll(WebApplication app) {
             app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
-            app.MapPost("/testCreation/updateDraftTestQuestionCover/{testId}", ImgOperationsEndpoints.UpdateDraftTestQuestionCover)
+            app.MapPost("/saveimg/updateDraftTestCover/{testId}", ImgOperationsEndpoints.UpdateDraftTestCover)
                 .DisableAntiforgery();
             app.MapPost("/saveimg/saveDraftGeneralTestAnswerImage/{questionId}", ImgOperationsEndpoints.SaveDraftGeneralTestAnswerImage)
                 .DisableAntiforgery();

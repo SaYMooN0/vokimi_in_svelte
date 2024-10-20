@@ -16,8 +16,8 @@ namespace VokimiShared.src.models.db_classes.test.test_types
         public string? Description { get; init; }
         public Language Language { get; init; }
         public PrivacyValues Privacy { get; init; }
-        public DateTime CreationDate { get; init; }
-        public DateTime PublicationDate { get; init; }
+        public DateOnly CreationDate { get; init; }
+        public DateOnly PublicationDate { get; init; }
 
         public TestConclusionId? ConclusionId { get; init; }
         public virtual TestConclusion? Conclusion { get; protected set; }

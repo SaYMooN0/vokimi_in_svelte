@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Tls;
-using System.Collections.Generic;
 using vokimi_api.Helpers;
+using vokimi_api.Services;
 using vokimi_api.Src;
 using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related;
@@ -9,44 +8,18 @@ using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared.general_test_answers;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
+using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
+using vokimi_api.Src.db_related.db_entities.tests_related;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
-using vokimi_api.Src.dtos.shared.general_test_creation;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.extension_classes;
-using static System.Net.Mime.MediaTypeNames;
+using vokimi_api.Src.test_publishing_data;
 
 namespace vokimi_api.Endpoints.tests_operations
 {
     public static class DraftTestPublishingEndpoints
     {
-        public static async Task<IResult> PublishDraftTest(
-            IDbContextFactory<AppDbContext> dbFactory,
-            HttpContext httpContext,
-            string testId
-        ) {
-            DraftTestId draftTestId;
-            if (!Guid.TryParse(testId, out Guid testGuid)) {
-                return ResultsHelper.BadRequestWithErr("Unable to publish test. Please refresh the page and try again");
-            }
-            draftTestId = new(testGuid);
-            using (var db = await dbFactory.CreateDbContextAsync()) {
-                BaseDraftTest? testToPublish = await db.DraftTestsSharedInfo.FindAsync(draftTestId);
-                if (testToPublish is null) {
-                    return ResultsHelper.BadRequestWithErr("Unknown draft test");
-                }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(testToPublish)) {
-                    return ResultsHelper.BadRequestWithErr("Only test creator can publish it");
-                }
-                if (GetTestPublilshingProblems(db, draftTestId, testToPublish.Template).Count == 0) {
-                    return ResultsHelper.BadRequestWithErr("Test has some publishing problems. Please fix them");
-                }
-
-                return ResultsHelper.BadRequestWithErr("Not implemented yet");
-            }
-
-            return Results.Ok();
-        }
         public async static Task<IResult> CheckDraftTestForPublishingProblems(
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext,
@@ -172,8 +145,8 @@ namespace vokimi_api.Endpoints.tests_operations
         }
         private static List<TestPublishingProblem> CheckGeneralTestResultsForProblems(ICollection<DraftGeneralTestResult> results) {
             List<string> problems = [];
-            if (results.Count < 2) {
-                problems.Add("Test cannot have less than two results");
+            if (results.Count < GeneralTestCreationConsts.MinResultsForTestCount) {
+                problems.Add($"Test cannot have less than {GeneralTestCreationConsts.MinResultsForTestCount} results");
             } else if (results.Count > GeneralTestCreationConsts.MaxResultsForTestCount) {
                 problems.Add($"Test cannot have more than {GeneralTestCreationConsts.MaxResultsForTestCount} results");
             }
@@ -198,7 +171,15 @@ namespace vokimi_api.Endpoints.tests_operations
             List<DraftGeneralTestQuestion> questions
         ) {
             List<string> problems = [];
-            for (int i = 0; i < questions.Count; i++) {
+            int questionsCount = questions.Count;
+            if (questionsCount < GeneralTestCreationConsts.MinQuestionsForTestCount) {
+                problems.Add("General test cannot have " +
+                            $"less than {GeneralTestCreationConsts.MinQuestionsForTestCount} questions in it");
+            } else if (questionsCount > GeneralTestCreationConsts.MaxQuestionsForTestCount) {
+                problems.Add("General test cannot have " +
+                            $"more than {GeneralTestCreationConsts.MaxQuestionsForTestCount} questions in it");
+            }
+            for (int i = 0; i < questionsCount; i++) {
                 DraftGeneralTestQuestion q = questions[i];
                 Func<string, string> withErrPrefix = (string err) => $"Question #{i + 1}: {err}";
                 int textLen = string.IsNullOrWhiteSpace(q.Text) ? 0 : q.Text.Length;
@@ -229,6 +210,17 @@ namespace vokimi_api.Endpoints.tests_operations
                     }
                 }
 
+                if (q.Answers.Count < GeneralTestCreationConsts.MinAnswersForQuestionCount) {
+                    problems.Add(withErrPrefix(
+                        "General test question cannot have " +
+                       $"less than {GeneralTestCreationConsts.MinAnswersForQuestionCount} answers")
+                    );
+                } else if (q.Answers.Count > GeneralTestCreationConsts.MaxAnswersForQuestionCount) {
+                    problems.Add(withErrPrefix(
+                        "General test question cannot have " +
+                       $"more than {GeneralTestCreationConsts.MaxAnswersForQuestionCount} answers")
+                    );
+                }
                 problems.AddRange(
                   CheckQuestionAnswersForProblems(q.Answers)
                   .Select(e => withErrPrefix(e))
@@ -239,8 +231,6 @@ namespace vokimi_api.Endpoints.tests_operations
         private static IEnumerable<string> CheckQuestionAnswersForProblems(
             ICollection<DraftGeneralTestAnswer> answers
         ) {
-            List<string> problems = [];
-
             foreach (var answer in answers) {
                 string? answerProblem = answer.TypeSpecificInfo switch {
                     TextOnlyAnswerTypeSpecificInfo textOnlyInfo => CheckTextOnlyAnswerForProblems(textOnlyInfo),
@@ -281,6 +271,139 @@ namespace vokimi_api.Endpoints.tests_operations
             }
             return null;
         }
+        public static async Task<IResult> PublishDraftTest(
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext,
+            VokimiStorageService storageService,
+            string testId
+        ) {
+            DraftTestId draftTestId;
+            if (!Guid.TryParse(testId, out Guid testGuid)) {
+                return ResultsHelper.BadRequestWithErr("Unable to publish test. Please refresh the page and try again");
+            }
+            draftTestId = new(testGuid);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseDraftTest? testToPublish = await db.DraftTestsSharedInfo.FindAsync(draftTestId);
+                if (testToPublish is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown draft test");
+                }
+                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(testToPublish)) {
+                    return ResultsHelper.BadRequestWithErr("Only test creator can publish it");
+                }
+                var testProblems = GetTestPublilshingProblems(db, draftTestId, testToPublish.Template);
+                if (testProblems.Count > 0) {
+                    return ResultsHelper.BadRequestWithErr("Test has problems that need to be fixed before publishing");
+                }
+                return testToPublish.Template switch {
+                    TestTemplate.General => await PublishGeneralTest(dbFactory, storageService, draftTestId),
+                    _ => throw new ArgumentException("Not implemented template")
+                };
+            }
 
+
+        }
+
+        public static async Task<IResult> PublishGeneralTest(
+            IDbContextFactory<AppDbContext> dbFactory,
+            VokimiStorageService storageService,
+            DraftTestId testId
+        ) {
+            List<string> imgsToDeleteInCaseOfFailure = [];
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                using (var transaction = await db.Database.BeginTransactionAsync()) {
+                    try {
+                        DraftGeneralTest? draftTest = await db.DraftGeneralTests
+                            .Include(t => t.MainInfo)
+                            .Include(t => t.Conclusion)
+                            .Include(t => t.Questions)
+                                .ThenInclude(q => q.Answers)
+                                    .ThenInclude(a => a.TypeSpecificInfo)
+                            .Include(t => t.Questions)
+                                .ThenInclude(q => q.Answers)
+                                    .ThenInclude(a => a.RelatedResults)
+                            .Include(t => t.PossibleResults)
+                            .FirstOrDefaultAsync(t => t.Id == testId);
+                        if (draftTest is null) {
+                            return ResultsHelper.BadRequestWithErr("Cannot find this draft general test");
+                        }
+
+                        TestId newTestId = new();
+                        string newTestCover = ImgOperationsConsts.DefaultTestCoverImg;
+                        if (draftTest.MainInfo.CoverImagePath != ImgOperationsConsts.DefaultTestCoverImg) {
+                            var extension = Path.GetExtension(draftTest.MainInfo.CoverImagePath);
+                            newTestCover = $"{ImgOperationsConsts.PublishedTestCoversFolder}/{newTestId}{extension}";
+                        }
+
+                        GeneralTestPublishingData publishingData = GeneralTestPublishingData
+                            .Create(newTestId, draftTest, newTestCover);
+
+                        if (publishingData.CoverRelocationNeeded) {
+                            Err copyingErr = await
+                                storageService.CopyImageFile(draftTest.MainInfo.CoverImagePath, publishingData.NewTestCoverPath);
+                            if (copyingErr.NotNone()) {
+                                throw new Exception();
+                            } else {
+                                imgsToDeleteInCaseOfFailure.Add(publishingData.NewTestCoverPath);
+                                publishingData.ImgsToDeleteInCaseOfSuccess.Add(draftTest.MainInfo.CoverImagePath);
+                            }
+                        }
+                        await PublishGeneralTestResults(
+                            db, storageService,
+                            draftTest.PossibleResults,
+                            publishingData,
+                            imgsToDeleteInCaseOfFailure
+                        );
+                        await PublishGeneralTestQuestions(
+                            db, storageService,
+                            draftTest.Questions,
+                            publishingData,
+                            imgsToDeleteInCaseOfFailure
+                        );
+
+                        var testToPublish = TestGeneralType.CreateNew(publishingData);
+
+                        db.TestsGeneralType.Add(testToPublish);
+                        await db.SaveChangesAsync();
+
+                        foreach (string tag in publishingData.Tags) {
+                            TestTag tagToAssign = await db.TestTags.FirstOrDefaultAsync(t => t.Value == tag);
+                            if (tagToAssign is null) {
+                                tagToAssign = TestTag.CreateNew(tag);
+                                db.TestTags.Add(tagToAssign);
+                            }
+                            tagToAssign.Tests.Add(testToPublish);
+                        }
+                        await storageService.DeleteFiles(publishingData.ImgsToDeleteInCaseOfSuccess);
+
+
+                        await db.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        return Results.Ok(new { TestId = publishingData.TestId });
+
+                    } catch {
+                        await transaction.RollbackAsync();
+                        await storageService.DeleteFiles(imgsToDeleteInCaseOfFailure);
+                        return ResultsHelper.BadRequestWithErr("Something went wrong during publishing. Please try again later");
+
+                    }
+                }
+            }
+        }
+        public async static Task PublishGeneralTestResults(
+            AppDbContext db,
+            VokimiStorageService storageService,
+            ICollection<DraftGeneralTestResult> results,
+            GeneralTestPublishingData publishingData,
+            List<string> imgsToDeleteInCaseOfFailure
+        ) {
+        }
+        public async static Task PublishGeneralTestQuestions(
+            AppDbContext db,
+            VokimiStorageService storageService,
+            ICollection<DraftGeneralTestQuestion> results,
+            GeneralTestPublishingData publishingData,
+            List<string> imgsToDeleteInCaseOfFailure
+        ) {
+        }
     }
 }

@@ -17,7 +17,7 @@
         formData.append("file", file);
 
         const response = await fetch(
-            `/api/testCreation/updateDraftTestQuestionCover/${draftTestId}`,
+            `/api/saveimg/updateDraftTestCover/${draftTestId}`,
             {
                 method: "POST",
                 body: formData,

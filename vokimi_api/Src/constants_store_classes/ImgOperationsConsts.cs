@@ -8,6 +8,8 @@ namespace vokimi_api.Src.constants_store_classes
             GeneralFolder = "general",
             //users
             ProfilePicturesFolder = "profile_pictures",
+            //published tests
+            PublishedTestCoversFolder = "tests_covers",
             //draft and published tests
             TestConclusionsFolder = "test_conclusions",
             //draft tests

@@ -8,15 +8,22 @@
             ResultNameMinLength = 8,
             ResultNameMaxLength = 60;
 
-        public const ushort MaxRelatedResultsForAnswerCount = 5;
-        public const ushort MaxResultsForTestCount = 30;
+        public const ushort
+            MinResultsForTestCount = 2,
+            MaxResultsForTestCount = 30;
 
-        public const ushort MaxQuestionsForTestCount = 30;
+        public const ushort MaxRelatedResultsForAnswerCount = 5;
+
+        public const ushort
+            MinQuestionsForTestCount = 2,
+            MaxQuestionsForTestCount = 30;
         public const int
             QuestionTextMinLength = 10,
             QuestionTextMaxLength = 255;
 
-        public const ushort MaxAnswersForQuestionCount = 30;
+        public const ushort 
+            MinAnswersForQuestionCount = 2,
+            MaxAnswersForQuestionCount = 30;
 
         public const int
             AnswerTextMinLength = 6,

@@ -14,7 +14,7 @@ namespace vokimi_api.Endpoints
         public static async Task<IResult> GetImgFromStorage(string fileKey, VokimiStorageService storageService) =>
             (await storageService.GetImgFromStorage(fileKey)) ?? Results.Problem("Unable to get image");
 
-        public static async Task<IResult> UpdateDraftTestQuestionCover(
+        public static async Task<IResult> UpdateDraftTestCover(
             string testId,
             IFormFile file,
             IDbContextFactory<AppDbContext> dbFactory,

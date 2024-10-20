@@ -89,5 +89,46 @@ namespace vokimi_api.Services
             }
             return Err.None;
         }
+        public async Task<Err> DeleteFiles(IEnumerable<string> keys) {
+            try {
+                var keysToDelete = keys.Select(key => new KeyVersion { Key = key }).ToList();
+
+                if (keysToDelete.Any()) {
+                    var deleteRequest = new DeleteObjectsRequest {
+                        BucketName = _bucketName,
+                        Objects = keysToDelete
+                    };
+
+                    var deleteResponse = await _s3Client.DeleteObjectsAsync(deleteRequest);
+
+                    if (deleteResponse.HttpStatusCode != System.Net.HttpStatusCode.OK) {
+                        return new Err("Failed to delete some files");
+                    }
+                }
+                return Err.None;
+            } catch {
+                return new Err("Server error. Please try again later");
+            }
+        }
+        public async Task<Err> CopyImageFile(string oldFileKey, string newFileKey) {
+            try {
+                var copyRequest = new CopyObjectRequest {
+                    SourceBucket = _bucketName,
+                    SourceKey = oldFileKey,
+                    DestinationBucket = _bucketName,
+                    DestinationKey = newFileKey
+                };
+
+                CopyObjectResponse copyResponse = await _s3Client.CopyObjectAsync(copyRequest);
+
+                if (copyResponse.HttpStatusCode == System.Net.HttpStatusCode.OK) {
+                    return Err.None;
+                } else {
+                    return fileUploadingErr;
+                }
+            } catch {
+                return serverErr;
+            }
+        }
     }
 }

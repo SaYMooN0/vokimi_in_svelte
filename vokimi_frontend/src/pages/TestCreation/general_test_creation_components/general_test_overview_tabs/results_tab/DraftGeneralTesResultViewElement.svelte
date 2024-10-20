@@ -131,6 +131,7 @@
         color: var(--text);
         font-weight: 400;
         font-size: 20px;
+        word-break: break-all;
     }
     .result-image {
         width: 100%;
