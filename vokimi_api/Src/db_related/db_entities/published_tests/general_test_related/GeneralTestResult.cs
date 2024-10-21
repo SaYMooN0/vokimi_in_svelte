@@ -11,9 +11,14 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_rel
         public string? ImagePath { get; init; }
         public virtual ICollection<GeneralTestAnswer> AnswersLeadingToResult { get; protected set; } = [];
 
-        public static GeneralTestResult CreateNew(TestId testId, string name, string text, string? imagePath) => new()
-        {
-            Id = new(),
+        public static GeneralTestResult CreateNew(
+            GeneralTestResultId id,
+            TestId testId,
+            string name,
+            string text,
+            string? imagePath
+        ) => new() {
+            Id = id,
             Name = name,
             TestId = testId,
             Text = text,

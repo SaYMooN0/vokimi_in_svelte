@@ -1,26 +1,28 @@
-﻿
-namespace vokimi_api.Src.constants_store_classes
+﻿namespace vokimi_api.Src.constants_store_classes
 {
     public class ImgOperationsConsts
     {
-        //folders
         public const string
-            GeneralFolder = "general",
-            //users
-            ProfilePicturesFolder = "profile_pictures",
-            //published tests
-            PublishedTestCoversFolder = "tests_covers",
-            //draft and published tests
-            TestConclusionsFolder = "test_conclusions",
-            //draft tests
-            DraftTestCoversFolder = "draft_tests_covers",
-            // draft general tests
-            DraftGeneralTestQuestionsFolder = "draft_general_tests_questions",
-            DraftGeneralTestAnswersFolder = "draft_general_tests_answers",
-            DraftGeneralTestResultsFolder = "draft_general_tests_results";
+            CommonFolder = "common",
 
-        public static string DefaultTestCoverImg => $"{GeneralFolder}/test_cover_default.webp";
-        public static string DefaultProfilePicture => $"{GeneralFolder}/default_profile_picture.webp";
+            ProfilePicturesFolder = "profile_pictures",
+
+            TestConclusionsFolder = "test_conclusions";
+        //tests folders
+        public const string
+            PublishedTestsFolderName = "tests",
+            DraftTestsFolderName = "draft_tests";
+        //tests related sub folders
+        public const string
+           AnswersSubFolderName = "answers",
+           QuestionsSubFolderName = "questions",
+           ResultsSubFolderName = "results";
+        //base file names
+        public const string
+            TestCoverFileName = "cover",
+            QuestionImgFileName = "q_img";
+        public static string DefaultTestCoverImg => $"{CommonFolder}/test_cover_default.webp";
+        public static string DefaultProfilePicture => $"{CommonFolder}/default_profile_picture.webp";
 
         public static string ImgUrl(string fileKey) =>
            $"vokimiimgs/{fileKey}";

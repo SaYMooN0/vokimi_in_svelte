@@ -6,13 +6,14 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.extension_classes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace vokimi_api.Endpoints
 {
     public static class ImgOperationsEndpoints
     {
         public static async Task<IResult> GetImgFromStorage(string fileKey, VokimiStorageService storageService) =>
-            (await storageService.GetImgFromStorage(fileKey)) ?? Results.Problem("Unable to get image");
+            (await storageService.GetObjectFromStorage(fileKey)) ?? Results.Problem("Unable to get image");
 
         public static async Task<IResult> UpdateDraftTestCover(
             string testId,
@@ -39,11 +40,11 @@ namespace vokimi_api.Endpoints
                     return ResultsHelper.BadRequestNotCreator();
                 }
                 string extension = ImgOperationsHelper.ExtractFileExtension(file);
-                string key = $"{ImgOperationsConsts.DraftTestCoversFolder}/{testId}{extension}";
+                string key = ImgOperationsHelper.GetDraftTestCoverImgKey(test.Id, extension);
 
                 using (var transaction = await db.Database.BeginTransactionAsync()) {
                     try {
-                        string? savedKey = await ImgOperationsHelper.SaveImgToStorage(key, file, vokimiStorage);
+                        string? savedKey = await vokimiStorage.SaveImgToStorage(key, file);
                         if (savedKey is null) {
                             throw new Exception();
                         }
@@ -82,11 +83,11 @@ namespace vokimi_api.Endpoints
                 if (!httpContext.IfAuthenticatedUserIdEquals(creatorId)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
+                string extension = ImgOperationsHelper.ExtractFileExtension(file);
+                string key = ImgOperationsHelper.GetDraftGeneralTestAnswerImgKey(testId.Value, qId, extension);
+                return await storageService.IResultSaveImgToStorage(key, file);
             }
-            string key = $"{ImgOperationsConsts.DraftGeneralTestAnswersFolder}/" +
-                         $"{qId.Value.ToString()}" +
-                         $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
-            return await ImgOperationsHelper.IResultSaveImgToStorage(key, file, storageService);
+
         }
 
         public static async Task<IResult> SaveDraftGeneralTestQuestionImage(
@@ -114,11 +115,10 @@ namespace vokimi_api.Endpoints
                     return ResultsHelper.BadRequestNotCreator();
                 }
 
+                string extension = ImgOperationsHelper.ExtractFileExtension(file);
+                string key = ImgOperationsHelper.GetDraftGeneralTestQuestionImgKey(testId.Value, qId, extension);
+                return await storageService.IResultSaveImgToStorage(key, file);
             }
-            string key = $"{ImgOperationsConsts.DraftGeneralTestQuestionsFolder}/" +
-                         $"{qId.Value.ToString()}" +
-                         $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
-            return await ImgOperationsHelper.IResultSaveImgToStorage(key, file, storageService);
         }
         public static async Task<IResult> SaveDraftGeneralTestResultImage(
             string resultId,
@@ -144,11 +144,10 @@ namespace vokimi_api.Endpoints
                 if (!httpContext.IfAuthenticatedUserIdEquals(creatorId)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
+                string extension = ImgOperationsHelper.ExtractFileExtension(file);
+                string key = ImgOperationsHelper.GetDraftGeneralTestResultImgKey(testId.Value, rId, extension);
+                return await storageService.IResultSaveImgToStorage(key, file);
             }
-            string key = $"{ImgOperationsConsts.DraftGeneralTestResultsFolder}/" +
-                         $"{rId.Value.ToString()}" +
-                         $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
-            return await ImgOperationsHelper.IResultSaveImgToStorage(key, file, storageService);
         }
         public static async Task<IResult> SaveDraftTestConclusionImage(
             string testId,
@@ -175,7 +174,7 @@ namespace vokimi_api.Endpoints
             string key = $"{ImgOperationsConsts.TestConclusionsFolder}/" +
                    $"{tId.Value.ToString()}" +
                    $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
-            return await ImgOperationsHelper.IResultSaveImgToStorage(key, file, storageService);
+            return await storageService.IResultSaveImgToStorage(key, file);
 
         }
 

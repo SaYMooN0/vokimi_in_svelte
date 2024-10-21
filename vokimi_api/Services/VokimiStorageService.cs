@@ -1,6 +1,9 @@
 ﻿using Amazon.S3.Model;
 using Amazon.S3;
 using vokimi_api.Src;
+using System.Net;
+using vokimi_api.Helpers;
+using vokimi_api.Src.constants_store_classes;
 
 namespace vokimi_api.Services
 {
@@ -17,7 +20,7 @@ namespace vokimi_api.Services
         private readonly Err
                              fileUploadingErr = new Err("Failed to upload the file"),
                              serverErr = new Err("Server error. Please try again later");
-        public async Task<PutObjectResponse> PutObjectIntoStorage(string objKey, Stream fileStream) {
+        private async Task<PutObjectResponse> PutObjectIntoStorage(string objKey, Stream fileStream) {
             PutObjectRequest putRequest = new() {
                 BucketName = _bucketName,
                 Key = objKey,
@@ -26,7 +29,7 @@ namespace vokimi_api.Services
 
             return await _s3Client.PutObjectAsync(putRequest);
         }
-        public async Task<IResult?> GetImgFromStorage(string fileKey) {
+        public async Task<IResult?> GetObjectFromStorage(string fileKey) {
             GetObjectRequest request = new() {
                 BucketName = _bucketName,
                 Key = fileKey
@@ -45,11 +48,15 @@ namespace vokimi_api.Services
                 return null;
             }
         }
-        public async Task<Err> ClearUnusedImages(string prefix, IEnumerable<string>? reservedKeys = null) {
+        public async Task<Err> ClearUnusedObjectsInFolder(string folder, string? reservedKey = null) =>
+            string.IsNullOrEmpty(reservedKey) ?
+            await ClearUnusedObjectsInFolder(folder, Array.Empty<string>()) :
+            await ClearUnusedObjectsInFolder(folder, [reservedKey]);
+        public async Task<Err> ClearUnusedObjectsInFolder(string folder, IEnumerable<string> reservedKeys) {
             try {
                 var listRequest = new ListObjectsV2Request {
                     BucketName = _bucketName,
-                    Prefix = prefix
+                    Prefix = folder
                 };
 
                 ListObjectsV2Response listResponse;
@@ -58,13 +65,22 @@ namespace vokimi_api.Services
 
                     List<KeyVersion> objectsToDelete;
 
+
+                    var objectsInFolderOnly = listResponse.S3Objects
+                        .Where(
+                            o => o.Key == folder
+                            || !o.Key.Substring(folder.Length).Contains("/")
+                            //checking if object is in the current folder and not subfolders
+                        );
+
                     if (reservedKeys is null || reservedKeys.Count() == 0) {
-                        objectsToDelete = listResponse.S3Objects
+                        objectsToDelete = objectsInFolderOnly
                             .Select(o => new KeyVersion { Key = o.Key })
                             .ToList();
                     } else {
-                        objectsToDelete = listResponse.S3Objects
-                            .Where(o => (reservedKeys == null || !reservedKeys.Contains(o.Key)))
+                        HashSet<string> keysToSave = reservedKeys.ToHashSet();
+                        objectsToDelete = objectsInFolderOnly
+                            .Where(o => !keysToSave.Contains(o.Key))
                             .Select(o => new KeyVersion { Key = o.Key })
                             .ToList();
                     }
@@ -89,6 +105,7 @@ namespace vokimi_api.Services
             }
             return Err.None;
         }
+
         public async Task<Err> DeleteFiles(IEnumerable<string> keys) {
             try {
                 var keysToDelete = keys.Select(key => new KeyVersion { Key = key }).ToList();
@@ -130,5 +147,33 @@ namespace vokimi_api.Services
                 return serverErr;
             }
         }
+        public async Task<string?> SaveImgToStorage(
+            string key,
+            IFormFile file
+        ) {
+            if (file is null) {
+                return null;
+            }
+            if (file.Length > ImgOperationsConsts.MaxImageSizeInBytes) {
+                return null;
+            }
+            try {
+                var stream = file.OpenReadStream();
+                PutObjectResponse response = await PutObjectIntoStorage(key, stream);
+
+                if (response.HttpStatusCode == HttpStatusCode.OK) {
+                    return key;
+                } else { return null; }
+
+            } catch {
+                return null;
+            }
+        }
+        public async Task<IResult> IResultSaveImgToStorage(
+            string key,
+            IFormFile file
+        ) => string.IsNullOrEmpty(await SaveImgToStorage(key, file)) ?
+                ResultsHelper.BadRequestWithErr("An error occurred during file saving. Please try again later") :
+                ResultsHelper.OkResultWithImgPath(key);
     }
 }

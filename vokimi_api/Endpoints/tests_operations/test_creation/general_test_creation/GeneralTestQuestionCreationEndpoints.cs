@@ -147,6 +147,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
                         }
                         await ClearUnusedQuestionImages(
                             questionToDeleteId,
+                            question.TestId,
                             storageService,
                             null, []
                         );
@@ -330,6 +331,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
 
                 await ClearUnusedQuestionImages(
                     questionToUpdateId,
+                    question.TestId,
                     storageService,
                     question.ImagePath,
                     usedAnswerImgs
@@ -347,16 +349,15 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
 
         private static async Task ClearUnusedQuestionImages(
             DraftGeneralTestQuestionId questionId,
+            DraftTestId testId,
             VokimiStorageService storageService,
             string? questionImagePath,
             List<string> answerImgs
         ) {
-            string questionImgPref = $"{ImgOperationsConsts.DraftGeneralTestQuestionsFolder}/{questionId}/";
-            await storageService.ClearUnusedImages(questionImgPref, [questionImagePath]);
-            string answerImgPref =
-                  $"{ImgOperationsConsts.DraftGeneralTestAnswersFolder}/" +
-                  $"{questionId.Value.ToString()}";
-            await storageService.ClearUnusedImages(answerImgPref, answerImgs);
+            string questionImgPref = ImgOperationsHelper.DraftGeneralTestQuestionsFolder(testId, questionId);
+            await storageService.ClearUnusedObjectsInFolder(questionImgPref, questionImagePath);
+            string answerImgPref = ImgOperationsHelper.DraftGeneralTestAnswersFolder(testId, questionId);
+            await storageService.ClearUnusedObjectsInFolder(answerImgPref, answerImgs);
         }
 
         private static List<string> CreateAnswersForQuestionUpdate(

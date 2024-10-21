@@ -331,7 +331,7 @@ namespace vokimi_api.Endpoints.tests_operations
                         string newTestCover = ImgOperationsConsts.DefaultTestCoverImg;
                         if (draftTest.MainInfo.CoverImagePath != ImgOperationsConsts.DefaultTestCoverImg) {
                             var extension = Path.GetExtension(draftTest.MainInfo.CoverImagePath);
-                            newTestCover = $"{ImgOperationsConsts.PublishedTestCoversFolder}/{newTestId}{extension}";
+                            newTestCover = ImgOperationsHelper.GetPublishedTestCoverImgKey(newTestId, extension);
                         }
 
                         GeneralTestPublishingData publishingData = GeneralTestPublishingData
@@ -363,6 +363,7 @@ namespace vokimi_api.Endpoints.tests_operations
                         var testToPublish = TestGeneralType.CreateNew(publishingData);
 
                         db.TestsGeneralType.Add(testToPublish);
+
                         await db.SaveChangesAsync();
 
                         foreach (string tag in publishingData.Tags) {
@@ -373,8 +374,12 @@ namespace vokimi_api.Endpoints.tests_operations
                             }
                             tagToAssign.Tests.Add(testToPublish);
                         }
-                        await storageService.DeleteFiles(publishingData.ImgsToDeleteInCaseOfSuccess);
-
+                        await ClearDraftGeneralTestData(
+                            draftTest, 
+                            storageService, 
+                            publishingData.ImgsToDeleteInCaseOfSuccess, 
+                            db
+                        );
 
                         await db.SaveChangesAsync();
                         await transaction.CommitAsync();
@@ -396,14 +401,125 @@ namespace vokimi_api.Endpoints.tests_operations
             GeneralTestPublishingData publishingData,
             List<string> imgsToDeleteInCaseOfFailure
         ) {
+            foreach (var draftResult in results) {
+
+                string? resultImg = null;
+                GeneralTestResultId newResultId = new();
+                if (!string.IsNullOrEmpty(draftResult.ImagePath)) {
+                    string extension = Path.GetExtension(draftResult.ImagePath);
+                    resultImg = ImgOperationsHelper.GetPublishedGeneralTestResultImgKey(
+                       publishingData.TestId,
+                       newResultId,
+                       extension
+                    );
+                    Err copyingErr = await storageService.CopyImageFile(draftResult.ImagePath, resultImg);
+                    if (copyingErr.NotNone()) {
+                        throw new Exception();
+                    } else {
+                        imgsToDeleteInCaseOfFailure.Add(resultImg);
+                    }
+                }
+
+                var resultToPublish = GeneralTestResult.CreateNew(
+                    newResultId,
+                    publishingData.TestId,
+                    draftResult.Name,
+                    draftResult.Text ?? draftResult.Name, //name if somehow text is null after all validations
+                    resultImg
+                );
+                db.GeneralTestResults.Add(resultToPublish);
+                publishingData.PublishedResults.Add(draftResult.Id, resultToPublish);
+            }
         }
         public async static Task PublishGeneralTestQuestions(
             AppDbContext db,
             VokimiStorageService storageService,
-            ICollection<DraftGeneralTestQuestion> results,
+            ICollection<DraftGeneralTestQuestion> questions,
             GeneralTestPublishingData publishingData,
             List<string> imgsToDeleteInCaseOfFailure
         ) {
+            ushort questionOrder = 0;
+
+            foreach (var draftQuestion in questions.OrderBy(i => i.OrderInTest)) {
+                string? questionImg = null;
+                GeneralTestQuestionId newQuestionId = new();
+                if (!string.IsNullOrEmpty(draftQuestion.ImagePath)) {
+                    string extension = Path.GetExtension(draftQuestion.ImagePath);
+                    questionImg = ImgOperationsHelper.GetPublishedGeneralTestQuestionImgKey(
+                       publishingData.TestId,
+                       newQuestionId,
+                       extension
+                    );
+                    Err copyingErr = await storageService.CopyImageFile(draftQuestion.ImagePath, questionImg);
+                    if (copyingErr.NotNone()) {
+                        throw new Exception();
+                    } else {
+                        imgsToDeleteInCaseOfFailure.Add(questionImg);
+                        publishingData.ImgsToDeleteInCaseOfSuccess.Add(questionImg);
+                    }
+                }
+
+                GeneralTestQuestion questionToPublish = GeneralTestQuestion.CreateNew(
+                    newQuestionId,
+                    publishingData.TestId,
+                    draftQuestion.Text,
+                    questionImg,
+                    draftQuestion.AnswersType,
+                    questionOrder
+                );
+                db.GeneralTestQuestions.Add(questionToPublish);
+
+                questionOrder++;
+
+                foreach (var draftAnswer in draftQuestion.Answers) {
+
+                    if (draftAnswer.TypeSpecificInfo is IAnswerTypeSpecificInfoWithImage imgInfo) {
+                        string extension = Path.GetExtension(imgInfo.ImagePath);
+                        string newAnswerImg = ImgOperationsHelper.GetPublishedGeneralTestAnswerImgKey(
+                           publishingData.TestId,
+                           newQuestionId,
+                           extension
+                        );
+                        Err copyingErr = await storageService.CopyImageFile(imgInfo.ImagePath, newAnswerImg);
+                        if (copyingErr.NotNone()) {
+                            throw new Exception();
+                        } else {
+                            imgInfo.ImagePath = newAnswerImg;
+                            imgsToDeleteInCaseOfFailure.Add(newAnswerImg);
+                            publishingData.ImgsToDeleteInCaseOfSuccess.Add(imgInfo.ImagePath);
+                        }
+                    }
+                    ushort order = draftQuestion.ShuffleAnswers ? (ushort)0 : draftAnswer.OrderInQuestion;
+                    var relatedDraftResultIds = draftAnswer.RelatedResults.Select(r => r.Id);
+                    var relatedPublishedResults = publishingData.PublishedResults
+                        .Where(p => relatedDraftResultIds.Contains(p.Key))
+                        .Select(p => p.Value)
+                        .ToList();
+                    var answerToPublish = GeneralTestAnswer.CreateNew(
+                        questionToPublish.Id,
+                        order,
+                        draftAnswer.TypeSpecificInfoId,
+                        relatedPublishedResults
+                    );
+
+                    db.GeneralTestAnswers.Add(answerToPublish);
+                }
+
+                publishingData.PublishedQuestions.Add(questionToPublish);
+            }
+        }
+        public async static Task ClearDraftGeneralTestData(
+            DraftGeneralTest test,
+            VokimiStorageService storageService,
+            List<string> imgsToDelete,
+            AppDbContext db
+        ) {
+            db.DraftGeneralTestResults.RemoveRange(test.PossibleResults);
+            db.DraftGeneralTestAnswers.RemoveRange(test.Questions.SelectMany(q => q.Answers));
+            db.DraftGeneralTestQuestions.RemoveRange(test.Questions);
+            db.DraftTestMainInfo.Remove(test.MainInfo);
+            db.DraftGeneralTests.Remove(test);
+            await storageService.DeleteFiles(imgsToDelete);
         }
     }
 }

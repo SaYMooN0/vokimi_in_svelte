@@ -17,7 +17,7 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
                 Id = new(),
                 CreatorId = creatorId,
                 MainInfoId = mainInfoId,
-                CreationDate = DateTime.UtcNow,
+                CreationDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 ConclusionId = null,
                 StylesSheetId = stylesSheetId
             };

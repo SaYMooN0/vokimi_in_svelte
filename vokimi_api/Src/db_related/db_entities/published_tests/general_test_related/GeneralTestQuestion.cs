@@ -16,23 +16,25 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_rel
         //if both equals to 1 then question is single choice
         public ushort MinAnswersCount { get; private set; }
         public ushort MaxAnswersCount { get; private set; }
-
+            
         public bool IsSingleChoice => MinAnswersCount == 1 && MaxAnswersCount == 1;
 
 
-        public static GeneralTestQuestion CreateNew(TestId testId,
-                                                    string text,
-                                                    string? imagePath,
-                                                    GeneralTestAnswerType answersType,
-                                                    ushort orderInTest) =>
-            new() {
-                Id = new(),
-                TestId = testId,
-                Text = text,
-                ImagePath = imagePath,
-                AnswersType = answersType,
-                OrderInTest = orderInTest
-            };
+        public static GeneralTestQuestion CreateNew(
+            GeneralTestQuestionId id,
+            TestId testId,
+            string text,
+            string? imagePath,
+            GeneralTestAnswerType answersType,
+            ushort orderInTest
+        ) => new() {
+            Id = id,
+            TestId = testId,
+            Text = text,
+            ImagePath = imagePath,
+            AnswersType = answersType,
+            OrderInTest = orderInTest
+        };
 
     }
 }

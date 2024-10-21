@@ -3,7 +3,7 @@ using vokimi_api.Src.constants_store_classes;
 
 namespace vokimi_api.Helpers
 {
-    public class ResultsHelper
+    public static class ResultsHelper
     {
         public static IResult BadRequestWithErr(string err) =>
             TypedResults.BadRequest(new { Error = err });
