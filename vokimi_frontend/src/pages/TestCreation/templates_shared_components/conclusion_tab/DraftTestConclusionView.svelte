@@ -18,7 +18,6 @@
         if (response.ok) {
             const data = await response.json();
             conclusionData = new TestCreationConclusionTabData(
-                data.id,
                 data.text,
                 data.additionalImage,
                 data.anyFeedback,

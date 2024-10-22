@@ -23,8 +23,7 @@ export class TestCreationConclusionTabData {
 
     isEmpty(): boolean {
         return StringUtils.isNullOrWhiteSpace(this.text)
-            && StringUtils.isNullOrWhiteSpace(this.additionalImage)
-            && StringUtils.isNullOrWhiteSpace(this.feedbackText)
+            && StringUtils.isNullOrWhiteSpace(this.additionalImage);
     }
     copy(): TestCreationConclusionTabData {
         return new TestCreationConclusionTabData(

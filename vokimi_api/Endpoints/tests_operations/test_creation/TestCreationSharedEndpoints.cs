@@ -275,7 +275,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation
                     data.FeedbackText,
                     data.maxFeedbackLength
                 );
-                string unusedImgPrefix = $"{ImgOperationsConsts.TestConclusionsFolder}/{test.Conclusion.Id.Value.ToString()}/";
+                string unusedImgPrefix = $"{ImgOperationsConsts.TestConclusionsFolder}/{test.Id.Value.ToString()}/";
                 string[] reservedKeys =
                     string.IsNullOrWhiteSpace(data.AdditionalImage) ?
                     Array.Empty<string>() :

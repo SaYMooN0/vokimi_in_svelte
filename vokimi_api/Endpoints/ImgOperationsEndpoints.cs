@@ -48,9 +48,13 @@ namespace vokimi_api.Endpoints
                         if (savedKey is null) {
                             throw new Exception();
                         }
+                        string oldPath = test.MainInfo.CoverImagePath;
                         test.MainInfo.UpdateCoverImage(savedKey);
                         db.SaveChanges();
                         await transaction.CommitAsync();
+                        if(oldPath!=ImgOperationsConsts.DefaultTestCoverImg) {
+                            await vokimiStorage.DeleteFiles([oldPath]);
+                        }
                         return ResultsHelper.OkResultWithImgPath(key);
                     } catch {
                         await transaction.RollbackAsync();
@@ -167,16 +171,15 @@ namespace vokimi_api.Endpoints
                 if (test is null) {
                     return ResultsHelper.BadRequestWithErr("Unable to update conclusion image. Test not found");
                 }
-                if (httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
             }
-            string key = $"{ImgOperationsConsts.TestConclusionsFolder}/" +
-                   $"{tId.Value.ToString()}" +
-                   $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
+            string key = 
+                $"{ImgOperationsConsts.TestConclusionsFolder}/" +
+                $"{tId.Value.ToString()}" +
+                $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
             return await storageService.IResultSaveImgToStorage(key, file);
-
         }
-
     }
 }

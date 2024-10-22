@@ -9,10 +9,13 @@ namespace vokimi_api.Helpers
     public static class ImgOperationsHelper
     {
         public static string ExtractFileExtension(IFormFile file) => Path.GetExtension(file.FileName);
+        private static string CombineStoragePath(params string[] paths) =>
+            Path.Combine(paths).Replace('\\', '/');
+
         public static string GetPublishedTestCoverImgKey(
             TestId testId,
             string imgExtension
-        ) => Path.Combine(
+        ) => CombineStoragePath(
             ImgOperationsConsts.PublishedTestsFolderName,
             testId.Value.ToString(),
             ImgOperationsConsts.TestCoverFileName
@@ -21,7 +24,7 @@ namespace vokimi_api.Helpers
             TestId testId,
             GeneralTestResultId resultId,
             string imgExtension
-        ) => Path.Combine(
+        ) => CombineStoragePath(
             ImgOperationsConsts.PublishedTestsFolderName,
             testId.Value.ToString(),
             ImgOperationsConsts.ResultsSubFolderName,
@@ -31,7 +34,7 @@ namespace vokimi_api.Helpers
             TestId testId,
             GeneralTestQuestionId questionId,
             string imgExtension
-        ) => Path.Combine(
+        ) => CombineStoragePath(
             ImgOperationsConsts.PublishedTestsFolderName,
             testId.Value.ToString(),
             ImgOperationsConsts.QuestionsSubFolderName,
@@ -42,7 +45,7 @@ namespace vokimi_api.Helpers
             TestId testId,
             GeneralTestQuestionId questionId,
             string imgExtension
-        ) => Path.Combine(
+        ) => CombineStoragePath(
             ImgOperationsConsts.PublishedTestsFolderName,
             testId.Value.ToString(),
             ImgOperationsConsts.QuestionsSubFolderName,
@@ -53,38 +56,40 @@ namespace vokimi_api.Helpers
         public static string GetDraftTestCoverImgKey(
            DraftTestId testId,
            string imgExtension
-       ) => Path.Combine(
-           ImgOperationsConsts.DraftTestsFolderName,
-           testId.Value.ToString(),
-           ImgOperationsConsts.TestCoverFileName
-       );
+        ) => CombineStoragePath(
+            ImgOperationsConsts.DraftTestsFolderName,
+            testId.Value.ToString(),
+            ImgOperationsConsts.TestCoverFileName + imgExtension
+        );
         public static string GetDraftGeneralTestResultImgKey(
             DraftTestId testId,
             DraftGeneralTestResultId resultId,
             string imgExtension
-        ) => Path.Combine(
-            DraftGeneralTestResultsFolder(testId),
-            resultId.Value.ToString() + imgExtension
+        ) => CombineStoragePath(
+            DraftGeneralTestResultsFolder(testId, resultId),
+            Guid.NewGuid().ToString() + imgExtension
         );
         public static string DraftGeneralTestResultsFolder(
-            DraftTestId testId
-        ) => Path.Combine(
+            DraftTestId testId,
+            DraftGeneralTestResultId resultId
+        ) => CombineStoragePath(
             ImgOperationsConsts.DraftTestsFolderName,
             testId.Value.ToString(),
-            ImgOperationsConsts.ResultsSubFolderName
+            ImgOperationsConsts.ResultsSubFolderName,
+            resultId.Value.ToString()
         );
         public static string GetDraftGeneralTestQuestionImgKey(
             DraftTestId testId,
             DraftGeneralTestQuestionId questionId,
             string imgExtension
-        ) => Path.Combine(
+        ) => CombineStoragePath(
             DraftGeneralTestQuestionsFolder(testId, questionId),
             Guid.NewGuid() + imgExtension
         );
         public static string DraftGeneralTestQuestionsFolder(
            DraftTestId testId,
            DraftGeneralTestQuestionId questionId
-       ) => Path.Combine(
+       ) => CombineStoragePath(
            ImgOperationsConsts.DraftTestsFolderName,
            testId.Value.ToString(),
            ImgOperationsConsts.QuestionsSubFolderName,
@@ -94,14 +99,14 @@ namespace vokimi_api.Helpers
             DraftTestId testId,
             DraftGeneralTestQuestionId questionId,
             string imgExtension
-        ) => Path.Combine(
+        ) => CombineStoragePath(
             DraftGeneralTestAnswersFolder(testId, questionId),
             Guid.NewGuid().ToString() + imgExtension
         );
         public static string DraftGeneralTestAnswersFolder(
             DraftTestId testId,
             DraftGeneralTestQuestionId questionId
-        ) => Path.Combine(
+        ) => CombineStoragePath(
             ImgOperationsConsts.DraftTestsFolderName,
             testId.Value.ToString(),
             ImgOperationsConsts.QuestionsSubFolderName,

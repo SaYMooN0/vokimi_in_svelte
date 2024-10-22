@@ -65,7 +65,9 @@ namespace vokimi_api.Services
 
                     List<KeyVersion> objectsToDelete;
 
-
+                    if (!folder.EndsWith('/')) {
+                        folder = folder + "/";
+                    }
                     var objectsInFolderOnly = listResponse.S3Objects
                         .Where(
                             o => o.Key == folder

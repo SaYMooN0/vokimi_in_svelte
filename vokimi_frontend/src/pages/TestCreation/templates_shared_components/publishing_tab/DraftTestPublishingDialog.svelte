@@ -2,12 +2,21 @@
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import BaseDialog from "../../../../components/BaseDialog.svelte";
     import EditingDialogCloseButton from "../../creation_shared_components/editing_dialog_components/EditingDialogCloseButton.svelte";
-    import { navigate } from "svelte-routing";
+    import TestPublishedSuccessfully from "./TestPublishedSuccessfully.svelte";
 
     export let testId: string;
     let dialogElement: BaseDialog;
     let publishingProblems: { category: string; message: string }[] = [];
     let errorMessage: string = "";
+    let testIsPublishedInfo: {
+        isPublished: boolean;
+        publishedTestId: string;
+        publishedTestName: string;
+    } = {
+        isPublished: false,
+        publishedTestId: "",
+        publishedTestName: "",
+    };
 
     export async function open() {
         errorMessage = "";
@@ -44,8 +53,12 @@
             },
         );
         if (response.ok) {
-            navigate("/my-tests");
-            dialogElement.close();
+            const data = await response.json();
+            testIsPublishedInfo = {
+                isPublished: true,
+                publishedTestId: data.testId,
+                publishedTestName: data.testName,
+            };
         } else if (response.status === 400) {
             errorMessage = await getErrorFromResponse(response);
         } else {
@@ -55,38 +68,49 @@
 </script>
 
 <BaseDialog dialogId="publishing-dialog" bind:this={dialogElement}>
-    <EditingDialogCloseButton onClose={() => dialogElement.close()} />
     <div class="dialog-content">
-        {#if publishingProblems.length > 0}
-            <p class="test-has-problems">
-                Test cannot be published because of the following problems
-            </p>
-            <span class="fix-problems">Please fix them before publishing</span>
-            <div class="errors-list">
-                <span class="problem-list-col-label">Category</span>
-                <span class="problem-list-col-label">Problem message</span>
-                {#each publishingProblems as p}
-                    <span class="problem-category">
-                        {p.category}
-                    </span>
-                    <span class="problem-message">
-                        {p.message}
-                    </span>
-                {/each}
-            </div>
+        {#if testIsPublishedInfo.isPublished}
+            <TestPublishedSuccessfully
+                publishedTestId={testIsPublishedInfo.publishedTestId}
+                publishedTestName={testIsPublishedInfo.publishedTestName}
+            />
         {:else}
-            <p class="no-problems-found">No problems were found in the test</p>
-            <p class="test-is-ready">Test is ready to be published</p>
+            {#if publishingProblems.length > 0}
+                <p class="test-has-problems">
+                    Test cannot be published because of the following problems
+                </p>
+                <span class="fix-problems"
+                    >Please fix them before publishing</span
+                >
+                <div class="errors-list">
+                    <span class="problem-list-col-label">Category</span>
+                    <span class="problem-list-col-label">Problem message</span>
+                    {#each publishingProblems as p}
+                        <span class="problem-category">
+                            {p.category}
+                        </span>
+                        <span class="problem-message">
+                            {p.message}
+                        </span>
+                    {/each}
+                </div>
+            {:else}
+                <p class="no-problems-found">
+                    No problems were found in the test
+                </p>
+                <p class="test-is-ready">Test is ready to be published</p>
+            {/if}
+            <p class="error-message">{errorMessage}</p>
+            <button
+                class="publish-btn"
+                disabled={publishingProblems.length > 0}
+                class:publishBtnDisabled={publishingProblems.length > 0}
+                on:click={publishTest}
+            >
+                Publish
+            </button>
+            <EditingDialogCloseButton onClose={() => dialogElement.close()} />
         {/if}
-        <p class="error-message">{errorMessage}</p>
-        <button
-            class="publish-btn"
-            disabled={publishingProblems.length > 0}
-            class:publishBtnDisabled={publishingProblems.length > 0}
-            on:click={publishTest}
-        >
-            Publish
-        </button>
     </div>
 </BaseDialog>
 

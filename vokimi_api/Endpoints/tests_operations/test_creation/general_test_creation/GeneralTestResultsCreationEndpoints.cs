@@ -144,7 +144,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
                     return ResultsHelper.BadRequestWithErr(validationErr);
                 }
                 res.Update(newResData.Name, newResData.Text, newResData.ImagePath);
-                string unusedImgPrefix = ImgOperationsHelper.DraftGeneralTestResultsFolder(res.TestId);
+                string unusedImgPrefix = ImgOperationsHelper.DraftGeneralTestResultsFolder(res.TestId, resId);
                 Err imgClearingErr = await vokimiStorage.ClearUnusedObjectsInFolder(unusedImgPrefix, newResData.ImagePath);
                 if (imgClearingErr.NotNone()) {
                     return ResultsHelper.BadRequestServerError();

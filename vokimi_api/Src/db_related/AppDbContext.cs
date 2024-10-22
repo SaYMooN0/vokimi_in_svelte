@@ -41,7 +41,7 @@ namespace vokimi_api.Src.db_related
         public DbSet<GeneralTestAnswerTypeSpecificInfo> AnswerTypeSpecificInfo { get; set; }
         //published tests only
         public DbSet<BaseTest> TestsSharedInfo { get; set; }
-        public DbSet<TestGeneralType> TestsGeneralType { get; set; }
+        public DbSet<TestGeneralTemplate> TestsGeneralType { get; set; }
         public DbSet<GeneralTestQuestion> GeneralTestQuestions { get; set; }
         public DbSet<GeneralTestAnswer> GeneralTestAnswers { get; set; }
         public DbSet<GeneralTestResult> GeneralTestResults { get; set; }
@@ -81,6 +81,12 @@ namespace vokimi_api.Src.db_related
             //published tests
             modelBuilder.ConfigureBaseTest();
             modelBuilder.ConfigureTestTags();
+
+            //published general tests
+            modelBuilder.ConfigureTestGeneralTemplate();
+            modelBuilder.ConfigureGeneralTestQuestions();
+            modelBuilder.ConfigureGeneralTestAnswers();
+            modelBuilder.ConfigureGeneralTestResults();
         }
 
     }

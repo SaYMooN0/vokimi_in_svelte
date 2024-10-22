@@ -8,7 +8,6 @@ using vokimi_api.Src.dtos.responses.test_creation_responses.general;
 using vokimi_api.Helpers;
 using System.Text.Json;
 using vokimi_api.Services;
-using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared.general_test_answers;
 using vokimi_api.Src.dtos.requests.test_creation.general_template.question_update;
 using vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_answers;
@@ -370,7 +369,7 @@ namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creat
             ushort currentAnswerOrder = 0;
             foreach (var answer in answers
                 .OrderBy(a => a.OrderInQuestion == -1 ? int.MaxValue : a.OrderInQuestion)
-            //for answers with 0 order to go to the end 
+            //for answers with unset order to go to the end 
             ) {
                 GeneralTestAnswerTypeSpecificInfo specificInfo = CreateAnswerTypeSpecificInfo(answer);
                 if (specificInfo is IAnswerTypeSpecificInfoWithImage specificInfoWithImage) {

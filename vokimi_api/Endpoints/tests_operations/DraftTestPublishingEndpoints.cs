@@ -360,7 +360,7 @@ namespace vokimi_api.Endpoints.tests_operations
                             imgsToDeleteInCaseOfFailure
                         );
 
-                        var testToPublish = TestGeneralType.CreateNew(publishingData);
+                        var testToPublish = TestGeneralTemplate.CreateNew(publishingData);
 
                         db.TestsGeneralType.Add(testToPublish);
 
@@ -375,15 +375,18 @@ namespace vokimi_api.Endpoints.tests_operations
                             tagToAssign.Tests.Add(testToPublish);
                         }
                         await ClearDraftGeneralTestData(
-                            draftTest, 
-                            storageService, 
-                            publishingData.ImgsToDeleteInCaseOfSuccess, 
+                            draftTest,
+                            storageService,
+                            publishingData.ImgsToDeleteInCaseOfSuccess,
                             db
                         );
 
                         await db.SaveChangesAsync();
                         await transaction.CommitAsync();
-                        return Results.Ok(new { TestId = publishingData.TestId });
+                        return Results.Ok(new {
+                            TestId = publishingData.TestId,
+                            TestName = publishingData.TestName,
+                        });
 
                     } catch {
                         await transaction.RollbackAsync();

@@ -4,13 +4,13 @@ using VokimiShared.src.models.db_classes.test.test_types;
 
 namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_related
 {
-    public class TestGeneralType : BaseTest
+    public class TestGeneralTemplate : BaseTest
     {
         public override TestTemplate Template => TestTemplate.General;
 
         public virtual List<GeneralTestQuestion> Questions { get; init; } = [];
         public virtual ICollection<GeneralTestResult> PossibleResults { get; init; } = [];
-        public static TestGeneralType CreateNew(GeneralTestPublishingData data) => new() {
+        public static TestGeneralTemplate CreateNew(GeneralTestPublishingData data) => new() {
             Id = data.TestId,
             CreatorId = data.CreatorId,
             Name = data.TestName,

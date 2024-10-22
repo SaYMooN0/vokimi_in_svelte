@@ -20,7 +20,7 @@
 
     async function saveData() {
         const response = await fetch(
-            "/api/testCreation/updateDraftTestConclusion/" + { testId },
+            "/api/testCreation/updateDraftTestConclusion/" + testId,
             {
                 method: "POST",
                 headers: {
