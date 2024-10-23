@@ -19,7 +19,7 @@
     }
 </script>
 
-<div class="header-layout">
+<div class="header-layout unselectable">
     <a href="/" class="logo-container">
         <img src={vokimiLogo} class="vokimi-logo" alt="Vokimi Logo" />
     </a>

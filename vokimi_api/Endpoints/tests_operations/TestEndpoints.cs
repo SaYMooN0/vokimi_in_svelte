@@ -39,7 +39,14 @@ namespace vokimi_api.Endpoints.tests_operations
             IDbContextFactory<AppDbContext> dbFactory
         ) {
             if (httpContext.TryGetUserId(out AppUserId userId)) {
-                return ResultsHelper.BadRequestWithErr("Not implemented GetUserPublishedTestsBriefInfo");
+                using (var db = dbFactory.CreateDbContext()) {
+                    PublishedTestBriefInfoResponse[] responseData = db.TestsSharedInfo
+                        .Where(t => t.CreatorId == userId)
+                        .Select(PublishedTestBriefInfoResponse.FromTest)
+                        .ToArray();
+
+                    return Results.Ok(responseData);
+                }
             } else { return UnaithorizedUserTestFetchingErr; }
         }
         public static IResult GetDraftTestOverviewInfo(

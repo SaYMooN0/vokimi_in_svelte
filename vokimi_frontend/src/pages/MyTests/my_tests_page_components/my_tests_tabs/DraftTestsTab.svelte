@@ -46,7 +46,7 @@
 >
     <div class="draft-tests-container">
         {#each draftTests as test}
-            <a href="/testCreation/{test.id}/main-info-view" class="test-view">
+            <a href="/test-creation/{test.id}/main-info-view" class="test-view">
                 <div class="cover-container unselectable">
                     <img
                         class="cover"

@@ -12,6 +12,7 @@
   import Page404 from "./pages/Page404.svelte";
   import UserPage from "./pages/User/UserPage.svelte";
   import ProfileEditingPage from "./pages/ProfileEditing/ProfileEditingPage.svelte";
+  import ViewTestPage from "./pages/ViewTest/ViewTestPage.svelte";
 </script>
 
 <Router>
@@ -40,8 +41,11 @@
           userId={params.userId}
         />
       </Route>
-      <Route path="/testCreation/:testId/*" let:params>
+      <Route path="/test-creation/:testId/*" let:params>
         <TestCreationPage testId={params.testId} />
+      </Route>
+      <Route path="/view-test/:testId" let:params>
+        <ViewTestPage testId={params.testId} />
       </Route>
       <Route path="/profile-editing" component={ProfileEditingPage} />
     </div>

@@ -6,7 +6,7 @@ namespace vokimi_api.EndpointsMappers
     {
         public static void MapAll(WebApplication app) {
             app.MapGet("/tests/getUserDraftTestsBriefInfo", TestEndpoints.GetUserDraftTestsBriefInfo);
-            app.MapGet("/tests/getUserPublieshedTestsBriefInfo", TestEndpoints.GetUserPublishedTestsBriefInfo);
+            app.MapGet("/tests/getUserPublishedTestsBriefInfo", TestEndpoints.GetUserPublishedTestsBriefInfo);
             app.MapGet("/tests/getDraftTestOverviewInfo/{testId}", TestEndpoints.GetDraftTestOverviewInfo);
             app.MapDelete("/tests/deleteDraftTest/{testId}", TestEndpoints.DeleteDraftTest);
         }

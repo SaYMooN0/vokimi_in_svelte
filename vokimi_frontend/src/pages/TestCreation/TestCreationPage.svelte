@@ -12,13 +12,11 @@
     let template: TestTemplate;
     let testName: string;
     let isCreator: boolean = false;
-    let isLoading: boolean = true;
     let basepath = `/testCreation/${testId}`;
 
     async function loadTestOverviewInfo(viewerId: string | undefined) {
         if (!viewerId) {
             isCreator = false;
-            isLoading = false;
             return;
         }
 
@@ -36,8 +34,6 @@
             }
         } catch (error) {
             isCreator = false;
-        } finally {
-            isLoading = false;
         }
     }
     function updateTestName(name: string): void {
