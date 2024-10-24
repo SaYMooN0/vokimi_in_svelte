@@ -22,7 +22,7 @@
 
         try {
             const response = await fetch(
-                "/api/tests/getDraftTestOverviewInfo/" + testId,
+                "/api/userTests/getDraftTestOverviewInfo/" + testId,
             );
             if (response.status === 200) {
                 const data = await response.json();

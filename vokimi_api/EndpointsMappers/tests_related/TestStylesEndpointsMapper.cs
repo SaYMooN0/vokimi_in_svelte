@@ -1,6 +1,6 @@
 ﻿using vokimi_api.Endpoints;
 
-namespace vokimi_api.EndpointsMappers
+namespace vokimi_api.EndpointsMappers.tests_related
 {
     public static class TestStylesEndpointsMapper
     {

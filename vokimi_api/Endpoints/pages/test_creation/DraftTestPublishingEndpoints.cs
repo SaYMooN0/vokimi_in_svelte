@@ -16,7 +16,7 @@ using vokimi_api.Src.enums;
 using vokimi_api.Src.extension_classes;
 using vokimi_api.Src.test_publishing_data;
 
-namespace vokimi_api.Endpoints.tests_operations
+namespace vokimi_api.Endpoints.pages.test_creation
 {
     public static class DraftTestPublishingEndpoints
     {

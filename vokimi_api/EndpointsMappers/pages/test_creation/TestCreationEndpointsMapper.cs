@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using vokimi_api.Endpoints.tests_operations.test_creation;
+using vokimi_api.Endpoints.pages.test_creation;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.enums;
 
-namespace vokimi_api.EndpointsMappers
+namespace vokimi_api.EndpointsMappers.pages.test_creation
 {
     public class TestCreationEndpointsMapper
     {
         public static void MapAll(WebApplication app) {
-            app.MapPost("/createNewTest/{template}", async (HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory, string template) =>
+            app.MapPost("/testCreation/createNewTest/{template}", async (HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory, string template) =>
             {
                 TestTemplate? parsedTemplate = TestTemplateExtensions.FromId(template);
                 if (parsedTemplate is null) {

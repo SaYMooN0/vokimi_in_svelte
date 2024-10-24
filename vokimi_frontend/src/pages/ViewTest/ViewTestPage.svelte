@@ -1,15 +1,13 @@
 <script lang="ts">
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
+    import { TestCreatorBasicData } from "../../ts/view_test_page_classes/TestCreatorBasicData";
     import FollowingNeededToViewTest from "./test_view_errors/FollowingNeededToViewTest.svelte";
     import FriendshipNeededToViewTest from "./test_view_errors/FriendshipNeededToViewTest.svelte";
     import TestNotFound from "./test_view_errors/TestNotFound.svelte";
     import ViewTestPageContent from "./view_test_page_components/ViewTestPageContent.svelte";
 
     export let testId: string;
-    let creatorData: { creatorId: string; creatorProfilePath: string } = {
-        creatorId: "",
-        creatorProfilePath: "",
-    };
+    let creatorData: TestCreatorBasicData;
     enum ViewTestPageState {
         AccessDenied = 0,
         TestNotFound = 1,
@@ -22,27 +20,31 @@
     let fetchingErr: string = "";
     async function loadTestViewInfo() {
         const response = await fetch(
-            "/api/viewTest/checkUserAccessToViewTest/" + testId,
+            "/api/viewTest/checkTestViewPermission/" + testId,
         );
         if (response.status === 200) {
             const data = await response.json();
-            switch (data.userAccess) {
+
+            switch (data.accessStringValue) {
                 case "denied":
                     pageState = ViewTestPageState.AccessDenied;
                     break;
                 case "following_needed":
                     pageState = ViewTestPageState.FollowingNeeded;
-                    creatorData = {
-                        creatorId: data.creatorId,
-                        creatorProfilePath: data.creatorProfilePath,
-                    };
+                    creatorData = new TestCreatorBasicData(
+                        data.testCreatorId,
+                        data.testCreatorUsername,
+                        data.testCreatorProfilePath,
+                    );
+
                     break;
                 case "friendship_needed":
                     pageState = ViewTestPageState.FriendshipNeeded;
-                    creatorData = {
-                        creatorId: data.creatorId,
-                        creatorProfilePath: data.creatorProfilePath,
-                    };
+                    creatorData = new TestCreatorBasicData(
+                        data.testCreatorId,
+                        data.testCreatorUsername,
+                        data.testCreatorProfilePath,
+                    );
                     break;
                 case "success":
                     pageState = ViewTestPageState.Success;
@@ -72,16 +74,10 @@
         <ViewTestPageContent {testId} />
     {:else if pageState === ViewTestPageState.TestNotFound}
         <TestNotFound />
-    {:else if pageState === ViewTestPageState.FriendshipNeeded && creatorData.creatorId !== ""}
-        <FriendshipNeededToViewTest
-            creatorId={creatorData.creatorId}
-            creatorProfilePath={creatorData.creatorProfilePath}
-        />
-    {:else if pageState === ViewTestPageState.FollowingNeeded && creatorData.creatorId !== ""}
-        <FollowingNeededToViewTest
-            creatorId={creatorData.creatorId}
-            creatorProfilePath={creatorData.creatorProfilePath}
-        />
+    {:else if pageState === ViewTestPageState.FriendshipNeeded && creatorData.testCreatorId !== ""}
+        <FriendshipNeededToViewTest {creatorData} />
+    {:else if pageState === ViewTestPageState.FollowingNeeded && creatorData.testCreatorId !== ""}
+        <FollowingNeededToViewTest {creatorData} />
     {:else if pageState === ViewTestPageState.AccessDenied}
         <p>Access denied</p>
     {:else}

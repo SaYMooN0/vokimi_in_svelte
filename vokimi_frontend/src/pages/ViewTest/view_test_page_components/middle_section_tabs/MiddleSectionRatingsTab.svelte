@@ -3,7 +3,9 @@
     import { Err } from "../../../../ts/Err";
 
     export let testId: string = "";
-    async function fetchRatingsListPackage() {}
+    async function fetchRatingsListPackage() {
+
+    }
     async function fetchViewerRating(): Promise<number | Err> {
         return new Err("not implemented");
     }
@@ -30,7 +32,5 @@
             {/await}
         </div>
     </AuthorizeView>
-    if not authenticated ... you have to log in to rate the test if has rated if
-    has rated ... you rate this test: if hasn't rated ... rate this test:
 </div>
 <div class="ratings-list"></div>

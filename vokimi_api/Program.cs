@@ -6,6 +6,9 @@ using vokimi_api.Src.db_related;
 using vokimi_api.Services;
 using vokimi_api.EndpointsMappers;
 using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
+using vokimi_api.EndpointsMappers.pages;
+using vokimi_api.EndpointsMappers.pages.test_creation;
+using vokimi_api.EndpointsMappers.tests_related;
 
 namespace vokimi_api
 {
@@ -64,14 +67,15 @@ namespace vokimi_api
         }
         public static void MapEndpoints(WebApplication app) {
             AuthEndpointsMapper.MapAll(app);
-            TestEndpointsMapper.MapAll(app);
+            UserTestsEndpointsMapper.MapAll(app);
             TestCreationEndpointsMapper.MapAll(app);
             TestStylesEndpointsMapper.MapAll(app);
             GeneralTestCreationEndpointsMapper.MapAll(app);
             ImgOperationsEndpointsMapper.MapAll(app);
             TestTagsEndpointsMapper.MapAll(app);
-            UserEndpointsMapper.MapAll(app);
+            UserPageEndpointsMapper.MapAll(app);
             DraftTestPublishingEndpointsMapper.MapAll(app);
+            ViewTestPageEndpointsMapper.MapAll(app);
         }
 
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {

@@ -6,7 +6,6 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.extension_classes;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace vokimi_api.Endpoints
 {

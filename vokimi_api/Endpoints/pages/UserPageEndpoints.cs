@@ -1,15 +1,30 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using vokimi_api.Helpers;
-using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
+using vokimi_api.Src.db_related;
 using vokimi_api.Src.dtos.responses.users_page;
 using vokimi_api.Src.extension_classes;
 
-namespace vokimi_api.Endpoints
+namespace vokimi_api.Endpoints.pages
 {
     public static class UserEndpoints
     {
+        public static IResult GetUserPageInfo(string userId, IDbContextFactory<AppDbContext> dbFactory) {
+            AppUserId appUserId;
+            if (!Guid.TryParse(userId, out _)) {
+                return ResultsHelper.BadRequestServerError();
+            }
+            appUserId = new(new(userId));
+
+            using (var db = dbFactory.CreateDbContext()) {
+                AppUser? user = db.AppUsers.FirstOrDefault(u => u.Id == appUserId);
+                if (user is null) {
+                    return ResultsHelper.BadRequestUserDoesnotExist();
+                }
+                return null;
+            }
+        }
         public static IResult DoesUserExist(string userId, IDbContextFactory<AppDbContext> dbFactory) {
             AppUserId appUserId;
             if (!Guid.TryParse(userId, out _)) {
@@ -54,8 +69,8 @@ namespace vokimi_api.Endpoints
             using var db = dbFactory.CreateDbContext();
             var user = db.AppUsers
                 .Include(u => u.UserAdditionalInfo)
-                //.Include(u => u.Friends)
-                //.Include(u => u.Followers)
+                .Include(u => u.Friends)
+                .Include(u => u.Followers)
                 .FirstOrDefault(u => u.Id == appUserId);
 
             if (user is null) {

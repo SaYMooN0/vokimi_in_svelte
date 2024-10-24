@@ -35,7 +35,7 @@
 
     function DeleteAction() {
         const testDeletingAction = async () => {
-            const url = "/api/tests/deleteDraftTest/" + currentTestId;
+            const url = "/api/userTests/deleteDraftTest/" + currentTestId;
             const response = await fetch(url, {
                 method: "DELETE",
             });

@@ -11,7 +11,7 @@
     let bannerColor: string = "";
 
     async function fetchData(): Promise<Err> {
-        const url = "/api/users/getUserPageTopInfoData/" + userId;
+        const url = "/api/userPage/getUserPageTopInfoData/" + userId;
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();

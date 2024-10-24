@@ -10,9 +10,9 @@ using vokimi_api.Src;
 using vokimi_api.Services;
 using vokimi_api.Src.constants_store_classes;
 
-namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creation
+namespace vokimi_api.Endpoints.pages.test_creation.general_template
 {
-    public class GeneralTestResultsCreationEndpoints
+    public static class GeneralTestResultsCreationEndpoints
     {
         public static IResult GetResultsIdNameDictionary(
             string testId,

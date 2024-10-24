@@ -14,7 +14,7 @@ using vokimi_api.Src.dtos.shared.general_test_creation.draft_general_test_answer
 using vokimi_api.Src.enums;
 using vokimi_api.Src;
 
-namespace vokimi_api.Endpoints.tests_operations.test_creation.general_test_creation
+namespace vokimi_api.Endpoints.pages.test_creation.general_template
 {
     public static class GeneralTestQuestionCreationEndpoints
     {

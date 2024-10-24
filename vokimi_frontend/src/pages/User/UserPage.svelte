@@ -23,7 +23,7 @@
             }
             return;
         }
-        const response = await fetch("/api/users/doesUserExist/" + userId);
+        const response = await fetch("/api/userPage/doesUserExist/" + userId);
         if (response.ok) {
             const data = await response.json();
             if (data.exists) {

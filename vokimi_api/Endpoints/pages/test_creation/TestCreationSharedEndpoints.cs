@@ -21,7 +21,7 @@ using vokimi_api.Src.dtos.shared.test_creation_shared;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.extension_classes;
 
-namespace vokimi_api.Endpoints.tests_operations.test_creation
+namespace vokimi_api.Endpoints.pages.test_creation
 {
     public static class TestCreationSharedEndpoints
     {

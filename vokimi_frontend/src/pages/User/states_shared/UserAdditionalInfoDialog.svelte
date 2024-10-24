@@ -15,7 +15,7 @@
     let dialogElement: BaseDialog;
     export async function open() {
         fetchingErr = "";
-        const url = "/api/users/getUserPageAdditionalInfo/" + userId;
+        const url = "/api/userPage/getUserPageAdditionalInfo/" + userId;
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();

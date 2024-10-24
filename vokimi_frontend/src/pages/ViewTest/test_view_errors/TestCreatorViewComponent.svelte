@@ -1,12 +1,13 @@
 <script lang="ts">
-    export let creatorId: string = "";
-    export let creatorProfilePath: string = "";
+    import type { TestCreatorBasicData } from "../../../ts/view_test_page_classes/TestCreatorBasicData";
+
+    export let creatorData: TestCreatorBasicData;
 
     function follow() {
+        //send requests
         //reload page
     }
 </script>
 
-<p>{creatorId}</p>
-<p>{creatorProfilePath}</p>
+<p>{JSON.stringify(creatorData)}</p>
 <button>Follow</button>

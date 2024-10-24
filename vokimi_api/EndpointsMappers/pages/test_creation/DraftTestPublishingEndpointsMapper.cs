@@ -1,6 +1,7 @@
-﻿using vokimi_api.Endpoints.tests_operations;
+﻿
+using vokimi_api.Endpoints.pages.test_creation;
 
-namespace vokimi_api.EndpointsMappers
+namespace vokimi_api.EndpointsMappers.pages.test_creation
 {
     public class DraftTestPublishingEndpointsMapper
     {

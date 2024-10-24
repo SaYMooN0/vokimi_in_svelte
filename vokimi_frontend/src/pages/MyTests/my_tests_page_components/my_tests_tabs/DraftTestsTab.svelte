@@ -16,7 +16,7 @@
             return Err.none();
         }
 
-        const response = await fetch("/api/tests/getUserDraftTestsBriefInfo");
+        const response = await fetch("/api/userTests/getUserDraftTestsBriefInfo");
         if (response.status == 200) {
             const data = await response.json();
             draftTests = data.map(

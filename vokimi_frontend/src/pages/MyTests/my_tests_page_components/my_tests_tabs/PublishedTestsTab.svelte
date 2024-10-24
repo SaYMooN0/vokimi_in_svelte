@@ -11,7 +11,7 @@
         }
 
         const response = await fetch(
-            "/api/tests/getUserPublishedTestsBriefInfo",
+            "/api/userTests/getUserPublishedTestsBriefInfo",
         );
         if (response.status == 200) {
             const data = await response.json();

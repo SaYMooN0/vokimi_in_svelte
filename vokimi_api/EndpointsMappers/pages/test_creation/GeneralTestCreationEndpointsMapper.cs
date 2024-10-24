@@ -1,6 +1,7 @@
-﻿using vokimi_api.Endpoints.tests_operations.test_creation.general_test_creation;
+﻿
+using vokimi_api.Endpoints.pages.test_creation.general_template;
 
-namespace vokimi_api.EndpointsMappers
+namespace vokimi_api.EndpointsMappers.pages.test_creation
 {
     public static class GeneralTestCreationEndpointsMapper
     {
