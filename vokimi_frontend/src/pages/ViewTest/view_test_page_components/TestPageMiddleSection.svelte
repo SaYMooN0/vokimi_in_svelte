@@ -1,15 +1,17 @@
 <script lang="ts">
+    import type { TestInfoTabData } from "../../../ts/view_test_page_classes/middle_section_tabs_classes/TestInfoTabData";
     import MiddleSectionDiscussionsTab from "./middle_section_tabs/MiddleSectionDiscussionsTab.svelte";
     import MiddleSectionInfoTab from "./middle_section_tabs/MiddleSectionInfoTab.svelte";
     import MiddleSectionRatingsTab from "./middle_section_tabs/MiddleSectionRatingsTab.svelte";
 
-    export let testId: string = "";
+    export let testId: string;
     enum MiddlePartTabs {
         Info,
         Ratings,
         Discussions,
     }
     let activeTab: MiddlePartTabs = MiddlePartTabs.Info;
+    export let testInfoTabData: TestInfoTabData;
 </script>
 
 <div class="middle-section">
@@ -35,7 +37,7 @@
     </div>
     <div class="tabs-content-container">
         <div class:tab-content-visible={activeTab === MiddlePartTabs.Info}>
-            <MiddleSectionInfoTab />
+            <MiddleSectionInfoTab tabData={testInfoTabData} />
         </div>
         <div class:tab-content-visible={activeTab === MiddlePartTabs.Ratings}>
             <MiddleSectionRatingsTab />

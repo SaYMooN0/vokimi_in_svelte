@@ -22,6 +22,8 @@ namespace vokimi_api.Helpers
             BadRequestWithErr($"File is too big. Max allowed size: {ImgOperationsConsts.MaxImageSizeInMB}MB");
         public static IResult BadRequestServerError() =>
             BadRequestWithErr("Server error. Please try again later");
+        public static IResult BadRequestNoTestAccess() =>
+            BadRequestWithErr("You don't have permission to access this test");
         public static IResult OkResultWithImgPath(string imgPath) =>
              Results.Ok(new { ImgPath = imgPath });
     }

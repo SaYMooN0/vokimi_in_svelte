@@ -1,18 +1,21 @@
+import type { Language } from "../../enums/Language";
+import type { TestTemplate } from "../../enums/TestTemplate";
+
 export class TestInfoTabData {
-    readonly testName: string;
     readonly testDescription: string;
-    readonly creatorName: string;
-    readonly creatorId;
+    readonly template: TestTemplate;
+    readonly language: Language;
+    readonly tags: string[];
     constructor(
-        testName: string,
         testDescription: string,
-        creatorName: string,
-        creatorId: string
+        template: TestTemplate,
+        language: Language,
+        tags: string[]
     ) {
-        this.testName = testName;
         this.testDescription = testDescription;
-        this.creatorName = creatorName;
-        this.creatorId = creatorId;
+        this.template = template;
+        this.language = language;
+        this.tags = tags;
     }
 
 }

@@ -2,8 +2,8 @@
     import AuthorizeView from "../../../components/AuthorizeView.svelte";
     import { ImgUtils } from "../../../ts/utils/ImgUtils";
 
-    export let testId: string = "";
-    export let coverPath: string = "";
+    export let testId: string;
+    export let coverPath: string;
 </script>
 
 <div class="view-left-part">
@@ -52,3 +52,24 @@
         </AuthorizeView>
     </div>
 </div>
+
+<style>
+    .test-cover-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .test-cover-img {
+        max-width: calc(120px + 21vw);
+        min-width: 220px;
+        max-height: calc(120px + 40vh);
+        object-fit: contain;
+        box-shadow:
+            rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+            rgb(67, 58, 178, 0.1) 0px 0px 0px 1px;
+        border-radius: 12px;
+        margin-bottom: 6px;
+    }
+</style>

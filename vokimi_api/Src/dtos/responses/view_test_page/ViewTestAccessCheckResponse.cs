@@ -1,6 +1,6 @@
 ﻿using vokimi_api.Src.db_related.db_entities.users;
 
-namespace vokimi_api.Src.dtos.responses
+namespace vokimi_api.Src.dtos.responses.view_test_page
 {
     public record class ViewTestAccessCheckResponse(
         string AccessStringValue,

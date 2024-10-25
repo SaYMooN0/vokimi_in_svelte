@@ -44,4 +44,12 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Vokimi_Svelte\vokimi_api\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Vokimi_Svelte\vokimi_api\.editorconfig" />
+  </ItemGroup>
+
 </Project>
