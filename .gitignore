@@ -398,3 +398,5 @@ FodyWeavers.xsd
 *.sln.iml
 /vokimi_api/appsettings.json
 /vokimi_api/appsettings.Development.json
+/vokimi_api/.editorconfig
+/vokimi_api/.editorconfig

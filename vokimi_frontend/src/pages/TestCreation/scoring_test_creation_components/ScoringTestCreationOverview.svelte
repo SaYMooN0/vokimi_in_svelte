@@ -1,11 +1,10 @@
 <script lang="ts">
     import { Router, Route } from "svelte-routing";
     import SharedTestCreationRoutes from "../templates_shared_components/SharedTestCreationRoutes.svelte";
-
-    import { TestCreationMainInfoTabData } from "../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
-    import { TestCreationConclusionTabData } from "../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
-    import { TestCreationStylesTabData } from "../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
-    import { TestCreationTagsTabData } from "../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
+    import type { TestCreationTagsTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
+    import { TestCreationMainInfoTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
+    import { TestCreationStylesTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
+    import type { TestCreationConclusionTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
 
     export let basepath: string;
     export let testId: string;

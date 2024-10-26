@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Err } from "../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
-    import { PublishedTestBriefInfo } from "../../../../ts/my_tests_page/PublishedTestBriefInfo";
+    import { PublishedTestBriefInfo } from "../../../../ts/page_classes/my_tests_page/PublishedTestBriefInfo";
     import TestsTabContentWrapper from "./TestsTabContentWrapper.svelte";
     export let publishedTests: PublishedTestBriefInfo[] = [];
 

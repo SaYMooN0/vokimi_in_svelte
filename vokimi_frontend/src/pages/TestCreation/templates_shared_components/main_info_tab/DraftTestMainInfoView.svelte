@@ -8,7 +8,7 @@
     import ErrorMessageInCenter from "../../creation_shared_components/ErrorMessageInCenter.svelte";
     import TabHeaderWithButton from "../../creation_shared_components/TabHeaderWithButton.svelte";
     import DraftTestMainInfoEditingDialog from "./DraftTestMainInfoEditingDialog.svelte";
-    import { TestCreationMainInfoTabData } from "../../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
+    import { TestCreationMainInfoTabData } from "../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
 
     export let mainInfoData: TestCreationMainInfoTabData;
     export let testId: string;

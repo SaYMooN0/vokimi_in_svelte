@@ -1,7 +1,7 @@
 <script lang="ts">
     import CustomCheckbox from "../../../../components/shared/CustomCheckbox.svelte";
     import type { Err } from "../../../../ts/Err";
-    import type { TestCreationConclusionTabData } from "../../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
+    import type { TestCreationConclusionTabData } from "../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import TextWithOptionalImageInput from "../../creation_shared_components/TextWithOptionalImageInput.svelte";

@@ -13,6 +13,7 @@
   import UserPage from "./pages/User/UserPage.svelte";
   import ProfileEditingPage from "./pages/ProfileEditing/ProfileEditingPage.svelte";
   import ViewTestPage from "./pages/ViewTest/ViewTestPage.svelte";
+  import TestTakingPage from "./pages/TestTaking/TestTakingPage.svelte";
 </script>
 
 <Router>
@@ -46,6 +47,9 @@
       </Route>
       <Route path="/view-test/:testId" let:params>
         <ViewTestPage testId={params.testId} />
+      </Route>
+      <Route path="/test-taking/:testId" let:params>
+        <TestTakingPage testId={params.testId} />
       </Route>
       <Route path="/profile-editing" component={ProfileEditingPage} />
     </div>

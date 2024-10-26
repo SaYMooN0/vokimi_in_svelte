@@ -3,12 +3,12 @@
     import SharedTestCreationRoutes from "../templates_shared_components/SharedTestCreationRoutes.svelte";
     import GeneralTestQuestionsView from "./general_test_overview_tabs/questions_tab/GeneralTestQuestionsView.svelte";
     import GeneralTestResultsView from "./general_test_overview_tabs/results_tab/GeneralTestResultsView.svelte";
-    import { TestCreationMainInfoTabData } from "../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
-    import { GeneralTestCreationQuestionsTabData } from "../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
-    import { GeneralTestCreationResultsTabData } from "../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";
-    import { TestCreationConclusionTabData } from "../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
-    import { TestCreationStylesTabData } from "../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
-    import { TestCreationTagsTabData } from "../../../ts/my_tests_page/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
+    import { TestCreationMainInfoTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationMainInfoTabData";
+    import { GeneralTestCreationQuestionsTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
+    import { GeneralTestCreationResultsTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";
+    import { TestCreationConclusionTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
+    import { TestCreationStylesTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
+    import { TestCreationTagsTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
     export let basepath: string;
     export let testId: string;
     export let updateTestName: (name: string) => void;

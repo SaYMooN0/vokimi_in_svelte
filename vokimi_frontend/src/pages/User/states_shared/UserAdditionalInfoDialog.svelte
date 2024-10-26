@@ -1,7 +1,7 @@
 <script lang="ts">
     import BaseDialog from "../../../components/BaseDialog.svelte";
     import { getErrorFromResponse } from "../../../ts/ErrorResponse";
-    import { UserAdditionalInfo } from "../../../ts/user_page_classes/UserAdditionalInfo";
+    import { UserAdditionalInfo } from "../../../ts/page_classes/user_page_classes/UserAdditionalInfo";
     import { StringUtils } from "../../../ts/utils/StringUtils";
     import FacebookIcon from "../social_icons/FacebookIcon.svelte";
     import OtherLinkIcon from "../social_icons/OtherLinkIcon.svelte";

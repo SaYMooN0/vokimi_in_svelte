@@ -3,9 +3,9 @@
     import GeneralTestCreationOverview from "./general_test_creation_components/GeneralTestCreationOverview.svelte";
     import ScoringTestCreationOverview from "./scoring_test_creation_components/ScoringTestCreationOverview.svelte";
     import { Link } from "svelte-routing";
-    import { GeneralTestCreationOverviewTabs } from "../../ts/my_tests_page/test_creation_overview_tabs/generalTestCreationOverviewTabs";
-    import { ScoringTestCreationOverviewTabs } from "../../ts/my_tests_page/test_creation_overview_tabs/scoringTestCreationOverviewTabs";
     import { TestTemplate } from "../../ts/enums/TestTemplate";
+    import { ScoringTestCreationOverviewTabs } from "../../ts/page_classes/test_creation_page/test_creation_overview_tabs/scoringTestCreationOverviewTabs";
+    import { GeneralTestCreationOverviewTabs } from "../../ts/page_classes/test_creation_page/test_creation_overview_tabs/generalTestCreationOverviewTabs";
 
     export let testId: string;
 

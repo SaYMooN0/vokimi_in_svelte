@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { DraftGeneralTestResultDataToView } from "../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";
+    import type { DraftGeneralTestResultDataToView } from "../../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";
     import { ImgUtils } from "../../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../../ts/utils/StringUtils";
     import ElementEditDeleteActions from "../../../creation_shared_components/ElementEditDeleteActions.svelte";

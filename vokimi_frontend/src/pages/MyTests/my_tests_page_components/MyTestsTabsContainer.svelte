@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { DraftTestBriefInfo } from "../../../ts/my_tests_page/DraftTestBriefInfo";
-    import type { PublishedTestBriefInfo } from "../../../ts/my_tests_page/PublishedTestBriefInfo";
+    import type { DraftTestBriefInfo } from "../../../ts/page_classes/my_tests_page/DraftTestBriefInfo";
+    import type { PublishedTestBriefInfo } from "../../../ts/page_classes/my_tests_page/PublishedTestBriefInfo";
     import DraftTestsTab from "./my_tests_tabs/DraftTestsTab.svelte";
     import PublishedTestsTab from "./my_tests_tabs/PublishedTestsTab.svelte";
     import NewTestCreationDialog from "./new_test_creation_components/NewTestCreationDialog.svelte";

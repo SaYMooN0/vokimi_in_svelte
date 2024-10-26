@@ -1,6 +1,6 @@
 <script lang="ts">
     import { GeneralTestAnswerTypeUtils } from "../../../../../ts/enums/GeneralTestAnswerType";
-    import type { DraftGeneralTestQuestionBriefInfo } from "../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
+    import type { DraftGeneralTestQuestionBriefInfo } from "../../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/questions/GeneralTestCreationQuestionsTabData";
     import ElementEditDeleteActions from "../../../creation_shared_components/ElementEditDeleteActions.svelte";
 
     export let refreshParentComponentAction: () => void;

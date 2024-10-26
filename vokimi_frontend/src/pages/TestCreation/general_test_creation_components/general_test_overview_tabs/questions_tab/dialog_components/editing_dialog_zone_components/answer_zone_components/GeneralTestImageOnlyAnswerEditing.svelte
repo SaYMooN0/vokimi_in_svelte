@@ -1,6 +1,6 @@
 <script lang="ts">
     import { getErrorFromResponse } from "../../../../../../../../ts/ErrorResponse";
-    import type { DraftGeneralTestImageOnlyAnswerFormData } from "../../../../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestImageOnlyAnswerFormData";
+    import type { DraftGeneralTestImageOnlyAnswerFormData } from "../../../../../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestImageOnlyAnswerFormData";
     import { ImgUtils } from "../../../../../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../../../../../ts/utils/StringUtils";
 

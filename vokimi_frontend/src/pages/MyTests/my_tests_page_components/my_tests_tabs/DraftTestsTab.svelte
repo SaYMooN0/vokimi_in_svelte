@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { PrivacyValuesUtils } from "../../../../ts/enums/PrivacyValues";
     import { TestTemplateUtils } from "../../../../ts/enums/TestTemplate";
     import { Err } from "../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
-    import { DraftTestBriefInfo } from "../../../../ts/my_tests_page/DraftTestBriefInfo";
+    import { DraftTestBriefInfo } from "../../../../ts/page_classes/my_tests_page/DraftTestBriefInfo";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
     import DraftTestActionsMenu from "./DraftTestActionsMenu.svelte";

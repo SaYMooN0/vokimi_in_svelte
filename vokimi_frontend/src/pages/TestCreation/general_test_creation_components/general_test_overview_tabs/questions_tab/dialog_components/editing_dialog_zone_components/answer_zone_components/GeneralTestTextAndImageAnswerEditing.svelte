@@ -3,7 +3,7 @@
     import { ImgUtils } from "../../../../../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../../../../../ts/utils/StringUtils";
     import { getErrorFromResponse } from "../../../../../../../../ts/ErrorResponse";
-    import type { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
+    import type { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
     export let answerData: DraftGeneralTestTextAndImageAnswerFormData;
     export let questionId: string;
     let id: string = StringUtils.randomString(8);

@@ -1,9 +1,9 @@
 <script lang="ts">
     import { GeneralTestAnswerType } from "../../../../../../../ts/enums/GeneralTestAnswerType";
-    import { DraftGeneralTestImageOnlyAnswerFormData } from "../../../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestImageOnlyAnswerFormData";
-    import { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
-    import { DraftGeneralTestTextOnlyAnswerFormData } from "../../../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextOnlyAnswerFormData";
-    import type { IDraftGeneralTestAnswerFormData } from "../../../../../../../ts/my_tests_page/test_creation_tabs_classes/general_test_creation/questions/answers/IDraftGeneralTestAnswerFormData";
+    import { DraftGeneralTestImageOnlyAnswerFormData } from "../../../../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestImageOnlyAnswerFormData";
+    import { DraftGeneralTestTextAndImageAnswerFormData } from "../../../../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextAndImageAnswerFormData";
+    import { DraftGeneralTestTextOnlyAnswerFormData } from "../../../../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/questions/answers/DraftGeneralTestTextOnlyAnswerFormData";
+    import type { IDraftGeneralTestAnswerFormData } from "../../../../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/questions/answers/IDraftGeneralTestAnswerFormData";
     import AnswerResultsEditingComponent from "./answer_zone_components/AnswerResultsEditingComponent.svelte";
     import GeneralTestImageOnlyAnswerEditing from "./answer_zone_components/GeneralTestImageOnlyAnswerEditing.svelte";
     import GeneralTestTextAndImageAnswerEditing from "./answer_zone_components/GeneralTestTextAndImageAnswerEditing.svelte";
