@@ -1,0 +1,12 @@
+﻿using vokimi_api.Endpoints.pages;
+
+namespace vokimi_api.EndpointsMappers.pages
+{
+    public static class TestTakingPageEndpointsMapper
+    {
+        public static void MapAll(WebApplication app) {
+            app.MapGet("/testTaking/loadTestTakingData/{userId}", TestTakingPageEndpoints.LoadTestTakingData);
+
+        }
+    }
+}

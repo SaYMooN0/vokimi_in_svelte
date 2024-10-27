@@ -14,52 +14,6 @@ namespace vokimi_api.Endpoints.pages
 {
     public static class ViewTestPageEndpoints
     {
-        private static bool CheckUserAccessToTest(
-            AppDbContext db,
-            AppUserId testCreatorId,
-            PrivacyValues testPrivacy,
-            AppUserId viewerId
-        ) {
-            if (testPrivacy == PrivacyValues.Anyone) {
-                return true;
-            }
-
-            if (testCreatorId == viewerId) {
-                return true;
-            }
-
-            if (testPrivacy == PrivacyValues.ForMyself) {
-                return false;
-            }
-
-            if (testPrivacy == PrivacyValues.FriendsOnly) {
-                var creatorFriendIds = db.AppUsers
-                    .Where(u => u.Id == testCreatorId)
-                    .Select(u => u.Friends.Select(f => f.Id))
-                    .FirstOrDefault();
-                if (creatorFriendIds is null) {
-                    return false;
-                }
-
-                return creatorFriendIds.Contains(viewerId);
-            }
-
-            if (testPrivacy == PrivacyValues.FriendsAndFollowers) {
-                var creatorFriendAndFollowerIds = db.AppUsers
-                    .Where(u => u.Id == testCreatorId)
-                    .Select(u => u.Friends.Select(f => f.Id)
-                    .Union(u.Followers.Select(f => f.Id)))
-                    .FirstOrDefault();
-
-                if (creatorFriendAndFollowerIds is null) {
-                    return false;
-                }
-
-                return creatorFriendAndFollowerIds.Contains(viewerId);
-            }
-            return false;
-        }
-
         public static IResult CheckTestViewPermission(
             string testId,
             IDbContextFactory<AppDbContext> dbFactory,
@@ -79,7 +33,7 @@ namespace vokimi_api.Endpoints.pages
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = CheckUserAccessToTest(db, test.CreatorId, test.Privacy, viewerId);
+                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Privacy, viewerId);
                 } else {
                     haveAccess = test.Privacy == PrivacyValues.Anyone;
                 }
@@ -118,7 +72,7 @@ namespace vokimi_api.Endpoints.pages
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = CheckUserAccessToTest(db, test.CreatorId, test.Privacy, viewerId);
+                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Privacy, viewerId);
                 } else {
                     haveAccess = test.Privacy == PrivacyValues.Anyone;
                 }
