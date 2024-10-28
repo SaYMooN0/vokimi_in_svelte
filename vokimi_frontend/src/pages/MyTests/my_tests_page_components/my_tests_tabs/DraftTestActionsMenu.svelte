@@ -24,12 +24,12 @@
     }
 
     function ToEditingAction() {
-        navigate(`/testCreation/${currentTestId}/main-info-view`);
+        navigate(`/test-creation/${currentTestId}/main-info-view`);
         closeMenu();
     }
 
     function PublishAction() {
-        navigate(`/testCreation/${currentTestId}/view-publish`);
+        navigate(`/test-creation/${currentTestId}/view-publish`);
         closeMenu();
     }
 

@@ -195,7 +195,6 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 }
 
                 if (!q.IsSingleChoice) {
-                    problems.Add(withErrPrefix("question is multiple choice but don't have needed multiple choice data"));
                     if (q.MaxAnswersCount > q.Answers.Count) {
                         problems.Add(withErrPrefix("maximum answers count cannot be less than total answers count"));
                     }
@@ -384,7 +383,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                         await db.SaveChangesAsync();
                         await transaction.CommitAsync();
                         return Results.Ok(new {
-                            TestId = publishingData.TestId,
+                            TestId = publishingData.TestId.Value.ToString(),
                             TestName = publishingData.TestName,
                         });
 

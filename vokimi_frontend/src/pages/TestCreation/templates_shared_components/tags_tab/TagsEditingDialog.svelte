@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onDestroy } from "svelte";
-    import type { TestCreationTagsTabData } from "../../../../ts/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
+    import type { TestCreationTagsTabData } from "../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
 
     export let updateParentElementData: () => void;
     export let testId: string;

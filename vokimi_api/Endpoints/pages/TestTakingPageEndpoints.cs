@@ -51,6 +51,7 @@ namespace vokimi_api.Endpoints.pages
         private static IResult LoadGeneralTestTakingData(TestId testId, AppDbContext db) {
             TestGeneralTemplate? test = db.TestsGeneralType
                 .Include(t => t.Conclusion)
+                .Include(t=>t.StylesSheet)
                 .Include(t => t.Questions)
                     .ThenInclude(q => q.Answers)
                         .ThenInclude(a => a.TypeSpecificInfo)
@@ -61,7 +62,7 @@ namespace vokimi_api.Endpoints.pages
             if (test is null) {
                 return Results.Ok(ViewTestAccessCheckResponse.TestNotFound());
             }
-            return Results.Ok(GeneralTestTakingData.FromGeneralTest(test)wo;
+            return Results.Ok(GeneralTestTakingData.FromGeneralTest(test));
         }
     }
 }

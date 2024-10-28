@@ -4,7 +4,7 @@
         string Text,
         string Image,
         ushort OrderInQuestion,
-        string[] RelatedResults
+        string[] RelatedResultIds
     ) : IGeneralTestTakingAnswerData
     {
         public static GeneralTestTakingTextAndImageAnswerData FromAnswer(

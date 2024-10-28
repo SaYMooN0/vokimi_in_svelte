@@ -1,6 +1,15 @@
 <script lang="ts">
+    import { navigate } from "svelte-routing";
+
     export let publishedTestId: string = "";
     export let publishedTestName: string = "";
+    let newPostMakingErr: string = "";
+    function MakeNewPost() {
+        newPostMakingErr = "Not implemented T_T";
+    }
+    function GoToTestPage() {
+        navigate(`/view-test/${publishedTestId}`);
+    }
 </script>
 
 <h2 class="test-published-message">
@@ -9,8 +18,13 @@
 </h2>
 <p class="new-post-p">Would you like to make a post about it?</p>
 
-<div class="new-post-btn unselectable">Make new post</div>
-<label class="test-view-link unselectable">Go to the test page</label>
+<button class="new-post-btn unselectable" on:click={MakeNewPost}>
+    Make new post</button
+>
+<p class="new-post-err-p">{newPostMakingErr}</p>
+<label class="test-view-link unselectable" on:click={GoToTestPage}>
+    Go to the test page
+</label>
 
 <style>
     .test-published-message {

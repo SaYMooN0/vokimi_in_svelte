@@ -7,25 +7,39 @@
     export let accentColor: string;
     export let arrowsType: TestStylesArrowType;
     export let showPreviousButton: boolean;
+    export let prevButtonOnclickAction: () => void;
     export let showNextButton: boolean;
+    export let nextButtonOnclickAction: () => void;
 </script>
 
 <div class="test-taking-frame">
     <slot name="top-content" />
     <slot name="main-content" />
     <div class="control-btns">
-        <button class="prev-btn">
-            <svelte:component
-                this={TestStylesArrowTypeUtils.getIcon(arrowsType)}
-            />
-            <label>Previous</label>
-        </button>
-        <button class="next-btn">
-            <svelte:component
-                this={TestStylesArrowTypeUtils.getIcon(arrowsType)}
-            />
-            <label>Next</label>
-        </button>
+        {#if showPreviousButton}
+            <button
+                class="prev-btn"
+                style="background-color: {accentColor};"
+                on:click={prevButtonOnclickAction}
+            >
+                <svelte:component
+                    this={TestStylesArrowTypeUtils.getIcon(arrowsType)}
+                />
+                <span>Previous</span>
+            </button>
+        {/if}
+        {#if showNextButton}
+            <button
+                class="next-btn"
+                style="background-color: {accentColor};"
+                on:click={nextButtonOnclickAction}
+            >
+                <svelte:component
+                    this={TestStylesArrowTypeUtils.getIcon(arrowsType)}
+                />
+                <span>Next</span>
+            </button>
+        {/if}
     </div>
 </div>
 
@@ -40,6 +54,7 @@
         width: 240px;
         height: 48px;
         display: grid;
+        color: var(--back-main);
     }
     .prev-btn {
         grid-template-columns: auto 1fr;

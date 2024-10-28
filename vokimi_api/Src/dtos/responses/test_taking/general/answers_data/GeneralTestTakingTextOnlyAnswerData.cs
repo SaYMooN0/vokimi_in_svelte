@@ -3,7 +3,7 @@
     public record class GeneralTestTakingTextOnlyAnswerData(
         string Text,
         ushort OrderInQuestion,
-        string[] RelatedResults
+        string[] RelatedResultIds
     ) : IGeneralTestTakingAnswerData
     {
         public static GeneralTestTakingTextOnlyAnswerData FromAnswer(

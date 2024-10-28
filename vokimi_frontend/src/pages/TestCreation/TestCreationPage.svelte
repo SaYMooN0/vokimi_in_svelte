@@ -12,7 +12,7 @@
     let template: TestTemplate;
     let testName: string;
     let isCreator: boolean = false;
-    let basepath = `/testCreation/${testId}`;
+    let basepath = `/test-creation/${testId}`;
 
     async function loadTestOverviewInfo(viewerId: string | undefined) {
         if (!viewerId) {

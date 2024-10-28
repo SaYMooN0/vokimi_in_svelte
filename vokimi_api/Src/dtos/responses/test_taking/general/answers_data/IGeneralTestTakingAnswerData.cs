@@ -2,7 +2,7 @@
 {
     public interface IGeneralTestTakingAnswerData
     {
-        public string[] RelatedResults { get; init; }
+        public string[] RelatedResultIds { get; init; }
         public ushort OrderInQuestion { get; init; }
     }
 }

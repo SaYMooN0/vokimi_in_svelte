@@ -5,6 +5,8 @@ namespace vokimi_api.Src.dtos.responses.test_taking
     public interface ITestTakingDataResponse
     {
         public string TestTemplate { get; init; }
+        public string AccentColor { get; init; }
+        public string ArrowIcons { get; init; }
         public TestTakingConclusionData? ConclusionData { get; init; }
     }
     public record class TestTakingConclusionData(

@@ -46,7 +46,7 @@
                 body: JSON.stringify({
                     testId: testId,
                     name: testName.trim(),
-                    description: description.trim(),
+                    description: description?.trim() ?? "",
                     language: language,
                     privacy: privacy,
                 }),
