@@ -1,6 +1,10 @@
 <script lang="ts">
     import TestAccessPageContainer from "../../components/test_access_page_container/TestAccessPageContainer.svelte";
     import {
+        TestStylesArrowType,
+        TestStylesArrowTypeUtils,
+    } from "../../ts/enums/TestStylesArrowType";
+    import {
         TestTemplate,
         TestTemplateUtils,
     } from "../../ts/enums/TestTemplate";
@@ -11,20 +15,19 @@
     export let testId: string;
 
     async function loadTestTakingData(): Promise<Err | GeneralTestTakingData> {
-        console.log(testId);
         const response = await fetch(
             "/api/testTaking/loadTestTakingData/" + testId,
         );
         if (response.ok) {
-            const data = await response.json();
+            const data = JSON.parse(await response.json());
             const t: TestTemplate = TestTemplateUtils.fromId(data.testTemplate);
             switch (t) {
                 case TestTemplate.General:
                     return new GeneralTestTakingData(
-                        data.testName,
-                        data.testTemplate,
-                        data.testDescription,
-                        data.testQuestions,
+                        data.accentColor,
+                        TestStylesArrowTypeUtils.fromId(data.arrowType),
+                        data.conclusionData,
+                        data.questions,
                     );
                 case TestTemplate.Scoring:
                     return new Err("Scoring tests are not implemented yet");
@@ -48,20 +51,26 @@
 </script>
 
 <TestAccessPageContainer {testId}>
-    {#await loadTestTakingData() then loadDataRes}
-        {#if loadDataRes instanceof Err}
-            <div class="loading-err-div">
-                <p class="loading-err-p">{loadDataRes.toString()}</p>
-            </div>
-        {:else if loadDataRes instanceof GeneralTestTakingData}
-            <TestTakingForGeneralTemplate testTakingData={loadDataRes} />
-        {:else}
-            <p>Not implemented test template</p>
-        {/if}
-    {/await}
+    <div class="page-frame">
+        {#await loadTestTakingData() then loadDataRes}
+            {#if loadDataRes instanceof Err}
+                <div class="loading-err-div">
+                    <p class="loading-err-p">{loadDataRes.toString()}</p>
+                </div>
+            {:else if loadDataRes instanceof GeneralTestTakingData}
+                <TestTakingForGeneralTemplate testTakingData={loadDataRes} />
+            {:else}
+                <p>Not implemented test template</p>
+            {/if}
+        {/await}
+    </div>
 </TestAccessPageContainer>
 
 <style>
+    .page-frame {
+        margin: 20px auto;
+        max-width: calc(74vw + 140px);
+    }
     .loading-err-div {
         position: absolute;
         top: 40%;

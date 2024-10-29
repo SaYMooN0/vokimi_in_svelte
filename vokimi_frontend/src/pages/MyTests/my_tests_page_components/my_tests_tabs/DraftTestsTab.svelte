@@ -15,7 +15,9 @@
             return Err.none();
         }
 
-        const response = await fetch("/api/userTests/getUserDraftTestsBriefInfo");
+        const response = await fetch(
+            "/api/userTests/getUserDraftTestsBriefInfo",
+        );
         if (response.status == 200) {
             const data = await response.json();
             draftTests = data.map(
@@ -43,60 +45,69 @@
     fetchTestsFunc={fetchDraftTests}
     yourTestsLabel="Your draft tests:"
 >
-    <div class="draft-tests-container">
-        {#each draftTests as test}
-            <a href="/test-creation/{test.id}/main-info-view" class="test-view">
-                <div class="cover-container unselectable">
-                    <img
-                        class="cover"
-                        src={ImgUtils.imgUrl(test.cover)}
-                        alt="test cover"
-                    />
-                </div>
-                <div class="main-info-container">
-                    <p class="test-name">{test.name}</p>
-                    <p class="test-template">
-                        Template: {TestTemplateUtils.getFullName(test.template)}
-                    </p>
-                    <p class="description">
-                        {StringUtils.isNullOrWhiteSpace(test.description)
-                            ? "Description: (None)"
-                            : test.description}
-                    </p>
-                </div>
-                <svg
-                    class="actions-btn"
-                    on:click|stopPropagation|preventDefault={(event) =>
-                        draftTestsActionsMenu.open(test.id, event)}
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
+    {#if draftTests.length > 0}
+        <div class="draft-tests-container">
+            {#each draftTests as test}
+                <a
+                    href="/test-creation/{test.id}/main-info-view"
+                    class="test-view"
                 >
-                    <path
-                        d="M11.9959 12H12.0049"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                    <path
-                        d="M17.9998 12H18.0088"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                    <path
-                        d="M5.99981 12H6.00879"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </svg>
-            </a>
-        {/each}
-    </div>
+                    <div class="cover-container unselectable">
+                        <img
+                            class="cover"
+                            src={ImgUtils.imgUrl(test.cover)}
+                            alt="test cover"
+                        />
+                    </div>
+                    <div class="main-info-container">
+                        <p class="test-name">{test.name}</p>
+                        <p class="test-template">
+                            Template: {TestTemplateUtils.getFullName(
+                                test.template,
+                            )}
+                        </p>
+                        <p class="description">
+                            {StringUtils.isNullOrWhiteSpace(test.description)
+                                ? "Description: (None)"
+                                : test.description}
+                        </p>
+                    </div>
+                    <svg
+                        class="actions-btn"
+                        on:click|stopPropagation|preventDefault={(event) =>
+                            draftTestsActionsMenu.open(test.id, event)}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+                        <path
+                            d="M11.9959 12H12.0049"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            d="M17.9998 12H18.0088"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            d="M5.99981 12H6.00879"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                    </svg>
+                </a>
+            {/each}
+        </div>
+    {:else}
+        You don't have any draft tests
+    {/if}
 </TestsTabContentWrapper>
 
 <style>

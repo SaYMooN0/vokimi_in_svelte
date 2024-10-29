@@ -12,11 +12,9 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_rel
         public GeneralTestAnswerType AnswersType { get; init; }
         public ushort OrderInTest { get; init; }
         public virtual ICollection<GeneralTestAnswer> Answers { get; protected set; } = [];
+        public ushort MinAnswersCount { get; init; }
+        public ushort MaxAnswersCount { get; init; }
 
-        //if both equals to 1 then question is single choice
-        public ushort MinAnswersCount { get; private set; }
-        public ushort MaxAnswersCount { get; private set; }
-            
         public bool IsSingleChoice => MinAnswersCount == 1 && MaxAnswersCount == 1;
 
 
@@ -26,14 +24,18 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_rel
             string text,
             string? imagePath,
             GeneralTestAnswerType answersType,
-            ushort orderInTest
+            ushort orderInTest,
+            ushort minAnswersCount,
+            ushort maxAnswersCount
         ) => new() {
             Id = id,
             TestId = testId,
             Text = text,
             ImagePath = imagePath,
             AnswersType = answersType,
-            OrderInTest = orderInTest
+            OrderInTest = orderInTest,
+            MinAnswersCount = minAnswersCount,
+            MaxAnswersCount = maxAnswersCount
         };
 
     }

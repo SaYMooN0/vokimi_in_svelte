@@ -467,7 +467,9 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     draftQuestion.Text,
                     questionImg,
                     draftQuestion.AnswersType,
-                    questionOrder
+                    questionOrder,
+                    draftQuestion.MinAnswersCount,
+                    draftQuestion.MaxAnswersCount
                 );
                 db.GeneralTestQuestions.Add(questionToPublish);
 

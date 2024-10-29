@@ -1,16 +1,18 @@
-﻿namespace vokimi_api.Src.dtos.responses.test_taking.general.answers_data
+﻿using vokimi_api.Src.db_related.db_entities_ids;
+
+namespace vokimi_api.Src.dtos.responses.test_taking.general.answers_data
 {
     public record class GeneralTestTakingTextOnlyAnswerData(
         string Text,
         ushort OrderInQuestion,
-        string[] RelatedResultIds
+        string AnswerId
     ) : IGeneralTestTakingAnswerData
     {
         public static GeneralTestTakingTextOnlyAnswerData FromAnswer(
             string text,
             ushort orderInQuestion,
-            string[] relatedResults
+            GeneralTestAnswerId answerId
         ) =>
-            new(text, orderInQuestion, relatedResults);
+            new(text, orderInQuestion, answerId.Value.ToString());
     }
 }

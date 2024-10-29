@@ -9,6 +9,7 @@ using vokimi_api.Src.extension_classes;
 using VokimiShared.src.models.db_classes.test.test_types;
 using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
 using vokimi_api.Src.dtos.responses.test_taking;
+using vokimi_api.Src.dtos.responses.test_creation_responses.general;
 
 namespace vokimi_api.Endpoints.pages
 {
@@ -55,14 +56,18 @@ namespace vokimi_api.Endpoints.pages
                 .Include(t => t.Questions)
                     .ThenInclude(q => q.Answers)
                         .ThenInclude(a => a.TypeSpecificInfo)
-                .Include(t => t.Questions)
-                    .ThenInclude(q => q.Answers)
-                        .ThenInclude(a => a.RelatedResults)
                 .FirstOrDefault(t => t.Id == testId);
             if (test is null) {
                 return Results.Ok(ViewTestAccessCheckResponse.TestNotFound());
             }
-            return Results.Ok(GeneralTestTakingData.FromGeneralTest(test));
+            string jsonOutput = Newtonsoft.Json.JsonConvert.SerializeObject(
+                        GeneralTestTakingData.FromGeneralTest(test),
+                        new Newtonsoft.Json.JsonSerializerSettings() {
+                            Formatting = Newtonsoft.Json.Formatting.Indented,
+                            ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+                        }
+                    );
+            return Results.Ok(jsonOutput);
         }
     }
 }

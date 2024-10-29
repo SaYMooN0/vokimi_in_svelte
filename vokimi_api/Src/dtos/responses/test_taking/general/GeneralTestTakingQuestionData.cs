@@ -32,14 +32,14 @@ namespace vokimi_api.Src.dtos.responses.test_taking.general
                     a => GeneralTestTakingTextOnlyAnswerData.FromAnswer(
                         (a.TypeSpecificInfo as TextOnlyAnswerTypeSpecificInfo).Text,
                         a.OrderInQuestion,
-                        ExtractAnswerRelatedResults(a)
+                        a.Id
                     )
                 ).ToArray(),
                 GeneralTestAnswerType.ImageOnly => question.Answers.Select(
                     a => GeneralTestTakingImageOnlyAnswerData.FromAnswer(
                         (a.TypeSpecificInfo as ImageOnlyAnswerTypeSpecificInfo).ImagePath,
                         a.OrderInQuestion,
-                        ExtractAnswerRelatedResults(a)
+                        a.Id
                  )
              ).ToArray(),
                 GeneralTestAnswerType.TextAndImage => question.Answers.Select(
@@ -47,12 +47,10 @@ namespace vokimi_api.Src.dtos.responses.test_taking.general
                         (a.TypeSpecificInfo as TextAndImageAnswerTypeSpecificInfo).Text,
                         (a.TypeSpecificInfo as TextAndImageAnswerTypeSpecificInfo).ImagePath,
                         a.OrderInQuestion,
-                        ExtractAnswerRelatedResults(a)
+                        a.Id
                  )
              ).ToArray(),
                 _ => throw new ArgumentException($"Unknown answers type: {question.AnswersType}")
             };
-        private static string[] ExtractAnswerRelatedResults(GeneralTestAnswer answer) =>
-            answer.RelatedResults.Select(r => r.Id.Value.ToString()).ToArray();
     }
 }

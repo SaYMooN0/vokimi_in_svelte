@@ -1,4 +1,5 @@
-import type { IGeneralTestTakingAnswerData } from "./GeneralTestTakingAnswersData";
+import { GeneralTestAnswerType, GeneralTestAnswerTypeUtils } from "../../../enums/GeneralTestAnswerType";
+import type { BaseGeneralTestTakingAnswerData } from "./GeneralTestTakingAnswersData";
 
 export class GeneralTestTakingQuestionData {
     readonly text: string;
@@ -7,8 +8,8 @@ export class GeneralTestTakingQuestionData {
     readonly minAnswersCount: number;
     readonly maxAnswersCount: number;
     readonly isSingleChoice: boolean;
-    readonly answersType: string;
-    readonly answers: IGeneralTestTakingAnswerData[];
+    readonly answersType: GeneralTestAnswerType;
+    readonly answers: BaseGeneralTestTakingAnswerData[];
 
     constructor(
         text: string,
@@ -18,7 +19,7 @@ export class GeneralTestTakingQuestionData {
         maxAnswersCount: number,
         isSingleChoice: boolean,
         answersType: string,
-        answers: IGeneralTestTakingAnswerData[]
+        answers: BaseGeneralTestTakingAnswerData[]
     ) {
         this.text = text;
         this.image = image;
@@ -26,7 +27,7 @@ export class GeneralTestTakingQuestionData {
         this.minAnswersCount = minAnswersCount;
         this.maxAnswersCount = maxAnswersCount;
         this.isSingleChoice = isSingleChoice;
-        this.answersType = answersType;
+        this.answersType = GeneralTestAnswerTypeUtils.fromId(answersType);
         this.answers = answers;
     }
 }
