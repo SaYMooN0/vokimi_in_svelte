@@ -5,7 +5,7 @@
     export let answers: GeneralTestTakingTextOnlyAnswerData[];
 </script>
 
-{#each answers as answer}
+{#each answers.sort((a, b) => a.orderInQuestion - b.orderInQuestion) as answer}
     <p class="answer-btn" on:click={() => onAnswerClick(answer.id)}>
         {answer.text}
     </p>

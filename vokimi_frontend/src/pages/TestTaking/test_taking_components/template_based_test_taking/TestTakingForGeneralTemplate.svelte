@@ -1,10 +1,12 @@
 <script lang="ts">
     import { TestStylesArrowTypeUtils } from "../../../../ts/enums/TestStylesArrowType";
+    import { Err } from "../../../../ts/Err";
     import type { GeneralTestTakingData } from "../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingData";
     import GeneralTestAnswersDisplay from "../general_test_taking_components/GeneralTestAnswersDisplay.svelte";
     import GeneralTestQuestionDisplay from "../general_test_taking_components/GeneralTestQuestionDisplay.svelte";
 
     export let testTakingData: GeneralTestTakingData;
+    export let chosenAnswers: [string[]];
     console.log(testTakingData);
     let currentQuestion = 0; //if this is greater than total questions - 1, than its conclusion or test is over
     function prevBtnClicked() {
@@ -14,12 +16,28 @@
         currentQuestion--;
     }
     function nextBtnClicked() {
-        if (currentQuestion == testTakingData.questions.length) {
-            //validate chosen answers
+        if (currentQuestion >= testTakingData.questions.length) {
             return;
         }
-        currentQuestion++;
+        answersChoosingErr = "";
+        const minAnswersCount =
+            testTakingData.questions[currentQuestion].minAnswersCount;
+        const maxAnswersCount =
+            testTakingData.questions[currentQuestion].maxAnswersCount;
+        const answers = answersChoosingComponents.getChosenAnswers(
+            minAnswersCount,
+            maxAnswersCount,
+        );
+        if (answers instanceof Err) {
+            answersChoosingErr = answers.toString();
+            return;
+        } else {
+            chosenAnswers[currentQuestion] = answers;
+            currentQuestion++;
+        }
     }
+    let answersChoosingErr = "";
+    let answersChoosingComponents: GeneralTestAnswersDisplay;
     let backgroundColorAccent =
         "background-color:" + testTakingData.accentColor;
 </script>
@@ -38,10 +56,12 @@
         />
 
         <GeneralTestAnswersDisplay
+            bind:this={answersChoosingComponents}
             answers={testTakingData.questions[currentQuestion].answers}
             isSingleChoice={testTakingData.questions[currentQuestion]
                 .isSingleChoice}
             answersType={testTakingData.questions[currentQuestion].answersType}
+            chosenAnswersIds={chosenAnswers[currentQuestion]}
         />
     {:else}
         Conclusion:

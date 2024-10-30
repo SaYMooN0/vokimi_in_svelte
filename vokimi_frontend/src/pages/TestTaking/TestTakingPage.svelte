@@ -11,6 +11,7 @@
     import { Err } from "../../ts/Err";
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
     import { GeneralTestTakingData } from "../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingData";
+    import { GeneralTestTakingQuestionData } from "../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingQuestionData";
     import TestTakingForGeneralTemplate from "./test_taking_components/template_based_test_taking/TestTakingForGeneralTemplate.svelte";
     export let testId: string;
 
@@ -27,7 +28,10 @@
                         data.accentColor,
                         TestStylesArrowTypeUtils.fromId(data.arrowType),
                         data.conclusionData,
-                        data.questions,
+                        data.questions.sort(
+                            (a: GeneralTestTakingQuestionData, b: GeneralTestTakingQuestionData) =>
+                                a.orderInTest - b.orderInTest,
+                        ),
                     );
                 case TestTemplate.Scoring:
                     return new Err("Scoring tests are not implemented yet");
