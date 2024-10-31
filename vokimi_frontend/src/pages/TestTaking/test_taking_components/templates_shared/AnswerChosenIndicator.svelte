@@ -9,29 +9,34 @@
     class:single-choice={isSingleChoice}
     class:multiple-choice={!isSingleChoice}
 >
-    <span></span>
+    <div></div>
 </div>
 
 <style>
     .is-chosen-indicator {
-        padding: 2px;
-        height: 32px;
+        box-sizing: border-box;
+        padding: 4px;
+        height: 24px;
         aspect-ratio: 1/1;
         background-color: var(--back-secondary);
+        border: 2px solid transparent;
     }
-    .is-chosen-indicator span {
+    .is-chosen-indicator div {
         border-radius: inherit;
         height: 100%;
         width: 100%;
         background-color: transparent;
     }
-    .is-chosen span {
-        background-color: var(--accent);
+    .is-chosen {
+        border-color: var(--primary);
+    }
+    .is-chosen div {
+        background-color: var(--primary) !important;
     }
     .single-choice {
         border-radius: 50%;
     }
     .multiple-choice {
-        border-radius: 2%;
+        border-radius: 20%;
     }
 </style>

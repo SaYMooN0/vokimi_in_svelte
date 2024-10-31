@@ -1,9 +1,9 @@
 export abstract class BaseGeneralTestTakingAnswerData {
     readonly orderInQuestion: number
-    readonly id: string
+    readonly answerId: string
     constructor(orderInQuestion: number, answerId: string) {
         this.orderInQuestion = orderInQuestion == 0 ? Math.floor(Math.random() * 1000) : orderInQuestion;
-        this.id = answerId;
+        this.answerId = answerId;
     }
 }
 export class GeneralTestTakingImageOnlyAnswerData extends BaseGeneralTestTakingAnswerData {

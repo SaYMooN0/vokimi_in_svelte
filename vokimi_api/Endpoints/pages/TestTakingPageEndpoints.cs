@@ -10,6 +10,8 @@ using VokimiShared.src.models.db_classes.test.test_types;
 using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
 using vokimi_api.Src.dtos.responses.test_taking;
 using vokimi_api.Src.dtos.responses.test_creation_responses.general;
+using vokimi_api.Src.dtos.requests;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace vokimi_api.Endpoints.pages
 {
@@ -68,6 +70,12 @@ namespace vokimi_api.Endpoints.pages
                         }
                     );
             return Results.Ok(jsonOutput);
+        }
+        public static IResult GeneralTestTakenRequest(GeneralTestTakenRequest takenRequest) {
+            //only if user has access
+            return Results.Ok();
+
+            //return TestTakenSuccessfullyResponse()
         }
     }
 }

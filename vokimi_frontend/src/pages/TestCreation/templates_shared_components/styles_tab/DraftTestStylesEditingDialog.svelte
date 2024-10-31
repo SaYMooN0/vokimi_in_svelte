@@ -56,7 +56,6 @@
         }
         if (defaultStylesData) {
             stylesDataToEdit = defaultStylesData.copy();
-            console.log(stylesDataToEdit);
         }
     }
 </script>

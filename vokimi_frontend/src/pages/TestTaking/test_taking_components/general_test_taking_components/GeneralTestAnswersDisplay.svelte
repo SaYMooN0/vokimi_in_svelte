@@ -24,7 +24,9 @@
         } else if (isSingleChoice && !wasChosen) {
             chosenAnswersIds = [answerId];
         } else if (wasChosen) {
-            chosenAnswersIds = chosenAnswersIds.filter((a) => a !== answerId);
+            chosenAnswersIds = chosenAnswersIds
+                .filter((a) => a !== answerId)
+                .slice();
         } else {
             chosenAnswersIds = [...chosenAnswersIds, answerId];
         }
@@ -59,16 +61,22 @@
     <TextOnlyAnswersDisplay
         onAnswerClick={handleAnswerClick}
         answers={extractTextOnlyAnswers()}
+        {isSingleChoice}
+        {chosenAnswersIds}
     />
 {:else if answersType === GeneralTestAnswerType.ImageOnly}
     <ImageOnlyAnswersDisplay
         onAnswerClick={handleAnswerClick}
         answers={extractImageOnlyAnswers()}
+        {isSingleChoice}
+        {chosenAnswersIds}
     />
 {:else if answersType === GeneralTestAnswerType.TextAndImage}
     <TextAndImageAnswersDisplay
         onAnswerClick={handleAnswerClick}
         answers={extractTextAndImageAnswers()}
+        {isSingleChoice}
+        {chosenAnswersIds}
     />
 {:else}
     <p>Unable to render question answers</p>

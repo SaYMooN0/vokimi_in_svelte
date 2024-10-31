@@ -32,7 +32,6 @@
         );
         if (response.ok) {
             publishingProblems = await response.json();
-            console.log(publishingProblems);
         } else if (response.status === 400) {
             errorMessage = await getErrorFromResponse(response);
         } else {

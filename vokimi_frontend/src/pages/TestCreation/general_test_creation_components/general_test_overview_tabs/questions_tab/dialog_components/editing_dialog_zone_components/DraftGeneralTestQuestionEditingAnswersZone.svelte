@@ -80,7 +80,7 @@
         return answersType === GeneralTestAnswerType.ImageOnly;
     }
 
-    console.log(answers);
+
 </script>
 
 <ResultAddingDialog

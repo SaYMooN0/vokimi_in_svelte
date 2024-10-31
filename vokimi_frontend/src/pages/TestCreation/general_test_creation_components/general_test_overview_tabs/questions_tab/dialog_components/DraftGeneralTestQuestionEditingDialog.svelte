@@ -65,7 +65,6 @@
             dialogElement.setErrorMessage(dataErr.toString());
             return;
         }
-        console.log(JSON.stringify(questionData));
         const url =
             "/api/testCreation/general/saveChangesForDraftGeneralTestQuestion/" +
             questionData.answersType;
@@ -111,10 +110,7 @@
                 );
             }
             if (questionData.maxAnswersCount > questionData.answers.length) {
-                console.log(
-                    questionData.maxAnswersCount,
-                    questionData.answers.length,
-                );
+     
                 return new Err(
                     "Maximum answers count cannot be more than total number of answers",
                 );
