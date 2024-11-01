@@ -10,6 +10,7 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_rel
         public string Text { get; init; }
         public string? ImagePath { get; init; }
         public virtual ICollection<GeneralTestAnswer> AnswersLeadingToResult { get; protected set; } = [];
+        //public virtual ICollection<GeneralTestTakenRecord> TestTakenRecordsWithThisResult { get; protected set; } = [];
 
         public static GeneralTestResult CreateNew(
             GeneralTestResultId id,

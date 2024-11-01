@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { ImgUtils } from "../../../../ts/utils/ImgUtils";
-    import { StringUtils } from "../../../../ts/utils/StringUtils";
+    import { ImgUtils } from "../../../../../ts/utils/ImgUtils";
+    import { StringUtils } from "../../../../../ts/utils/StringUtils";
 
     export let questionNumber: number;
     export let totalQuestions: number;

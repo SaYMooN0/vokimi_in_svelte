@@ -1,13 +1,49 @@
-﻿namespace vokimi_api.Src.dtos.requests
+﻿using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
+using vokimi_api.Src.db_related.db_entities_ids;
+
+namespace vokimi_api.Src.dtos.requests
 {
     public record class GeneralTestTakenRequest(
         string TestId,
-        Dictionary<int, string> ChosenAnswers,
+        Dictionary<int, string[]> ChosenAnswers,
         string? TestFeedback
     )
     {
-        public static Err Validate() {
+        public Err CheckRequestForErr() {
+            if (GetParsedId() is null) {
+                return new Err("Unable to record test completion because of incorrect test data transfer");
+            }
+            if (GetParsedAnswers().Count == 0) {
+                return new Err("Unable to record test completion because of incorrectly saved answers ");
+            }
             return Err.None;
+
+        }
+      
+        public TestId? GetParsedId() {
+            if (Guid.TryParse(TestId, out var id)) {
+                return new TestId(id);
+            } else {
+                return null;
+            }
+        }
+        public Dictionary<int, GeneralTestAnswerId[]> GetParsedAnswers() {
+            if (ChosenAnswers.Values
+                .Any(
+                    chosenAnswers => chosenAnswers.Any(
+                       answerId => !Guid.TryParse(answerId, out var _)
+                    )
+                )
+            ) {
+                return [];
+            }
+            return ChosenAnswers.ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value
+                    .Select(a => new GeneralTestAnswerId(Guid.Parse(a)))
+                    .ToArray()
+            );
+
         }
     }
 }

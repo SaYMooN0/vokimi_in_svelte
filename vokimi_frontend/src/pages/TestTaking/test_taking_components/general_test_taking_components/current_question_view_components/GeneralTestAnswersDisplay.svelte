@@ -1,16 +1,15 @@
 <script lang="ts">
-    import { GeneralTestAnswerType } from "../../../../ts/enums/GeneralTestAnswerType";
-    import { Err } from "../../../../ts/Err";
+    import { GeneralTestAnswerType } from "../../../../../ts/enums/GeneralTestAnswerType";
+    import { Err } from "../../../../../ts/Err";
     import type {
         BaseGeneralTestTakingAnswerData,
         GeneralTestTakingImageOnlyAnswerData,
         GeneralTestTakingTextAndImageAnswerData,
-    } from "../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingAnswersData";
-    import type { GeneralTestTakingTextOnlyAnswerData } from "../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingAnswersData";
-
+    } from "../../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingAnswersData";
+    import type { GeneralTestTakingTextOnlyAnswerData } from "../../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingAnswersData";
+    import TextOnlyAnswersDisplay from "./answer_display_for_specific_type/TextOnlyAnswersDisplay.svelte";
     import ImageOnlyAnswersDisplay from "./answer_display_for_specific_type/ImageOnlyAnswersDisplay.svelte";
     import TextAndImageAnswersDisplay from "./answer_display_for_specific_type/TextAndImageAnswersDisplay.svelte";
-    import TextOnlyAnswersDisplay from "./answer_display_for_specific_type/TextOnlyAnswersDisplay.svelte";
 
     export let answersType: GeneralTestAnswerType;
     export let answers: BaseGeneralTestTakingAnswerData[];

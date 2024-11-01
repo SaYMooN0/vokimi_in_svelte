@@ -1,24 +1,22 @@
 <script lang="ts">
-    import { GeneralTestTakingTextAndImageAnswerData } from "../../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingAnswersData";
-    import { ImgUtils } from "../../../../../ts/utils/ImgUtils";
-    import AnswerChosenIndicator from "../../templates_shared/AnswerChosenIndicator.svelte";
+    import type { GeneralTestTakingTextOnlyAnswerData } from "../../../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingAnswersData";
+    import AnswerChosenIndicator from "../../../templates_shared/AnswerChosenIndicator.svelte";
 
 
     export let onAnswerClick: (answerId: string) => void;
-    export let answers: GeneralTestTakingTextAndImageAnswerData[];
+    export let answers: GeneralTestTakingTextOnlyAnswerData[];
     export let isSingleChoice: boolean;
     export let chosenAnswersIds: string[];
 </script>
 
 {#each answers.sort((a, b) => a.orderInQuestion - b.orderInQuestion) as answer}
-    <div class="answer-btn" on:click={() => onAnswerClick(answer.answerId)}>
-        <p>{answer.text}</p>
-        <img src={ImgUtils.imgUrl(answer.image)} />
+    <p class="answer-btn" on:click={() => onAnswerClick(answer.answerId)}>
         <AnswerChosenIndicator
             isChosen={chosenAnswersIds.includes(answer.answerId)}
             {isSingleChoice}
         />
-    </div>
+        {answer.text}
+    </p>
 {/each}
 
 <style>
