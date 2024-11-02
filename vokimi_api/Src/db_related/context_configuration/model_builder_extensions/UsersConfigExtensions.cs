@@ -40,7 +40,9 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                           j => j.HasOne(uf => uf.Follower).WithMany().HasForeignKey(uf => uf.FollowerId),
                           j => j.HasOne(uf => uf.User).WithMany().HasForeignKey(uf => uf.UserId)
                       );
-
+                entity.HasMany(a => a.TestTakings)
+                    .WithOne(t => t.User)
+                    .HasForeignKey(t => t.UserId);
             });
         }
 

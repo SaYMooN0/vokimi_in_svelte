@@ -1,4 +1,5 @@
-﻿using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
+﻿using vokimi_api.Src.db_related.db_entities;
+using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.tests_related;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
@@ -28,6 +29,7 @@ namespace VokimiShared.src.models.db_classes.test.test_types
         public virtual ICollection<TestTag> Tags { get; protected set; } = [];
 
         public abstract TestTemplate Template { get; }
+        public abstract ICollection<BaseTestTakenRecord> GetBaseTestTakings();
 
     }
 }

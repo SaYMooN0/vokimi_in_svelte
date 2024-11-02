@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
+using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
 using vokimi_api.Src.db_related.db_entities_ids;
+using vokimi_api.Src.enums;
 
 namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensions
 {
@@ -10,6 +13,11 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
             modelBuilder.Entity<BaseDraftTest>(entity => {
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new(v));
+                entity.HasDiscriminator<TestTemplate>("Template")
+                    .HasValue<DraftGeneralTest>(TestTemplate.General);
+                //.HasValue<DraftScoringTest>(TestTemplate.Scoring)
+                //.HasValue<DraftCorrectAnswersTest>(TestTemplate.CorrectAnswers);
+
                 entity.Property(x => x.MainInfoId).HasConversion(v => v.Value, v => new(v));
                 entity.Property(x => x.CreatorId).HasConversion(v => v.Value, v => new(v));
 

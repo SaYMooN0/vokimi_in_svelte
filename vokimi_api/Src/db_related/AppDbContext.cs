@@ -9,6 +9,8 @@ using vokimi_api.Src.db_related.db_entities.users;
 using VokimiShared.src.models.db_classes.test.test_types;
 using vokimi_api.Src.db_related.db_entities.tests_related;
 using vokimi_api.Src.db_related.db_entities.user_page.posts;
+using vokimi_api.Src.db_related.db_entities;
+using vokimi_api.Src.db_related.db_entities.test_taken_records;
 
 namespace vokimi_api.Src.db_related
 {
@@ -47,6 +49,10 @@ namespace vokimi_api.Src.db_related
         public DbSet<GeneralTestResult> GeneralTestResults { get; set; }
         //test tags
         public DbSet<TestTag> TestTags { get; set; }
+        //test taken records
+        public DbSet<BaseTestTakenRecord> BaseTestTakenRecords { get; set; }
+        public DbSet<GeneralTestTakenRecord> GeneralTestTakenRecords { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
@@ -87,6 +93,10 @@ namespace vokimi_api.Src.db_related
             modelBuilder.ConfigureGeneralTestQuestions();
             modelBuilder.ConfigureGeneralTestAnswers();
             modelBuilder.ConfigureGeneralTestResults();
+
+            //test taking records
+            modelBuilder.ConfigureBaseTestTakenRecords();
+            modelBuilder.ConfigureGeneralTestTakenRecords();
         }
 
     }

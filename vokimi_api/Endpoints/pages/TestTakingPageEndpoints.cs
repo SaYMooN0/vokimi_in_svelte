@@ -10,6 +10,10 @@ using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related
 using vokimi_api.Src.dtos.responses.test_taking;
 using vokimi_api.Src.dtos.requests;
 using vokimi_api.Src;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using vokimi_api.Src.db_related.db_entities.users;
+using vokimi_api.Src.db_related.db_entities.test_taken_records;
+using vokimi_api.Src.dtos.responses;
 
 namespace vokimi_api.Endpoints.pages
 {
@@ -80,18 +84,20 @@ namespace vokimi_api.Endpoints.pages
                 return ResultsHelper.BadRequestWithErr(requestValidatingErr);
             }
             using (var db = dbFactory.CreateDbContext()) {
-                TestId testId= takenRequest.GetParsedId().Value;
-                BaseTest? test = db.TestsGeneralType
+                TestId testId = takenRequest.GetParsedId().Value;
+                TestGeneralTemplate? test = db.TestsGeneralType
+                    .Include(t => t.PossibleResults)
                     .Include(t => t.Questions)
                         .ThenInclude(q => q.Answers)
                             .ThenInclude(a => a.RelatedResults)
+                    .Include(t => t.Conclusion)
                     .FirstOrDefault(t => t.Id == testId);
                 if (test is null) {
                     return Results.Ok(ViewTestAccessCheckResponse.TestNotFound());
                 }
                 bool haveAccess;
-                if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Privacy, viewerId);
+                if (httpContext.TryGetUserId(out AppUserId testTakerId)) {
+                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Privacy, testTakerId);
                 } else {
                     haveAccess = test.Privacy == PrivacyValues.Anyone;
                 }
@@ -100,11 +106,128 @@ namespace vokimi_api.Endpoints.pages
                         "You don't have access to this test. Please contact the creator to restore it."
                     );
                 }
+                if (test.Conclusion is not null) {
+                    Err feedbackValidatingErr = takenRequest.CheckFeedbackForErr(test.Conclusion.MaxFeedbackLength);
+                    if (feedbackValidatingErr.NotNone()) {
+                        return ResultsHelper.BadRequestWithErr(feedbackValidatingErr);
+                    }
+                }
+                Dictionary<int, GeneralTestAnswerId[]> parsedChosenAnswers = takenRequest.GetParsedAnswers();
+                if (parsedChosenAnswers.Count() < 0) {
+                    return ResultsHelper.BadRequestServerError();
+                }
+                Err answersErr = CheckGeneralTestChosenAnswersForErr(parsedChosenAnswers, test);
+                if (answersErr.NotNone()) {
+                    return ResultsHelper.BadRequestWithErr(answersErr);
+                }
+                GeneralTestResult? resultToSetAsReceived = ChooseResultToReceive(parsedChosenAnswers.Values, test);
+                if (resultToSetAsReceived is null) {
+                    return ResultsHelper.BadRequestServerError();
+                }
+
+                AppUser? testTaker = null;
+                if (httpContext.TryGetUserId(out testTakerId)) {
+                    testTaker = db.AppUsers.Find(testTakerId);
+                }
+                GeneralTestTakenRecord testTakenRecord = GeneralTestTakenRecord.CreateNew(
+                    test,
+                    testTaker,
+                    resultToSetAsReceived.Id,
+                    takenRequest.TestFeedback
+                );
+                try {
+
+                    db.GeneralTestTakenRecords.Add(testTakenRecord);
+                    db.SaveChanges();
+                    var responese = TestTakenSuccessfullyResponse.New(
+                        resultToSetAsReceived,
+                        test.PossibleResults,
+                        test.TestTakings.Count()
+                    );
+                    return Results.Ok(responese);
+                } catch {
+                    return ResultsHelper.BadRequestServerError();
+                }
 
             }
-            return Results.Ok();
 
-            //return TestTakenSuccessfullyResponse()
+        }
+        private static Err CheckGeneralTestChosenAnswersForErr(
+            Dictionary<int, GeneralTestAnswerId[]> chosenAnswersForTest,
+            TestGeneralTemplate test
+        ) {
+            HashSet<GeneralTestAnswerId> answersForTest = test.Questions
+                .SelectMany(
+                    q => q.Answers.Select(a => a.Id))
+                .ToHashSet();
+            var testQuestions = test.Questions.OrderBy(q => q.OrderInTest).ToArray();
+            for (int i = 0; i < testQuestions.Count(); i++) {
+                var currentQuestion = testQuestions[i];
+                if (chosenAnswersForTest.TryGetValue(i, out GeneralTestAnswerId[] chosenAnswerIdsForQuestion)) {
+
+                    int answersCount = chosenAnswerIdsForQuestion.Count();
+                    if (answersCount < currentQuestion.MinAnswersCount
+                        || answersCount > currentQuestion.MaxAnswersCount
+                    ) {
+                        return new Err(
+                            $"Problem with question #{i + 1}. Answers count: {answersCount}. " +
+                            $"Minimum answers count: {currentQuestion.MinAnswersCount}, " +
+                            $"Maximal answers count: {currentQuestion.MaxAnswersCount}, "
+                        );
+                    }
+                    foreach (var aId in chosenAnswerIdsForQuestion) {
+                        if (!answersForTest.Contains(aId)) {
+                            return new Err($"Problem with question #{i + 1}");
+                        }
+
+                    }
+                } else {
+                    return new Err($"Problem with question #{i + 1}");
+                }
+
+            }
+            return Err.None;
+        }
+        private static GeneralTestResult? ChooseResultToReceive(
+            IEnumerable<GeneralTestAnswerId[]> chosenAnswers,
+            TestGeneralTemplate test
+        ) {
+            Dictionary<GeneralTestResultId, int> resultsWithPoints = [];
+            Dictionary<GeneralTestAnswerId, GeneralTestResultId[]> testAnswerWithRelatedResults =
+                test.Questions
+                    .SelectMany(q => q.Answers)
+                    .ToDictionary(
+                        a => a.Id,
+                        a => a.RelatedResults
+                            .Select(r => r.Id)
+                            .ToArray()
+                    );
+            var testQuestions = test.Questions
+                .OrderBy(q => q.OrderInTest)
+                .ToArray();
+            foreach (var chosenAnswersForQuestion in chosenAnswers) {
+                foreach (var chosenAnswer in chosenAnswersForQuestion) {
+                    if (!testAnswerWithRelatedResults.TryGetValue(chosenAnswer, out var resultsForAnswer)) {
+                        return null;
+                    }
+                    foreach (var relatedResultId in resultsForAnswer) {
+                        if (resultsWithPoints.TryGetValue(relatedResultId, out var _)) {
+                            resultsWithPoints[relatedResultId]++;
+                        } else {
+                            resultsWithPoints[relatedResultId] = 1;
+
+                        }
+                    }
+                }
+            }
+            KeyValuePair<GeneralTestResultId, int>? resultToReceiveIdWithPoints = resultsWithPoints
+                .OrderBy(kvp => kvp.Value)
+                .Last();
+            if (resultToReceiveIdWithPoints is null) {
+                return null;
+            }
+            GeneralTestResultId resultToReceiveId = resultToReceiveIdWithPoints.Value.Key;
+            return test.PossibleResults.FirstOrDefault(r => r.Id == resultToReceiveId);
         }
     }
 }

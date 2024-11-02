@@ -11,10 +11,18 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
             modelBuilder.Entity<TestGeneralTemplate>(entity => {
                 entity.HasMany(x => x.Questions)
                       .WithOne()
-                      .HasForeignKey(x => x.TestId);
+                      .HasForeignKey(x => x.TestId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
                 entity.HasMany(x => x.PossibleResults)
                     .WithOne()
-                    .HasForeignKey(x => x.TestId);
+                    .HasForeignKey(x => x.TestId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(t => t.TestTakings)
+                    .WithOne()
+                    .HasForeignKey(t => t.TestId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
 
@@ -23,7 +31,8 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new GeneralTestQuestionId(v));
                 entity.HasMany(q => q.Answers)
                     .WithOne()
-                    .HasForeignKey(a => a.QuestionId);
+                    .HasForeignKey(a => a.QuestionId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
         }
@@ -34,7 +43,8 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
 
                 entity.HasOne(a => a.TypeSpecificInfo)
                     .WithMany()
-                    .HasForeignKey(a => a.TypeSpecificInfoId);
+                    .HasForeignKey(a => a.TypeSpecificInfoId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
             });
         }

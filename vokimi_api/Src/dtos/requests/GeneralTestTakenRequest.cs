@@ -1,5 +1,4 @@
-﻿using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
-using vokimi_api.Src.db_related.db_entities_ids;
+﻿using vokimi_api.Src.db_related.db_entities_ids;
 
 namespace vokimi_api.Src.dtos.requests
 {
@@ -19,7 +18,19 @@ namespace vokimi_api.Src.dtos.requests
             return Err.None;
 
         }
-      
+        public Err CheckFeedbackForErr(uint feedbackMaxLength) {
+            if (string.IsNullOrEmpty(TestFeedback)) {
+                return Err.None;
+            }
+            if (TestFeedback.Length > feedbackMaxLength) {
+                return new Err(
+                    $"Length of the feedback is {TestFeedback.Length} characters. " +
+                    $"Maximal possible length of feedback is {feedbackMaxLength} characters "
+                );
+            }
+            return Err.None;
+        }
+
         public TestId? GetParsedId() {
             if (Guid.TryParse(TestId, out var id)) {
                 return new TestId(id);

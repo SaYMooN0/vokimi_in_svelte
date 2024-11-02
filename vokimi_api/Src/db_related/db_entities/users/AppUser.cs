@@ -26,6 +26,7 @@ namespace vokimi_api.Src.db_related.db_entities.users
         public virtual ICollection<AppUser> Friends { get; private set; } = [];
         public virtual ICollection<AppUser> Followers { get; private set; } = [];
         public virtual ICollection<BaseUserPost> PagePosts { get; private set; } = [];
+        public virtual ICollection<BaseTestTakenRecord> TestTakings { get; private set; } = [];
 
         public static AppUser CreateNew(
             string username, 
