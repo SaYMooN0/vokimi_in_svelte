@@ -24,8 +24,7 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new DraftGeneralTestQuestionId(v));
                 entity.HasMany(x => x.Answers)
                       .WithOne()
-                      .HasForeignKey(x => x.QuestionId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .HasForeignKey(x => x.QuestionId);
             });
         }
         internal static void ConfigureDraftGeneralTestAnswers(this ModelBuilder modelBuilder) {
@@ -35,9 +34,8 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(e => e.QuestionId).IsRequired();
                 entity.Property(e => e.OrderInQuestion).IsRequired();
                 entity.HasOne(e => e.TypeSpecificInfo)
-                      .WithOne()
-                      .HasForeignKey<DraftGeneralTestAnswer>(e => e.TypeSpecificInfoId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                    .WithOne()
+                    .HasForeignKey<DraftGeneralTestAnswer>(e => e.TypeSpecificInfoId);
 
 
                 entity.HasMany(e => e.RelatedResults)

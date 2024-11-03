@@ -29,8 +29,10 @@
                         TestStylesArrowTypeUtils.fromId(data.arrowType),
                         data.conclusionData,
                         data.questions.sort(
-                            (a: GeneralTestTakingQuestionData, b: GeneralTestTakingQuestionData) =>
-                                a.orderInTest - b.orderInTest,
+                            (
+                                a: GeneralTestTakingQuestionData,
+                                b: GeneralTestTakingQuestionData,
+                            ) => a.orderInTest - b.orderInTest,
                         ),
                     );
                 case TestTemplate.Scoring:
@@ -55,19 +57,22 @@
 </script>
 
 <TestAccessPageContainer {testId}>
-    <div class="page-frame">
-        {#await loadTestTakingData() then loadDataRes}
+    {#await loadTestTakingData() then loadDataRes}
+        <div class="page-frame">
             {#if loadDataRes instanceof Err}
                 <div class="loading-err-div">
                     <p class="loading-err-p">{loadDataRes.toString()}</p>
                 </div>
             {:else if loadDataRes instanceof GeneralTestTakingData}
-                <TestTakingForGeneralTemplate testTakingData={loadDataRes} />
+                <TestTakingForGeneralTemplate
+                    {testId}
+                    testTakingData={loadDataRes}
+                />
             {:else}
                 <p>Not implemented test template</p>
             {/if}
-        {/await}
-    </div>
+        </div>
+    {/await}
 </TestAccessPageContainer>
 
 <style>

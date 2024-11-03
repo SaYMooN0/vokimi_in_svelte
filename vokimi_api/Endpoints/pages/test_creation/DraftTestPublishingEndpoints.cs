@@ -361,7 +361,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
 
                         var testToPublish = TestGeneralTemplate.CreateNew(publishingData);
 
-                        db.TestsGeneralType.Add(testToPublish);
+                        db.TestsGeneralTemplate.Add(testToPublish);
 
                         await db.SaveChangesAsync();
 

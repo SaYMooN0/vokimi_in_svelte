@@ -9,6 +9,12 @@ namespace VokimiShared.src.models.db_classes.test.test_types
 {
     public abstract class BaseTest
     {
+        private readonly TestTemplate _template;
+        public TestTemplate Template => _template;
+        protected BaseTest(TestTemplate template) {
+            _template = template;
+        }
+
         public TestId Id { get; init; }
         public AppUserId CreatorId { get; init; }
         public virtual AppUser Creator { get; protected set; }
@@ -27,8 +33,6 @@ namespace VokimiShared.src.models.db_classes.test.test_types
         public virtual TestStylesSheet StylesSheet { get; protected set; }
 
         public virtual ICollection<TestTag> Tags { get; protected set; } = [];
-
-        public abstract TestTemplate Template { get; }
         public abstract ICollection<BaseTestTakenRecord> GetBaseTestTakings();
 
     }

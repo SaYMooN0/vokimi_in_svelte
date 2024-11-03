@@ -3,7 +3,6 @@
     import { ImgUtils } from "../../../../../../ts/utils/ImgUtils";
     import AnswerChosenIndicator from "../../../templates_shared/AnswerChosenIndicator.svelte";
 
-
     export let onAnswerClick: (answerId: string) => void;
     export let answers: GeneralTestTakingImageOnlyAnswerData[];
     export let isSingleChoice: boolean;
@@ -25,6 +24,6 @@
         cursor: pointer;
     }
     .answer-btn:hover :global(.is-chosen-indicator) {
-        border-color: var(--primary);
+        border-color: var(--test-accent);
     }
 </style>

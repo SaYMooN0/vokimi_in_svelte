@@ -7,11 +7,11 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
 {
     public class DraftGeneralTest : BaseDraftTest
     {
+        public DraftGeneralTest() : base(TestTemplate.General) { }
+
         public virtual ICollection<DraftGeneralTestQuestion> Questions { get; private set; } = [];
         public virtual ICollection<DraftGeneralTestResult> PossibleResults { get; set; } = [];
-        public DraftGeneralTest() {
-            Template = TestTemplate.General;
-        }
+  
         public static DraftGeneralTest CreateNew(AppUserId creatorId, DraftTestMainInfoId mainInfoId, TestStylesSheetId stylesSheetId) =>
             new() {
                 Id = new(),

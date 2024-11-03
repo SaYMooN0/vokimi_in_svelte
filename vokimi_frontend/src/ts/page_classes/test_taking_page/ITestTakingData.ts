@@ -8,7 +8,7 @@ export interface ITestTakingData {
     readonly conclusion: TestTakingConclusionData
 }
 export class TestTakingConclusionData {
-    readonly text: string;
+    readonly conclusionText: string;
     readonly additionalImage: string | null;
     readonly anyFeedback: boolean;
     readonly feedbackAccompanyingText: string | null;
@@ -20,7 +20,7 @@ export class TestTakingConclusionData {
         feedbackAccompanyingText: string | null,
         maxFeedbackLength: number
     ) {
-        this.text = text;
+        this.conclusionText = text;
         this.additionalImage = additionalImage;
         this.anyFeedback = anyFeedback;
         this.feedbackAccompanyingText = feedbackAccompanyingText;

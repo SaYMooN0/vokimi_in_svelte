@@ -1,6 +1,7 @@
 <script lang="ts">
     export let isChosen: boolean;
     export let isSingleChoice: boolean;
+    export let accentColor: string = "var(--primary)";
 </script>
 
 <div
@@ -28,10 +29,10 @@
         background-color: transparent;
     }
     .is-chosen {
-        border-color: var(--primary);
+        border-color: var(--test-accent);
     }
     .is-chosen div {
-        background-color: var(--primary) !important;
+        background-color: var(--test-accent) !important;
     }
     .single-choice {
         border-radius: 50%;

@@ -7,7 +7,7 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_rel
 {
     public class TestGeneralTemplate : BaseTest
     {
-        public override TestTemplate Template => TestTemplate.General;
+        public TestGeneralTemplate() : base(TestTemplate.General) { }
 
         public virtual List<GeneralTestQuestion> Questions { get; init; } = [];
         public virtual ICollection<GeneralTestResult> PossibleResults { get; init; } = [];

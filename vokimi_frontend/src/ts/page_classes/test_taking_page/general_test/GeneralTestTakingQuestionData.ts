@@ -2,6 +2,7 @@ import { GeneralTestAnswerType, GeneralTestAnswerTypeUtils } from "../../../enum
 import type { BaseGeneralTestTakingAnswerData } from "./GeneralTestTakingAnswersData";
 
 export class GeneralTestTakingQuestionData {
+    readonly id:string;
     readonly text: string;
     readonly image: string | null;
     readonly orderInTest: number;
@@ -12,6 +13,7 @@ export class GeneralTestTakingQuestionData {
     readonly answers: BaseGeneralTestTakingAnswerData[];
 
     constructor(
+        id:string,
         text: string,
         image: string | null,
         orderInTest: number,
@@ -21,6 +23,7 @@ export class GeneralTestTakingQuestionData {
         answersType: string,
         answers: BaseGeneralTestTakingAnswerData[]
     ) {
+        this.id=id;
         this.text = text;
         this.image = image;
         this.orderInTest = orderInTest;

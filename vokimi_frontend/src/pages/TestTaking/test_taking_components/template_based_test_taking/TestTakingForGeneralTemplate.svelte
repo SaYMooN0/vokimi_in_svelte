@@ -1,12 +1,17 @@
 <script lang="ts">
-    import { TestStylesArrowTypeUtils } from "../../../../ts/enums/TestStylesArrowType";
     import { Err } from "../../../../ts/Err";
+    import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import type { GeneralTestTakingData } from "../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingData";
-    import AccentColorPicker from "../../../TestCreation/templates_shared_components/styles_tab/editing_dialog_components/AccentColorPicker.svelte";
+    import { StringUtils } from "../../../../ts/utils/StringUtils";
     import GeneralTestControlButtonsZone from "../general_test_taking_components/GeneralTestControlButtonsZone.svelte";
     import GeneralTestCurrentQuestionZone from "../general_test_taking_components/GeneralTestCurrentQuestionZone.svelte";
     import TestConclusionDisplay from "../templates_shared/TestConclusionDisplay.svelte";
 
+    interface TestTakenSuccessfullyData {
+        receivedResultId: string;
+    }
+
+    export let testId: string;
     export let testTakingData: GeneralTestTakingData;
     let chosenAnswers: string[][] = Array.from(
         { length: testTakingData.questions.length },
@@ -35,10 +40,11 @@
             currentQuestion++;
         }
     }
-    function completeTest() {
+    async function completeTest() {
         testCompletionErr = "";
         const testFeedback: string | null =
             conclusionDisplayComponent.getFeedback();
+        console.log(testFeedback, testFeedback?.length);
         if (
             testTakingData.conclusion.anyFeedback &&
             testFeedback !== null &&
@@ -52,10 +58,50 @@
             testCompletionErr = answerValidatingErr.toString();
             return;
         }
-        //request
-        //if no err:
-        alreadyTaken = true;
-        console.log(alreadyTaken);
+        const requestErr = sendTestCompleteRequest(testFeedback);
+        if (requestErr instanceof Err) {
+            testCompletionErr = requestErr.toString();
+            return;
+        } else {
+            alreadyTaken = true;
+        }
+    }
+    async function sendTestCompleteRequest(
+        feedback: string | null,
+    ): Promise<Err | TestTakenSuccessfullyData> {
+        let chosenAnswersToSend: Record<string, string[]> = {};
+
+        for (let i = 0; i < chosenAnswers.length; i++) {
+            const qId = testTakingData.questions[i].id;
+            const answersForQ = chosenAnswers[i];
+            chosenAnswersToSend[qId] = answersForQ;
+        }
+
+        const data = {
+            testId,
+            chosenAnswers: chosenAnswersToSend,
+            feedback,
+        };
+        const response = await fetch(
+            "/api/testTaking/generalTestTakenRequest",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            },
+        );
+        if (response.status === 200) {
+            const data = await response.json();
+            return {
+                receivedResultId: data.receivedResultId,
+            };
+        } else if (response.status === 400) {
+            return new Err(await getErrorFromResponse(response));
+        } else {
+            return new Err("An unknown error occurred.");
+        }
     }
     function validateChosenAnswers(): Err {
         for (let i = 0; i < testTakingData.questions.length; i++) {
@@ -87,7 +133,7 @@
 {#if alreadyTaken}
     <div>Show result</div>
 {:else}
-    <div class="test-taking-frame">
+    <div style=" --test-accent: {testTakingData.accentColor};">
         {#key currentQuestion}
             {#if currentQuestion < testTakingData.questions.length}
                 <GeneralTestCurrentQuestionZone
@@ -104,17 +150,23 @@
                     bind:this={conclusionDisplayComponent}
                     conclusionData={testTakingData.conclusion}
                 />
-                <button
-                    class="complete-btn"
-                    style={backgroundColorAccent}
-                    on:click={completeTest}
-                >
-                    Complete
-                </button>
+                <div class="complete-btn-wrapper">
+                    {#if !StringUtils.isNullOrWhiteSpace(testCompletionErr)}
+                        <p class="test-completion-err">{testCompletionErr}</p>
+                    {/if}
+                    <button
+                        class="complete-btn"
+                        style={backgroundColorAccent}
+                        on:click={completeTest}
+                    >
+                        Complete
+                    </button>
+                </div>
             {/if}
             <GeneralTestControlButtonsZone
-                prevBtnHidden={currentQuestion === 0}
-                nextBtnHidden={currentQuestion ===
+                prevBtnHidden={currentQuestion === 0 ||
+                    currentQuestion >= testTakingData.questions.length}
+                nextBtnHidden={currentQuestion >=
                     testTakingData.questions.length}
                 {prevBtnClicked}
                 {nextBtnClicked}
@@ -124,3 +176,31 @@
         {/key}
     </div>
 {/if}
+
+<style>
+    .complete-btn-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .complete-btn {
+        background-color: var(--test-accent);
+        align-self: center;
+        margin-top: 16px;
+        outline: none;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 24px;
+        color: var(--back-main);
+        font-size: 24px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.12s ease-in;
+    }
+    .complete-btn:hover {
+        padding: 8px 28px;
+    }
+    .complete-btn:active {
+        transform: scale(0.98);
+    }
+</style>

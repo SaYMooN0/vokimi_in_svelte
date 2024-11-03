@@ -14,6 +14,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities.test_taken_records;
 using vokimi_api.Src.dtos.responses;
+using Microsoft.AspNetCore.Mvc;
 
 namespace vokimi_api.Endpoints.pages
 {
@@ -54,7 +55,7 @@ namespace vokimi_api.Endpoints.pages
             }
         }
         private static IResult LoadGeneralTestTakingData(TestId testId, AppDbContext db) {
-            TestGeneralTemplate? test = db.TestsGeneralType
+            TestGeneralTemplate? test = db.TestsGeneralTemplate
                 .Include(t => t.Conclusion)
                 .Include(t => t.StylesSheet)
                 .Include(t => t.Questions)
@@ -74,7 +75,7 @@ namespace vokimi_api.Endpoints.pages
             return Results.Ok(jsonOutput);
         }
         public static IResult GeneralTestTakenRequest(
-            GeneralTestTakenRequest takenRequest,
+            [FromBody] GeneralTestTakenRequest takenRequest,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
         ) {
@@ -85,7 +86,7 @@ namespace vokimi_api.Endpoints.pages
             }
             using (var db = dbFactory.CreateDbContext()) {
                 TestId testId = takenRequest.GetParsedId().Value;
-                TestGeneralTemplate? test = db.TestsGeneralType
+                TestGeneralTemplate? test = db.TestsGeneralTemplate
                     .Include(t => t.PossibleResults)
                     .Include(t => t.Questions)
                         .ThenInclude(q => q.Answers)
@@ -112,7 +113,7 @@ namespace vokimi_api.Endpoints.pages
                         return ResultsHelper.BadRequestWithErr(feedbackValidatingErr);
                     }
                 }
-                Dictionary<int, GeneralTestAnswerId[]> parsedChosenAnswers = takenRequest.GetParsedAnswers();
+                Dictionary<GeneralTestQuestionId, GeneralTestAnswerId[]> parsedChosenAnswers = takenRequest.GetParsedAnswers();
                 if (parsedChosenAnswers.Count() < 0) {
                     return ResultsHelper.BadRequestServerError();
                 }
@@ -153,17 +154,15 @@ namespace vokimi_api.Endpoints.pages
 
         }
         private static Err CheckGeneralTestChosenAnswersForErr(
-            Dictionary<int, GeneralTestAnswerId[]> chosenAnswersForTest,
+            Dictionary<GeneralTestQuestionId, GeneralTestAnswerId[]> chosenAnswersForTest,
             TestGeneralTemplate test
         ) {
             HashSet<GeneralTestAnswerId> answersForTest = test.Questions
                 .SelectMany(
                     q => q.Answers.Select(a => a.Id))
                 .ToHashSet();
-            var testQuestions = test.Questions.OrderBy(q => q.OrderInTest).ToArray();
-            for (int i = 0; i < testQuestions.Count(); i++) {
-                var currentQuestion = testQuestions[i];
-                if (chosenAnswersForTest.TryGetValue(i, out GeneralTestAnswerId[] chosenAnswerIdsForQuestion)) {
+            foreach (var currentQuestion in test.Questions) {
+                if (chosenAnswersForTest.TryGetValue(currentQuestion.Id, out GeneralTestAnswerId[] chosenAnswerIdsForQuestion)) {
 
                     int answersCount = chosenAnswerIdsForQuestion.Count();
                     if (answersCount < currentQuestion.MinAnswersCount

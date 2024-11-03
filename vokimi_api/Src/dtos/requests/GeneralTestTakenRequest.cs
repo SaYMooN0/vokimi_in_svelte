@@ -4,7 +4,8 @@ namespace vokimi_api.Src.dtos.requests
 {
     public record class GeneralTestTakenRequest(
         string TestId,
-        Dictionary<int, string[]> ChosenAnswers,
+        //question id and chosen answers ids
+        Dictionary<string, string[]> ChosenAnswers,
         string? TestFeedback
     )
     {
@@ -38,7 +39,7 @@ namespace vokimi_api.Src.dtos.requests
                 return null;
             }
         }
-        public Dictionary<int, GeneralTestAnswerId[]> GetParsedAnswers() {
+        public Dictionary<GeneralTestQuestionId, GeneralTestAnswerId[]> GetParsedAnswers() {
             if (ChosenAnswers.Values
                 .Any(
                     chosenAnswers => chosenAnswers.Any(
@@ -49,7 +50,7 @@ namespace vokimi_api.Src.dtos.requests
                 return [];
             }
             return ChosenAnswers.ToDictionary(
-                kvp => kvp.Key,
+                kvp => new GeneralTestQuestionId(Guid.Parse(kvp.Key)),
                 kvp => kvp.Value
                     .Select(a => new GeneralTestAnswerId(Guid.Parse(a)))
                     .ToArray()
