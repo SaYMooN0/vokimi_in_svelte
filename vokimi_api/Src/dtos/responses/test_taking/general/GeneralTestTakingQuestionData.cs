@@ -6,6 +6,7 @@ using vokimi_api.Src.enums;
 namespace vokimi_api.Src.dtos.responses.test_taking.general
 {
     public record class GeneralTestTakingQuestionData(
+        string Id,
         string Text,
         string? Image,
         ushort OrderInTest,
@@ -17,6 +18,7 @@ namespace vokimi_api.Src.dtos.responses.test_taking.general
     )
     {
         public static GeneralTestTakingQuestionData FromQuestion(GeneralTestQuestion question) => new(
+            question.Id.Value.ToString(),
             question.Text,
             question.ImagePath,
             question.OrderInTest,

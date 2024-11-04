@@ -3,6 +3,7 @@
     import { ImgUtils } from "../../../../../../ts/utils/ImgUtils";
     import AnswerChosenIndicator from "../../../templates_shared/AnswerChosenIndicator.svelte";
 
+
     export let onAnswerClick: (answerId: string) => void;
     export let answers: GeneralTestTakingTextAndImageAnswerData[];
     export let isSingleChoice: boolean;

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { TestTemplate } from "../../../../ts/enums/TestTemplate";
     import { Err } from "../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import type { GeneralTestTakingData } from "../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingData";
@@ -6,10 +7,7 @@
     import GeneralTestControlButtonsZone from "../general_test_taking_components/GeneralTestControlButtonsZone.svelte";
     import GeneralTestCurrentQuestionZone from "../general_test_taking_components/GeneralTestCurrentQuestionZone.svelte";
     import TestConclusionDisplay from "../templates_shared/TestConclusionDisplay.svelte";
-
-    interface TestTakenSuccessfullyData {
-        receivedResultId: string;
-    }
+    import { navigate } from "svelte-routing";
 
     export let testId: string;
     export let testTakingData: GeneralTestTakingData;
@@ -17,7 +15,6 @@
         { length: testTakingData.questions.length },
         () => [],
     );
-    let alreadyTaken = false;
 
     let currentQuestion = 0; //if this is greater than total questions - 1, than its conclusion or test is over
     function prevBtnClicked() {
@@ -42,33 +39,38 @@
     }
     async function completeTest() {
         testCompletionErr = "";
-        const testFeedback: string | null =
-            conclusionDisplayComponent.getFeedback();
-        console.log(testFeedback, testFeedback?.length);
-        if (
-            testTakingData.conclusion.anyFeedback &&
-            testFeedback !== null &&
-            testFeedback.length > testTakingData.conclusion.maxFeedbackLength
-        ) {
-            testCompletionErr = `Feedback can't be longer than ${testTakingData.conclusion.maxFeedbackLength}characters`;
-            return;
+        let testFeedback: string | null = null;
+
+        if (testTakingData.conclusion !== null) {
+            testFeedback = TestConclusionDisplay.getFeedback();
+            if (
+                testTakingData.conclusion.anyFeedback &&
+                testFeedback !== null &&
+                testFeedback.length >
+                    testTakingData.conclusion.maxFeedbackLength
+            ) {
+                testCompletionErr = `Feedback can't be longer than ${testTakingData.conclusion.maxFeedbackLength}characters`;
+                return;
+            }
         }
         const answerValidatingErr = validateChosenAnswers();
         if (answerValidatingErr.notNone()) {
             testCompletionErr = answerValidatingErr.toString();
             return;
         }
-        const requestErr = sendTestCompleteRequest(testFeedback);
-        if (requestErr instanceof Err) {
-            testCompletionErr = requestErr.toString();
+        const requestResult = await sendTestCompleteRequest(testFeedback);
+        if (requestResult instanceof Err) {
+            testCompletionErr = requestResult.toString();
             return;
         } else {
-            alreadyTaken = true;
+            navigate(
+                `/test-taking/view-result/${testId}/${TestTemplate.General}/${requestResult}`,
+            );
         }
     }
     async function sendTestCompleteRequest(
         feedback: string | null,
-    ): Promise<Err | TestTakenSuccessfullyData> {
+    ): Promise<Err | string> {
         let chosenAnswersToSend: Record<string, string[]> = {};
 
         for (let i = 0; i < chosenAnswers.length; i++) {
@@ -94,9 +96,7 @@
         );
         if (response.status === 200) {
             const data = await response.json();
-            return {
-                receivedResultId: data.receivedResultId,
-            };
+            return data.receivedResultId;
         } else if (response.status === 400) {
             return new Err(await getErrorFromResponse(response));
         } else {
@@ -130,52 +130,52 @@
         "background-color:" + testTakingData.accentColor;
 </script>
 
-{#if alreadyTaken}
-    <div>Show result</div>
-{:else}
-    <div style=" --test-accent: {testTakingData.accentColor};">
-        {#key currentQuestion}
-            {#if currentQuestion < testTakingData.questions.length}
-                <GeneralTestCurrentQuestionZone
-                    bind:this={currentQuestionView}
-                    currentQuestionData={testTakingData.questions[
-                        currentQuestion
-                    ]}
-                    currentQuestionIndex={currentQuestion}
-                    totalQuestionsCount={testTakingData.questions.length}
-                    questionChosenAnswers={chosenAnswers[currentQuestion]}
-                />
-            {:else}
+<div style="--test-accent: {testTakingData.accentColor};">
+    {#key currentQuestion}
+        <h1>{currentQuestion}</h1>
+        {#if currentQuestion < testTakingData.questions.length}
+            <GeneralTestCurrentQuestionZone
+                bind:this={currentQuestionView}
+                currentQuestionData={testTakingData.questions[currentQuestion]}
+                currentQuestionIndex={currentQuestion}
+                totalQuestionsCount={testTakingData.questions.length}
+                questionChosenAnswers={chosenAnswers[currentQuestion]}
+            />
+        {:else if currentQuestion === testTakingData.questions.length}
+            {#if testTakingData.conclusion !== null}
                 <TestConclusionDisplay
                     bind:this={conclusionDisplayComponent}
                     conclusionData={testTakingData.conclusion}
                 />
-                <div class="complete-btn-wrapper">
-                    {#if !StringUtils.isNullOrWhiteSpace(testCompletionErr)}
-                        <p class="test-completion-err">{testCompletionErr}</p>
-                    {/if}
-                    <button
-                        class="complete-btn"
-                        style={backgroundColorAccent}
-                        on:click={completeTest}
-                    >
-                        Complete
-                    </button>
-                </div>
+            {:else}
+                <div>You have reached the end of the test</div>
             {/if}
-            <GeneralTestControlButtonsZone
-                prevBtnHidden={currentQuestion === 0 ||
-                    currentQuestion >= testTakingData.questions.length}
-                nextBtnHidden={currentQuestion >=
-                    testTakingData.questions.length}
-                {prevBtnClicked}
-                {nextBtnClicked}
-                {backgroundColorAccent}
-                btnArrowIcons={testTakingData.arrowIcons}
-            />
-        {/key}
-    </div>
-{/if}
+        {/if}
+
+        <GeneralTestControlButtonsZone
+            prevBtnHidden={currentQuestion === 0}
+            nextBtnHidden={currentQuestion >= testTakingData.questions.length}
+            {prevBtnClicked}
+            {nextBtnClicked}
+            {backgroundColorAccent}
+            btnArrowIcons={testTakingData.arrowIcons}
+        />
+        {#if currentQuestion === testTakingData.questions.length}
+            <div class="complete-btn-wrapper">
+                {#if !StringUtils.isNullOrWhiteSpace(testCompletionErr)}
+                    <p class="test-completion-err">{testCompletionErr}</p>
+                {/if}
+                <button
+                    class="complete-btn"
+                    style={backgroundColorAccent}
+                    on:click={completeTest}
+                >
+                    Complete
+                </button>
+            </div>
+        {/if}
+    {/key}
+</div>
 
 <style>
     .complete-btn-wrapper {

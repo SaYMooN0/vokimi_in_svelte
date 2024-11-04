@@ -5,7 +5,7 @@ export interface ITestTakingData {
     readonly testTemplate: TestTemplate,
     readonly accentColor: string,
     readonly arrowIcons: TestStylesArrowType,
-    readonly conclusion: TestTakingConclusionData
+    readonly conclusion: TestTakingConclusionData | null
 }
 export class TestTakingConclusionData {
     readonly conclusionText: string;

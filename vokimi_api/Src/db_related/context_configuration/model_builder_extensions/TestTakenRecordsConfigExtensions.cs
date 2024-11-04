@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using vokimi_api.Src.db_related.db_entities;
+using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities.test_taken_records;
-using vokimi_api.Src.db_related.db_entities_ids;
+using vokimi_api.Src.enums;
 
 namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensions
 {
@@ -11,6 +12,9 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
             modelBuilder.Entity<BaseTestTakenRecord>(entity => {
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new(v));
+
+                entity.HasDiscriminator<TestTemplate>("Template")
+                    .HasValue<GeneralTestTakenRecord>(TestTemplate.General);
 
                 entity.HasOne(b => b.Test)
                     .WithMany()

@@ -28,6 +28,7 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
                 ImagePath = imagePath
             };
         public void Update(string name, string text, string? imagePath) {
+            Name = name;
             Text = text;
             ImagePath = imagePath;
         }

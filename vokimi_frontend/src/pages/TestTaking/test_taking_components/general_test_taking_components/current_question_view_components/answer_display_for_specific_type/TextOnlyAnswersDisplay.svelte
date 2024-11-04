@@ -2,6 +2,7 @@
     import type { GeneralTestTakingTextOnlyAnswerData } from "../../../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingAnswersData";
     import AnswerChosenIndicator from "../../../templates_shared/AnswerChosenIndicator.svelte";
 
+
     export let onAnswerClick: (answerId: string) => void;
     export let answers: GeneralTestTakingTextOnlyAnswerData[];
     export let isSingleChoice: boolean;

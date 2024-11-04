@@ -7,13 +7,13 @@ export class GeneralTestTakingData implements ITestTakingData {
     readonly testTemplate: TestTemplate = TestTemplate.General;
     readonly accentColor: string;
     readonly arrowIcons: TestStylesArrowType;
-    readonly conclusion: TestTakingConclusionData;
+    readonly conclusion: TestTakingConclusionData | null;
     readonly questions: GeneralTestTakingQuestionData[];
 
     constructor(
         accentColor: string,
         arrowIcons: TestStylesArrowType,
-        conclusion: TestTakingConclusionData,
+        conclusion: TestTakingConclusionData | null,
         questions: GeneralTestTakingQuestionData[]
     ) {
         this.accentColor = accentColor;

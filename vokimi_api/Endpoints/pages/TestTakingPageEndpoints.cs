@@ -10,11 +10,10 @@ using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related
 using vokimi_api.Src.dtos.responses.test_taking;
 using vokimi_api.Src.dtos.requests;
 using vokimi_api.Src;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities.test_taken_records;
-using vokimi_api.Src.dtos.responses;
 using Microsoft.AspNetCore.Mvc;
+using vokimi_api.Src.dtos.responses.test_taking.general;
 
 namespace vokimi_api.Endpoints.pages
 {
@@ -140,12 +139,7 @@ namespace vokimi_api.Endpoints.pages
 
                     db.GeneralTestTakenRecords.Add(testTakenRecord);
                     db.SaveChanges();
-                    var responese = TestTakenSuccessfullyResponse.New(
-                        resultToSetAsReceived,
-                        test.PossibleResults,
-                        test.TestTakings.Count()
-                    );
-                    return Results.Ok(responese);
+                    return Results.Ok(new { ReceivedResultId = testTakenRecord.ReceivedResultId.ToString() });
                 } catch {
                     return ResultsHelper.BadRequestServerError();
                 }
@@ -169,19 +163,19 @@ namespace vokimi_api.Endpoints.pages
                         || answersCount > currentQuestion.MaxAnswersCount
                     ) {
                         return new Err(
-                            $"Problem with question #{i + 1}. Answers count: {answersCount}. " +
+                            $"Problem with question #{currentQuestion.OrderInTest + 1}. Answers count: {answersCount}. " +
                             $"Minimum answers count: {currentQuestion.MinAnswersCount}, " +
                             $"Maximal answers count: {currentQuestion.MaxAnswersCount}, "
                         );
                     }
                     foreach (var aId in chosenAnswerIdsForQuestion) {
                         if (!answersForTest.Contains(aId)) {
-                            return new Err($"Problem with question #{i + 1}");
+                            return new Err($"Problem with question #{currentQuestion.OrderInTest + 1}");
                         }
 
                     }
                 } else {
-                    return new Err($"Problem with question #{i + 1}");
+                    return new Err($"Problem with question #{currentQuestion.OrderInTest + 1}");
                 }
 
             }
@@ -227,6 +221,48 @@ namespace vokimi_api.Endpoints.pages
             }
             GeneralTestResultId resultToReceiveId = resultToReceiveIdWithPoints.Value.Key;
             return test.PossibleResults.FirstOrDefault(r => r.Id == resultToReceiveId);
+        }
+        public static IResult GetGeneralTestReceivedResultData(
+            string resultId,
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext
+        ) {
+            GeneralTestResultId resId;
+            if (!Guid.TryParse(resultId, out var resGuid)) {
+                return ResultsHelper.BadRequestServerError();
+            }
+
+            resId = new(resGuid);
+
+            using (var db = dbFactory.CreateDbContext()) {
+                GeneralTestResult? result = db.GeneralTestResults.Find(resId);
+
+                if (result is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown result");
+                }
+                TestGeneralTemplate? test = db.TestsGeneralTemplate
+                    .Include(t => t.PossibleResults)
+                    .Include(t => t.TestTakings)
+                    .FirstOrDefault(t => t.Id == result.TestId);
+                if (test is null) {
+                    return ResultsHelper.BadRequestUnknownTest();
+                }
+                bool haveAccess;
+                if (httpContext.TryGetUserId(out AppUserId viewerId)) {
+                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Privacy, viewerId);
+                } else {
+                    haveAccess = test.Privacy == PrivacyValues.Anyone;
+                }
+                if (!haveAccess) {
+                    return ResultsHelper.BadRequestNoTestAccess();
+                }
+                return Results.Ok(GeneralTestTakenReceivedResultResponse.New(
+                    result,
+                    test.PossibleResults,
+                    test.TestTakings.Count
+                ));
+
+            }
         }
     }
 }

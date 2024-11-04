@@ -1,37 +1,35 @@
 ﻿using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
 
-namespace vokimi_api.Src.dtos.responses.test_taking
+namespace vokimi_api.Src.dtos.responses.test_taking.general
 {
-    public record class TestTakenSuccessfullyResponse(
-        string ReceivedResultId,
-        string RecievedResultName,
-        string? RecievedResultImage,
-        string RecievedResultText,
-        TestTakenResultVm[] AllResults
+    public record class GeneralTestTakenReceivedResultResponse(
+        string ReceivedResultName,
+        string? ReceivedResultImage,
+        string ReceivedResultText,
+        GeneralTestTakenResultVm[] AllResults
     )
     {
-        public static TestTakenSuccessfullyResponse New(
+        public static GeneralTestTakenReceivedResultResponse New(
             GeneralTestResult receivedResult,
             IEnumerable<GeneralTestResult> allResults,
             int totalTestTakingsCount
         ) => new(
-            receivedResult.Id.Value.ToString(),
             receivedResult.Name,
             receivedResult.ImagePath,
             receivedResult.Text,
             allResults
-                .Select(r => TestTakenResultVm.FromResult(r, totalTestTakingsCount))
+                .Select(r => GeneralTestTakenResultVm.FromResult(r, totalTestTakingsCount))
                 .ToArray()
         );
     }
-    public record class TestTakenResultVm(
+    public record class GeneralTestTakenResultVm(
         string Id,
         string Name,
         string? Image,
         double ReceivingPercentage
     )
     {
-        public static TestTakenResultVm FromResult(GeneralTestResult res, int totalTestTakingsCount) => new(
+        public static GeneralTestTakenResultVm FromResult(GeneralTestResult res, int totalTestTakingsCount) => new(
             res.Id.Value.ToString(),
             res.Name,
             res.ImagePath,

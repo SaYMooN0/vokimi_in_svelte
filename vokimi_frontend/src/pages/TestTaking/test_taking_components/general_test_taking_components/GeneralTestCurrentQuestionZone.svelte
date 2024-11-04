@@ -4,6 +4,7 @@
     import GeneralTestAnswersDisplay from "./current_question_view_components/GeneralTestAnswersDisplay.svelte";
     import GeneralTestQuestionInfoDisplay from "./current_question_view_components/GeneralTestQuestionInfoDisplay.svelte";
 
+
     export let currentQuestionData: GeneralTestTakingQuestionData;
     export let currentQuestionIndex: number;
     export let totalQuestionsCount: number;
