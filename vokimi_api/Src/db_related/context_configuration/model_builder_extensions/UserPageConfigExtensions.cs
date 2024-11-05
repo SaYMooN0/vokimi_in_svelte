@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities.user_page.posts;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;

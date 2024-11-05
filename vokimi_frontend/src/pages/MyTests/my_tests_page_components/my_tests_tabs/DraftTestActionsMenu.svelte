@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
     import { navigate } from "svelte-routing";
-    import ActionConfirmationDialog from "../../../../components/shared/ActionConfirmationDialog.svelte";
+    import ActionConfirmationDialog from "../../../../components/shared/dialogs/ActionConfirmationDialog.svelte";
     import { Err } from "../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
 

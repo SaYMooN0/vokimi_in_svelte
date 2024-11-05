@@ -10,7 +10,7 @@
 
 <TestAccessPageContainer {testId}>
     {#if templateStringId == TestTemplate.General}
-        <GeneralTestReceivedResultView {receivedResId} />
+        <GeneralTestReceivedResultView {receivedResId} {testId} />
     {:else}
         <p>Not implemented</p>
     {/if}

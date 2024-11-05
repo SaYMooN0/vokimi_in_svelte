@@ -38,9 +38,9 @@ namespace vokimi_api.Endpoints.pages
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Privacy, viewerId);
+                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
                 } else {
-                    haveAccess = test.Privacy == PrivacyValues.Anyone;
+                    haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (haveAccess) {
                     return test.Template switch {
@@ -97,9 +97,14 @@ namespace vokimi_api.Endpoints.pages
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId testTakerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Privacy, testTakerId);
+                    haveAccess = TestAccessValidator.CheckUserAccessToTest(
+                        db,
+                        test.CreatorId,
+                        test.Settings.Privacy,
+                        testTakerId
+                    );
                 } else {
-                    haveAccess = test.Privacy == PrivacyValues.Anyone;
+                    haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (!haveAccess) {
                     return ResultsHelper.BadRequestWithErr(
@@ -249,9 +254,9 @@ namespace vokimi_api.Endpoints.pages
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Privacy, viewerId);
+                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
                 } else {
-                    haveAccess = test.Privacy == PrivacyValues.Anyone;
+                    haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (!haveAccess) {
                     return ResultsHelper.BadRequestNoTestAccess();

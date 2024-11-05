@@ -5,9 +5,9 @@ using vokimi_api.Src.enums;
 
 namespace vokimi_api.EndpointsMappers.pages.test_creation
 {
-    public class TestCreationEndpointsMapper
+    internal class TestCreationEndpointsMapper
     {
-        public static void MapAll(WebApplication app) {
+        internal static void MapAll(WebApplication app) {
             app.MapPost("/testCreation/createNewTest/{template}", async (HttpContext httpContext, IDbContextFactory<AppDbContext> dbFactory, string template) =>
             {
                 TestTemplate? parsedTemplate = TestTemplateExtensions.FromId(template);

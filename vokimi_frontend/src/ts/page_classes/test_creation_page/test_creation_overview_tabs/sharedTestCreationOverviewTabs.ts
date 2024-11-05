@@ -3,6 +3,7 @@ import ConclusionIconSvg from "../../../../pages/TestCreation/tab_links_icons/Co
 import StylesIconSvg from "../../../../pages/TestCreation/tab_links_icons/StylesIconSvg.svelte";
 import TagsIconSvg from "../../../../pages/TestCreation/tab_links_icons/TagsIconSvg.svelte";
 import PublishSvgIcon from "../../../../pages/TestCreation/tab_links_icons/PublishSvgIcon.svelte";
+import SettingsIconSvg from "../../../../pages/TestCreation/tab_links_icons/SettingsIconSvg.svelte";
 
 export const SharedTestCreationOverviewTabs = {
     "Main Info": {
@@ -16,6 +17,10 @@ export const SharedTestCreationOverviewTabs = {
     Conclusion: {
         id: "view-conclusion",
         icon: ConclusionIconSvg,
+    },
+    Settings: {
+        id: "view-settings",
+        icon: SettingsIconSvg
     },
     Tags: {
         id: "view-tags",

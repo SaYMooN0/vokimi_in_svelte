@@ -4,7 +4,7 @@
     import DraftGeneralTestQuestionEditingDialog from "./dialog_components/DraftGeneralTestQuestionEditingDialog.svelte";
     import DraftGeneralTestQuestionCreationDialog from "./dialog_components/DraftGeneralTestQuestionCreationDialog.svelte";
     import DraftGeneralTestQuestionViewElement from "./DraftGeneralTestQuestionViewElement.svelte";
-    import ActionConfirmationDialog from "../../../../../components/shared/ActionConfirmationDialog.svelte";
+    import ActionConfirmationDialog from "../../../../../components/shared/dialogs/ActionConfirmationDialog.svelte";
     import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
     import { Err } from "../../../../../ts/Err";
     import { StringUtils } from "../../../../../ts/utils/StringUtils";

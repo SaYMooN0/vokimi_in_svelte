@@ -42,7 +42,7 @@
         let testFeedback: string | null = null;
 
         if (testTakingData.conclusion !== null) {
-            testFeedback = TestConclusionDisplay.getFeedback();
+            testFeedback = conclusionDisplayComponent.getFeedback();
             if (
                 testTakingData.conclusion.anyFeedback &&
                 testFeedback !== null &&
@@ -82,7 +82,7 @@
         const data = {
             testId,
             chosenAnswers: chosenAnswersToSend,
-            feedback,
+            testFeedback: feedback,
         };
         const response = await fetch(
             "/api/testTaking/generalTestTakenRequest",
@@ -132,7 +132,6 @@
 
 <div style="--test-accent: {testTakingData.accentColor};">
     {#key currentQuestion}
-        <h1>{currentQuestion}</h1>
         {#if currentQuestion < testTakingData.questions.length}
             <GeneralTestCurrentQuestionZone
                 bind:this={currentQuestionView}

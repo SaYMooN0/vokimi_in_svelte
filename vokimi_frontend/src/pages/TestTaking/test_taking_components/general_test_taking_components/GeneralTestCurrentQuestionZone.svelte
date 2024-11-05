@@ -4,7 +4,6 @@
     import GeneralTestAnswersDisplay from "./current_question_view_components/GeneralTestAnswersDisplay.svelte";
     import GeneralTestQuestionInfoDisplay from "./current_question_view_components/GeneralTestQuestionInfoDisplay.svelte";
 
-
     export let currentQuestionData: GeneralTestTakingQuestionData;
     export let currentQuestionIndex: number;
     export let totalQuestionsCount: number;
@@ -18,6 +17,19 @@
         return answersChoosingComponent.getChosenAnswers(
             minAnswersCount,
             maxAnswersCount,
+        );
+    }
+    function getSortedAnswers() {
+        const allOrdersAreZero = currentQuestionData.answers.every(
+            (answer) => answer.orderInQuestion === 0,
+        );
+
+        if (allOrdersAreZero) {
+            return currentQuestionData.answers.sort(() => Math.random() - 0.5);
+        }
+
+        return currentQuestionData.answers.sort(
+            (a, b) => a.orderInQuestion - b.orderInQuestion,
         );
     }
     let answersChoosingErr: string = "";
@@ -35,7 +47,7 @@
 
 <GeneralTestAnswersDisplay
     bind:this={answersChoosingComponent}
-    answers={currentQuestionData.answers}
+    answers={getSortedAnswers()}
     isSingleChoice={currentQuestionData.isSingleChoice}
     answersType={currentQuestionData.answersType}
     chosenAnswersIds={questionChosenAnswers}

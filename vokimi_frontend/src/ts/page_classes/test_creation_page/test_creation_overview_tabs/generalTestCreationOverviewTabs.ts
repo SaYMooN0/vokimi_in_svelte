@@ -14,6 +14,7 @@ export const GeneralTestCreationOverviewTabs = {
     },
     Styles: SharedTestCreationOverviewTabs.Styles,
     Conclusion: SharedTestCreationOverviewTabs.Conclusion,
+    Settings: SharedTestCreationOverviewTabs.Settings,
     Tags: SharedTestCreationOverviewTabs.Tags,
     Publish: SharedTestCreationOverviewTabs.Publish
 };

@@ -3,9 +3,9 @@ using vokimi_api.Endpoints.pages.test_creation.general_template;
 
 namespace vokimi_api.EndpointsMappers.pages.test_creation
 {
-    public static class GeneralTestCreationEndpointsMapper
+    internal static class GeneralTestCreationEndpointsMapper
     {
-        public static void MapAll(WebApplication app) {
+        internal static void MapAll(WebApplication app) {
             //rewrite to check for creator
 
             //questions

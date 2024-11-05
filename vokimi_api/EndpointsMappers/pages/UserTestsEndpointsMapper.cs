@@ -2,9 +2,9 @@
 
 namespace vokimi_api.EndpointsMappers.pages
 {
-    public class UserTestsEndpointsMapper
+    internal class UserTestsEndpointsMapper
     {
-        public static void MapAll(WebApplication app)
+        internal static void MapAll(WebApplication app)
         {
             app.MapGet("/userTests/getUserDraftTestsBriefInfo", UserTestsEndpoints.GetUserDraftTestsBriefInfo);
             app.MapGet("/userTests/getUserPublishedTestsBriefInfo", UserTestsEndpoints.GetUserPublishedTestsBriefInfo);

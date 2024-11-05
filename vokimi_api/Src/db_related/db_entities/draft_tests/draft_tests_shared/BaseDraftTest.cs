@@ -19,6 +19,7 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared
         public AppUserId CreatorId { get; init; }
         public DraftTestMainInfoId MainInfoId { get; init; }
         public virtual DraftTestMainInfo MainInfo { get; protected set; }
+        public TestSettings Settings { get; protected set; }
         public DateOnly CreationDate { get; init; }
         public TestConclusionId? ConclusionId { get; protected set; }
         public virtual TestConclusion? Conclusion { get; protected set; }
@@ -43,6 +44,9 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared
                 this.ConclusionId = conclusion.Id;
                 this.Conclusion = conclusion;
             }
+        }
+        public void UpdateTestSettings(TestSettings newSettings) {
+            Settings = newSettings;
         }
 
     }

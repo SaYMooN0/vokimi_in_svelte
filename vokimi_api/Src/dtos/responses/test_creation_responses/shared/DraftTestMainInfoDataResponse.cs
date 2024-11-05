@@ -8,7 +8,6 @@ namespace vokimi_api.Src.dtos.responses.test_creation_responses.shared
         string Name,
         string? Description,
         string Language,
-        string Privacy,
         string ImgPath
     )
     {
@@ -21,7 +20,6 @@ namespace vokimi_api.Src.dtos.responses.test_creation_responses.shared
                 test.MainInfo.Name,
                 test.MainInfo.Description,
                 test.MainInfo.Language.GetId(),
-                test.MainInfo.Privacy.GetId(),
                 test.MainInfo.CoverImagePath
             );
         }

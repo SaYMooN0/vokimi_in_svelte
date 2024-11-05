@@ -1,7 +1,6 @@
 <script lang="ts">
     export let isChosen: boolean;
     export let isSingleChoice: boolean;
-    export let accentColor: string = "var(--primary)";
 </script>
 
 <div

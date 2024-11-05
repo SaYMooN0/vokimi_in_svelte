@@ -9,8 +9,10 @@
     import TestPageContentTestCoverSection from "./view_test_sections/TestPageContentTestCoverSection.svelte";
     import TestPageTestNameAndCreatorSection from "./view_test_sections/TestPageTestNameAndCreatorSection.svelte";
     import TestPageMiddleSection from "./view_test_sections/TestPageMiddleSection.svelte";
-    export let testId: string;
 
+    export let testId: string;
+    export let startingTab: string | undefined = undefined;
+    
     interface LoadInfoSuccess {
         testNameAndCreatorSection: TestNameAndCreatorSectionClass;
         testCoverPath: string;
@@ -67,6 +69,7 @@
                     <TestPageMiddleSection
                         testInfoTabData={loadingResult.testMiddleSection}
                         {testId}
+                        {startingTab}
                     />
                 </div>
             </div>

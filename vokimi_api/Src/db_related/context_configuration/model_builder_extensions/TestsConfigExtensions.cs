@@ -20,6 +20,9 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 //.HasValue<TestScoringTemplate>(TestTemplate.Scoring)
                 //.HasValue<TestCorrectAnswersTemplate>(TestTemplate.CorrectAnswers);
 
+                entity.OwnsOne(t => t.Settings);
+
+
                 entity.Property(x => x.ConclusionId).HasConversion(
                     v => v.HasValue ? v.Value.Value : (Guid?)null,
                     v => v.HasValue ? new TestConclusionId(v.Value) : null);

@@ -22,7 +22,7 @@ namespace VokimiShared.src.models.db_classes.test.test_types
         public string Cover { get; init; }
         public string? Description { get; init; }
         public Language Language { get; init; }
-        public PrivacyValues Privacy { get; init; }
+        public TestSettings Settings { get; protected set; }
         public DateOnly CreationDate { get; init; }
         public DateOnly PublicationDate { get; init; }
 

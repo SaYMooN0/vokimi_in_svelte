@@ -33,15 +33,15 @@ namespace vokimi_api.Endpoints.pages
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Privacy, viewerId);
+                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
                 } else {
-                    haveAccess = test.Privacy == PrivacyValues.Anyone;
+                    haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (haveAccess) {
                     return Results.Ok(ViewTestAccessCheckResponse.Success());
                 } else {
                     AppUser creator = db.AppUsers.Find(test.CreatorId);
-                    ViewTestAccessCheckResponse returnRes = test.Privacy switch {
+                    ViewTestAccessCheckResponse returnRes = test.Settings.Privacy switch {
                         PrivacyValues.FriendsAndFollowers => ViewTestAccessCheckResponse.FollowingNeeded(creator),
                         PrivacyValues.FriendsOnly => ViewTestAccessCheckResponse.FriendshipNeeded(creator),
                         _ => ViewTestAccessCheckResponse.Denied(),
@@ -72,9 +72,9 @@ namespace vokimi_api.Endpoints.pages
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Privacy, viewerId);
+                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
                 } else {
-                    haveAccess = test.Privacy == PrivacyValues.Anyone;
+                    haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (!haveAccess) {
                     return ResultsHelper.BadRequestNoTestAccess();

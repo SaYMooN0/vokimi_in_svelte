@@ -1,5 +1,4 @@
 import { Language } from "../../../../enums/Language";
-import { PrivacyValues } from "../../../../enums/PrivacyValues";
 import { TestTemplate } from "../../../../enums/TestTemplate";
 
 export class TestCreationMainInfoTabData {
@@ -7,21 +6,18 @@ export class TestCreationMainInfoTabData {
     public readonly name: string;
     public readonly description: string;
     public readonly language: Language;
-    public readonly privacy: PrivacyValues;
     public readonly imgPath: string;
 
     constructor(
         template: TestTemplate,
         name: string,
         language: Language,
-        privacy: PrivacyValues,
         description: string,
         imgPath: string
     ) {
         this.template = template;
         this.name = name;
         this.language = language;
-        this.privacy = privacy;
         this.description = description;
         this.imgPath = imgPath;
     }
@@ -35,7 +31,6 @@ export class TestCreationMainInfoTabData {
             TestTemplate.General,
             "",
             Language.Other,
-            PrivacyValues.ForMyself,
             "",
             ""
         );

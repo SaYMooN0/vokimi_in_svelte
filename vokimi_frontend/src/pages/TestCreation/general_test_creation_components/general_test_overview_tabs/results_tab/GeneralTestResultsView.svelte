@@ -1,5 +1,5 @@
 <script lang="ts">
-    import ActionConfirmationDialog from "../../../../../components/shared/ActionConfirmationDialog.svelte";
+    import ActionConfirmationDialog from "../../../../../components/shared/dialogs/ActionConfirmationDialog.svelte";
     import { Err } from "../../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
     import { GeneralTestCreationResultsTabData } from "../../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/general_test_creation/results/GeneralTestCreationResultsTabData";

@@ -19,17 +19,17 @@ export class GeneralTestTakenReceivedResultData {
 export class GeneralTestTakenResultVm {
     id: string;
     name: string;
-    Image: string | null;
+    image: string | null;
     receivingPercentage: number;
     constructor(
         id: string,
         name: string,
-        Image: string | null,
+        image: string | null,
         receivingPercentage: number
     ) {
         this.id = id;
         this.name = name;
-        this.Image = Image;
+        this.image = image;
         this.receivingPercentage = receivingPercentage;
     }
 }

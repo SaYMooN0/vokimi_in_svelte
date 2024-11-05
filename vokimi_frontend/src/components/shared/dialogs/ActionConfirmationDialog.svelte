@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { Err } from "../../ts/Err";
-    import { StringUtils } from "../../ts/utils/StringUtils";
-    import BaseDialog from "../BaseDialog.svelte";
+    import type { Err } from "../../../ts/Err";
+    import { StringUtils } from "../../../ts/utils/StringUtils";
+    import BaseDialog from "../../BaseDialog.svelte";
 
     export let dialogId: string = "resultConfirmationDialog";
     export let cancelBtnText: string = "Cancel";

@@ -1,4 +1,5 @@
 ﻿using vokimi_api.Src.constants_store_classes;
+using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
 using vokimi_api.Src.db_related.db_entities_ids;
@@ -13,7 +14,7 @@ namespace vokimi_api.Src.test_publishing_data
         string NewTestCoverPath,
         string? Description,
         Language Language,
-        PrivacyValues Privacy,
+        TestSettings Settings,
         DateOnly CreationDate,
         TestConclusionId? ConclusionId,
         TestStylesSheetId StylesSheetId,
@@ -34,7 +35,7 @@ namespace vokimi_api.Src.test_publishing_data
             newTestCoverPath,
             draftTest.MainInfo.Description,
             draftTest.MainInfo.Language,
-            draftTest.MainInfo.Privacy,
+            draftTest.Settings,
             draftTest.CreationDate,
             draftTest.ConclusionId,
             draftTest.StylesSheetId,

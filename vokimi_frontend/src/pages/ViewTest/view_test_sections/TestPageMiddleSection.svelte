@@ -5,13 +5,25 @@
     import MiddleSectionRatingsTab from "./middle_section_tabs/MiddleSectionRatingsTab.svelte";
 
     export let testId: string;
+    export let testInfoTabData: TestInfoTabData;
+    export let startingTab: string | undefined;
     enum MiddlePartTabs {
         Info,
         Ratings,
         Discussions,
     }
     let activeTab: MiddlePartTabs = MiddlePartTabs.Info;
-    export let testInfoTabData: TestInfoTabData;
+    function setStartingTab() {
+        console.log(startingTab);
+        if (startingTab === "ratings") {
+            activeTab = MiddlePartTabs.Ratings;
+        } else if (startingTab === "discussions") {
+            activeTab = MiddlePartTabs.Discussions;
+        } else {
+            activeTab = MiddlePartTabs.Info;
+        }
+    }
+    setStartingTab();
 </script>
 
 <div class="middle-section">

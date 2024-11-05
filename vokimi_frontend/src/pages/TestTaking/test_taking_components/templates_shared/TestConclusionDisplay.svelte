@@ -77,5 +77,4 @@
     .feedback-textarea:focus {
         border-color: var(--test-accent);
     }
-   
 </style>

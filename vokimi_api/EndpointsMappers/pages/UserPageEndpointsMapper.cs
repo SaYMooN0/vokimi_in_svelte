@@ -2,9 +2,9 @@
 
 namespace vokimi_api.EndpointsMappers.pages
 {
-    public static class UserPageEndpointsMapper
+    internal static class UserPageEndpointsMapper
     {
-        public static void MapAll(WebApplication app)
+        internal static void MapAll(WebApplication app)
         {
             app.MapGet("/userPage/doesUserExist/{userId}", UserEndpoints.DoesUserExist);
             app.MapGet("/userPage/getUserPageTopInfoData/{userId}", UserEndpoints.GetUserPageTopInfoData);

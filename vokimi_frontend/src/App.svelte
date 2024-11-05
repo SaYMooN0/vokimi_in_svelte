@@ -46,9 +46,10 @@
       <Route path="/test-creation/:testId/*" let:params>
         <TestCreationPage testId={params.testId} />
       </Route>
-      <Route path="/view-test/:testId" let:params>
-        <ViewTestPage testId={params.testId} />
+      <Route path="/view-test/:testId/*" let:params>
+        <ViewTestPage testId={params.testId} startingTab={params["*"]} />
       </Route>
+
       <Route path="/test-taking/:testId" let:params>
         <TestTakingPage testId={params.testId} />
       </Route>

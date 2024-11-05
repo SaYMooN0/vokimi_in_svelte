@@ -2,9 +2,9 @@
 
 namespace vokimi_api.EndpointsMappers
 {
-    public static class ImgOperationsEndpointsMapper
+    internal static class ImgOperationsEndpointsMapper
     {
-        public static void MapAll(WebApplication app) {
+        internal static void MapAll(WebApplication app) {
             app.MapGet("/vokimiimgs/{*fileKey}", ImgOperationsEndpoints.GetImgFromStorage);
             app.MapPost("/saveimg/updateDraftTestCover/{testId}", ImgOperationsEndpoints.UpdateDraftTestCover)
                 .DisableAntiforgery();

@@ -11,7 +11,6 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared
         public string CoverImagePath { get; private set; }
         public string? Description { get; private set; }
         public Language Language { get; private set; }
-        public PrivacyValues Privacy { get; private set; }
         public static DraftTestMainInfo CreateNewFromName(string name) =>
             new()
             {
@@ -19,17 +18,15 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared
                 Name = name,
                 CoverImagePath = ImgOperationsConsts.DefaultTestCoverImg,
                 Description = null,
-                Language = Language.Other,
-                Privacy = PrivacyValues.Anyone
+                Language = Language.Other
             };
 
         public void UpdateCoverImage(string path) => CoverImagePath = path;
-        public void Update(string name, string? description, Language language, PrivacyValues privacy)
+        public void Update(string name, string? description, Language language)
         {
             Name = name;
             Description = description;
             Language = language;
-            Privacy = privacy;
         }
     }
 

@@ -8,54 +8,40 @@ namespace vokimi_api.Src.dtos.requests.test_creation.templates_shared
         string TestId,
         string Name,
         string Description,
-        string Language,
-        string Privacy
+        string Language
     )
     {
-        public Err CheckForErr()
-        {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
+        public Err CheckForErr() {
+            if (string.IsNullOrWhiteSpace(Name)) {
                 return new Err("Test name cannot be empty");
             }
-            if (!Guid.TryParse(TestId, out var _))
-            {
+            if (!Guid.TryParse(TestId, out var _)) {
                 return new Err("Incorrect data. Please refresh the page and try again");
             }
-            if (LanguageExtensions.FromId(Language) is null)
-            {
+            if (LanguageExtensions.FromId(Language) is null) {
                 return new Err("Please choose a language");
             }
-            if (PrivacyValuesExtensions.FromId(Privacy) is null)
-            {
-                return new Err("Please choose test privacy");
-            }
             if (Name.Length > BaseTestCreationConsts.MaxTestNameLength ||
-                Name.Length < BaseTestCreationConsts.MinTestNameLength)
-            {
+                Name.Length < BaseTestCreationConsts.MinTestNameLength) {
                 return new Err($"Test name must be from {BaseTestCreationConsts.MinTestNameLength} to " +
                                $"{BaseTestCreationConsts.MaxTestNameLength} characters");
             }
             int descriptionLength = string.IsNullOrWhiteSpace(Description) ? 0 : Description.Length;
-            if (descriptionLength > BaseTestCreationConsts.MaxTestDescriptionLength)
-            {
+            if (descriptionLength > BaseTestCreationConsts.MaxTestDescriptionLength) {
                 return new Err("Description length cannot be more than " +
                               $"{BaseTestCreationConsts.MaxTestDescriptionLength} characters");
             }
             return Err.None;
         }
-        public ParsedDraftTestMainInfoUpdateRequest? ParseToObjWithTypes()
-        {
-            if (CheckForErr().NotNone())
-            {
+        public ParsedDraftTestMainInfoUpdateRequest? ParseToObjWithTypes() {
+            if (CheckForErr().NotNone()) {
                 return null;
             }
             return new ParsedDraftTestMainInfoUpdateRequest(
                 new(new(TestId)),
                 Name,
                 Description,
-                LanguageExtensions.FromId(Language).Value,
-                PrivacyValuesExtensions.FromId(Privacy).Value
+                LanguageExtensions.FromId(Language).Value
             );
 
         }
@@ -64,7 +50,6 @@ namespace vokimi_api.Src.dtos.requests.test_creation.templates_shared
         DraftTestId TestId,
         string Name,
         string Description,
-        Language Language,
-        PrivacyValues Privacy
+        Language Language
     );
 }

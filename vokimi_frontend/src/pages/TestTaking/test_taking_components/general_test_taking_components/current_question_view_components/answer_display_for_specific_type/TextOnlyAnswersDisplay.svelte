@@ -2,18 +2,15 @@
     import type { GeneralTestTakingTextOnlyAnswerData } from "../../../../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakingAnswersData";
     import AnswerChosenIndicator from "../../../templates_shared/AnswerChosenIndicator.svelte";
 
-
     export let onAnswerClick: (answerId: string) => void;
     export let answers: GeneralTestTakingTextOnlyAnswerData[];
     export let isSingleChoice: boolean;
     export let chosenAnswersIds: string[];
-    export let accentColor: string = "var(--primary)";
 </script>
 
 {#each answers.sort((a, b) => a.orderInQuestion - b.orderInQuestion) as answer}
     <p class="answer-btn" on:click={() => onAnswerClick(answer.answerId)}>
         <AnswerChosenIndicator
-            {accentColor}
             isChosen={chosenAnswersIds.includes(answer.answerId)}
             {isSingleChoice}
         />

@@ -1,11 +1,15 @@
 <script lang="ts">
+    import { TestTemplate } from "../../../ts/enums/TestTemplate";
     import { Err } from "../../../ts/Err";
     import { getErrorFromResponse } from "../../../ts/ErrorResponse";
     import { GeneralTestTakenReceivedResultData } from "../../../ts/page_classes/test_taking_page/general_test/GeneralTestTakenReceivedResultData";
     import AllPossibleResultsDisplay from "./general_test/AllPossibleResultsDisplay.svelte";
     import ReceivedResultDisplay from "./general_test/ReceivedResultDisplay.svelte";
+    import NextActionOffer from "./shared/NextActionOffer.svelte";
 
     export let receivedResId: string;
+    export let testId: string;
+
     async function loadReceivedResultData(): Promise<
         Err | GeneralTestTakenReceivedResultData
     > {
@@ -34,14 +38,29 @@
     {#if loadingRes instanceof Err}
         <p class="err-message">{loadingRes.toString()}</p>
     {:else}
-        <ReceivedResultDisplay
-            receivedResultName={loadingRes.receivedResultName}
-            receivedResultImage={loadingRes.receivedResultImage}
-            receivedResultText={loadingRes.receivedResultText}
-        />
-        <AllPossibleResultsDisplay
-            receivedResultId={receivedResId}
-            allResults={loadingRes.allResult}
-        />
+        <div class="view-res-container">
+            <ReceivedResultDisplay
+                receivedResultName={loadingRes.receivedResultName}
+                receivedResultImage={loadingRes.receivedResultImage}
+                receivedResultText={loadingRes.receivedResultText}
+            />
+            <AllPossibleResultsDisplay
+                receivedResultId={receivedResId}
+                allResults={loadingRes.allResult}
+            />
+            <NextActionOffer
+                receivedResultId={receivedResId}
+                {testId}
+                testTemplate={TestTemplate.General}
+            />
+        </div>
     {/if}
 {/await}
+
+<style>
+    .view-res-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+</style>

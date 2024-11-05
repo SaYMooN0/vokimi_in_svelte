@@ -136,7 +136,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
                         return ResultsHelper.BadRequestNotCreator();
                     }
-                    test.MainInfo.Update(newData.Name, newData.Description, newData.Language, newData.Privacy);
+                    test.MainInfo.Update(newData.Name, newData.Description, newData.Language);
                     db.SaveChanges();
                     return Results.Ok();
                 }
