@@ -9,6 +9,7 @@
     import { TestCreationConclusionTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
     import { TestCreationStylesTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationStylesTabData";
     import { TestCreationTagsTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
+    import { TestCreationSettingsTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationSettingsTabData";
     export let basepath: string;
     export let testId: string;
     export let updateTestName: (name: string) => void;
@@ -24,6 +25,9 @@
     let stylesTabData: TestCreationStylesTabData =
         TestCreationStylesTabData.empty();
     let tagsTabData: TestCreationTagsTabData = TestCreationTagsTabData.empty();
+
+    let settingsTabData: TestCreationSettingsTabData =
+        TestCreationSettingsTabData.empty();
 </script>
 
 <Router {basepath}>
@@ -36,6 +40,8 @@
         bind:conclusionTabData
         stylesTabPath="view-styles"
         bind:stylesTabData
+        settingsTabPath="view-settings"
+        bind:settingsTabData
         tagsTabPath="view-tags"
         bind:tagsTabData
         publishingTabPath="view-publish"

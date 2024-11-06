@@ -1,9 +1,15 @@
 <script lang="ts">
+    import type { PrivacyValues } from "../../../ts/enums/PrivacyValues";
     import type { Err } from "../../../ts/Err";
     import BaseDialog from "../../BaseDialog.svelte";
 
     export let saveTestSettings: () => Promise<Err>;
-    export function open() {
+    export function open(
+        privacy: PrivacyValues,
+        discussionsOpen: boolean,
+        testTakenPostsAllowed: boolean,
+        enableTestRatings: boolean,
+    ) {
         dialogElement.open();
     }
     let dialogElement: BaseDialog;

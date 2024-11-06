@@ -23,7 +23,6 @@
                 TestTemplateUtils.fromId(data.template),
                 data.name,
                 LanguageUtils.fromId(data.language),
-                PrivacyValuesUtils.fromId(data.privacy),
                 data.description,
                 data.imgPath,
             );
@@ -38,7 +37,6 @@
             mainInfoData.name,
             mainInfoData.description,
             mainInfoData.language,
-            mainInfoData.privacy,
         );
     }
 
@@ -68,7 +66,6 @@
                     testName={mainInfoData.name}
                     description={mainInfoData.description}
                     language={mainInfoData.language}
-                    privacy={mainInfoData.privacy}
                 />
             </div>
             <div class="right-div">

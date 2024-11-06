@@ -5,6 +5,12 @@
     import type { TestCreationSettingsTabData } from "../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationSettingsTabData";
     import TestSettingsEditingDialog from "../../../../components/shared/dialogs/TestSettingsEditingDialog.svelte";
     import { Err } from "../../../../ts/Err";
+    import {
+        PrivacyValues,
+        PrivacyValuesUtils,
+    } from "../../../../ts/enums/PrivacyValues";
+    import { get } from "svelte/store";
+    import YesNoIconDisplay from "./YesNoIconDisplay.svelte";
 
     export let settingsData: TestCreationSettingsTabData;
     export let testId: string;
@@ -16,6 +22,7 @@
             settingsData.privacy,
             settingsData.discussionsOpen,
             settingsData.testTakenPostsAllowed,
+            settingsData.enableTestRatings,
         );
     }
     async function saveSettingsData(): Promise<Err> {
@@ -42,11 +49,23 @@
             onButtonClick={() => openEditingDialog()}
         />
         <div class="tab-content">
-            <p>Settings</p>
-            <p>Privacy: {settingsData.privacy}</p>
-            <p>Discussions open: {settingsData.discussionsOpen}</p>
-            <p>
-                Allow users to create posts when about their test takings: {settingsData.testTakenPostsAllowed}
+            <p class="prop-name-val-p">
+                Privacy:
+                <span class="prop-value">
+                    {PrivacyValuesUtils.getFullName(settingsData.privacy)}
+                </span>
+            </p>
+            <p class="prop-name-val-p">
+                Enable test ratings:
+                <YesNoIconDisplay value={settingsData.enableTestRatings} />
+            </p>
+            <p class="prop-name-val-p">
+                Discussions open:
+                <YesNoIconDisplay value={settingsData.discussionsOpen} />
+            </p>
+            <p class="prop-name-val-p">
+                Allow users to create posts when about their test takings:
+                <YesNoIconDisplay value={settingsData.testTakenPostsAllowed} />
             </p>
         </div>
     </div>
@@ -56,5 +75,17 @@
     .tab-content {
         direction: flex;
         flex-direction: column;
+        margin-top: 12px;
+    }
+    .prop-name-val-p {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 8px 12px;
+        gap: 12px;
+        font-size: 20px;
+    }
+    .prop-name-val-p .prop-value {
+        font-weight: 500;
     }
 </style>

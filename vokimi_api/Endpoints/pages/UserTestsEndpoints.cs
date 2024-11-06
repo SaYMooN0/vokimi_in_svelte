@@ -78,7 +78,7 @@ namespace vokimi_api.Endpoints.pages
                     return ResultsHelper.BadRequestUnknownTest();
                 }
 
-                DraftTestOverviewInfoResponse returnData = httpContext.IfAuthenticatedUserIdIsTestCreator(test) ?
+                DraftTestOverviewInfoResponse returnData = httpContext.IsAuthenticatedUserIsTestCreator(test) ?
                     DraftTestOverviewInfoResponse.NewWithViewerIsCreator(test.Template, test.MainInfo.Name) :
                     DraftTestOverviewInfoResponse.NewWithViewerIsNotCreator();
                 return Results.Ok(returnData);
@@ -107,7 +107,7 @@ namespace vokimi_api.Endpoints.pages
                 {
                     return ResultsHelper.BadRequestUnknownTest();
                 }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test))
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test))
                 {
                     return ResultsHelper.BadRequestNotCreator();
                 }

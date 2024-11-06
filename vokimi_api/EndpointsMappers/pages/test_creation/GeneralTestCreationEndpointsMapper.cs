@@ -6,7 +6,6 @@ namespace vokimi_api.EndpointsMappers.pages.test_creation
     internal static class GeneralTestCreationEndpointsMapper
     {
         internal static void MapAll(WebApplication app) {
-            //rewrite to check for creator
 
             //questions
             app.MapGet("/testCreation/general/getGeneralDraftTestQuestionsData/{testId}",
@@ -23,6 +22,7 @@ namespace vokimi_api.EndpointsMappers.pages.test_creation
                 GeneralTestQuestionCreationEndpoints.MoveQuestionUpInOrder);
             app.MapPost("/testCreation/general/moveQuestionDownInOrder/{questionId}",
                 GeneralTestQuestionCreationEndpoints.MoveQuestionDownInOrder);
+            
             //results
             app.MapGet("/testCreation/general/getResultsIdNameDictionary/{testId}",
                 GeneralTestResultsCreationEndpoints.GetResultsIdNameDictionary);

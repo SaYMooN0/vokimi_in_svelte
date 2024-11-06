@@ -76,15 +76,15 @@
     padding-top: calc(var(--header-height) + 12px);
   }
 
-  @media (max-width: 1100px) {
+  @media (max-width: 1200px) {
     :root {
-      --header-height: 70px;
+      --header-height: 60px;
     }
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 800px) {
     :root {
-      --header-height: 60px;
+      --header-height: 56px;
     }
   }
 </style>

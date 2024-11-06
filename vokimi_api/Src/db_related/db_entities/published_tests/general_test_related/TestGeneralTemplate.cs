@@ -22,7 +22,7 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_rel
             Cover = data.NewTestCoverPath,
             Description = data.Description,
             Language = data.Language,
-            Settings = TestSettings.Default(),
+            Settings = data.Settings,
             CreationDate = data.CreationDate,
             PublicationDate = DateOnly.FromDateTime(DateTime.UtcNow),
             ConclusionId = data.ConclusionId,

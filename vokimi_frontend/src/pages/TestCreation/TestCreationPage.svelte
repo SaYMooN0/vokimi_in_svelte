@@ -63,7 +63,7 @@
                 <p class="test-editing-label">
                     Editing of the "<label>{testName}</label>" draft test
                 </p>
-                <div class="tab-links-container">
+                <div class="tab-links-container unselectable">
                     {#each Object.entries(getTabLinks(template)) as [label, linkData]}
                         <Link to="{basepath}/{linkData.id}">
                             <div class="tab-link">
@@ -123,7 +123,11 @@
     .tab-links-container {
         display: flex;
         justify-content: center;
-        gap: 4vw;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 0 min(12vw, 120px);
+        column-gap: max(24px, calc(3.2vw - 12px));
+        row-gap: 12px;
         align-items: center;
         box-sizing: border-box;
     }
@@ -161,5 +165,17 @@
         width: calc(100% - 24px);
         margin: 4px auto 20px auto;
         border-radius: 2px;
+    }
+    @media (max-width: 1200px) {
+        .tab-links-container {
+            padding: 0 10vw;
+            column-gap: 24px;
+        }
+    }
+    @media (max-width: 800px) {
+        .tab-links-container {
+            padding: 0 80px;
+            column-gap: 32px;
+        }
     }
 </style>

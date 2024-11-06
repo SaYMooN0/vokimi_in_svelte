@@ -56,7 +56,7 @@ namespace vokimi_api.Endpoints
                 if (test is null) {
                     return ResultsHelper.BadRequestServerError();
                 }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
                 test.StylesSheet.Update(

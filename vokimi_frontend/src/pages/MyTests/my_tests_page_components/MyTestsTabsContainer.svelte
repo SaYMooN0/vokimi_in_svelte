@@ -19,7 +19,7 @@
 </script>
 
 <NewTestCreationDialog bind:this={testCreationDialog} />
-<div class="tabs-container">
+<div class="tabs-container unselectable">
     <div class="tab-links-container">
         {#each tabs as tab}
             <div

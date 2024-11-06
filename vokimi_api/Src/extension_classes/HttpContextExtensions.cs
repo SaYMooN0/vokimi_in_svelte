@@ -37,9 +37,9 @@ namespace vokimi_api.Src.extension_classes
             AppUserId userId = new(userGuid);
             return httpContext.IfAuthenticatedUserIdEquals(userId);
         }
-        public static bool IfAuthenticatedUserIdIsTestCreator(this HttpContext httpContext, BaseDraftTest test) =>
+        public static bool IsAuthenticatedUserIsTestCreator(this HttpContext httpContext, BaseDraftTest test) =>
             httpContext.IfAuthenticatedUserIdEquals(test.CreatorId);
-        public static bool IfAuthenticatedUserIdIsTestCreator(this HttpContext httpContext, BaseTest test) =>
+        public static bool IsAuthenticatedUserIsTestCreator(this HttpContext httpContext, BaseTest test) =>
            httpContext.IfAuthenticatedUserIdEquals(test.CreatorId);
 
     }

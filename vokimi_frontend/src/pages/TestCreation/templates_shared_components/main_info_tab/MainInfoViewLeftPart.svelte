@@ -4,13 +4,15 @@
         TestTemplateUtils,
     } from "../../../../ts/enums/TestTemplate";
     import { Language, LanguageUtils } from "../../../../ts/enums/Language";
-    import { PrivacyValues, PrivacyValuesUtils } from "../../../../ts/enums/PrivacyValues";
+    import {
+        PrivacyValues,
+        PrivacyValuesUtils,
+    } from "../../../../ts/enums/PrivacyValues";
 
     export let template: TestTemplate;
     export let testName: string;
     export let description: string;
     export let language: Language;
-    export let privacy: PrivacyValues;
 </script>
 
 <p class="test-template">
@@ -31,15 +33,9 @@
         {description}
     {/if}
 </p>
-<div class="lang-and-priv-div">
-    <div class="lang-div">
-        <span class="property-label">Language: </span>
-        {LanguageUtils.getFullName(language)}
-    </div>
-    <div class="priv-div">
-        <span class="property-label">Privacy: </span>
-        {PrivacyValuesUtils.getFullName(privacy)}
-    </div>
+<div class="lang-div">
+    <span class="property-label">Language: </span>
+    {LanguageUtils.getFullName(language)}
 </div>
 
 <style>
@@ -50,16 +46,5 @@
     .property-val {
         font-size: 22px;
         font-weight: 400;
-    }
-    .lang-and-priv-div {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-    }
-    .lang-and-priv-div div {
-        justify-self: center;
-        width: fit-content;
     }
 </style>

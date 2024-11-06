@@ -28,7 +28,7 @@ namespace vokimi_api.Endpoints
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();
                 }
-                return httpContext.IfAuthenticatedUserIdIsTestCreator(test) ?
+                return httpContext.IsAuthenticatedUserIsTestCreator(test) ?
                      Results.Ok(DraftTestTagsDataResponse.FromDraftTest(test)) :
                      ResultsHelper.BadRequestNotCreator();
             }
@@ -86,7 +86,7 @@ namespace vokimi_api.Endpoints
                         return ResultsHelper.BadRequestUnknownTest();
                     }
 
-                    if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                    if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                         return ResultsHelper.BadRequestNotCreator();
                     }
 

@@ -30,15 +30,13 @@
         <div>Loading...</div>
     {:then authenticated}
         {#if authenticated}
-            <a href="/user">
-                <div class="acc-div">
-                    <img
-                        src={ImgUtils.imgUrl(profilePicture)}
-                        alt="Profile Picture"
-                        class="acc-img"
-                    />
-                    {username}
-                </div>
+            <a href="/user" class="acc-div">
+                <img
+                    src={ImgUtils.imgUrl(profilePicture)}
+                    alt="Profile Picture"
+                    class="acc-img"
+                />
+                {username}
             </a>
         {:else}
             <a href="/auth/login" class="login-button">Login</a>
@@ -52,7 +50,7 @@
         position: fixed;
         top: 0;
         width: 100vw;
-        padding: 0 20px;
+        padding: 0 calc(3vw - 22px);
         box-sizing: border-box;
         display: grid;
         grid-template-columns: 200px 1fr 200px;
@@ -77,7 +75,7 @@
         text-decoration: none;
         width: fit-content;
         justify-self: center;
-        padding: 8px 28px;
+        padding: 8px 32px;
         background-color: var(--primary);
         color: var(--back-main);
         font-size: 18px;
@@ -86,11 +84,8 @@
     .login-button:hover {
         background-color: var(--primary-hov);
     }
-
     .acc-div {
-        justify-self: center;
         background-color: var(--back-secondary);
-        margin: auto 0;
         padding: 4px 12px;
         width: fit-content;
         border: 2px solid var(--back-secondary);
@@ -99,6 +94,7 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
+        font-size: 16px;
         cursor: pointer;
     }
     .acc-div:hover {
@@ -113,5 +109,31 @@
         aspect-ratio: 1/1;
         object-fit: cover;
         border-radius: 12px;
+    }
+    @media (max-width: 1600px) {
+        .vokimi-logo {
+            height: 96%;
+        }
+        .header-layout {
+            grid-template-columns: 184px 1fr 184px;
+        }
+    }
+    @media (max-width: 1200px) {
+        .vokimi-logo {
+            height: 92%;
+        }
+        .header-layout {
+            grid-template-columns: 148px 1fr 148px;
+        }
+        .acc-div {
+            font-size: 14px;
+            gap: 6px;
+        }
+        .acc-img {
+            height: 38px;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 10px;
+        }
     }
 </style>

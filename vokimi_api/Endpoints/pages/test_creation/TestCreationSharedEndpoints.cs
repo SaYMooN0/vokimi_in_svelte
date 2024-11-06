@@ -106,7 +106,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 if (test is null || test.MainInfo is null) {
                     return ResultsHelper.BadRequestWithErr("Unknown test");
                 }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
                 return Results.Ok(DraftTestMainInfoDataResponse.FromDraftTest(test));
@@ -133,7 +133,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     if (test is null) {
                         return ResultsHelper.BadRequestUnknownTest();
                     }
-                    if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                    if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                         return ResultsHelper.BadRequestNotCreator();
                     }
                     test.MainInfo.Update(newData.Name, newData.Description, newData.Language);
@@ -163,7 +163,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     if (test is null) {
                         return ResultsHelper.BadRequestUnknownTest();
                     }
-                    if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                    if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                         return ResultsHelper.BadRequestNotCreator();
                     }
 
@@ -194,7 +194,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                         .Include(t => t.Conclusion)
                         .FirstOrDefault(t => t.Id == draftTestId);
                 if (test is null) { return ResultsHelper.BadRequestServerError(); }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
                 return Results.Ok(DraftTestConclusionData.FromConclusion(test.Conclusion));
@@ -217,7 +217,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 if (test is null) {
                     return ResultsHelper.BadRequestServerError();
                 }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
                 if (test.Conclusion is not null) {
@@ -256,7 +256,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();
                 }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
                 Err validationErr = data.CheckForErr();
@@ -307,7 +307,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();
                 }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
                 if (test.Conclusion is null) {
@@ -319,6 +319,67 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 db.Update(test);
                 db.SaveChanges();
                 return Results.Ok();
+            }
+        }
+        public static IResult GetDraftTestSettingsData(
+            IDbContextFactory<AppDbContext> dbFactory,
+            string testId,
+            HttpContext httpContext
+        ) {
+            DraftTestId draftTestId;
+            if (!Guid.TryParse(testId, out Guid testGuid)) {
+                return ResultsHelper.BadRequestServerError();
+            }
+            draftTestId = new(testGuid);
+
+            using (var db = dbFactory.CreateDbContext()) {
+                BaseDraftTest? test = db.DraftTestsSharedInfo
+                        .Find(draftTestId);
+
+                if (test is null) {
+                    return ResultsHelper.BadRequestWithErr("Unknown test");
+                }
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
+                    return ResultsHelper.BadRequestNotCreator();
+                }
+                return Results.Ok(test.Settings);
+            }
+        }
+        public static IResult UpdateDraftTestSettings(
+            IDbContextFactory<AppDbContext> dbFactory,
+            [FromBody] DraftTestSettingsUpdateRequest request,
+            HttpContext httpContext
+        ) {
+            Err validationErr = request.CheckForErr();
+            if (validationErr.NotNone()) {
+                return ResultsHelper.BadRequestWithErr(validationErr.Message);
+            }
+
+            DraftTestId testId = request.GetParsedTestId().Value;
+            PrivacyValues privacy = request.GetParsedPrivacy() ?? PrivacyValues.Anyone;
+
+            try {
+                using (var db = dbFactory.CreateDbContext()) {
+                    BaseDraftTest? test = db.DraftTestsSharedInfo
+                        .First(t => t.Id == testId);
+                    if (test is null) {
+                        return ResultsHelper.BadRequestUnknownTest();
+                    }
+                    if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
+                        return ResultsHelper.BadRequestNotCreator();
+                    }
+                    TestSettings newSettings = new(
+                        privacy,
+                        request.DiscussionsOpen,
+                        request.TestTakenPostsAllowed,
+                        request.EnableTestRatings
+                    );
+                    test.UpdateTestSettings(newSettings);
+                    db.SaveChanges();
+                    return Results.Ok();
+                }
+            } catch {
+                return ResultsHelper.BadRequestServerError();
             }
         }
     }

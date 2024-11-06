@@ -35,7 +35,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 if (testToPublish is null) {
                     return ResultsHelper.BadRequestWithErr("Unknown draft test");
                 }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(testToPublish)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(testToPublish)) {
                     return ResultsHelper.BadRequestWithErr("Only test creator can view this information");
                 }
 
@@ -286,7 +286,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 if (testToPublish is null) {
                     return ResultsHelper.BadRequestWithErr("Unknown draft test");
                 }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(testToPublish)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(testToPublish)) {
                     return ResultsHelper.BadRequestWithErr("Only test creator can publish it");
                 }
                 var testProblems = GetTestPublilshingProblems(db, draftTestId, testToPublish.Template);

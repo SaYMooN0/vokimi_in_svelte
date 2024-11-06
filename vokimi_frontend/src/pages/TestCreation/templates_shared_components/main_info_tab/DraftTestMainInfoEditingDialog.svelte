@@ -1,9 +1,7 @@
 <script lang="ts">
     import { Language, LanguageUtils } from "../../../../ts/enums/Language";
-    import {
-        PrivacyValues,
-        PrivacyValuesUtils,
-    } from "../../../../ts/enums/PrivacyValues";
+    import { Err } from "../../../../ts/Err";
+
     import { StringUtils } from "../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
 
@@ -14,30 +12,27 @@
         testNameVal: string,
         descriptionVal: string,
         languageVal: Language,
-        privacyVal: PrivacyValues,
     ) {
         testName = testNameVal;
         description = descriptionVal;
         language = languageVal;
-        privacy = privacyVal;
         dialogElement.open();
     }
 
     let testName: string = "";
     let description: string = "";
     let language: Language;
-    let privacy: PrivacyValues;
 
     let dialogElement: BaseDraftTestEditingDialog;
 
     async function saveData() {
-        const dataErr: string | null = checkFormDataForError();
-        if (dataErr !== null) {
-            dialogElement.setErrorMessage(dataErr);
+        const dataErr = checkFormDataForError();
+        if (dataErr.notNone()) {
+            dialogElement.setErrorMessage(dataErr.toString());
             return;
         }
         const response = await fetch(
-            "/api/testCreation/updateDraftTestMainInfoData",
+            "/api/testCreation/updateDraftTestMainInfo",
             {
                 method: "POST",
                 headers: {
@@ -48,7 +43,6 @@
                     name: testName.trim(),
                     description: description?.trim() ?? "",
                     language: language,
-                    privacy: privacy,
                 }),
             },
         );
@@ -62,17 +56,14 @@
             dialogElement.setErrorMessage("Unknown error");
         }
     }
-    function checkFormDataForError(): string | null {
-        if (testName === "") {
-            return "Test name cannot be empty";
+    function checkFormDataForError(): Err {
+        if (StringUtils.isNullOrWhiteSpace(testName)) {
+            return new Err("Test name cannot be empty");
         }
         if (language === null) {
-            return "Please select a language";
+            return new Err("Please select a language");
         }
-        if (privacy === null) {
-            return "Please select a privacy";
-        }
-        return null;
+        return Err.none();
     }
 </script>
 
@@ -104,15 +95,6 @@
             {#each Object.values(Language) as language}
                 <option value={language}>
                     {LanguageUtils.getFullName(language)}
-                </option>
-            {/each}
-        </select>
-
-        <label for="privacy" class="property-label">Privacy:</label>
-        <select id="privacy" bind:value={privacy}>
-            {#each Object.values(PrivacyValues) as privacy}
-                <option value={privacy}>
-                    {PrivacyValuesUtils.getFullName(privacy)}
                 </option>
             {/each}
         </select>

@@ -168,4 +168,22 @@
         box-sizing: border-box;
         color: inherit;
     }
+    @media (max-width: 1600px) {
+        .nav-links-container {
+            gap: min(8px, 1vw);
+        }
+    }
+    @media (max-width: 1200px) {
+        .nav-links-container {
+            gap: min(8px, 2vw);
+        }
+        .nav-links-container :global(a) {
+            height: 40px;
+            padding: 4px 16px;
+        }
+        .nav-links-container .link-label {
+            font-size: 20px;
+            margin-left: 4px;
+        }
+    }
 </style>

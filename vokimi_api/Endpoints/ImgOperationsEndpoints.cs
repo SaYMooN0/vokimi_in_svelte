@@ -35,7 +35,7 @@ namespace vokimi_api.Endpoints
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();
                 }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
                 string extension = ImgOperationsHelper.ExtractFileExtension(file);
@@ -170,7 +170,7 @@ namespace vokimi_api.Endpoints
                 if (test is null) {
                     return ResultsHelper.BadRequestWithErr("Unable to update conclusion image. Test not found");
                 }
-                if (!httpContext.IfAuthenticatedUserIdIsTestCreator(test)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
             }
