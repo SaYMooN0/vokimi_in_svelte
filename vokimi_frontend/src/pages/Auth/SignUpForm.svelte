@@ -1,6 +1,7 @@
 <script lang="ts">
     import LinkHasBeenSentMessage from "./LinkHasBeenSentMessage.svelte";
     import InputWithIcon from "./InputWithIcon.svelte";
+    import { getErrorFromResponse } from "../../ts/ErrorResponse";
 
     let email: string = "";
     let password: string = "";
@@ -25,9 +26,7 @@
             if (response.ok) {
                 linkHasBeenSent = true;
             } else if (response.status === 400) {
-                const errorResponse = await response.json();
-                errorMessage =
-                    errorResponse.error || "An unknown error occurred.";
+                errorMessage = await getErrorFromResponse(response);
             } else {
                 errorMessage = "An unknown error occurred.";
             }

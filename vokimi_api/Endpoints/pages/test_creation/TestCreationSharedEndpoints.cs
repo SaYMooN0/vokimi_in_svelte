@@ -327,7 +327,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
             HttpContext httpContext
         ) {
             DraftTestId draftTestId;
-            if (!Guid.TryParse(testId, out Guid testGuid)) {
+                if (!Guid.TryParse(testId, out Guid testGuid)) {
                 return ResultsHelper.BadRequestServerError();
             }
             draftTestId = new(testGuid);

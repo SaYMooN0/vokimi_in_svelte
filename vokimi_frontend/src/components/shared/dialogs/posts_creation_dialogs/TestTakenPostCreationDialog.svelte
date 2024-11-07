@@ -4,6 +4,7 @@
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import AuthorizeView from "../../../AuthorizeView.svelte";
     import BaseDialog from "../../../BaseDialog.svelte";
+    import CloseButton from "../../CloseButton.svelte";
     import LoadingMessage from "../../LoadingMessage.svelte";
 
     export let receivedResultId: string;
@@ -31,7 +32,7 @@
 </script>
 
 <BaseDialog dialogId="post-creation-dialog" bind:this={dialogElement}>
-    <div class="close-btn" on:click={() => dialogElement.close()}>X</div>
+    <CloseButton onClose={() => dialogElement.close()} />
     <AuthorizeView>
         <div slot="loading">
             <LoadingMessage />

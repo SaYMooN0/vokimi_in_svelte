@@ -1,8 +1,8 @@
 <script lang="ts">
     import BaseDialog from "../../../../components/BaseDialog.svelte";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
-    import EditingDialogCloseButton from "./EditingDialogCloseButton.svelte";
     import EditingDialogSaveButton from "./EditingDialogSaveButton.svelte";
+    import CloseButton from "../../../../components/shared/CloseButton.svelte";
 
     export function setErrorMessage(message: string) {
         errorMessage = message;
@@ -26,7 +26,7 @@
 <BaseDialog {dialogId} bind:this={dialogElement}>
     {#if isOpen}
         <div class="dialog-body">
-            <EditingDialogCloseButton onClose={() => dialogElement.close()} />
+            <CloseButton onClose={() => dialogElement.close()} />
             <slot></slot>
             {#if !StringUtils.isNullOrWhiteSpace(errorMessage)}
                 <p class="error-message">{errorMessage}</p>

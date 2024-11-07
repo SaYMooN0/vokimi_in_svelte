@@ -12,12 +12,17 @@ namespace vokimi_api.Src.dtos.requests.test_creation.templates_shared
     )
     {
         public Err CheckForErr() {
-
+            if (GetParsedTestId() is null || GetParsedPrivacy() is null) {
+                return new Err("Data transferring error. Please refresh the page and try again");
+            }
+            return Err.None;
         }
         public DraftTestId? GetParsedTestId() {
-
+            if (Guid.TryParse(TestId, out Guid testGuid)) {
+                return new(testGuid);
+            }
+            return null;
         }
-        public PrivacyValues? GetParsedPrivacy() {
-        }
+        public PrivacyValues? GetParsedPrivacy() => PrivacyValuesExtensions.FromId(TestId);
     }
 }

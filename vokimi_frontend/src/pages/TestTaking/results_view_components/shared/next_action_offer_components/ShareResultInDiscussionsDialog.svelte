@@ -1,6 +1,7 @@
 <script lang="ts">
     import AuthorizeView from "../../../../../components/AuthorizeView.svelte";
     import BaseDialog from "../../../../../components/BaseDialog.svelte";
+    import CloseButton from "../../../../../components/shared/CloseButton.svelte";
     import LoadingMessage from "../../../../../components/shared/LoadingMessage.svelte";
     import type { TestTemplate } from "../../../../../ts/enums/TestTemplate";
     import { Err } from "../../../../../ts/Err";
@@ -30,7 +31,7 @@
 </script>
 
 <BaseDialog dialogId="post-creation-dialog" bind:this={dialogElement}>
-    <div class="close-btn" on:click={() => dialogElement.close()}>X</div>
+    <CloseButton onClose={() => dialogElement.close()} />
     <AuthorizeView>
         <div slot="loading">
             <LoadingMessage />

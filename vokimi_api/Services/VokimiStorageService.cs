@@ -4,6 +4,7 @@ using vokimi_api.Src;
 using System.Net;
 using vokimi_api.Helpers;
 using vokimi_api.Src.constants_store_classes;
+using vokimi_api.Src.db_related.db_entities_ids;
 
 namespace vokimi_api.Services
 {
@@ -177,5 +178,16 @@ namespace vokimi_api.Services
         ) => string.IsNullOrEmpty(await SaveImgToStorage(key, file)) ?
                 ResultsHelper.BadRequestWithErr("An error occurred during file saving. Please try again later") :
                 ResultsHelper.OkResultWithImgPath(key);
+        public async Task ClearUnusedQuestionImages(
+            DraftGeneralTestQuestionId questionId,
+            DraftTestId testId,
+            string? questionImagePath,
+            List<string> answerImgs
+        ) {
+            string questionImgPref = ImgOperationsHelper.DraftGeneralTestQuestionsFolder(testId, questionId);
+            await ClearUnusedObjectsInFolder(questionImgPref, questionImagePath);
+            string answerImgPref = ImgOperationsHelper.DraftGeneralTestAnswersFolder(testId, questionId);
+            await ClearUnusedObjectsInFolder(answerImgPref, answerImgs);
+        }
     }
 }

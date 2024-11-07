@@ -20,7 +20,7 @@ namespace vokimi_api.EndpointsMappers.pages.test_creation
             app.MapGet("/testCreation/getDraftTestMainInfoData/{testId}", TestCreationSharedEndpoints.GetDraftTestMainInfoData);
             app.MapPost("/testCreation/updateDraftTestMainInfo", TestCreationSharedEndpoints.UpdateDraftTestMainInfo);
 
-            app.MapGet("/testCreation/getDraftTestSettingsData", TestCreationSharedEndpoints.GetDraftTestSettingsData);
+            app.MapGet("/testCreation/getDraftTestSettingsData/{testId}", TestCreationSharedEndpoints.GetDraftTestSettingsData);
             app.MapPost("/testCreation/updateDraftTestSettings", TestCreationSharedEndpoints.UpdateDraftTestSettings);
 
             app.MapGet("/testCreation/getDraftTestConclusionData/{testId}", TestCreationSharedEndpoints.GetDraftTestConclusionData);

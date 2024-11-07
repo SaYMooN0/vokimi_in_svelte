@@ -1,8 +1,8 @@
 <script lang="ts">
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import BaseDialog from "../../../../components/BaseDialog.svelte";
-    import EditingDialogCloseButton from "../../creation_shared_components/editing_dialog_components/EditingDialogCloseButton.svelte";
     import TestPublishedSuccessfully from "./TestPublishedSuccessfully.svelte";
+    import CloseButton from "../../../../components/shared/CloseButton.svelte";
 
     export let testId: string;
     let dialogElement: BaseDialog;
@@ -108,7 +108,7 @@
             >
                 Publish
             </button>
-            <EditingDialogCloseButton onClose={() => dialogElement.close()} />
+            <CloseButton onClose={() => dialogElement.close()} />
         {/if}
     </div>
 </BaseDialog>

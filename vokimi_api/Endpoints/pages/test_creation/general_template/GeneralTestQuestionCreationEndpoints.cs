@@ -191,10 +191,9 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                             remainingQuestion.UpdateOrderInTest(currentOrder);
                             currentOrder++;
                         }
-                        await ClearUnusedQuestionImages(
+                        await storageService.ClearUnusedQuestionImages(
                             questionToDeleteId,
                             questionToDelete.TestId,
-                            storageService,
                             null, []
                         );
                         transaction.Commit();
@@ -403,10 +402,9 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                     question.TestId
                 );
 
-                await ClearUnusedQuestionImages(
+                await storageService.ClearUnusedQuestionImages(
                     questionToUpdateId,
                     question.TestId,
-                    storageService,
                     question.ImagePath,
                     usedAnswerImgs
                 );
@@ -420,20 +418,6 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                 return ResultsHelper.BadRequestServerError();
             }
         }
-
-        private static async Task ClearUnusedQuestionImages(
-            DraftGeneralTestQuestionId questionId,
-            DraftTestId testId,
-            VokimiStorageService storageService,
-            string? questionImagePath,
-            List<string> answerImgs
-        ) {
-            string questionImgPref = ImgOperationsHelper.DraftGeneralTestQuestionsFolder(testId, questionId);
-            await storageService.ClearUnusedObjectsInFolder(questionImgPref, questionImagePath);
-            string answerImgPref = ImgOperationsHelper.DraftGeneralTestAnswersFolder(testId, questionId);
-            await storageService.ClearUnusedObjectsInFolder(answerImgPref, answerImgs);
-        }
-
         private static List<string> CreateAnswersForQuestionUpdate(
             IEnumerable<BaseDraftGeneralTestAnswerFormData> answers,
             AppDbContext db,

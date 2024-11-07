@@ -2,20 +2,36 @@
     import TabViewDataLoader from "../../creation_shared_components/TabViewDataLoader.svelte";
     import ErrorMessageInCenter from "../../creation_shared_components/ErrorMessageInCenter.svelte";
     import TabHeaderWithButton from "../../creation_shared_components/TabHeaderWithButton.svelte";
-    import type { TestCreationSettingsTabData } from "../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationSettingsTabData";
+    import { TestCreationSettingsTabData } from "../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationSettingsTabData";
     import TestSettingsEditingDialog from "../../../../components/shared/dialogs/TestSettingsEditingDialog.svelte";
     import { Err } from "../../../../ts/Err";
-    import {
-        PrivacyValues,
-        PrivacyValuesUtils,
-    } from "../../../../ts/enums/PrivacyValues";
-    import { get } from "svelte/store";
+    import { PrivacyValuesUtils } from "../../../../ts/enums/PrivacyValues";
     import YesNoIconDisplay from "./YesNoIconDisplay.svelte";
+    import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
 
     export let settingsData: TestCreationSettingsTabData;
     export let testId: string;
 
-    async function loadData() {}
+    let isFetchedCorrectly: boolean = false;
+    async function loadData() {
+        isFetchedCorrectly = false;
+        const url = "/api/testCreation/getDraftTestSettingsData/" + testId;
+        const response = await fetch(url);
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+
+            settingsData = new TestCreationSettingsTabData(
+                PrivacyValuesUtils.fromId(data.privacy),
+                data.discussionsOpen,
+                data.testTakenPostsAllowed,
+                data.enableTestRatings,
+            );
+            isFetchedCorrectly = true;
+        } else {
+            isFetchedCorrectly = false;
+        }
+    }
 
     function openEditingDialog() {
         settingsEditingDialog.open(
@@ -26,7 +42,25 @@
         );
     }
     async function saveSettingsData(): Promise<Err> {
-        return new Err("Not implemented");
+        const data = { ...settingsData, testId };
+        const response = await fetch(
+            "/api/testCreation/updateDraftTestSettings",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            },
+        );
+
+        if (response.ok) {
+            return Err.none();
+        } else if (response.status === 400) {
+            return new Err(await getErrorFromResponse(response));
+        } else {
+            return new Err("An unknown error occurred. Please try again.");
+        }
     }
 
     let settingsEditingDialog: TestSettingsEditingDialog;
@@ -35,7 +69,7 @@
 <TabViewDataLoader
     {loadData}
     isEmpty={() => {
-        return false;
+        return !isFetchedCorrectly;
     }}
 >
     <div slot="content">

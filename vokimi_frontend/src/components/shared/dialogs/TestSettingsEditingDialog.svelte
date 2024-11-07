@@ -1,51 +1,137 @@
 <script lang="ts">
-    import type { PrivacyValues } from "../../../ts/enums/PrivacyValues";
+    import {
+        PrivacyValues,
+        PrivacyValuesUtils,
+    } from "../../../ts/enums/PrivacyValues";
     import type { Err } from "../../../ts/Err";
     import BaseDialog from "../../BaseDialog.svelte";
+    import CloseButton from "../CloseButton.svelte";
+    import CustomSwitch from "../CustomSwitch.svelte";
 
     export let saveTestSettings: () => Promise<Err>;
     export function open(
-        privacy: PrivacyValues,
-        discussionsOpen: boolean,
-        testTakenPostsAllowed: boolean,
-        enableTestRatings: boolean,
+        privacyVal: PrivacyValues,
+        discussionsOpenVal: boolean,
+        testTakenPostsAllowedVal: boolean,
+        enableTestRatingsVal: boolean,
     ) {
+        privacy = privacyVal;
+        discussionsOpen = discussionsOpenVal;
+        testTakenPostsAllowed = testTakenPostsAllowedVal;
+        enableTestRatings = enableTestRatingsVal;
         dialogElement.open();
     }
     let dialogElement: BaseDialog;
+    let privacy: PrivacyValues;
+    let discussionsOpen: boolean;
+    let testTakenPostsAllowed: boolean;
+    let enableTestRatings: boolean;
+
+    let errorMessage: string = "";
     async function saveBtnClicked() {
         let savingErr: Err = await saveTestSettings();
         if (savingErr.notNone()) {
+            errorMessage = savingErr.toString();
+        } else {
+            dialogElement.close();
         }
     }
 </script>
 
 <BaseDialog dialogId="test-settings-editing-dialog" bind:this={dialogElement}>
-    <div class="dialog-content"></div>
+    <CloseButton onClose={() => dialogElement.close()} />
+    <div class="dialog-content">
+        <p class="dialog-header">Settings editing</p>
+        <div class="property-vals-container">
+            <p class="prop-name-val-p">
+                <span>Open discussions for this test:</span>
+                <CustomSwitch
+                    id="settings-discussions"
+                    bind:isChecked={discussionsOpen}
+                />
+            </p>
+            <p class="prop-name-val-p">
+                <span>Allow users to create posts after test is taken:</span>
+                <CustomSwitch
+                    id="settings-test-taken-posts"
+                    bind:isChecked={testTakenPostsAllowed}
+                />
+            </p>
+            <p class="prop-name-val-p">
+                <span>Enable test ratings:</span>
+                <CustomSwitch
+                    id="enable-test-ratings"
+                    bind:isChecked={enableTestRatings}
+                />
+            </p>
+            <label class="prop-name-val-p" for="test-privacy">
+                <span>Test privacy:</span>
+                <select id="test-privacy" bind:value={privacy}>
+                    {#each Object.values(PrivacyValues) as pr}
+                        <option value={pr}>
+                            {PrivacyValuesUtils.getFullName(pr)}
+                        </option>
+                    {/each}
+                </select>
+            </label>
+        </div>
+        <p class="error-message">{errorMessage}</p>
+        <div class="save-btn unselectable" on:click={saveBtnClicked}>
+            Save changes
+        </div>
+    </div>
 </BaseDialog>
 
 <style>
     .dialog-content {
-        width: min(1400px, 72vw);
+        width: min(800px, 72vw);
         display: flex;
         flex-direction: column;
-        padding: 8px 12px;
+        padding: 8px 32px;
     }
-    .property-label {
-        color: var(--text-faded);
-    }
-    .test-description {
-        background-color: var(--back-secondary);
+    .dialog-header {
+        font-size: 28px;
         color: var(--text);
-        max-height: max(12vh, 400px);
-        resize: vertical;
-        outline: none;
-        border: 2px solid var(--back-secondary);
-        border-radius: 8px;
-        box-sizing: border-box;
-        padding: 4px 8px;
+        margin: 12px 16px;
     }
-    .test-description:focus {
-        border-color: var(--primary);
+
+    .property-vals-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .prop-name-val-p {
+        margin: 4px 0;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: var(--back-main);
+        padding: 4px 12px;
+        border-radius: 4px;
+    }
+    .prop-name-val-p span {
+        font-size: 22px;
+        font-weight: 500;
+    }
+    .save-btn {
+        margin: 20px auto;
+        background-color: var(--primary);
+        color: var(--back-main);
+        border: none;
+        border-radius: 4px;
+        padding: 8px 24px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.12s ease-in;
+    }
+    .save-btn:hover {
+        background-color: var(--primary-hov);
+    }
+    .error-message {
+        color: var(--red-del);
+        font-size: 20px;
+        margin: 4px 0;
+        text-align: center;
     }
 </style>
