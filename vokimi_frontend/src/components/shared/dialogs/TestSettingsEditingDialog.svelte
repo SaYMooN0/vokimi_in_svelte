@@ -8,32 +8,45 @@
     import CloseButton from "../CloseButton.svelte";
     import CustomSwitch from "../CustomSwitch.svelte";
 
-    export let saveTestSettings: () => Promise<Err>;
+    export let updateParentElementData: () => void;
+    export let saveTestSettings: (
+        privacy: PrivacyValues,
+        discussionsOpen: boolean,
+        testTakenPostsAllowed: boolean,
+        enableTestRatings: boolean,
+    ) => Promise<Err>;
+    let dialogElement: BaseDialog;
+    let privacy: PrivacyValues;
+    let discussionsOpen: boolean;
+    let testTakenPostsAllowed: boolean;
+    let enableTestRatings: boolean;
     export function open(
         privacyVal: PrivacyValues,
         discussionsOpenVal: boolean,
         testTakenPostsAllowedVal: boolean,
         enableTestRatingsVal: boolean,
     ) {
+        errorMessage = "";
         privacy = privacyVal;
         discussionsOpen = discussionsOpenVal;
         testTakenPostsAllowed = testTakenPostsAllowedVal;
         enableTestRatings = enableTestRatingsVal;
         dialogElement.open();
     }
-    let dialogElement: BaseDialog;
-    let privacy: PrivacyValues;
-    let discussionsOpen: boolean;
-    let testTakenPostsAllowed: boolean;
-    let enableTestRatings: boolean;
 
     let errorMessage: string = "";
     async function saveBtnClicked() {
-        let savingErr: Err = await saveTestSettings();
+        let savingErr: Err = await saveTestSettings(
+            privacy,
+            discussionsOpen,
+            testTakenPostsAllowed,
+            enableTestRatings,
+        );
         if (savingErr.notNone()) {
             errorMessage = savingErr.toString();
         } else {
             dialogElement.close();
+            updateParentElementData();
         }
     }
 </script>

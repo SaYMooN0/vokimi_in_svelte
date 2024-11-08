@@ -4,7 +4,7 @@
 </script>
 
 <label class="switch">
-    <input type="checkbox" {id} bind:value={isChecked} />
+    <input type="checkbox" {id} bind:checked={isChecked} />
     <span class="slider"></span>
 </label>
 

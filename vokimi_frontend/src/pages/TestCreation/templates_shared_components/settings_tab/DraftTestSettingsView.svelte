@@ -5,7 +5,10 @@
     import { TestCreationSettingsTabData } from "../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationSettingsTabData";
     import TestSettingsEditingDialog from "../../../../components/shared/dialogs/TestSettingsEditingDialog.svelte";
     import { Err } from "../../../../ts/Err";
-    import { PrivacyValuesUtils } from "../../../../ts/enums/PrivacyValues";
+    import {
+        PrivacyValues,
+        PrivacyValuesUtils,
+    } from "../../../../ts/enums/PrivacyValues";
     import YesNoIconDisplay from "./YesNoIconDisplay.svelte";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
 
@@ -41,8 +44,19 @@
             settingsData.enableTestRatings,
         );
     }
-    async function saveSettingsData(): Promise<Err> {
-        const data = { ...settingsData, testId };
+    async function saveSettingsData(
+        privacy: PrivacyValues,
+        discussionsOpen: boolean,
+        testTakenPostsAllowed: boolean,
+        enableTestRatings: boolean,
+    ): Promise<Err> {
+        const data = {
+            privacy,
+            discussionsOpen,
+            testTakenPostsAllowed,
+            enableTestRatings,
+            testId,
+        };
         const response = await fetch(
             "/api/testCreation/updateDraftTestSettings",
             {
@@ -76,6 +90,7 @@
         <TestSettingsEditingDialog
             bind:this={settingsEditingDialog}
             saveTestSettings={saveSettingsData}
+            updateParentElementData={loadData}
         />
         <TabHeaderWithButton
             tabName="Settings"

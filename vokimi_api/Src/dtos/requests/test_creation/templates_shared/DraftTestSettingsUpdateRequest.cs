@@ -23,6 +23,6 @@ namespace vokimi_api.Src.dtos.requests.test_creation.templates_shared
             }
             return null;
         }
-        public PrivacyValues? GetParsedPrivacy() => PrivacyValuesExtensions.FromId(TestId);
+        public PrivacyValues? GetParsedPrivacy() => PrivacyValuesExtensions.FromId(Privacy);
     }
 }

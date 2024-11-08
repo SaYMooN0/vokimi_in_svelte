@@ -327,7 +327,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
             HttpContext httpContext
         ) {
             DraftTestId draftTestId;
-                if (!Guid.TryParse(testId, out Guid testGuid)) {
+            if (!Guid.TryParse(testId, out Guid testGuid)) {
                 return ResultsHelper.BadRequestServerError();
             }
             draftTestId = new(testGuid);
@@ -342,7 +342,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequestNotCreator();
                 }
-                return Results.Ok(test.Settings);
+                return Results.Ok(DraftTestSettingsDataResponse.FromTestSettings(test.Settings));
             }
         }
         public static IResult UpdateDraftTestSettings(
