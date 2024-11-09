@@ -1,17 +1,43 @@
 <script lang="ts">
+    import type { Err } from "../../../../../ts/Err";
+    import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
+    import { StringUtils } from "../../../../../ts/utils/StringUtils";
+
     export let rating: number;
-    export let updateRating: () => void;
+    export let updateRating: (rating: number) => void;
     export let testId: string;
 
     let unsavedRating: number = rating;
-    function ratingChanged() {}
-    async function saveRating() {}
+    let ratingSavingErr: string = "";
+    async function saveRating() {
+        const data = { newRating: unsavedRating, testId };
+        const response = await fetch("/api/viewTest/updateTestRating", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            updateRating(unsavedRating);
+        } else if (response.status === 400) {
+            ratingSavingErr = await getErrorFromResponse(response);
+        } else {
+            ratingSavingErr = "An unknown error occurred.";
+        }
+    }
 </script>
 
 <div class="ratings-tab-stars-input">
     <label class="property-label">Rate this test:</label>
     <div class="rating">
-        <input type="radio" id="star-1" name="star-radio" value="star-1" />
+        <input
+            type="radio"
+            id="star-1"
+            name="star-radio"
+            on:change={() => (unsavedRating = 1)}
+        />
         <label for="star-1">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
@@ -21,7 +47,12 @@
                 </path>
             </svg>
         </label>
-        <input type="radio" id="star-2" name="star-radio" value="star-1" />
+        <input
+            type="radio"
+            id="star-2"
+            name="star-radio"
+            on:change={() => (unsavedRating = 2)}
+        />
         <label for="star-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
@@ -31,7 +62,12 @@
                 </path>
             </svg>
         </label>
-        <input type="radio" id="star-3" name="star-radio" value="star-1" />
+        <input
+            type="radio"
+            id="star-3"
+            name="star-radio"
+            on:change={() => (unsavedRating = 3)}
+        />
         <label for="star-3">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
@@ -41,7 +77,12 @@
                 </path>
             </svg>
         </label>
-        <input type="radio" id="star-4" name="star-radio" value="star-1" />
+        <input
+            type="radio"
+            id="star-4"
+            name="star-radio"
+            on:change={() => (unsavedRating = 4)}
+        />
         <label for="star-4">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
@@ -51,7 +92,12 @@
                 </path>
             </svg>
         </label>
-        <input type="radio" id="star-5" name="star-radio" value="star-1" />
+        <input
+            type="radio"
+            id="star-5"
+            name="star-radio"
+            on:change={() => (unsavedRating = 5)}
+        />
         <label for="star-5">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
@@ -66,6 +112,11 @@
         <button class="save-rating-btn" on:click={saveRating}> Update </button>
     {/if}
 </div>
+{#if !StringUtils.isNullOrWhiteSpace(ratingSavingErr)}
+    <p class="rating-saving-err">
+        {ratingSavingErr}
+    </p>
+{/if}
 
 <style>
     .ratings-tab-stars-input {
@@ -116,7 +167,9 @@
         stroke-linejoin: miter;
         stroke-width: 8px;
     }
-
+    .rating-saving-err {
+        color: var(--red-del);
+    }
     @keyframes yippee {
         0% {
             transform: scale(1);

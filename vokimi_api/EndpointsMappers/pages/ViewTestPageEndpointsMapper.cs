@@ -7,6 +7,9 @@ namespace vokimi_api.EndpointsMappers.pages
         internal static void MapAll(WebApplication app) {
             app.MapGet("/viewTest/checkTestViewPermission/{testId}", ViewTestPageEndpoints.CheckTestViewPermission);
             app.MapGet("/viewTest/getBasicTestInfo/{testId}", ViewTestPageEndpoints.GetBasicTestInfo);
+            app.MapGet("/viewTest/getTestRatingsInfo/{testId}", ViewTestPageEndpoints.GetTestRatingsInfo);
+            app.MapPost("/viewTest/updateTestRating", ViewTestPageEndpoints.UpdateTestRating);
+
         }
     }
 }
