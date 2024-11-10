@@ -10,19 +10,19 @@ namespace vokimi_api.Src.db_related.db_entities.tests_related
         public TestId TestId { get; init; }
         public AppUserId UserId { get; init; }
         public ushort Rating { get; private set; }
-        public DateTime LaseUpdate { get; private set; }
+        public DateTime LastUpdate { get; private set; }
         public virtual BaseTest Test { get; protected set; }
         public virtual AppUser User { get; protected set; }
         public void UpdateRatingValue(ushort rating) {
             this.Rating = rating;
-            LaseUpdate = DateTime.UtcNow;
+            LastUpdate = DateTime.UtcNow;
         }
         public static TestRating CreateNew(TestId testId, AppUserId userId, ushort ratingValue) => new() {
             Id = new(),
             TestId = testId,
             UserId = userId,
             Rating = ratingValue,
-            LaseUpdate = DateTime.UtcNow
+            LastUpdate = DateTime.UtcNow
         };
     }
 }

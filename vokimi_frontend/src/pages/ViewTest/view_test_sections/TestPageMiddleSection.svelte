@@ -14,7 +14,6 @@
     }
     let activeTab: MiddlePartTabs = MiddlePartTabs.Info;
     function setStartingTab() {
-        console.log(startingTab);
         if (startingTab === "ratings") {
             activeTab = MiddlePartTabs.Ratings;
         } else if (startingTab === "discussions") {
@@ -55,7 +54,7 @@
             <MiddleSectionInfoTab tabData={testInfoTabData} />
         </div>
         <div class:tab-content-visible={activeTab === MiddlePartTabs.Ratings}>
-            <MiddleSectionRatingsTab />
+            <MiddleSectionRatingsTab {testId} />
         </div>
         <div
             class:tab-content-visible={activeTab === MiddlePartTabs.Discussions}

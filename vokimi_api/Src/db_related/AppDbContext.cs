@@ -88,6 +88,7 @@ namespace vokimi_api.Src.db_related
             //published tests
             modelBuilder.ConfigureBaseTest();
             modelBuilder.ConfigureTestTags();
+            modelBuilder.ConfigureTestRatings();
 
             //published general tests
             modelBuilder.ConfigureTestGeneralTemplate();

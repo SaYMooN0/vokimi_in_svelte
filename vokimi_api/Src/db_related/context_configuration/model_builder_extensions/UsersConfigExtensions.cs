@@ -43,6 +43,10 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.HasMany(a => a.TestTakings)
                     .WithOne(t => t.User)
                     .HasForeignKey(t => t.UserId);
+
+                entity.HasMany(a => a.TestRatings)
+                    .WithOne(t => t.User)
+                    .HasForeignKey(t => t.UserId);
             });
         }
 

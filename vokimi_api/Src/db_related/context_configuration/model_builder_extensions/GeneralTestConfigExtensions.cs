@@ -23,6 +23,8 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                     .WithOne()
                     .HasForeignKey(t => t.TestId)
                     .OnDelete(DeleteBehavior.Cascade);
+                
+            
             });
         }
 

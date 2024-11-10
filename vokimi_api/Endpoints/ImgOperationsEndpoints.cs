@@ -51,7 +51,7 @@ namespace vokimi_api.Endpoints
                         test.MainInfo.UpdateCoverImage(savedKey);
                         db.SaveChanges();
                         await transaction.CommitAsync();
-                        if(oldPath!=ImgOperationsConsts.DefaultTestCoverImg) {
+                        if (oldPath != ImgOperationsConsts.DefaultTestCoverImg && oldPath != savedKey) {
                             await vokimiStorage.DeleteFiles([oldPath]);
                         }
                         return ResultsHelper.OkResultWithImgPath(key);
@@ -174,7 +174,7 @@ namespace vokimi_api.Endpoints
                     return ResultsHelper.BadRequestNotCreator();
                 }
             }
-            string key = 
+            string key =
                 $"{ImgOperationsConsts.TestConclusionsFolder}/" +
                 $"{tId.Value.ToString()}" +
                 $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";

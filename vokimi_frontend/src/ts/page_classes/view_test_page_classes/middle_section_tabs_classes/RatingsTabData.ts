@@ -1,22 +1,22 @@
 export class RatingsTabData {
     viewerRating: number | null;
     averageRating: number;
-    ratingsList: TestRating[];
+    ratingsList: TestRatingVm[];
     lastRatingsListFetchedNum: number;
-    constructor(viewerRating: number | null, averageRating: number, ratingsList: TestRating[]) {
+    constructor(viewerRating: number | null, averageRating: number, ratingsList: TestRatingVm[]) {
         this.viewerRating = viewerRating;
         this.averageRating = averageRating;
         this.ratingsList = ratingsList;
         this.lastRatingsListFetchedNum = 0;
     }
-    addFetchedRatings(newRatingsList: TestRating[]) {
+    addFetchedRatings(newRatingsList: TestRatingVm[]) {
         this.ratingsList = [...this.ratingsList, ...newRatingsList]
     }
 }
-export interface TestRating {
+export interface TestRatingVm {
     readonly ratingValue: number
     readonly userId: string
     readonly username: string
     readonly userProfilePicture: string
-    readonly dateTime: string
+    readonly lastUpdateDateTime: string
 }

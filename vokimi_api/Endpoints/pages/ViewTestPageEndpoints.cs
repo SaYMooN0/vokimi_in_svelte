@@ -6,8 +6,6 @@ using VokimiShared.src.models.db_classes.test.test_types;
 using vokimi_api.Src.extension_classes;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.db_related.db_entities.users;
-using vokimi_api.Src.dtos.responses;
-using static System.Net.Mime.MediaTypeNames;
 using vokimi_api.Src.dtos.responses.view_test_page;
 using vokimi_api.Src.dtos.requests;
 using Microsoft.AspNetCore.Mvc;
@@ -99,20 +97,27 @@ namespace vokimi_api.Endpoints.pages
             using (var db = dbFactory.CreateDbContext()) {
                 BaseTest? test = db.TestsSharedInfo
                     .Include(t => t.Ratings)
+                        .ThenInclude(tr => tr.User)
                     .FirstOrDefault(t => t.Id == tId);
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();
                 }
                 bool haveAccess;
+                ushort? viewerRating = null;
+
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
                     haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
+                    if (haveAccess) {
+                        viewerRating = test.Ratings.FirstOrDefault(tr => tr.UserId == viewerId)?.Rating ?? null;
+                    }
                 } else {
                     haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (!haveAccess) {
                     return ResultsHelper.BadRequestNoTestAccess();
                 }
-                return ResultsHelper.BadRequestWithErr("Not implemented");
+
+                return Results.Ok(ViewTestRatingsBaseInfo.New(viewerRating, test));
             }
         }
         public static IResult UpdateTestRating(

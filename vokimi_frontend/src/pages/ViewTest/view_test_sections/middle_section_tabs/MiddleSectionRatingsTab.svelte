@@ -5,8 +5,7 @@
     import { RatingsTabData } from "../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/RatingsTabData";
     import RatingsTabStarsInput from "./ratings_tab_components/RatingsTabStarsInput.svelte";
 
-    export let testId: string = "";
-    let tabsData: RatingsTabData;
+    export let testId: string;
     async function fetchRatingsListPackage(): Promise<RatingsTabData | Err> {
         const response = await fetch(
             `/api/viewTest/getTestRatingsInfo/${testId}`,
@@ -37,16 +36,20 @@
         <p class="average-rating">
             Test average rating: {fetchingRes.averageRating}
         </p>
-        {#if fetchingRes.viewerRating === null}
-            <div class="authentication-needed-div">
+
+        <AuthorizeView>
+            <div slot="authenticated">
+                <RatingsTabStarsInput
+                    {testId}
+                    rating={fetchingRes.viewerRating ?? 0}
+                    updateRating={updateViewersRating}
+                />
+            </div>
+            <div slot="unauthenticated" class="authentication-needed-div">
                 you have to log in to rate the test if has rated
             </div>
-        {:else}
-            <RatingsTabStarsInput
-                rating={fetchingRes.viewerRating}
-                updateRating={updateViewersRating}
-            />
-        {/if}
+        </AuthorizeView>
+
         <div class="viewer-rating">
             <AuthorizeView>
                 <div slot="loading">
