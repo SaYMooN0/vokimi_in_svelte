@@ -6,6 +6,13 @@
 
     export let userId: string = "";
     let dialogElement: UserAdditionalInfoDialog;
+
+    async function logout() {
+        const response = await fetch("/api/logout", { method: "POST" });
+        if (response.ok) {
+            window.location.href = "/auth/login";
+        }
+    }
 </script>
 
 <UserAdditionalInfoDialog bind:this={dialogElement} {userId}>
@@ -40,14 +47,22 @@
         {userId}
         openUserAdditionalInfoDialog={async () => await dialogElement.open()}
     >
-        <div slot="right-side-slot" class="edit-profile-link">
-            <Link to="/profile-editing">Edit my profile</Link>
+        <div slot="right-side-slot" class="my-page-right-side-slot">
+            <Link to="/profile-editing" class="edit-profile-link">
+                Edit my profile
+            </Link>
+            <label on:click={logout} class="logout-btn"> Log out </label>
         </div>
     </UserPageTopInfo>
 </UserPageViewFrame>
 
 <style>
-    .edit-profile-link :global(a) {
+    .my-page-right-side-slot {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 16px;
+    }
+    .my-page-right-side-slot :global(.edit-profile-link) {
         margin: 0 auto;
         color: var(--back-main);
         background-color: var(--primary);
@@ -56,8 +71,22 @@
         font-size: 18px;
     }
 
-    .edit-profile-link :global(a):hover {
+    .my-page-right-side-slot :global(.edit-profile-link):hover {
         background-color: var(--primary-hov);
+    }
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--red-del);
+        color: var(--back-main);
+        padding: 0 16px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .logout-btn:hover {
+        background-color: var(--red-del-hov);
     }
     .edit-additional-info-link :global(a) {
         width: fit-content;

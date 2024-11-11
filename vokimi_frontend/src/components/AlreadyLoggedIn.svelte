@@ -2,7 +2,7 @@
     async function logout() {
         const response = await fetch("/api/logout", { method: "POST" });
         if (response.ok) {
-            window.location.href = "/login";
+            window.location.href = "/auth/login";
         }
     }
 </script>

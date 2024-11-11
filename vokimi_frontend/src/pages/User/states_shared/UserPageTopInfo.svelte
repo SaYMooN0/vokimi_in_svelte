@@ -99,7 +99,7 @@
 
     .info {
         display: grid;
-        grid-template-columns: 140px 1fr 180px;
+        grid-template-columns: 140px 1fr auto;
         align-items: center;
         width: 100%;
         padding: 0 28px;

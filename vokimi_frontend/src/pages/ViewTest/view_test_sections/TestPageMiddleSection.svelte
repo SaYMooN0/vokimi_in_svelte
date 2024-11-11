@@ -59,7 +59,7 @@
         <div
             class:tab-content-visible={activeTab === MiddlePartTabs.Discussions}
         >
-            <MiddleSectionDiscussionsTab />
+            <MiddleSectionDiscussionsTab {testId} />
         </div>
     </div>
 </div>
@@ -80,6 +80,7 @@
     }
 
     .tabs-content-container div {
+        margin-top: 12px;
         display: none;
         animation: fadeIn 0.32s;
     }

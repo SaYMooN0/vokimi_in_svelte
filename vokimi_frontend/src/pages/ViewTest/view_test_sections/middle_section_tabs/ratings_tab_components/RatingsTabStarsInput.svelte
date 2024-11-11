@@ -10,7 +10,7 @@
     let ratingSavingErr: string = "";
     async function saveRating() {
         ratingSavingErr = "";
-        const data = { newRating: unsavedRating, testId };
+        const data = { rating: unsavedRating, testId };
         const response = await fetch("/api/viewTest/updateTestRating", {
             method: "POST",
             headers: {

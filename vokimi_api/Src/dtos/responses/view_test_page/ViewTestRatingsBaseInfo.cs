@@ -26,7 +26,7 @@ namespace vokimi_api.Src.dtos.responses.view_test_page
         ushort RatingValue,
         string UserId,
         string Username,
-        string UserProfilePicturePath,
+        string UserProfilePicture,
         string LastUpdateDateTime
     )
     {
@@ -35,7 +35,7 @@ namespace vokimi_api.Src.dtos.responses.view_test_page
             tr.UserId.Value.ToString(),
             tr.User.Username,
             tr.User.ProfilePicturePath,
-            tr.LastUpdate.ToString("G")
+            tr.LastUpdate.ToString("g")
         );
     }
 }
