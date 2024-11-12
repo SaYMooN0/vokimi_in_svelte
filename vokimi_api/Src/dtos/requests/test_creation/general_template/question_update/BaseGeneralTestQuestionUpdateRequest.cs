@@ -11,7 +11,7 @@ namespace vokimi_api.Src.dtos.requests.test_creation.general_template.question_u
         bool IsMultiple,
         ushort MinAnswersCount,
         ushort MaxAnswersCount,
-        ushort OrderInQuestion
+        ushort OrderInTest
     )
     {
         public abstract BaseDraftGeneralTestAnswerFormData[] GetAnswers

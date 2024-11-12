@@ -40,7 +40,7 @@ namespace vokimi_api.Src.db_related
         //published and draft tests shared
         public DbSet<TestConclusion> TestConclusions { get; set; }
         public DbSet<TestStylesSheet> TestStyles { get; set; }
-        public DbSet<GeneralTestAnswerTypeSpecificInfo> AnswerTypeSpecificInfo { get; set; }
+        public DbSet<BaseGeneralTestAnswerTypeSpecificInfo> AnswerTypeSpecificInfo { get; set; }
         //published tests only
         public DbSet<BaseTest> TestsSharedInfo { get; set; }
         public DbSet<TestGeneralTemplate> TestsGeneralTemplate { get; set; }

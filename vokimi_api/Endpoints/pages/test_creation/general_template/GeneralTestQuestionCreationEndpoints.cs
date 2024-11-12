@@ -430,7 +430,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                 a => a.OrderInQuestion == -1 ? int.MaxValue : a.OrderInQuestion)
             //for answers with unset order to go to the end 
             ) {
-                GeneralTestAnswerTypeSpecificInfo specificInfo = CreateAnswerTypeSpecificInfo(answer);
+                BaseGeneralTestAnswerTypeSpecificInfo specificInfo = CreateAnswerTypeSpecificInfo(answer);
                 if (specificInfo is IAnswerTypeSpecificInfoWithImage specificInfoWithImage) {
                     imagesForAnswers.Add(specificInfoWithImage.ImagePath);
                 }
@@ -455,7 +455,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
             }
             return imagesForAnswers;
         }
-        private static GeneralTestAnswerTypeSpecificInfo CreateAnswerTypeSpecificInfo(BaseDraftGeneralTestAnswerFormData answer) =>
+        private static BaseGeneralTestAnswerTypeSpecificInfo CreateAnswerTypeSpecificInfo(BaseDraftGeneralTestAnswerFormData answer) =>
             answer switch {
                 DraftGeneralTestTextOnlyAnswerFormData textOnly =>
                     TextOnlyAnswerTypeSpecificInfo.CreateNew(textOnly.Text),

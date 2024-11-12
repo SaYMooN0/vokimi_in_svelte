@@ -14,6 +14,16 @@
     {
         public TestDiscussionsCommentId() : this(Guid.NewGuid()) { }
         public override string ToString() => Value.ToString();
+    }   
+    public readonly record struct DiscussionsCommentAttachmentId(Guid Value)
+    {
+        public DiscussionsCommentAttachmentId() : this(Guid.NewGuid()) { }
+        public override string ToString() => Value.ToString();
+    }
+    public readonly record struct DiscussionsCommentVoteId(Guid Value)
+    {
+        public DiscussionsCommentVoteId() : this(Guid.NewGuid()) { }
+        public override string ToString() => Value.ToString();
     }
     public readonly record struct TestTakenRecordId(Guid Value)
     {

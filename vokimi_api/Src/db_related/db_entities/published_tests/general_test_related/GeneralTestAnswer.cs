@@ -9,7 +9,7 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_rel
         public GeneralTestQuestionId QuestionId { get; init; }
         public ushort OrderInQuestion { get; init; }
         public GeneralTestAnswerTypeSpecificInfoId TypeSpecificInfoId { get; init; }
-        public virtual GeneralTestAnswerTypeSpecificInfo TypeSpecificInfo { get; init; }
+        public virtual BaseGeneralTestAnswerTypeSpecificInfo TypeSpecificInfo { get; init; }
         public virtual ICollection<GeneralTestResult> RelatedResults { get; protected set; } = [];
 
         public static GeneralTestAnswer CreateNew(GeneralTestQuestionId questionId,

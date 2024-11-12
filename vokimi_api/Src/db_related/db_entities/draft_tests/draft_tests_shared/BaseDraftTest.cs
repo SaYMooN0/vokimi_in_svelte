@@ -45,6 +45,7 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared
                 this.Conclusion = conclusion;
             }
         }
+       
         public void UpdateTestSettings(TestSettings newSettings) {
             Settings = newSettings;
         }

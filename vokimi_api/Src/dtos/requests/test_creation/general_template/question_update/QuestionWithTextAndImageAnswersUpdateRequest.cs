@@ -11,7 +11,7 @@ namespace vokimi_api.Src.dtos.requests.test_creation.general_template.question_u
         bool IsMultiple,
         ushort MinAnswersCount,
         ushort MaxAnswersCount,
-        ushort OrderInQuestion,
+        ushort OrderInTest,
         DraftGeneralTestTextAndImageAnswerFormData[] Answers
     ) : BaseGeneralTestQuestionUpdateRequest
         (
@@ -23,7 +23,7 @@ namespace vokimi_api.Src.dtos.requests.test_creation.general_template.question_u
             IsMultiple,
             MinAnswersCount,
             MaxAnswersCount,
-            OrderInQuestion
+            OrderInTest
         )
     {
         public override BaseDraftGeneralTestAnswerFormData[] GetAnswers { get => this.Answers; }

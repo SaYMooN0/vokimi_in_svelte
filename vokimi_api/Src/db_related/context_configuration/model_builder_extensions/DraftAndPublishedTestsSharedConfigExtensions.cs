@@ -20,7 +20,7 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
             });
         }
         internal static void ConfigureGenerlTestAnswerTypeSpecificInfo(this ModelBuilder modelBuilder) {
-            modelBuilder.Entity<GeneralTestAnswerTypeSpecificInfo>(entity => {
+            modelBuilder.Entity<BaseGeneralTestAnswerTypeSpecificInfo>(entity => {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasConversion(v => v.Value, v => new(v));
             });

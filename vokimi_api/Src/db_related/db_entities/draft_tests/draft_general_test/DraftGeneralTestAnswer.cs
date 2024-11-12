@@ -10,7 +10,7 @@ namespace vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test
         public ushort OrderInQuestion { get; set; }
         public virtual ICollection<DraftGeneralTestResult> RelatedResults { get; private set; } = [];
         public GeneralTestAnswerTypeSpecificInfoId TypeSpecificInfoId { get; init; }
-        public virtual GeneralTestAnswerTypeSpecificInfo TypeSpecificInfo { get; private set; }
+        public virtual BaseGeneralTestAnswerTypeSpecificInfo TypeSpecificInfo { get; private set; }
         public static DraftGeneralTestAnswer CreateNew(
             DraftGeneralTestQuestionId questionId,
             ushort orderInQuestion,
