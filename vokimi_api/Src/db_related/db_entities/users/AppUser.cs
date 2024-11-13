@@ -1,6 +1,7 @@
 ﻿using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities.tests_related;
+using vokimi_api.Src.db_related.db_entities.tests_related.discussions;
 using vokimi_api.Src.db_related.db_entities.user_page.posts;
 using vokimi_api.Src.db_related.db_entities_ids;
 using VokimiShared.src.models.db_classes.test.test_types;
@@ -29,6 +30,8 @@ namespace vokimi_api.Src.db_related.db_entities.users
         public virtual ICollection<BaseUserPost> PagePosts { get; private set; } = [];
         public virtual ICollection<BaseTestTakenRecord> TestTakings { get; private set; } = [];
         public virtual ICollection<TestRating> TestRatings { get; protected set; } = [];
+        public virtual ICollection<TestDiscussionsComment> DiscussionsComments { get; protected set; } = [];
+        public virtual ICollection<DiscussionsCommentVote> DiscussionsCommentVotes { get; protected set; } = [];
 
 
         public static AppUser CreateNew(

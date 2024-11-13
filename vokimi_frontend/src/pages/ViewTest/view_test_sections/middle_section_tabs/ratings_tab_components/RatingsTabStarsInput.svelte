@@ -11,7 +11,7 @@
     async function saveRating() {
         ratingSavingErr = "";
         const data = { rating: unsavedRating, testId };
-        const response = await fetch("/api/viewTest/updateTestRating", {
+        const response = await fetch("/api/viewTest/ratings/updateTestRating", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

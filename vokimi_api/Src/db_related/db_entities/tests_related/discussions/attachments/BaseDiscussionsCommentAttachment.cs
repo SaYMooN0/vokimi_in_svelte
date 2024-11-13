@@ -6,7 +6,7 @@ namespace vokimi_api.Src.db_related.db_entities.tests_related.discussions.attach
     public abstract class BaseDiscussionsCommentAttachment
     {
         private readonly DiscussionsCommentAttachmentType _attachmentType;
-        public DiscussionsCommentAttachmentType DiscussionsCommentAttachmentType => _attachmentType;
+        public DiscussionsCommentAttachmentType AttachmentType => _attachmentType;
         protected BaseDiscussionsCommentAttachment(DiscussionsCommentAttachmentType attachmentType) {
             _attachmentType = attachmentType;
         }

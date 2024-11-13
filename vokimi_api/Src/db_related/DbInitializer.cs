@@ -1,12 +1,11 @@
-﻿
-namespace vokimi_api.Src.db_related
+﻿namespace vokimi_api.Src.db_related
 {
 
     public class DbInitializer
     {
         public static async Task InitializeDb(AppDbContext dbContext) {
 
-            await RecreateDb(dbContext);
+            //await RecreateDb(dbContext);
             await dbContext.Database.EnsureCreatedAsync();
         }
         public static async Task RecreateDb(AppDbContext db) {

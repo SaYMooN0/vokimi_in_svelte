@@ -11,6 +11,8 @@ using vokimi_api.Src.db_related.db_entities.tests_related;
 using vokimi_api.Src.db_related.db_entities.user_page.posts;
 using vokimi_api.Src.db_related.db_entities;
 using vokimi_api.Src.db_related.db_entities.test_taken_records;
+using vokimi_api.Src.db_related.db_entities.tests_related.discussions.attachments;
+using vokimi_api.Src.db_related.db_entities.tests_related.discussions;
 
 namespace vokimi_api.Src.db_related
 {
@@ -41,8 +43,9 @@ namespace vokimi_api.Src.db_related
         public DbSet<TestConclusion> TestConclusions { get; set; }
         public DbSet<TestStylesSheet> TestStyles { get; set; }
         public DbSet<BaseGeneralTestAnswerTypeSpecificInfo> AnswerTypeSpecificInfo { get; set; }
-        //published tests only
+        //published tests shared
         public DbSet<BaseTest> TestsSharedInfo { get; set; }
+        //published general tests 
         public DbSet<TestGeneralTemplate> TestsGeneralTemplate { get; set; }
         public DbSet<GeneralTestQuestion> GeneralTestQuestions { get; set; }
         public DbSet<GeneralTestAnswer> GeneralTestAnswers { get; set; }
@@ -50,6 +53,10 @@ namespace vokimi_api.Src.db_related
         //tests related
         public DbSet<TestTag> TestTags { get; set; }
         public DbSet<TestRating> TestRatings { get; set; }
+        public DbSet<TestDiscussionsComment> TestDiscussionComments { get; set; }
+        public DbSet<DiscussionsCommentVote> DiscussionsCommentVotes { get; set; }
+        public DbSet<BaseDiscussionsCommentAttachment> DiscussionsCommentAttachments { get; set; }
+        public DbSet<GeneralTestResultCommentAttachment> CommentAttachmentsForGeneralTestResult { get; set; }
         //test taken records
         public DbSet<BaseTestTakenRecord> BaseTestTakenRecords { get; set; }
         public DbSet<GeneralTestTakenRecord> GeneralTestTakenRecords { get; set; }
@@ -89,6 +96,9 @@ namespace vokimi_api.Src.db_related
             modelBuilder.ConfigureBaseTest();
             modelBuilder.ConfigureTestTags();
             modelBuilder.ConfigureTestRatings();
+            modelBuilder.ConfigureTestDiscussionComments();
+            modelBuilder.ConfigureDiscussionsCommentAttachmentConfiguration();
+            modelBuilder.ConfigureTestDiscussionCommentVotes();
 
             //published general tests
             modelBuilder.ConfigureTestGeneralTemplate();

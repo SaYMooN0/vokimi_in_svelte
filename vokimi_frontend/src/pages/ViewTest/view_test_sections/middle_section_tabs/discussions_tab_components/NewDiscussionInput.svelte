@@ -7,17 +7,20 @@
     let discussionSavingErr: string = "";
     async function saveNewDiscussion() {
         discussionSavingErr = "";
-        if (StringUtils.isNullOrWhiteSpace(discussionText)) {
+        if (StringUtils.isNullOrWhiteSpace(discussionText.trim())) {
             return;
         }
-        const data = { discussionText, testId };
-        const response = await fetch("/api/viewTest/startNewDiscussion", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const data = { commentText: discussionText, testId }; //+ attachment if any
+        const response = await fetch(
+            "/api/viewTest/discussions/startNewDiscussion",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
             },
-            body: JSON.stringify(data),
-        });
+        );
         if (response.ok) {
             discussionText = "";
         } else if (response.status === 400) {
@@ -112,7 +115,7 @@
     }
     .save-new-discussion-icon {
         margin-right: 12px;
-        color: var(--text);
+        color: var(--text-faded);
         height: 100%;
         aspect-ratio: 1/1;
         padding: 8px;

@@ -2,6 +2,7 @@
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.test_taken_records;
 using vokimi_api.Src.db_related.db_entities.tests_related;
+using vokimi_api.Src.db_related.db_entities.tests_related.discussions;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.enums;
@@ -36,7 +37,7 @@ namespace VokimiShared.src.models.db_classes.test.test_types
         public virtual ICollection<TestTag> Tags { get; protected set; } = [];
 
         public virtual ICollection<TestRating> Ratings { get; protected set; } = [];
-
+        public virtual ICollection<TestDiscussionsComment> DiscussionsComments { get; protected set; } = [];
 
         public abstract ICollection<BaseTestTakenRecord> GetBaseTestTakings();
 
