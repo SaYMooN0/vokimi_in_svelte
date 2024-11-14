@@ -48,8 +48,8 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                     .WithOne(t => t.User)
                     .HasForeignKey(t => t.UserId);
                 entity.HasMany(u => u.DiscussionsComments)
-                    .WithOne(t => t.User)
-                    .HasForeignKey(t => t.UserId);
+                    .WithOne(t => t.Author)
+                    .HasForeignKey(t => t.AuthorId);
 
                 entity.HasMany(u => u.DiscussionsCommentVotes)
                         .WithOne(t => t.User)

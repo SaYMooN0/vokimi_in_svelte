@@ -1,4 +1,4 @@
-export class RatingsTabData {
+export class ViewTestRatingsTabData {
     viewerRating: number | null;
     averageRating: number;
     ratingsList: TestRatingVm[];

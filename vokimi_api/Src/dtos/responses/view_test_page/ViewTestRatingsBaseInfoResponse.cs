@@ -3,13 +3,13 @@ using VokimiShared.src.models.db_classes.test.test_types;
 
 namespace vokimi_api.Src.dtos.responses.view_test_page
 {
-    public record class ViewTestRatingsBaseInfo(
+    public record class ViewTestRatingsBaseInfoResponse(
         ushort? ViewerRating,
         double AverageRating,
         TestRatingVm[] RatingsList
     )
     {
-        public static ViewTestRatingsBaseInfo New(ushort? viewerRating, BaseTest test) => new(
+        public static ViewTestRatingsBaseInfoResponse New(ushort? viewerRating, BaseTest test) => new(
             viewerRating,
             CalculateAverageRating(test.Ratings),
             test.Ratings.Select(TestRatingVm.FromTestRating).ToArray()
@@ -35,7 +35,7 @@ namespace vokimi_api.Src.dtos.responses.view_test_page
             tr.UserId.Value.ToString(),
             tr.User.Username,
             tr.User.ProfilePicturePath,
-            tr.LastUpdate.ToString("g")
+            tr.LastUpdate.ToString("HH:mm dd.MM.yyyy")
         );
     }
 }

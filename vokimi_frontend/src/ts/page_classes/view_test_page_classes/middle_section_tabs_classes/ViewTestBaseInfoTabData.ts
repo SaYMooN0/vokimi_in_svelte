@@ -1,7 +1,7 @@
 import type { Language } from "../../../enums/Language";
 import type { TestTemplate } from "../../../enums/TestTemplate";
 
-export class TestInfoTabData {
+export class ViewTestBaseInfoTabData {
     readonly testDescription: string;
     readonly template: TestTemplate;
     readonly language: Language;

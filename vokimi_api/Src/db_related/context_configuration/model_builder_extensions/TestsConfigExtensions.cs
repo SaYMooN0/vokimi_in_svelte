@@ -75,7 +75,7 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new TestDiscussionsCommentId(v));
 
                 entity.HasOne(tc => tc.ParentComment)
-                    .WithMany(tc => tc.CommentChildren)
+                    .WithMany(tc => tc.ChildComments)
                     .HasForeignKey(tc => tc.ParentCommentId);
                 entity.HasOne(tc => tc.Attachment)
                     .WithOne()

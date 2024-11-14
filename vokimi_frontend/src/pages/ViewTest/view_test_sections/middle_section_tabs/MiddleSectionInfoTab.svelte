@@ -2,9 +2,9 @@
     import { LanguageUtils } from "../../../../ts/enums/Language";
     import { TestTemplateUtils } from "../../../../ts/enums/TestTemplate";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
-    import type { TestInfoTabData } from "../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/TestInfoTabData";
+    import type { ViewTestBaseInfoTabData } from "../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/ViewTestBaseInfoTabData";
 
-    export let tabData: TestInfoTabData;
+    export let tabData: ViewTestBaseInfoTabData;
 </script>
 
 <div class="test-info-tab">

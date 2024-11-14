@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type { TestInfoTabData } from "../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/TestInfoTabData";
+    import type { ViewTestBaseInfoTabData } from "../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/ViewTestBaseInfoTabData";
     import MiddleSectionDiscussionsTab from "./middle_section_tabs/MiddleSectionDiscussionsTab.svelte";
     import MiddleSectionInfoTab from "./middle_section_tabs/MiddleSectionInfoTab.svelte";
     import MiddleSectionRatingsTab from "./middle_section_tabs/MiddleSectionRatingsTab.svelte";
 
     export let testId: string;
-    export let testInfoTabData: TestInfoTabData;
+    export let testInfoTabData: ViewTestBaseInfoTabData;
     export let startingTab: string | undefined;
     enum MiddlePartTabs {
         Info,

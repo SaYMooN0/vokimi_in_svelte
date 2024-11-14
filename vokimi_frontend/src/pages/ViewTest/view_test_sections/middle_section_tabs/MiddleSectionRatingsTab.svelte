@@ -2,18 +2,18 @@
     import AuthorizeView from "../../../../components/AuthorizeView.svelte";
     import { Err } from "../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
-    import { RatingsTabData } from "../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/RatingsTabData";
+    import { ViewTestRatingsTabData } from "../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/ViewTestRatingsTabData";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
     import RatingsTabStarsInput from "./ratings_tab_components/RatingsTabStarsInput.svelte";
 
     export let testId: string;
-    async function fetchRatingsListPackage(): Promise<RatingsTabData | Err> {
+    async function fetchRatingsListPackage(): Promise<ViewTestRatingsTabData | Err> {
         const response = await fetch(
             `/api/viewTest/getTestRatingsInfo/${testId}`,
         );
         if (response.ok) {
             const data = await response.json();
-            return new RatingsTabData(
+            return new ViewTestRatingsTabData(
                 data.viewerRating,
                 data.averageRating,
                 data.ratingsList,

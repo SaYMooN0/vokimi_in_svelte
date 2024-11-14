@@ -2,7 +2,7 @@
     import TestAccessPageContainer from "../../components/test_access_page_container/TestAccessPageContainer.svelte";
     import { Err } from "../../ts/Err";
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
-    import { TestInfoTabData } from "../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/TestInfoTabData";
+    import { ViewTestBaseInfoTabData } from "../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/ViewTestBaseInfoTabData";
     import { TestTemplateUtils } from "../../ts/enums/TestTemplate";
     import { LanguageUtils } from "../../ts/enums/Language";
     import { TestNameAndCreatorSectionClass } from "../../ts/page_classes/view_test_page_classes/TestNameAndCreatorSectionClass";
@@ -16,7 +16,7 @@
     interface LoadInfoSuccess {
         testNameAndCreatorSection: TestNameAndCreatorSectionClass;
         testCoverPath: string;
-        testMiddleSection: TestInfoTabData;
+        testMiddleSection: ViewTestBaseInfoTabData;
     }
 
     async function loadBasicTestInfo(): Promise<Err | LoadInfoSuccess> {
@@ -33,7 +33,7 @@
                     data.creatorId,
                 ),
                 testCoverPath: data.testCoverPath,
-                testMiddleSection: new TestInfoTabData(
+                testMiddleSection: new ViewTestBaseInfoTabData(
                     data.testDescription,
                     TestTemplateUtils.fromId(data.template),
                     LanguageUtils.fromId(data.language),

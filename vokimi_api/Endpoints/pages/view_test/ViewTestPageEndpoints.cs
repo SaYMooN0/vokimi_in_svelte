@@ -10,6 +10,7 @@ using vokimi_api.Src.dtos.responses.view_test_page;
 using vokimi_api.Src.dtos.requests;
 using Microsoft.AspNetCore.Mvc;
 using vokimi_api.Src.db_related.db_entities.tests_related;
+using vokimi_api.Src.dtos.responses.view_test_page.discussions;
 
 namespace vokimi_api.Endpoints.pages
 {
@@ -117,7 +118,7 @@ namespace vokimi_api.Endpoints.pages
                     return ResultsHelper.BadRequestNoTestAccess();
                 }
 
-                return Results.Ok(ViewTestRatingsBaseInfo.New(viewerRating, test));
+                return Results.Ok(ViewTestRatingsBaseInfoResponse.New(viewerRating, test));
             }
         }
         internal static IResult GetTestDiscussionsInfo(
@@ -133,16 +134,23 @@ namespace vokimi_api.Endpoints.pages
             tId = new(testGuid);
             using (var db = dbFactory.CreateDbContext()) {
                 BaseTest? test = db.TestsSharedInfo
-                    .Include(t => t.Ratings)
-                        .ThenInclude(tr => tr.User)
+                    .Include(t => t.DiscussionsComments)
+                        .ThenInclude(td => td.CommentVotes)
                     .FirstOrDefault(t => t.Id == tId);
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();
                 }
                 bool haveAccess;
 
+                Dictionary<TestDiscussionsCommentId, bool> viewersVotes = [];
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
                     haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
+                    AppUser? viewer = db.AppUsers
+                        .Include(u => u.DiscussionsCommentVotes)
+                        .FirstOrDefault(u => u.Id == viewerId);
+                    if (viewer is not null) {
+                        viewersVotes = viewer.DiscussionsCommentVotes.ToDictionary(v => v.CommentId, v => v.IsUp);
+                    }
                 } else {
                     haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
@@ -150,7 +158,7 @@ namespace vokimi_api.Endpoints.pages
                     return ResultsHelper.BadRequestNoTestAccess();
                 }
 
-                return Results.Ok(ViewTestDiscussionsBaseInfo.New());
+                return Results.Ok(ViewTestDiscussionsBaseInfoResponse.New(test.DiscussionsComments, viewersVotes));
             }
         }
 
