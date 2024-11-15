@@ -3,8 +3,16 @@
   import { ImgUtils } from "../../../../../../ts/utils/ImgUtils";
   import CommentsListViewComponent from "./CommentsListViewComponent.svelte";
   import CommentFooter from "./CommentFooter.svelte";
+  import CommentAnswerInput from "./CommentAnswerInput.svelte";
 
   export let comment: TestDiscussionCommentVm;
+  export let incrementTotalCommentsCount: () => void;
+
+  let answerInput: CommentAnswerInput;
+  function addNewAnswer(answerComment: TestDiscussionCommentVm) {
+    comment.childVms = [answerComment, ...comment.childVms];
+    incrementTotalCommentsCount();
+  }
 </script>
 
 <div class="comment">
@@ -23,13 +31,24 @@
     <p>{comment.text}</p>
   </div>
   <CommentFooter
+    showAnswerInput={() => answerInput.show()}
     viewersVoteIsUp={comment.isViewersVoteUp}
     votesRating={comment.votesRating}
     totalVotesCount={comment.totalVotesCount}
     commentId={comment.commentId}
   />
 </div>
-<CommentsListViewComponent comments={comment.childVms} />
+<CommentAnswerInput
+  showSavedAnswer={addNewAnswer}
+  parentCommentId={comment.commentId}
+  bind:this={answerInput}
+/>
+<div class="child-comments">
+  <CommentsListViewComponent
+    comments={comment.childVms}
+    {incrementTotalCommentsCount}
+  />
+</div>
 
 <style>
   .comment {
@@ -52,9 +71,10 @@
     border: 2px solid var(--back-secondary);
   }
   .author-link {
-    
   }
   .comment-date {
-    
+  }
+  .child-comments {
+    margin-left: 20px;
   }
 </style>

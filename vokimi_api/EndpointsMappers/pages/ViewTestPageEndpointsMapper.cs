@@ -17,6 +17,7 @@ namespace vokimi_api.EndpointsMappers.pages
 
             //discussions
             app.MapPost("/viewTest/discussions/startNewDiscussion", ViewTestDiscussionsEndpoints.StartNewDiscussion);
+            app.MapPost("/viewTest/discussions/saveAnswerToComment", ViewTestDiscussionsEndpoints.SaveAnswerToComment);
 
         }
     }

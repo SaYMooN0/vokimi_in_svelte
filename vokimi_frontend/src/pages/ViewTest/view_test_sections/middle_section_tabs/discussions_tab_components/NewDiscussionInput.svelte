@@ -1,8 +1,12 @@
 <script lang="ts">
     import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
+    import { TestDiscussionCommentVm } from "../../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/ViewTestDiscussionsTabData";
     import { StringUtils } from "../../../../../ts/utils/StringUtils";
 
     export let testId: string;
+    export let showNewAddedDiscussion: (
+        commentVm: TestDiscussionCommentVm,
+    ) => void;
     let discussionText: string = "";
     let discussionSavingErr: string = "";
     async function saveNewDiscussion() {
@@ -23,6 +27,21 @@
         );
         if (response.ok) {
             discussionText = "";
+            const responseData = await response.json();
+            showNewAddedDiscussion(
+                new TestDiscussionCommentVm(
+                    responseData.commentText,
+                    responseData.authorId,
+                    responseData.authorUsername,
+                    responseData.authorProfilePicture,
+                    responseData.text,
+                    responseData.votesRating,
+                    responseData.totalVotesCount,
+                    responseData.createdAtDateTime,
+                    responseData.isViewersVoteUp,
+                    responseData.childVms,
+                ),
+            );
         } else if (response.status === 400) {
             discussionSavingErr = await getErrorFromResponse(response);
         } else {

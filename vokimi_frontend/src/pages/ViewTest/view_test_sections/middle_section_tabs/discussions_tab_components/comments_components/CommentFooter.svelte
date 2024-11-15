@@ -1,15 +1,12 @@
 <script lang="ts">
-    import CommentAnswerInput from "./CommentAnswerInput.svelte";
-
     export let viewersVoteIsUp: boolean | null;
     export let votesRating: number;
     export let totalVotesCount: number;
+    export let showAnswerInput: () => void;
     export let commentId: string;
 
     function voteUpPressed() {}
     function voteDownPressed() {}
-
-    let answerInput: CommentAnswerInput;
 </script>
 
 <div class="comment-footer">
@@ -48,7 +45,7 @@
     </svg>
     <span class="total-votes">Total Votes: {totalVotesCount}</span>
 
-    <div class="answer-btn" on:click={answerInput.show}>
+    <div class="answer-btn unselectable" on:click={showAnswerInput}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
             <path
                 d="M20 3V5.07692C20 7.07786 20 8.07833 19.8547 8.91545C19.0547 13.5235 15.0934 17.1376 10.0426 17.8674C9.12509 18 7.19318 18 5 18"
@@ -68,7 +65,6 @@
         Answer
     </div>
 </div>
-<CommentAnswerInput parentCommentId={commentId} bind:this={answerInput} />
 
 <style>
     .comment-footer {

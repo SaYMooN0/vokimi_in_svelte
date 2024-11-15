@@ -20,7 +20,7 @@ export class TestDiscussionCommentVm {
     public readonly totalVotesCount: number;
     public readonly createdAtDateTime: string;
     public readonly isViewersVoteUp: boolean | null;
-    public readonly childVms: TestDiscussionCommentVm[];
+    public childVms: TestDiscussionCommentVm[];
 
     constructor(
         commentId: string,

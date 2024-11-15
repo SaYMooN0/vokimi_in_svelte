@@ -1,6 +1,12 @@
 <script lang="ts">
     export let discussionsCount: number;
     export let totalCommentsCount: number;
+    export function incrementDiscussionsCount() {
+        discussionsCount++;
+    }
+    export function incrementTotalCommentsCount() {
+        totalCommentsCount++;
+    }
 </script>
 
 <div class="discussions-count-panel">
