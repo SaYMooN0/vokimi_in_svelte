@@ -4,6 +4,10 @@
 
   export let incrementTotalCommentsCount: () => void;
   export let comments: TestDiscussionCommentVm[];
+  export function updateCommentsList(newComments: TestDiscussionCommentVm[]) {
+    newlyStartedDiscussion = [];
+    comments = [...newComments];
+  }
   export function addNewStartedDiscussion(commentVm: TestDiscussionCommentVm) {
     newlyStartedDiscussion = [commentVm, ...newlyStartedDiscussion];
   }

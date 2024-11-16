@@ -1,6 +1,6 @@
 <script lang="ts">
     import { getErrorFromResponse } from "../../../../../../ts/ErrorResponse";
-    import { TestDiscussionCommentVm } from "../../../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/ViewTestDiscussionsTabData";
+    import type { TestDiscussionCommentVm } from "../../../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/discussions_tab_classes/TestDiscussionCommentVm";
     import { StringUtils } from "../../../../../../ts/utils/StringUtils";
 
     export let parentCommentId: string;

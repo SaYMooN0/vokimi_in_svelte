@@ -31,7 +31,7 @@
 </script>
 
 <div class="ratings-tab-stars-input">
-    <label>Rate this test</label>
+    <label class="rate-test-label">Rate this test:</label>
     <div class="rating">
         {#each [5, 4, 3, 2, 1] as star}
             <input
@@ -65,11 +65,17 @@
     .ratings-tab-stars-input {
         display: flex;
         flex-direction: row;
+        align-items: center;
+        gap: 12px;
+    }
+    .rate-test-label {
+        font-size: 18px;
+        font-weight: 500;
     }
     .rating {
         display: flex;
         flex-direction: row-reverse;
-        gap: 0.3rem;
+        gap: 0;
         --stroke: var(--text-faded);
         --fill: #ffc73a;
     }
@@ -88,9 +94,8 @@
         overflow: visible;
         fill: transparent;
         stroke: var(--stroke);
-        stroke-linejoin: bevel;
+        stroke-linejoin: round;
         stroke-dasharray: 12;
-        animation: idle 4s linear infinite;
         transition:
             stroke 0.2s,
             fill 0.5s;
@@ -112,6 +117,23 @@
     }
     .rating-saving-err {
         color: var(--red-del);
+        font-size: 16px;
+    }
+    .save-rating-btn {
+        padding: 6px 14px;
+        background-color: var(--primary);
+        color: var(--back-main);
+        font-size: 16px;
+        border-radius: 4px;
+        outline: none;
+        border: none;
+        cursor: pointer;
+    }
+    .save-rating-btn:hover {
+        background-color: var(--primary-hov);
+    }
+    .save-rating-btn:active {
+        transform: scale(0.98);
     }
     @keyframes yippee {
         0% {
@@ -126,7 +148,7 @@
         }
 
         30% {
-            transform: scale(0.4);
+            transform: scale(0.6);
             fill: var(--fill);
             fill-opacity: 0;
             stroke-opacity: 1;
@@ -144,7 +166,7 @@
         }
 
         60% {
-            transform: scale(1.03);
+            transform: scale(1.02);
             fill: var(--fill);
         }
     }
