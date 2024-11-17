@@ -10,15 +10,12 @@ using vokimi_api.Src;
 using vokimi_api.Services;
 using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.extension_classes;
-using Microsoft.AspNetCore.Http;
-using System.Net.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace vokimi_api.Endpoints.pages.test_creation.general_template
 {
     public static class GeneralTestResultsCreationEndpoints
     {
-        public static IResult GetResultsIdNameDictionary(
+        public static async Task<IResult> GetResultsIdNameDictionary(
             string testId,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -28,10 +25,10 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                 return ResultsHelper.BadRequestUnknownTest();
             }
             draftTestId = new(draftTestGuid);
-            using (var db = dbFactory.CreateDbContext()) {
-                DraftGeneralTest? test = db.DraftGeneralTests
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                DraftGeneralTest? test = await db.DraftGeneralTests
                     .Include(t => t.PossibleResults)
-                    .FirstOrDefault(t => t.Id == draftTestId);
+                    .FirstOrDefaultAsync(t => t.Id == draftTestId);
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();
                 }
@@ -45,7 +42,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                 return Results.Ok(results);
             }
         }
-        public static IResult CreateNewResultForTest(
+        public static async Task<IResult> CreateNewResultForTest(
             [FromBody] GeneralTestResultCreationRequest request,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -57,10 +54,10 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
             }
             DraftTestId testId = new(new(request.TestId));
             try {
-                using (var db = dbFactory.CreateDbContext()) {
-                    DraftGeneralTest? test = db.DraftGeneralTests
+                using (var db = await dbFactory.CreateDbContextAsync()) {
+                    DraftGeneralTest? test = await db.DraftGeneralTests
                         .Include(t => t.PossibleResults)
-                        .FirstOrDefault(t => t.Id == testId);
+                        .FirstOrDefaultAsync(t => t.Id == testId);
                     if (test is null) {
                         return ResultsHelper.BadRequestUnknownTest();
                     }
@@ -73,15 +70,15 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                         );
                     }
                     DraftGeneralTestResult result = DraftGeneralTestResult.CreateNew(testId, request.ResultName);
-                    db.DraftGeneralTestResults.Add(result);
-                    db.SaveChanges();
+                    await db.DraftGeneralTestResults.AddAsync(result);
+                    await db.SaveChangesAsync();
                     return Results.Ok();
                 }
             } catch {
                 return ResultsHelper.BadRequestServerError();
             }
         }
-        public static IResult GetDraftGeneralTestResultsData(
+        public static async Task<IResult> GetDraftGeneralTestResultsData(
             string testId,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -92,10 +89,10 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
             }
             draftTestId = new(testGuid);
 
-            using (var db = dbFactory.CreateDbContext()) {
-                DraftGeneralTest? test = db.DraftGeneralTests
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                DraftGeneralTest? test = await db.DraftGeneralTests
                     .Include(t => t.PossibleResults)
-                    .FirstOrDefault(t => t.Id == draftTestId);
+                    .FirstOrDefaultAsync(t => t.Id == draftTestId);
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();
                 }
@@ -108,7 +105,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                 return Results.Ok(results);
             }
         }
-        public static IResult GetDraftGeneralTestResultDataToEdit(
+        public static async Task<IResult> GetDraftGeneralTestResultDataToEdit(
             string resultId,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -118,7 +115,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                 return ResultsHelper.BadRequestWithErr("Unknown test result");
             }
             resId = new(resultGuid);
-            using (var db = dbFactory.CreateDbContext()) {
+            using (var db = await dbFactory.CreateDbContextAsync()) {
                 DraftGeneralTestResult? result = db.DraftGeneralTestResults.Find(resId);
                 if (result is null) {
                     return ResultsHelper.BadRequestWithErr("Unknown test result");
@@ -133,7 +130,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                 return Results.Ok(DraftGeneralTestResultData.FromResult(result));
             }
         }
-        public static IResult DeleteGeneralDraftTestResult(
+        public static async Task<IResult> DeleteGeneralDraftTestResult(
             string resultId,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -143,13 +140,13 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                 return ResultsHelper.BadRequestWithErr("An error has occurred. Please refresh the page and try again");
             }
             resultToDeleteId = new(resultGuid);
-            using (var db = dbFactory.CreateDbContext()) {
+            using (var db = await dbFactory.CreateDbContextAsync()) {
                 try {
-                    DraftGeneralTestResult? res = db.DraftGeneralTestResults.Find(resultToDeleteId);
+                    DraftGeneralTestResult? res = await db.DraftGeneralTestResults.FindAsync(resultToDeleteId);
                     if (res is null) {
                         return ResultsHelper.BadRequestWithErr("Unknown result");
                     }
-                    DraftGeneralTest? test = db.DraftGeneralTests.Find(res.TestId);
+                    DraftGeneralTest? test = await db.DraftGeneralTests.FindAsync(res.TestId);
                     if (test is null) {
                         return ResultsHelper.BadRequestUnknownTest();
                     }
@@ -157,7 +154,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                         return ResultsHelper.BadRequestNotCreator();
                     }
                     db.DraftGeneralTestResults.Remove(res);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     return Results.Ok();
                 } catch {
                     return ResultsHelper.BadRequestServerError();
@@ -179,12 +176,12 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
             } else {
                 return ResultsHelper.BadRequestWithErr("Unable to save changes. Please try again later");
             }
-            using (var db = dbFactory.CreateDbContext()) {
-                DraftGeneralTestResult? res = db.DraftGeneralTestResults.FirstOrDefault(r => r.Id == resId);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                DraftGeneralTestResult? res = await db.DraftGeneralTestResults.FindAsync(resId);
                 if (res is null) {
                     return ResultsHelper.BadRequestWithErr("Unknown result");
                 }
-                DraftGeneralTest? test = db.DraftGeneralTests.Find(res.TestId);
+                DraftGeneralTest? test = await db.DraftGeneralTests.FindAsync(res.TestId);
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();
                 }
@@ -202,7 +199,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                     return ResultsHelper.BadRequestServerError();
                 }
                 db.Update(res);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return Results.Ok();
             }
         }

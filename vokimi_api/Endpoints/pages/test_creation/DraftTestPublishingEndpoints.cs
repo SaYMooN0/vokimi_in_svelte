@@ -39,26 +39,26 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     return ResultsHelper.BadRequestWithErr("Only test creator can view this information");
                 }
 
-                var problems = GetTestPublilshingProblems(db, draftTestId, testToPublish.Template).ToArray();
+                var problems = await GetTestPublilshingProblems(db, draftTestId, testToPublish.Template);
                 return Results.Ok(problems);
             }
 
         }
-        private static List<TestPublishingProblem> GetTestPublilshingProblems(
+        private static async Task<List<TestPublishingProblem>> GetTestPublilshingProblems(
             AppDbContext db,
             DraftTestId testId,
             TestTemplate template
         ) => template switch {
-            TestTemplate.General => GetGeneralTestPublilshingProblems(db, testId),
+            TestTemplate.General => await GetGeneralTestPublilshingProblems(db, testId),
             _ => throw new ArgumentException("Unknown test template")
         };
 
 
-        private static List<TestPublishingProblem> GetGeneralTestPublilshingProblems(
+        private static async Task<List<TestPublishingProblem>> GetGeneralTestPublilshingProblems(
             AppDbContext db,
             DraftTestId testId
         ) {
-            DraftGeneralTest? test = db.DraftGeneralTests
+            DraftGeneralTest? test = await db.DraftGeneralTests
                 .Include(t => t.MainInfo)
                 .Include(t => t.Conclusion)
                 .Include(t => t.Questions)
@@ -68,7 +68,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     .ThenInclude(q => q.Answers)
                         .ThenInclude(a => a.RelatedResults)
                 .Include(t => t.PossibleResults)
-                .FirstOrDefault(t => t.Id == testId);
+                .FirstOrDefaultAsync(t => t.Id == testId);
             if (test is null) {
                 return [TestPublishingProblem.TestNotFound()];
             }
@@ -289,7 +289,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(testToPublish)) {
                     return ResultsHelper.BadRequestWithErr("Only test creator can publish it");
                 }
-                var testProblems = GetTestPublilshingProblems(db, draftTestId, testToPublish.Template);
+                var testProblems = await GetTestPublilshingProblems(db, draftTestId, testToPublish.Template);
                 if (testProblems.Count > 0) {
                     return ResultsHelper.BadRequestWithErr("Test has problems that need to be fixed before publishing");
                 }
@@ -337,8 +337,8 @@ namespace vokimi_api.Endpoints.pages.test_creation
                             .Create(newTestId, draftTest, newTestCover);
 
                         if (publishingData.CoverRelocationNeeded) {
-                            Err copyingErr = await
-                                storageService.CopyImageFile(draftTest.MainInfo.CoverImagePath, publishingData.NewTestCoverPath);
+                            Err copyingErr =
+                                await storageService.CopyImageFile(draftTest.MainInfo.CoverImagePath, publishingData.NewTestCoverPath);
                             if (copyingErr.NotNone()) {
                                 throw new Exception();
                             } else {
@@ -361,15 +361,15 @@ namespace vokimi_api.Endpoints.pages.test_creation
 
                         var testToPublish = TestGeneralTemplate.CreateNew(publishingData);
 
-                        db.TestsGeneralTemplate.Add(testToPublish);
+                        await db.TestsGeneralTemplate.AddAsync(testToPublish);
 
                         await db.SaveChangesAsync();
 
                         foreach (string tag in publishingData.Tags) {
-                            TestTag tagToAssign = await db.TestTags.FirstOrDefaultAsync(t => t.Value == tag);
+                            TestTag? tagToAssign = await db.TestTags.FirstOrDefaultAsync(t => t.Value == tag);
                             if (tagToAssign is null) {
                                 tagToAssign = TestTag.CreateNew(tag);
-                                db.TestTags.Add(tagToAssign);
+                                await db.TestTags.AddAsync(tagToAssign);
                             }
                             tagToAssign.Tests.Add(testToPublish);
                         }
@@ -429,7 +429,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     draftResult.Text ?? draftResult.Name, //name if somehow text is null after all validations
                     resultImg
                 );
-                db.GeneralTestResults.Add(resultToPublish);
+                await db.GeneralTestResults.AddAsync(resultToPublish);
                 publishingData.PublishedResults.Add(draftResult.Id, resultToPublish);
             }
         }
@@ -471,7 +471,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     draftQuestion.MinAnswersCount,
                     draftQuestion.MaxAnswersCount
                 );
-                db.GeneralTestQuestions.Add(questionToPublish);
+                await db.GeneralTestQuestions.AddAsync(questionToPublish);
 
                 questionOrder++;
 
@@ -506,7 +506,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                         relatedPublishedResults
                     );
 
-                    db.GeneralTestAnswers.Add(answerToPublish);
+                    await db.GeneralTestAnswers.AddAsync(answerToPublish);
                 }
 
                 publishingData.PublishedQuestions.Add(questionToPublish);

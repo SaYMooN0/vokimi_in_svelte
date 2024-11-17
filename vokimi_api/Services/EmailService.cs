@@ -19,7 +19,7 @@ namespace vokimi_api.Services
             _password = password;
         }
 
-        public Err SendEmail(string to, string subject, string body, bool isHtml = false) {
+        public async Task<Err> SendEmail(string to, string subject, string body, bool isHtml = false) {
             try {
                 MimeMessage message = new();
                 message.From.Add(new MailboxAddress("Vokimi", _username));
@@ -32,9 +32,9 @@ namespace vokimi_api.Services
                     message.Body = new TextPart("plain") { Text = body };
                 }
 
-                using (var client = ConfigureSmtpClient()) {
-                    client.Send(message);
-                    client.Disconnect(true);
+                using (var client = await ConfigureSmtpClient()) {
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
                 }
                 return Err.None;
             } catch {
@@ -42,18 +42,18 @@ namespace vokimi_api.Services
             }
         }
 
-        public Err SendConfirmationLink(string to, string confirmationLink) {
+        public async Task<Err> SendConfirmationLink(string to, string confirmationLink) {
             string subject = "Please confirm your email";
             string body =
                 "<p>Thank you for registering. Please click the link below to confirm your email:</p>" +
                $"<p><a href='{confirmationLink}'>Confirm Email</a></p>";
 
-            return SendEmail(to, subject, body, true);
+            return await SendEmail(to, subject, body, true);
         }
-        private SmtpClient ConfigureSmtpClient() {
+        private async Task<SmtpClient> ConfigureSmtpClient() {
             var client = new SmtpClient();
-            client.Connect(_host, _port, true);
-            client.Authenticate(_username, _password);
+            await client.ConnectAsync(_host, _port, true);
+            await client.AuthenticateAsync(_username, _password);
             return client;
         }
 

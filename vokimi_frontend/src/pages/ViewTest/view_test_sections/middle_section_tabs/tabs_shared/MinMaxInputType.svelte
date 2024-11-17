@@ -3,6 +3,8 @@
     export let maxPossibleValue: number | null;
     export let minVal: number | null;
     export let maxVal: number | null;
+    export let isFloat: boolean = false;
+    $: stepValue = isFloat ? 0.01 : 1;
 </script>
 
 <div class="min-max-input-type">
@@ -12,6 +14,7 @@
         bind:value={minVal}
         min={minPossibleValue}
         max={maxPossibleValue}
+        step={stepValue}
     />
     To
     <input
@@ -19,6 +22,7 @@
         bind:value={maxVal}
         min={minPossibleValue}
         max={maxPossibleValue}
+        step={stepValue}
     />
 </div>
 

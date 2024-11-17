@@ -16,28 +16,31 @@
     export let showFilteredComments: (
         comments: TestDiscussionCommentVm[],
     ) => void;
+    export let testId: string;
 
     function clearFilter() {
         filter = new DiscussionsTabFilter();
     }
     async function applyFilter() {
-        const response = await fetch("/api/confirmRegistration", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            "/api/viewTest/discussions/getFilteredDiscussions",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ testId, ...filter }),
             },
-            body: JSON.stringify(filter),
-        });
+        );
 
         if (response.ok) {
             const data = await response.json();
             console.log(data);
+            return showFilteredComments(data);
         } else if (response.status === 400) {
             filterApplyingError = await getErrorFromResponse(response);
-            return false;
         } else {
             filterApplyingError = "An unknown error occurred.";
-            return false;
         }
     }
     let isHidden = true;
@@ -45,7 +48,11 @@
     let filterApplyingError: string = "";
 </script>
 
-<form class="discussions-filter" class:is-hidden={isHidden}>
+<form
+    class="discussions-filter"
+    class:is-hidden={isHidden}
+    on:submit|preventDefault={applyFilter}
+>
     <p class="filter-warning-message">
         <svg
             class="warning-icon"
@@ -80,12 +87,12 @@
         will not be shown
     </p>
     <p class="filter-line">
-        <span class="filter-name">Comment answers count</span>
+        <span class="filter-name">Child comments count</span>
         <MinMaxInputType
             minPossibleValue={0}
             maxPossibleValue={null}
-            bind:minVal={filter.minCommentsCount}
-            bind:maxVal={filter.maxCommentsCount}
+            bind:minVal={filter.minChildCommentsCount}
+            bind:maxVal={filter.maxChildCommentsCount}
         />
     </p>
     <p class="filter-line">
@@ -117,19 +124,26 @@
                 />
             </p>
             <p class="filter-line">
-                <span class="filter-name"> Comments only by my friends </span>
+                <span class="filter-name">Comments only by my friends</span>
                 <CustomCheckbox bind:isChecked={filter.onlyByFriends} />
             </p>
+            <p class="filter-line">
+                <span class="filter-name">Comments only by my friends</span>
+                <CustomCheckbox bind:isChecked={filter.onlyByFriends} />
+            </p>
+            <p class="filter-line"></p>
         </div>
-        <div slot="unauthenticated">
-            <p class="login-message">Please log in to access all filter</p>
+        <div slot="unauthenticated" class="login-message unselectable">
+            Please log in to access all filter
         </div>
     </AuthorizeView>
     {#if !StringUtils.isNullOrWhiteSpace(filterApplyingError)}
         <p class="error-message">{filterApplyingError}</p>
     {/if}
-    <button type="button" on:click={() => clearFilter()}>Clear</button>
-    <button type="submit" on:click={() => applyFilter()}>Apply</button>
+    <div class="form-buttons">
+        <button type="button" on:click={() => clearFilter()}>Clear</button>
+        <button type="submit">Apply</button>
+    </div>
 </form>
 
 <style>
@@ -162,5 +176,11 @@
         align-items: center;
         justify-content: space-between;
         box-sizing: border-box;
+    }
+    .login-message {
+        color: var(--text-faded);
+        font-size: 16px;
+        margin: 4px auto;
+        width: fit-content;
     }
 </style>

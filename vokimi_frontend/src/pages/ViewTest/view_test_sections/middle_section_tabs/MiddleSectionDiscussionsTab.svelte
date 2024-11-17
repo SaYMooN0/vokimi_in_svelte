@@ -60,6 +60,7 @@
                 hideFilter={() => discussionsFilter.hide()}
             />
             <DiscussionsFilter
+                {testId}
                 bind:this={discussionsFilter}
                 showFilteredComments={showCommentsWithAppliedFilter}
             />

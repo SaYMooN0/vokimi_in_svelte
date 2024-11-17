@@ -136,6 +136,8 @@ namespace vokimi_api.Endpoints.pages
                 BaseTest? test = db.TestsSharedInfo
                     .Include(t => t.DiscussionsComments)
                         .ThenInclude(td => td.CommentVotes)
+                    .Include(t => t.DiscussionsComments)
+                        .ThenInclude(td => td.Author)
                     .FirstOrDefault(t => t.Id == tId);
                 if (test is null) {
                     return ResultsHelper.BadRequestUnknownTest();

@@ -1,12 +1,42 @@
 <script lang="ts">
+    import { getErrorFromResponse } from "../../../../../../ts/ErrorResponse";
+    import { StringUtils } from "../../../../../../ts/utils/StringUtils";
+
     export let viewersVoteIsUp: boolean | null;
     export let votesRating: number;
     export let totalVotesCount: number;
     export let showAnswerInput: () => void;
     export let commentId: string;
 
-    function voteUpPressed() {}
-    function voteDownPressed() {}
+    async function sendCommentVoteChanged(wasUpPressed: boolean) {
+        const response = await fetch(
+            "/api/viewTest/discussions/handleCommentVoteChanged",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ wasUpPressed, commentId }),
+            },
+        );
+
+        if (response.ok) {
+            const data = await response.json();
+            votesRating = data.votesRating;
+            viewersVoteIsUp = data.viewersVoteIsUp;
+        } else if (response.status === 400) {
+            footerErr = await getErrorFromResponse(response);
+        } else {
+            footerErr = "An unknown error occurred.";
+        }
+    }
+    async function voteUpPressed() {
+        await sendCommentVoteChanged(true);
+    }
+    async function voteDownPressed() {
+        await sendCommentVoteChanged(false);
+    }
+    let footerErr: string = "";
 </script>
 
 <div class="comment-footer">
@@ -18,6 +48,7 @@
         {votesRating}
     </span>
     <svg
+        on:click={voteUpPressed}
         class="vote-btn-svg"
         class:voted={viewersVoteIsUp === true}
         xmlns="http://www.w3.org/2000/svg"
@@ -31,6 +62,7 @@
         />
     </svg>
     <svg
+        on:click={voteDownPressed}
         class="vote-btn-svg"
         class:voted={viewersVoteIsUp === false}
         xmlns="http://www.w3.org/2000/svg"
@@ -65,6 +97,9 @@
         Answer
     </div>
 </div>
+{#if StringUtils.isNullOrWhiteSpace(footerErr)}
+    <p class="comment-footer-err">{footerErr}</p>
+{/if}
 
 <style>
     .comment-footer {
@@ -132,5 +167,10 @@
     }
     .answer-btn svg {
         height: 20px;
+    }
+    .comment-footer-err {
+        color: var(--red-del);
+        font-size: 16px;
+        font-weight: 500;
     }
 </style>

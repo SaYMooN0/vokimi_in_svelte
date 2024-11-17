@@ -31,6 +31,25 @@ namespace vokimi_api.Src.dtos.responses.view_test_page.discussions
             viewersVotes.TryGetValue(comment.Id, out var val) ? val : null,
             comment.ChildComments.Select((c) => FromComment(c, viewersVotes)).ToArray()
         );
+        public static TestDiscussionCommentVm FromCommentWithFilter(
+           TestDiscussionsComment comment,
+           Dictionary<TestDiscussionsCommentId, bool> viewersVotes,
+           Func<TestDiscussionsComment, bool> filter
+       ) => new(
+           comment.Id.Value.ToString(),
+           comment.AuthorId.Value.ToString(),
+           comment.Author.Username,
+           comment.Author.ProfilePicturePath,
+           comment.Text,
+           CalculateVotesRating(comment.CommentVotes),
+           comment.CommentVotes.Count,
+           comment.CreatedAt.ToString("HH:mm dd.MM.yyyy"),
+           viewersVotes.TryGetValue(comment.Id, out var val) ? val : null,
+           comment.ChildComments
+               .Where(filter)
+               .Select((c) => FromCommentWithFilter(c, viewersVotes, filter))
+               .ToArray()
+       );
         private static int CalculateVotesRating(ICollection<DiscussionsCommentVote> votes) =>
             votes.Sum(v => v.IsUp ? 1 : -1);
     }

@@ -1,12 +1,14 @@
 ﻿using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.enums;
+using Microsoft.EntityFrameworkCore;
+using vokimi_api.Src.db_related.db_entities.users;
 
 namespace vokimi_api.Helpers
 {
     public class TestAccessValidator
     {
-        public static bool CheckUserAccessToTest(
+        public async static Task<bool> CheckUserAccessToTest(
             AppDbContext db,
             AppUserId testCreatorId,
             PrivacyValues testPrivacy,
@@ -25,29 +27,28 @@ namespace vokimi_api.Helpers
             }
 
             if (testPrivacy == PrivacyValues.FriendsOnly) {
-                var creatorFriendIds = db.AppUsers
-                    .Where(u => u.Id == testCreatorId)
-                    .Select(u => u.Friends.Select(f => f.Id))
-                    .FirstOrDefault();
-                if (creatorFriendIds is null) {
+                AppUser? creator = await db.AppUsers
+                    .Include(u => u.Friends)
+                    .FirstOrDefaultAsync(u => u.Id == testCreatorId);
+                if (creator is null || creator.Friends.Count < 1) {
                     return false;
                 }
+                return creator.Friends.Any(u => u.Id == viewerId);
 
-                return creatorFriendIds.Contains(viewerId);
             }
 
             if (testPrivacy == PrivacyValues.FriendsAndFollowers) {
-                var creatorFriendAndFollowerIds = db.AppUsers
-                    .Where(u => u.Id == testCreatorId)
-                    .Select(u => u.Friends.Select(f => f.Id)
-                    .Union(u.Followers.Select(f => f.Id)))
-                    .FirstOrDefault();
+                AppUser? creator = await db.AppUsers
+                    .Include(u => u.Friends)
+                    .Include(u => u.Followers)
+                    .FirstOrDefaultAsync(u => u.Id == testCreatorId);
+                if (creator is null
+                    || creator.Friends.Count + creator.Followers.Count < 1) {
 
-                if (creatorFriendAndFollowerIds is null) {
                     return false;
                 }
-
-                return creatorFriendAndFollowerIds.Contains(viewerId);
+                return creator.Friends.Any(u => u.Id == viewerId)
+                    || creator.Followers.Any(u => u.Id == viewerId);
             }
             return false;
         }
