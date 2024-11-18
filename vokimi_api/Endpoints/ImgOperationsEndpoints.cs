@@ -25,18 +25,18 @@ namespace vokimi_api.Endpoints
             if (Guid.TryParse(testId, out Guid testGuid)) {
                 id = new(testGuid);
             } else {
-                return ResultsHelper.BadRequestWithErr("Unable to update cover. Please refresh the page.");
+                return ResultsHelper.BadRequest.WithErr("Unable to update cover. Please refresh the page.");
             }
-            using (var db = dbFactory.CreateDbContext()) {
-                BaseDraftTest? test = db.DraftTestsSharedInfo
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseDraftTest? test = await db.DraftTestsSharedInfo
                     .Include(t => t.MainInfo)
-                    .FirstOrDefault(t => t.Id == id);
+                    .FirstOrDefaultAsync(t => t.Id == id);
 
                 if (test is null) {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
-                    return ResultsHelper.BadRequestNotCreator();
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
                 string extension = ImgOperationsHelper.ExtractFileExtension(file);
                 string key = ImgOperationsHelper.GetDraftTestCoverImgKey(test.Id, extension);
@@ -49,15 +49,15 @@ namespace vokimi_api.Endpoints
                         }
                         string oldPath = test.MainInfo.CoverImagePath;
                         test.MainInfo.UpdateCoverImage(savedKey);
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         await transaction.CommitAsync();
                         if (oldPath != ImgOperationsConsts.DefaultTestCoverImg && oldPath != savedKey) {
                             await vokimiStorage.DeleteFiles([oldPath]);
                         }
-                        return ResultsHelper.OkResultWithImgPath(key);
+                        return ResultsHelper.Ok.WithImgPath(key);
                     } catch {
                         await transaction.RollbackAsync();
-                        return ResultsHelper.BadRequestServerError();
+                        return ResultsHelper.BadRequest.ServerError();
                     }
                 }
             }
@@ -69,22 +69,18 @@ namespace vokimi_api.Endpoints
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
-            DraftGeneralTestQuestionId qId;
-            if (Guid.TryParse(questionId, out Guid guid)) {
-                qId = new(guid);
-            } else {
-                return ResultsHelper.BadRequestSaveChangesTryAgain();
+            if (!Guid.TryParse(questionId, out Guid questionGuid)) {
+                return ResultsHelper.BadRequest.SaveChangesTryAgain();
             }
+            DraftGeneralTestQuestionId qId = new(questionGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
-                DraftTestId? testId = db.DraftGeneralTestQuestions
-                    .FirstOrDefault(q => q.Id == qId)?.TestId ?? null;
+                DraftTestId? testId = (await db.DraftGeneralTestQuestions.FindAsync(qId))?.TestId ?? null;
                 if (testId is null) {
-                    return ResultsHelper.BadRequestWithErr("Unable to update answer image. Unknown question");
+                    return ResultsHelper.BadRequest.WithErr("Unable to update answer image. Unknown question");
                 }
-                AppUserId? creatorId = db.DraftTestsSharedInfo
-                    .FirstOrDefault(t => t.Id == testId)?.CreatorId ?? null;
+                AppUserId? creatorId = (await db.DraftTestsSharedInfo.FindAsync(testId))?.CreatorId ?? null;
                 if (!httpContext.IfAuthenticatedUserIdEquals(creatorId)) {
-                    return ResultsHelper.BadRequestNotCreator();
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
                 string extension = ImgOperationsHelper.ExtractFileExtension(file);
                 string key = ImgOperationsHelper.GetDraftGeneralTestAnswerImgKey(testId.Value, qId, extension);
@@ -100,22 +96,18 @@ namespace vokimi_api.Endpoints
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
-            DraftGeneralTestQuestionId qId;
-            if (Guid.TryParse(questionId, out Guid guid)) {
-                qId = new(guid);
-            } else {
-                return ResultsHelper.BadRequestSaveChangesTryAgain();
+            if (!Guid.TryParse(questionId, out Guid questionGuid)) {
+                return ResultsHelper.BadRequest.SaveChangesTryAgain();
             }
+            DraftGeneralTestQuestionId qId = new(questionGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
-                DraftTestId? testId = db.DraftGeneralTestQuestions
-                    .FirstOrDefault(q => q.Id == qId)?.TestId ?? null;
+                DraftTestId? testId = (await db.DraftGeneralTestQuestions.FindAsync(qId))?.TestId ?? null;
                 if (testId is null) {
-                    return ResultsHelper.BadRequestWithErr("Unable to update question image. Unknown question");
+                    return ResultsHelper.BadRequest.WithErr("Unable to update question image. Unknown question");
                 }
-                AppUserId? creatorId = db.DraftTestsSharedInfo
-                    .FirstOrDefault(t => t.Id == testId)?.CreatorId ?? null;
+                AppUserId? creatorId = (await db.DraftTestsSharedInfo.FindAsync(testId))?.CreatorId ?? null;
                 if (!httpContext.IfAuthenticatedUserIdEquals(creatorId)) {
-                    return ResultsHelper.BadRequestNotCreator();
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
 
                 string extension = ImgOperationsHelper.ExtractFileExtension(file);
@@ -130,22 +122,18 @@ namespace vokimi_api.Endpoints
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
-            DraftGeneralTestResultId rId;
-            if (Guid.TryParse(resultId, out Guid guid)) {
-                rId = new(guid);
-            } else {
-                return ResultsHelper.BadRequestSaveChangesTryAgain();
+            if (!Guid.TryParse(resultId, out Guid resultGuid)) {
+                return ResultsHelper.BadRequest.SaveChangesTryAgain();
             }
+            DraftGeneralTestResultId rId = new(resultGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
-                DraftTestId? testId = db.DraftGeneralTestResults
-                    .FirstOrDefault(r => r.Id == rId)?.TestId ?? null;
+                DraftTestId? testId = (await db.DraftGeneralTestResults.FindAsync(rId))?.TestId ?? null;
                 if (testId is null) {
-                    return ResultsHelper.BadRequestWithErr("Unable to update result image. Unknown result");
+                    return ResultsHelper.BadRequest.WithErr("Unable to update result image. Unknown result");
                 }
-                AppUserId? creatorId = db.DraftTestsSharedInfo
-                    .FirstOrDefault(t => t.Id == testId)?.CreatorId ?? null;
+                AppUserId? creatorId = (await db.DraftTestsSharedInfo.FindAsync(testId))?.CreatorId ?? null;
                 if (!httpContext.IfAuthenticatedUserIdEquals(creatorId)) {
-                    return ResultsHelper.BadRequestNotCreator();
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
                 string extension = ImgOperationsHelper.ExtractFileExtension(file);
                 string key = ImgOperationsHelper.GetDraftGeneralTestResultImgKey(testId.Value, rId, extension);
@@ -159,19 +147,17 @@ namespace vokimi_api.Endpoints
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
-            DraftTestId tId;
-            if (Guid.TryParse(testId, out Guid guid)) {
-                tId = new(guid);
-            } else {
-                return ResultsHelper.BadRequestSaveChangesTryAgain();
+            if (!Guid.TryParse(testId, out Guid testGuid)) {
+                return ResultsHelper.BadRequest.SaveChangesTryAgain();
             }
+            DraftTestId tId = new(testGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
-                BaseDraftTest? test = db.DraftTestsSharedInfo.FirstOrDefault(t => t.Id == tId);
+                BaseDraftTest? test = await db.DraftTestsSharedInfo.FindAsync(tId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestWithErr("Unable to update conclusion image. Test not found");
+                    return ResultsHelper.BadRequest.WithErr("Unable to update conclusion image. Test not found");
                 }
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
-                    return ResultsHelper.BadRequestNotCreator();
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
             }
             string key =

@@ -19,48 +19,53 @@ namespace vokimi_api.Endpoints.pages
 {
     public static class TestTakingPageEndpoints
     {
-        public static IResult LoadTestTakingData(
+        public static async Task<IResult> LoadTestTakingData(
            string testId,
            IDbContextFactory<AppDbContext> dbFactory,
            HttpContext httpContext
         ) {
             TestId tId;
             if (!Guid.TryParse(testId, out var testGuid)) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
 
             tId = new(testGuid);
 
-            using (var db = dbFactory.CreateDbContext()) {
-                BaseTest? test = db.TestsSharedInfo.Find(tId);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseTest? test = await db.TestsSharedInfo.FindAsync(tId);
                 if (test is null) {
                     return Results.Ok(ViewTestAccessCheckResponse.TestNotFound());
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
+                    haveAccess = await TestAccessValidator.CheckUserAccessToTest(
+                        db,
+                        test.CreatorId,
+                        test.Settings.Privacy,
+                        viewerId
+                    );
                 } else {
                     haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (haveAccess) {
                     return test.Template switch {
-                        TestTemplate.General => LoadGeneralTestTakingData(tId, db),
-                        _ => ResultsHelper.BadRequestUnknownTest()
+                        TestTemplate.General => await LoadGeneralTestTakingData(tId, db),
+                        _ => ResultsHelper.BadRequest.UnknownTest()
                     };
                 } else {
-                    return ResultsHelper.BadRequestNoTestAccess();
+                    return ResultsHelper.BadRequest.NoTestAccess();
                 }
 
             }
         }
-        private static IResult LoadGeneralTestTakingData(TestId testId, AppDbContext db) {
-            TestGeneralTemplate? test = db.TestsGeneralTemplate
+        private static async Task<IResult> LoadGeneralTestTakingData(TestId testId, AppDbContext db) {
+            TestGeneralTemplate? test = await db.TestsGeneralTemplate
                 .Include(t => t.Conclusion)
                 .Include(t => t.StylesSheet)
                 .Include(t => t.Questions)
                     .ThenInclude(q => q.Answers)
                         .ThenInclude(a => a.TypeSpecificInfo)
-                .FirstOrDefault(t => t.Id == testId);
+                .FirstOrDefaultAsync(t => t.Id == testId);
             if (test is null) {
                 return Results.Ok(ViewTestAccessCheckResponse.TestNotFound());
             }
@@ -73,7 +78,7 @@ namespace vokimi_api.Endpoints.pages
                     );
             return Results.Ok(jsonOutput);
         }
-        public static IResult GeneralTestTakenRequest(
+        public static async Task<IResult> GeneralTestTakenRequest(
             [FromBody] GeneralTestTakenRequest takenRequest,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -81,23 +86,23 @@ namespace vokimi_api.Endpoints.pages
 
             Err requestValidatingErr = takenRequest.CheckRequestForErr();
             if (requestValidatingErr.NotNone()) {
-                return ResultsHelper.BadRequestWithErr(requestValidatingErr);
+                return ResultsHelper.BadRequest.WithErr(requestValidatingErr);
             }
-            using (var db = dbFactory.CreateDbContext()) {
+            using (var db = await dbFactory.CreateDbContextAsync()) {
                 TestId testId = takenRequest.GetParsedId().Value;
-                TestGeneralTemplate? test = db.TestsGeneralTemplate
+                TestGeneralTemplate? test = await db.TestsGeneralTemplate
                     .Include(t => t.PossibleResults)
                     .Include(t => t.Questions)
                         .ThenInclude(q => q.Answers)
                             .ThenInclude(a => a.RelatedResults)
                     .Include(t => t.Conclusion)
-                    .FirstOrDefault(t => t.Id == testId);
+                    .FirstOrDefaultAsync(t => t.Id == testId);
                 if (test is null) {
                     return Results.Ok(ViewTestAccessCheckResponse.TestNotFound());
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId testTakerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(
+                    haveAccess = await TestAccessValidator.CheckUserAccessToTest(
                         db,
                         test.CreatorId,
                         test.Settings.Privacy,
@@ -107,27 +112,28 @@ namespace vokimi_api.Endpoints.pages
                     haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (!haveAccess) {
-                    return ResultsHelper.BadRequestWithErr(
+                    return ResultsHelper.BadRequest.WithErr(
                         "You don't have access to this test. Please contact the creator to restore it."
                     );
                 }
                 if (test.Conclusion is not null) {
                     Err feedbackValidatingErr = takenRequest.CheckFeedbackForErr(test.Conclusion.MaxFeedbackLength);
                     if (feedbackValidatingErr.NotNone()) {
-                        return ResultsHelper.BadRequestWithErr(feedbackValidatingErr);
+                        return ResultsHelper.BadRequest.WithErr(feedbackValidatingErr);
                     }
                 }
-                Dictionary<GeneralTestQuestionId, GeneralTestAnswerId[]> parsedChosenAnswers = takenRequest.GetParsedAnswers();
+                Dictionary<GeneralTestQuestionId, GeneralTestAnswerId[]> parsedChosenAnswers =
+                    takenRequest.GetParsedAnswers();
                 if (parsedChosenAnswers.Count() < 0) {
-                    return ResultsHelper.BadRequestServerError();
+                    return ResultsHelper.BadRequest.ServerError();
                 }
                 Err answersErr = CheckGeneralTestChosenAnswersForErr(parsedChosenAnswers, test);
                 if (answersErr.NotNone()) {
-                    return ResultsHelper.BadRequestWithErr(answersErr);
+                    return ResultsHelper.BadRequest.WithErr(answersErr);
                 }
                 GeneralTestResult? resultToSetAsReceived = ChooseResultToReceive(parsedChosenAnswers.Values, test);
                 if (resultToSetAsReceived is null) {
-                    return ResultsHelper.BadRequestServerError();
+                    return ResultsHelper.BadRequest.ServerError();
                 }
 
                 AppUser? testTaker = null;
@@ -143,10 +149,10 @@ namespace vokimi_api.Endpoints.pages
                 try {
 
                     db.GeneralTestTakenRecords.Add(testTakenRecord);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     return Results.Ok(new { ReceivedResultId = testTakenRecord.ReceivedResultId.ToString() });
                 } catch {
-                    return ResultsHelper.BadRequestServerError();
+                    return ResultsHelper.BadRequest.ServerError();
                 }
 
             }
@@ -234,7 +240,7 @@ namespace vokimi_api.Endpoints.pages
         ) {
             GeneralTestResultId resId;
             if (!Guid.TryParse(resultId, out var resGuid)) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
 
             resId = new(resGuid);
@@ -243,14 +249,14 @@ namespace vokimi_api.Endpoints.pages
                 GeneralTestResult? result = db.GeneralTestResults.Find(resId);
 
                 if (result is null) {
-                    return ResultsHelper.BadRequestWithErr("Unknown result");
+                    return ResultsHelper.BadRequest.WithErr("Unknown result");
                 }
                 TestGeneralTemplate? test = db.TestsGeneralTemplate
                     .Include(t => t.PossibleResults)
                     .Include(t => t.TestTakings)
                     .FirstOrDefault(t => t.Id == result.TestId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
@@ -259,7 +265,7 @@ namespace vokimi_api.Endpoints.pages
                     haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (!haveAccess) {
-                    return ResultsHelper.BadRequestNoTestAccess();
+                    return ResultsHelper.BadRequest.NoTestAccess();
                 }
                 return Results.Ok(GeneralTestTakenReceivedResultResponse.New(
                     result,

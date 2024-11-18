@@ -7,42 +7,43 @@ using vokimi_api.Src.extension_classes;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.dtos.responses.view_test_page;
-using vokimi_api.Src.dtos.requests;
-using Microsoft.AspNetCore.Mvc;
-using vokimi_api.Src.db_related.db_entities.tests_related;
 using vokimi_api.Src.dtos.responses.view_test_page.discussions;
 
 namespace vokimi_api.Endpoints.pages
 {
     internal static class ViewTestPageEndpoints
     {
-        internal static IResult CheckTestViewPermission(
+        internal static async Task<IResult> CheckTestViewPermission(
             string testId,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
         ) {
-            TestId tId;
             if (!Guid.TryParse(testId, out var testGuid)) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
 
-            tId = new(testGuid);
+            TestId tId = new(testGuid);
 
-            using (var db = dbFactory.CreateDbContext()) {
+            using (var db = await dbFactory.CreateDbContextAsync()) {
                 BaseTest? test = db.TestsSharedInfo.Find(tId);
                 if (test is null) {
                     return Results.Ok(ViewTestAccessCheckResponse.TestNotFound());
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
+                    haveAccess = await TestAccessValidator.CheckUserAccessToTest(
+                        db,
+                        test.CreatorId,
+                        test.Settings.Privacy,
+                        viewerId
+                    );
                 } else {
                     haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (haveAccess) {
                     return Results.Ok(ViewTestAccessCheckResponse.Success());
                 } else {
-                    AppUser creator = db.AppUsers.Find(test.CreatorId);
+                    AppUser? creator = await db.AppUsers.FindAsync(test.CreatorId);
                     ViewTestAccessCheckResponse returnRes = test.Settings.Privacy switch {
                         PrivacyValues.FriendsAndFollowers => ViewTestAccessCheckResponse.FollowingNeeded(creator),
                         PrivacyValues.FriendsOnly => ViewTestAccessCheckResponse.FriendshipNeeded(creator),
@@ -53,61 +54,66 @@ namespace vokimi_api.Endpoints.pages
 
             }
         }
-        internal static IResult GetBasicTestInfo(
+        internal static async Task<IResult> GetBasicTestInfo(
             string testId,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
         ) {
             TestId tId;
             if (!Guid.TryParse(testId, out var testGuid)) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
 
             tId = new(testGuid);
-            using (var db = dbFactory.CreateDbContext()) {
-                BaseTest? test = db.TestsSharedInfo
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseTest? test = await db.TestsSharedInfo
                     .Include(t => t.Tags)
                     .Include(t => t.Creator)
-                    .FirstOrDefault(t => t.Id == tId);
+                    .FirstOrDefaultAsync(t => t.Id == tId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
+                    haveAccess = await TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
                 } else {
                     haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (!haveAccess) {
-                    return ResultsHelper.BadRequestNoTestAccess();
+                    return ResultsHelper.BadRequest.NoTestAccess();
                 }
                 return Results.Ok(ViewTestBasicTestInfoResponse.FromTest(test));
             }
         }
-        internal static IResult GetTestRatingsInfo(
+        internal static async Task<IResult> GetTestRatingsInfo(
             string testId,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
         ) {
             TestId tId;
             if (!Guid.TryParse(testId, out var testGuid)) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
 
             tId = new(testGuid);
             using (var db = dbFactory.CreateDbContext()) {
-                BaseTest? test = db.TestsSharedInfo
+                BaseTest? test = await db.TestsSharedInfo
                     .Include(t => t.Ratings)
                         .ThenInclude(tr => tr.User)
-                    .FirstOrDefault(t => t.Id == tId);
+                    .FirstOrDefaultAsync(t => t.Id == tId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
                 bool haveAccess;
                 ushort? viewerRating = null;
 
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
+                    haveAccess = await TestAccessValidator.CheckUserAccessToTest(
+                        db,
+                        test.CreatorId,
+                        test.Settings.Privacy,
+                        viewerId
+                    );
                     if (haveAccess) {
                         viewerRating = test.Ratings.FirstOrDefault(tr => tr.UserId == viewerId)?.Rating ?? null;
                     }
@@ -115,41 +121,46 @@ namespace vokimi_api.Endpoints.pages
                     haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (!haveAccess) {
-                    return ResultsHelper.BadRequestNoTestAccess();
+                    return ResultsHelper.BadRequest.NoTestAccess();
                 }
 
                 return Results.Ok(ViewTestRatingsBaseInfoResponse.New(viewerRating, test));
             }
         }
-        internal static IResult GetTestDiscussionsInfo(
+        internal static async Task<IResult> GetTestDiscussionsInfo(
             string testId,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
         ) {
             TestId tId;
             if (!Guid.TryParse(testId, out var testGuid)) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
 
             tId = new(testGuid);
-            using (var db = dbFactory.CreateDbContext()) {
-                BaseTest? test = db.TestsSharedInfo
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseTest? test = await db.TestsSharedInfo
                     .Include(t => t.DiscussionsComments)
                         .ThenInclude(td => td.CommentVotes)
                     .Include(t => t.DiscussionsComments)
                         .ThenInclude(td => td.Author)
-                    .FirstOrDefault(t => t.Id == tId);
+                    .FirstOrDefaultAsync(t => t.Id == tId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
                 bool haveAccess;
 
                 Dictionary<TestDiscussionsCommentId, bool> viewersVotes = [];
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
-                    AppUser? viewer = db.AppUsers
+                    haveAccess = await TestAccessValidator.CheckUserAccessToTest(
+                        db,
+                        test.CreatorId,
+                        test.Settings.Privacy,
+                        viewerId
+                    );
+                    AppUser? viewer = await db.AppUsers
                         .Include(u => u.DiscussionsCommentVotes)
-                        .FirstOrDefault(u => u.Id == viewerId);
+                        .FirstOrDefaultAsync(u => u.Id == viewerId);
                     if (viewer is not null) {
                         viewersVotes = viewer.DiscussionsCommentVotes.ToDictionary(v => v.CommentId, v => v.IsUp);
                     }
@@ -157,7 +168,7 @@ namespace vokimi_api.Endpoints.pages
                     haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }
                 if (!haveAccess) {
-                    return ResultsHelper.BadRequestNoTestAccess();
+                    return ResultsHelper.BadRequest.NoTestAccess();
                 }
 
                 return Results.Ok(ViewTestDiscussionsBaseInfoResponse.New(test.DiscussionsComments, viewersVotes));

@@ -5,26 +5,47 @@ namespace vokimi_api.Helpers
 {
     public static class ResultsHelper
     {
-        public static IResult BadRequestWithErr(string err) =>
-            TypedResults.BadRequest(new { Error = err });
-        public static IResult BadRequestWithErr(Err err) =>
-          TypedResults.BadRequest(new { Error = err.Message });
-        public static IResult BadRequestSaveChangesTryAgain() =>
-            BadRequestWithErr("Server error. Save existing changes and try to refresh the page");
-        public static IResult BadRequestUnknownTest() =>
-            BadRequestWithErr("Unknown Test");
-        public static IResult BadRequestNotCreator() =>
-            BadRequestWithErr("You have to be the creator to perform this action");
+        public static BadRequestCollection BadRequest { get; } = new BadRequestCollection();
+        public static OkCollection Ok { get; } = new OkCollection();
 
-        public static IResult BadRequestUserDoesnotExist() =>
-            BadRequestWithErr("User doesn't exist");
-        public static IResult BadRequestMaxImgSizeIs3MB() =>
-            BadRequestWithErr($"File is too big. Max allowed size: {ImgOperationsConsts.MaxImageSizeInMB}MB");
-        public static IResult BadRequestServerError() =>
-            BadRequestWithErr("Server error. Please try again later");
-        public static IResult BadRequestNoTestAccess() =>
-            BadRequestWithErr("You don't have permission to access this test");
-        public static IResult OkResultWithImgPath(string imgPath) =>
-             Results.Ok(new { ImgPath = imgPath });
+        public class BadRequestCollection
+        {
+            public IResult WithErr(string err) =>
+                TypedResults.BadRequest(new { Error = err });
+
+            public IResult WithErr(Err err) =>
+                TypedResults.BadRequest(new { Error = err.Message });
+
+            public IResult SaveChangesTryAgain() =>
+                WithErr("Server error. Save existing changes and try to refresh the page");
+            public IResult LogOutLogIn() =>
+                WithErr("An error has occurred. Please log out and log in again");
+
+            public IResult UnknownTest() =>
+                WithErr("Unknown Test");
+
+            public IResult NotCreator() =>
+                WithErr("You have to be the creator to perform this action");
+
+            public IResult UserDoesNotExist() =>
+                WithErr("User doesn't exist");
+
+            public IResult MaxImgSizeIs3MB() =>
+                WithErr($"File is too big. Max allowed size: {ImgOperationsConsts.MaxImageSizeInMB}MB");
+
+            public IResult ServerError() =>
+                WithErr("Server error. Please try again later");
+
+            public IResult NoTestAccess() =>
+                WithErr("You don't have permission to access this test");
+         
+        }
+
+        public class OkCollection
+        {
+            public IResult WithImgPath(string imgPath) =>
+                Results.Ok(new { ImgPath = imgPath });
+        }
     }
+
 }

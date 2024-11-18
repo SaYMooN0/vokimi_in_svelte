@@ -14,23 +14,26 @@ namespace vokimi_api.Endpoints
 {
     public static class TestStylesEndpoints
     {
-        public static IResult GetDraftTestStylesData(IDbContextFactory<AppDbContext> dbFactory, string testId) {
-
-            DraftTestId draftTestId;
-            if (!Guid.TryParse(testId, out _)) {
-                return ResultsHelper.BadRequestServerError();
+        public static async Task<IResult> GetDraftTestStylesData(
+            IDbContextFactory<AppDbContext> dbFactory,
+            string testId
+        ) {
+            if (!Guid.TryParse(testId, out var testGuid)) {
+                return ResultsHelper.BadRequest.ServerError();
             }
-            draftTestId = new(new(testId));
+            DraftTestId draftTestId = new(testGuid);
 
-            using (var db = dbFactory.CreateDbContext()) {
-                BaseDraftTest? test = db.DraftTestsSharedInfo
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseDraftTest? test = await db.DraftTestsSharedInfo
                         .Include(t => t.StylesSheet)
-                        .FirstOrDefault(t => t.Id == draftTestId);
-                if (test is null) { return ResultsHelper.BadRequestServerError(); }
+                        .FirstOrDefaultAsync(t => t.Id == draftTestId);
+                if (test is null) {
+                    return ResultsHelper.BadRequest.UnknownTest();
+                }
                 return Results.Ok(TestStylesDataDto.FromTestStylesSheet(test.StylesSheet));
             }
         }
-        public static IResult UpdateDraftTestStylesData(
+        public static async Task<IResult> UpdateDraftTestStylesData(
             IDbContextFactory<AppDbContext> dbFactory,
             [FromBody] TestStylesDataDto data,
             string testId,
@@ -38,33 +41,32 @@ namespace vokimi_api.Endpoints
         ) {
             Err validationErr = data.CheckForErr();
             if (validationErr.NotNone()) {
-                return ResultsHelper.BadRequestWithErr(validationErr);
+                return ResultsHelper.BadRequest.WithErr(validationErr);
             }
             (string accentColor, ArrowIconType arrowType)? dataWithTypes = data.GetDataWithTypes();
             if (dataWithTypes is null) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
-            DraftTestId draftTestId;
-            if (!Guid.TryParse(testId, out _)) {
-                return ResultsHelper.BadRequestServerError();
+            if (!Guid.TryParse(testId, out var testGuid)) {
+                return ResultsHelper.BadRequest.ServerError();
             }
-            draftTestId = new(new(testId));
-            using (var db = dbFactory.CreateDbContext()) {
-                BaseDraftTest? test = db.DraftTestsSharedInfo
+            DraftTestId draftTestId = new(testGuid);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseDraftTest? test = await db.DraftTestsSharedInfo
                         .Include(t => t.StylesSheet)
-                        .FirstOrDefault(t => t.Id == draftTestId);
+                        .FirstOrDefaultAsync(t => t.Id == draftTestId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestServerError();
+                    return ResultsHelper.BadRequest.ServerError();
                 }
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
-                    return ResultsHelper.BadRequestNotCreator();
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
                 test.StylesSheet.Update(
                     dataWithTypes.Value.accentColor,
                     dataWithTypes.Value.arrowType
                 );
                 db.TestStyles.Update(test.StylesSheet);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return Results.Ok();
             }
         }

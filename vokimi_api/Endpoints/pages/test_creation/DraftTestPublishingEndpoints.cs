@@ -27,16 +27,16 @@ namespace vokimi_api.Endpoints.pages.test_creation
         ) {
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out Guid testGuid)) {
-                return ResultsHelper.BadRequestWithErr("Unable to check test for problems. Please refresh the page and try again");
+                return ResultsHelper.BadRequest.WithErr("Unable to check test for problems. Please refresh the page and try again");
             }
             draftTestId = new(testGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 BaseDraftTest? testToPublish = await db.DraftTestsSharedInfo.FindAsync(draftTestId);
                 if (testToPublish is null) {
-                    return ResultsHelper.BadRequestWithErr("Unknown draft test");
+                    return ResultsHelper.BadRequest.WithErr("Unknown draft test");
                 }
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(testToPublish)) {
-                    return ResultsHelper.BadRequestWithErr("Only test creator can view this information");
+                    return ResultsHelper.BadRequest.WithErr("Only test creator can view this information");
                 }
 
                 var problems = await GetTestPublilshingProblems(db, draftTestId, testToPublish.Template);
@@ -278,20 +278,20 @@ namespace vokimi_api.Endpoints.pages.test_creation
         ) {
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out Guid testGuid)) {
-                return ResultsHelper.BadRequestWithErr("Unable to publish test. Please refresh the page and try again");
+                return ResultsHelper.BadRequest.WithErr("Unable to publish test. Please refresh the page and try again");
             }
             draftTestId = new(testGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 BaseDraftTest? testToPublish = await db.DraftTestsSharedInfo.FindAsync(draftTestId);
                 if (testToPublish is null) {
-                    return ResultsHelper.BadRequestWithErr("Unknown draft test");
+                    return ResultsHelper.BadRequest.WithErr("Unknown draft test");
                 }
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(testToPublish)) {
-                    return ResultsHelper.BadRequestWithErr("Only test creator can publish it");
+                    return ResultsHelper.BadRequest.WithErr("Only test creator can publish it");
                 }
                 var testProblems = await GetTestPublilshingProblems(db, draftTestId, testToPublish.Template);
                 if (testProblems.Count > 0) {
-                    return ResultsHelper.BadRequestWithErr("Test has problems that need to be fixed before publishing");
+                    return ResultsHelper.BadRequest.WithErr("Test has problems that need to be fixed before publishing");
                 }
                 return testToPublish.Template switch {
                     TestTemplate.General => await PublishGeneralTest(dbFactory, storageService, draftTestId),
@@ -323,7 +323,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                             .Include(t => t.PossibleResults)
                             .FirstOrDefaultAsync(t => t.Id == testId);
                         if (draftTest is null) {
-                            return ResultsHelper.BadRequestWithErr("Cannot find this draft general test");
+                            return ResultsHelper.BadRequest.WithErr("Cannot find this draft general test");
                         }
 
                         TestId newTestId = new();
@@ -390,7 +390,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     } catch {
                         await transaction.RollbackAsync();
                         await storageService.DeleteFiles(imgsToDeleteInCaseOfFailure);
-                        return ResultsHelper.BadRequestWithErr("Something went wrong during publishing. Please try again later");
+                        return ResultsHelper.BadRequest.WithErr("Something went wrong during publishing. Please try again later");
 
                     }
                 }

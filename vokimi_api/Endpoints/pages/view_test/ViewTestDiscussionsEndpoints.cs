@@ -16,7 +16,7 @@ namespace vokimi_api.Endpoints.pages.view_test
 {
     internal class ViewTestDiscussionsEndpoints
     {
-        internal static IResult StartNewDiscussion(
+        internal static async Task<IResult> StartNewDiscussion(
             [FromBody] NewDiscussionCreationRequest request,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -24,33 +24,33 @@ namespace vokimi_api.Endpoints.pages.view_test
 
             var requestErr = request.CheckForErr();
             if (requestErr.NotNone()) {
-                return ResultsHelper.BadRequestWithErr(requestErr);
+                return ResultsHelper.BadRequest.WithErr(requestErr);
             }
             try {
-                using (var db = dbFactory.CreateDbContext()) {
+                using (var db = await dbFactory.CreateDbContextAsync()) {
                     TestId testId = request.GetParsedTestId().Value;
-                    BaseTest? test = db.TestsSharedInfo
+                    BaseTest? test = await db.TestsSharedInfo
                         .Include(t => t.DiscussionsComments)
-                        .FirstOrDefault(t => t.Id == testId);
+                        .FirstOrDefaultAsync(t => t.Id == testId);
                     if (test is null) {
-                        return ResultsHelper.BadRequestUnknownTest();
+                        return ResultsHelper.BadRequest.UnknownTest();
                     }
                     if (!test.Settings.DiscussionsOpen) {
-                        return ResultsHelper.BadRequestWithErr("Discussions for this test are disabled");
+                        return ResultsHelper.BadRequest.WithErr("Discussions for this test are disabled");
                     }
                     if (!httpContext.TryGetUserId(out AppUserId creatorId)) {
-                        return ResultsHelper.BadRequestWithErr("Only logged in users can start new discussions");
+                        return ResultsHelper.BadRequest.WithErr("Only logged in users can start new discussions");
                     }
-                    if (!TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, creatorId)) {
-                        return ResultsHelper.BadRequestNoTestAccess();
+                    if (!await TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, creatorId)) {
+                        return ResultsHelper.BadRequest.NoTestAccess();
                     }
-                    AppUser? creator = db.AppUsers.Find(creatorId);
+                    AppUser? creator = await db.AppUsers.FindAsync(creatorId);
                     if (creator is null) {
-                        return ResultsHelper.BadRequestWithErr("An error has occurred. Please log out, login and try again");
+                        return ResultsHelper.BadRequest.WithErr("An error has occurred. Please log out, login and try again");
                     }
                     var newComment = TestDiscussionsComment.CreateNew(request.CommentText, null, null, test.Id, creatorId);
                     db.TestDiscussionComments.Add(newComment);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     TestDiscussionCommentVm response = new(
                         newComment.Id.Value.ToString(),
                         creatorId.ToString(),
@@ -64,10 +64,10 @@ namespace vokimi_api.Endpoints.pages.view_test
                     return Results.Ok(response);
                 }
             } catch {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
         }
-        internal static IResult SaveAnswerToComment(
+        internal static async Task<IResult> SaveAnswerToComment(
             [FromBody] SavingAnswerToCommentRequest request,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -75,35 +75,35 @@ namespace vokimi_api.Endpoints.pages.view_test
 
             var requestErr = request.CheckForErr();
             if (requestErr.NotNone()) {
-                return ResultsHelper.BadRequestWithErr(requestErr);
+                return ResultsHelper.BadRequest.WithErr(requestErr);
             }
             try {
-                using (var db = dbFactory.CreateDbContext()) {
+                using (var db = await dbFactory.CreateDbContextAsync()) {
                     TestDiscussionsCommentId parentCommentId = request.GetParsedParentCommentId().Value;
-                    TestDiscussionsComment? parrentComment = db.TestDiscussionComments.Find(parentCommentId);
+                    TestDiscussionsComment? parrentComment = await db.TestDiscussionComments.FindAsync(parentCommentId);
                     if (parrentComment is null) {
-                        return ResultsHelper.BadRequestWithErr("Unable to find the comment you want to answer");
+                        return ResultsHelper.BadRequest.WithErr("Unable to find the comment you want to answer");
                     }
-                    BaseTest? test = db.TestsSharedInfo.Find(parrentComment.TestId);
+                    BaseTest? test = await db.TestsSharedInfo.FindAsync(parrentComment.TestId);
                     if (test is null) {
-                        return ResultsHelper.BadRequestUnknownTest();
+                        return ResultsHelper.BadRequest.UnknownTest();
                     }
                     if (!test.Settings.DiscussionsOpen) {
-                        return ResultsHelper.BadRequestWithErr("Discussions for this test are disabled");
+                        return ResultsHelper.BadRequest.WithErr("Discussions for this test are disabled");
                     }
                     if (!httpContext.TryGetUserId(out AppUserId creatorId)) {
-                        return ResultsHelper.BadRequestWithErr("Only logged in users can answer to comments");
+                        return ResultsHelper.BadRequest.WithErr("Only logged in users can answer to comments");
                     }
-                    if (!TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, creatorId)) {
-                        return ResultsHelper.BadRequestNoTestAccess();
+                    if (!await TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, creatorId)) {
+                        return ResultsHelper.BadRequest.NoTestAccess();
                     }
-                    AppUser? creator = db.AppUsers.Find(creatorId);
+                    AppUser? creator = await db.AppUsers.FindAsync(creatorId);
                     if (creator is null) {
-                        return ResultsHelper.BadRequestWithErr("An error has occurred. Please log out, login and try again");
+                        return ResultsHelper.BadRequest.WithErr("An error has occurred. Please log out, login and try again");
                     }
                     var newComment = TestDiscussionsComment.CreateNew(request.AnswerText, parentCommentId, null, test.Id, creatorId);
                     db.TestDiscussionComments.Add(newComment);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     TestDiscussionCommentVm response = new(
                         newComment.Id.Value.ToString(),
                         creatorId.ToString(),
@@ -117,7 +117,7 @@ namespace vokimi_api.Endpoints.pages.view_test
                     return Results.Ok(response);
                 }
             } catch {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
         }
         internal async static Task<IResult> GetFilteredDiscussions(
@@ -128,11 +128,11 @@ namespace vokimi_api.Endpoints.pages.view_test
 
             Err requestErr = request.CheckForErr();
             if (requestErr.NotNone()) {
-                return ResultsHelper.BadRequestWithErr(requestErr);
+                return ResultsHelper.BadRequest.WithErr(requestErr);
             }
             ParsedDiscussionsFilter? parsedRequest = request.ToParsedObject();
             if (parsedRequest is null) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 try {
@@ -140,9 +140,9 @@ namespace vokimi_api.Endpoints.pages.view_test
                     BaseTest? test = await db.TestsSharedInfo
                         .Include(t => t.DiscussionsComments)
                             .ThenInclude(dc => dc.Author)
-                    .FirstOrDefaultAsync(t => t.Id == parsedRequest.TestId);
+                        .FirstOrDefaultAsync(t => t.Id == parsedRequest.TestId);
                     if (test is null) {
-                        return ResultsHelper.BadRequestUnknownTest();
+                        return ResultsHelper.BadRequest.UnknownTest();
                     }
                     bool haveAccess;
 
@@ -151,7 +151,7 @@ namespace vokimi_api.Endpoints.pages.view_test
                     Dictionary<TestDiscussionsCommentId, bool> viewersVotes = [];
 
                     if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                        haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
+                        haveAccess = await TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
                         AppUser? viewer = await db.AppUsers
                             .Include(u => u.Friends)
                             .Include(u => u.Followers)
@@ -166,7 +166,7 @@ namespace vokimi_api.Endpoints.pages.view_test
                         haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                     }
                     if (!haveAccess) {
-                        return ResultsHelper.BadRequestNoTestAccess();
+                        return ResultsHelper.BadRequest.NoTestAccess();
                     }
 
                     HashSet<TestDiscussionsComment> filteredComments = test.DiscussionsComments
@@ -190,7 +190,7 @@ namespace vokimi_api.Endpoints.pages.view_test
                         .ToArray();
                     return Results.Ok(response);
                 } catch {
-                    return ResultsHelper.BadRequestServerError();
+                    return ResultsHelper.BadRequest.ServerError();
                 }
             }
 
@@ -202,12 +202,12 @@ namespace vokimi_api.Endpoints.pages.view_test
 
             return comment.ChildComments.Count + comment.ChildComments.Sum(CalculateCommentChildCommentsCount);
         }
-        internal async static Task<IResult> HandleCommentVoteChanged(
+        internal static async Task<IResult> HandleCommentVoteChanged(
             [FromBody] CommentVoteChangedRequest request,
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
-            return ResultsHelper.BadRequestWithErr("not implemented");
+            return ResultsHelper.BadRequest.WithErr("not implemented");
         }
     }
 }

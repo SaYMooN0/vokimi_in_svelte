@@ -10,71 +10,74 @@ namespace vokimi_api.Endpoints.pages
 {
     public static class UserEndpoints
     {
-        public static IResult GetUserPageInfo(string userId, IDbContextFactory<AppDbContext> dbFactory) {
+        public static async Task<IResult> GetUserPageInfo(string userId, IDbContextFactory<AppDbContext> dbFactory) {
             AppUserId appUserId;
             if (!Guid.TryParse(userId, out _)) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
             appUserId = new(new(userId));
 
-            using (var db = dbFactory.CreateDbContext()) {
-                AppUser? user = db.AppUsers.FirstOrDefault(u => u.Id == appUserId);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                AppUser? user = await db.AppUsers.FindAsync(appUserId);
                 if (user is null) {
-                    return ResultsHelper.BadRequestUserDoesnotExist();
+                    return ResultsHelper.BadRequest.UserDoesNotExist();
                 }
                 return null;
             }
         }
-        public static IResult DoesUserExist(string userId, IDbContextFactory<AppDbContext> dbFactory) {
+        public static async Task<IResult> DoesUserExist(string userId, IDbContextFactory<AppDbContext> dbFactory) {
             AppUserId appUserId;
             if (!Guid.TryParse(userId, out _)) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
             appUserId = new(new(userId));
 
-            using (var db = dbFactory.CreateDbContext()) {
-                AppUser? user = db.AppUsers.FirstOrDefault(u => u.Id == appUserId);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                AppUser? user = await db.AppUsers.FindAsync(appUserId);
                 bool doesExist = user is not null;
                 return Results.Ok(new { Exists = doesExist });
             }
         }
-        public static IResult GetUserPageTopInfoData(string userId, IDbContextFactory<AppDbContext> dbFactory) {
+        public static async Task<IResult> GetUserPageTopInfoData(
+            string userId,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
             AppUserId appUserId;
-            if (!Guid.TryParse(userId, out _)) {
-                return ResultsHelper.BadRequestServerError();
+            if (!Guid.TryParse(userId, out var userGuid)) {
+                return ResultsHelper.BadRequest.ServerError();
             }
-            appUserId = new(new(userId));
+            appUserId = new(userGuid);
 
-            using (var db = dbFactory.CreateDbContext()) {
-                AppUser? user = db.AppUsers
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                AppUser? user = await db.AppUsers
                     .Include(u => u.UserPageSettings)
-                    .FirstOrDefault(u => u.Id == appUserId);
+                    .FirstOrDefaultAsync(u => u.Id == appUserId);
                 if (user is null) {
-                    return ResultsHelper.BadRequestWithErr("Unknown user");
+                    return ResultsHelper.BadRequest.WithErr("Unknown user");
                 }
                 return Results.Ok(PageTopInfoDataResponse.FromUser(user));
 
             }
         }
-        public static IResult GetUserPageAdditionalInfoData(
+        public static async Task<IResult> GetUserPageAdditionalInfoData(
             string userId,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
         ) {
             if (!Guid.TryParse(userId, out _)) {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
             var appUserId = new AppUserId(new Guid(userId));
 
-            using var db = dbFactory.CreateDbContext();
-            var user = db.AppUsers
+            using var db = await dbFactory.CreateDbContextAsync();
+            var user = await db.AppUsers
                 .Include(u => u.UserAdditionalInfo)
                 .Include(u => u.Friends)
                 .Include(u => u.Followers)
-                .FirstOrDefault(u => u.Id == appUserId);
+                .FirstOrDefaultAsync(u => u.Id == appUserId);
 
             if (user is null) {
-                return ResultsHelper.BadRequestWithErr("Unknown user");
+                return ResultsHelper.BadRequest.WithErr("Unknown user");
             }
 
             bool isViewerAuthenticated = httpContext.TryGetUserId(out AppUserId viewerId);

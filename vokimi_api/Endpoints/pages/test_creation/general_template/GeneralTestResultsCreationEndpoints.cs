@@ -22,7 +22,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
         ) {
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out Guid draftTestGuid)) {
-                return ResultsHelper.BadRequestUnknownTest();
+                return ResultsHelper.BadRequest.UnknownTest();
             }
             draftTestId = new(draftTestGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
@@ -30,10 +30,10 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                     .Include(t => t.PossibleResults)
                     .FirstOrDefaultAsync(t => t.Id == draftTestId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
-                    return ResultsHelper.BadRequestNotCreator();
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
                 var results = test.PossibleResults.ToDictionary(
                     r => r.Id.Value.ToString(),
@@ -50,7 +50,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
 
             Err formValidatingErr = request.GetError();
             if (formValidatingErr.NotNone()) {
-                return ResultsHelper.BadRequestWithErr(formValidatingErr);
+                return ResultsHelper.BadRequest.WithErr(formValidatingErr);
             }
             DraftTestId testId = new(new(request.TestId));
             try {
@@ -59,13 +59,13 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                         .Include(t => t.PossibleResults)
                         .FirstOrDefaultAsync(t => t.Id == testId);
                     if (test is null) {
-                        return ResultsHelper.BadRequestUnknownTest();
+                        return ResultsHelper.BadRequest.UnknownTest();
                     }
                     if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
-                        return ResultsHelper.BadRequestNotCreator();
+                        return ResultsHelper.BadRequest.NotCreator();
                     }
                     if (test.PossibleResults.Count >= GeneralTestCreationConsts.MaxResultsForTestCount) {
-                        return ResultsHelper.BadRequestWithErr(
+                        return ResultsHelper.BadRequest.WithErr(
                             $"Test cannot have more than {GeneralTestCreationConsts.MaxResultsForTestCount} results"
                         );
                     }
@@ -75,7 +75,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                     return Results.Ok();
                 }
             } catch {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
         }
         public static async Task<IResult> GetDraftGeneralTestResultsData(
@@ -85,7 +85,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
         ) {
             DraftTestId draftTestId;
             if (!Guid.TryParse(testId, out Guid testGuid)) {
-                return ResultsHelper.BadRequestUnknownTest();
+                return ResultsHelper.BadRequest.UnknownTest();
             }
             draftTestId = new(testGuid);
 
@@ -94,10 +94,10 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                     .Include(t => t.PossibleResults)
                     .FirstOrDefaultAsync(t => t.Id == draftTestId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
-                    return ResultsHelper.BadRequestNotCreator();
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
                 var results = test.PossibleResults
                     .Select(DraftGeneralTestResultData.FromResult)
@@ -112,20 +112,20 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
         ) {
             DraftGeneralTestResultId resId;
             if (!Guid.TryParse(resultId, out Guid resultGuid)) {
-                return ResultsHelper.BadRequestWithErr("Unknown test result");
+                return ResultsHelper.BadRequest.WithErr("Unknown test result");
             }
             resId = new(resultGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 DraftGeneralTestResult? result = db.DraftGeneralTestResults.Find(resId);
                 if (result is null) {
-                    return ResultsHelper.BadRequestWithErr("Unknown test result");
+                    return ResultsHelper.BadRequest.WithErr("Unknown test result");
                 }
                 DraftGeneralTest? test = db.DraftGeneralTests.Find(result.TestId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
-                    return ResultsHelper.BadRequestNotCreator();
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
                 return Results.Ok(DraftGeneralTestResultData.FromResult(result));
             }
@@ -137,27 +137,27 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
         ) {
             DraftGeneralTestResultId resultToDeleteId;
             if (!Guid.TryParse(resultId, out Guid resultGuid)) {
-                return ResultsHelper.BadRequestWithErr("An error has occurred. Please refresh the page and try again");
+                return ResultsHelper.BadRequest.WithErr("An error has occurred. Please refresh the page and try again");
             }
             resultToDeleteId = new(resultGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 try {
                     DraftGeneralTestResult? res = await db.DraftGeneralTestResults.FindAsync(resultToDeleteId);
                     if (res is null) {
-                        return ResultsHelper.BadRequestWithErr("Unknown result");
+                        return ResultsHelper.BadRequest.WithErr("Unknown result");
                     }
                     DraftGeneralTest? test = await db.DraftGeneralTests.FindAsync(res.TestId);
                     if (test is null) {
-                        return ResultsHelper.BadRequestUnknownTest();
+                        return ResultsHelper.BadRequest.UnknownTest();
                     }
                     if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
-                        return ResultsHelper.BadRequestNotCreator();
+                        return ResultsHelper.BadRequest.NotCreator();
                     }
                     db.DraftGeneralTestResults.Remove(res);
                     await db.SaveChangesAsync();
                     return Results.Ok();
                 } catch {
-                    return ResultsHelper.BadRequestServerError();
+                    return ResultsHelper.BadRequest.ServerError();
                 }
 
             }
@@ -174,29 +174,29 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
             if (Guid.TryParse(newResData.Id, out var guid)) {
                 resId = new(guid);
             } else {
-                return ResultsHelper.BadRequestWithErr("Unable to save changes. Please try again later");
+                return ResultsHelper.BadRequest.WithErr("Unable to save changes. Please try again later");
             }
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 DraftGeneralTestResult? res = await db.DraftGeneralTestResults.FindAsync(resId);
                 if (res is null) {
-                    return ResultsHelper.BadRequestWithErr("Unknown result");
+                    return ResultsHelper.BadRequest.WithErr("Unknown result");
                 }
                 DraftGeneralTest? test = await db.DraftGeneralTests.FindAsync(res.TestId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
-                    return ResultsHelper.BadRequestNotCreator();
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
                 Err validationErr = newResData.CheckForErr();
                 if (validationErr.NotNone()) {
-                    return ResultsHelper.BadRequestWithErr(validationErr);
+                    return ResultsHelper.BadRequest.WithErr(validationErr);
                 }
                 res.Update(newResData.Name, newResData.Text, newResData.ImagePath);
                 string unusedImgPrefix = ImgOperationsHelper.DraftGeneralTestResultsFolder(res.TestId, resId);
                 Err imgClearingErr = await vokimiStorage.ClearUnusedObjectsInFolder(unusedImgPrefix, newResData.ImagePath);
                 if (imgClearingErr.NotNone()) {
-                    return ResultsHelper.BadRequestServerError();
+                    return ResultsHelper.BadRequest.ServerError();
                 }
                 db.Update(res);
                 await db.SaveChangesAsync();

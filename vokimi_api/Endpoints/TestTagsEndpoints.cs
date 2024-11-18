@@ -12,91 +12,88 @@ namespace vokimi_api.Endpoints
 {
     public static class TestTagsEndpoints
     {
-        public static IResult GetDraftTestTagsData(
+        public static async Task<IResult> GetDraftTestTagsData(
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext,
             string testId
         ) {
-            DraftTestId draftTestId;
-            if (!Guid.TryParse(testId, out _)) {
-                return ResultsHelper.BadRequestServerError();
+            if (!Guid.TryParse(testId, out var testGuid)) {
+                return ResultsHelper.BadRequest.ServerError();
             }
-            draftTestId = new(new(testId));
+            DraftTestId draftTestId = new(testGuid);
 
-            using (var db = dbFactory.CreateDbContext()) {
-                BaseDraftTest? test = db.DraftTestsSharedInfo.FirstOrDefault(t => t.Id == draftTestId);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseDraftTest? test = await db.DraftTestsSharedInfo.FindAsync(draftTestId);
                 if (test is null) {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
                 return httpContext.IsAuthenticatedUserIsTestCreator(test) ?
                      Results.Ok(DraftTestTagsDataResponse.FromDraftTest(test)) :
-                     ResultsHelper.BadRequestNotCreator();
+                     ResultsHelper.BadRequest.NotCreator();
             }
         }
-        public static IResult SearchTags(IDbContextFactory<AppDbContext> dbFactory,
-                                         string tagToSearch) {
-
-
-
-
+        public static async Task<IResult> SearchTags(
+            IDbContextFactory<AppDbContext> dbFactory,
+            string tagToSearch
+        ) {
             if (string.IsNullOrEmpty(tagToSearch)) {
                 return Results.Ok(Array.Empty<string>());
             }
             if (!TestTagsConsts.TagRegex.IsMatch(tagToSearch)) {
-                return ResultsHelper.BadRequestWithErr($"Invalid tag. Tag must contain only Cyrillic, Latin letters or digits and be no longer than {TestTagsConsts.MaxTagLength} characters.");
+                return ResultsHelper.BadRequest
+                    .WithErr($"Invalid tag. Tag must contain only Cyrillic and Latin letters, digits and '-', '+', '_'. Test cannot be longer than {TestTagsConsts.MaxTagLength} characters.");
             }
-            using (var db = dbFactory.CreateDbContext()) {
-                var tags = db.TestTags
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                var tags = await db.TestTags
                     .Where(t => t.Value.Contains(tagToSearch) && t.Value != tagToSearch)
                     .Take(16)
                     .Select(t => t.Value)
-                    .ToList();
+                    .ToListAsync();
                 tags.Insert(0, tagToSearch);
                 return Results.Ok(tags);
             }
 
         }
-        public static IResult UpdateDraftTestTags(
-            IDbContextFactory<AppDbContext> dbFactory,
-            HttpContext httpContext,
+        public static async Task<IResult> UpdateDraftTestTags(
             string testId,
-            [FromBody] List<string> tags
+            [FromBody] List<string> tags,
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext
         ) {
             if (tags.Count > TestTagsConsts.MaxTagsForTestCount) {
-                return ResultsHelper.BadRequestWithErr($"Tags count must not exceed {TestTagsConsts.MaxTagsForTestCount}");
+                return ResultsHelper.BadRequest.WithErr($"Tags count must not exceed {TestTagsConsts.MaxTagsForTestCount}");
             }
 
             foreach (var tag in tags) {
                 if (!TestTagsConsts.TagRegex.IsMatch(tag)) {
-                    return ResultsHelper.BadRequestWithErr(TestTagsConsts.InvalidTagMessage(tag));
+                    return ResultsHelper.BadRequest.WithErr(TestTagsConsts.InvalidTagMessage(tag));
                 }
             }
 
-            if (!Guid.TryParse(testId, out var _)) {
-                return ResultsHelper.BadRequestServerError();
+            if (!Guid.TryParse(testId, out var testGuid)) {
+                return ResultsHelper.BadRequest.ServerError();
             }
-
-            DraftTestId draftTestId = new(new(testId));
+            DraftTestId draftTestId = new(testGuid);
 
             try {
-                using (var db = dbFactory.CreateDbContext()) {
-                    var test = db.DraftTestsSharedInfo.FirstOrDefault(t => t.Id == draftTestId);
+                using (var db = await dbFactory.CreateDbContextAsync()) {
+                    var test = await db.DraftTestsSharedInfo.FindAsync(draftTestId);
 
                     if (test is null) {
-                        return ResultsHelper.BadRequestUnknownTest();
+                        return ResultsHelper.BadRequest.UnknownTest();
                     }
 
                     if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
-                        return ResultsHelper.BadRequestNotCreator();
+                        return ResultsHelper.BadRequest.NotCreator();
                     }
 
                     test.SetTags(tags);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
 
                     return Results.Ok(DraftTestTagsDataResponse.FromDraftTest(test));
                 }
-            } catch (Exception) {
-                return ResultsHelper.BadRequestServerError();
+            } catch {
+                return ResultsHelper.BadRequest.ServerError();
             }
         }
 

@@ -176,8 +176,8 @@ namespace vokimi_api.Services
             string key,
             IFormFile file
         ) => string.IsNullOrEmpty(await SaveImgToStorage(key, file)) ?
-                ResultsHelper.BadRequestWithErr("An error occurred during file saving. Please try again later") :
-                ResultsHelper.OkResultWithImgPath(key);
+                ResultsHelper.BadRequest.WithErr("An error occurred during file saving. Please try again later") :
+                ResultsHelper.Ok.WithImgPath(key);
         public async Task ClearUnusedQuestionImages(
             DraftGeneralTestQuestionId questionId,
             DraftTestId testId,

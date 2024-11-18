@@ -13,69 +13,59 @@ namespace vokimi_api.Endpoints.pages
     public static class UserTestsEndpoints
     {
         private readonly static IResult UnaithorizedUserTestFetchingErr =
-            ResultsHelper.BadRequestWithErr("Unable to get tests info. Please log out and log in again");
-        public static IResult GetUserDraftTestsBriefInfo(
+            ResultsHelper.BadRequest.WithErr("Unable to get tests info. Please log out and log in again");
+        public static async Task<IResult> GetUserDraftTestsBriefInfo(
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
-        )
-        {
+        ) {
 
-            if (httpContext.TryGetUserId(out AppUserId userId))
-            {
-                using (var db = dbFactory.CreateDbContext())
-                {
-                    DraftTestBriefInfoResponse[] responseData = db.DraftTestsSharedInfo
-                        .Where(t => t.CreatorId == userId)
-                        .Include(t => t.MainInfo)
-                        .Select(DraftTestBriefInfoResponse.FromDraftTest)
-                        .ToArray();
-
-                    return Results.Ok(responseData);
-                }
+            if (!httpContext.TryGetUserId(out AppUserId userId)) {
+                return UnaithorizedUserTestFetchingErr;
             }
-            return UnaithorizedUserTestFetchingErr;
+
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                DraftTestBriefInfoResponse[] responseData = db.DraftTestsSharedInfo
+                    .Where(t => t.CreatorId == userId)
+                    .Include(t => t.MainInfo)
+                    .Select(DraftTestBriefInfoResponse.FromDraftTest)
+                    .ToArray();
+                return Results.Ok(responseData);
+            }
         }
 
-        public static IResult GetUserPublishedTestsBriefInfo(
+        public static async Task<IResult> GetUserPublishedTestsBriefInfo(
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
-        )
-        {
-            if (httpContext.TryGetUserId(out AppUserId userId))
-            {
-                using (var db = dbFactory.CreateDbContext())
-                {
-                    PublishedTestBriefInfoResponse[] responseData = db.TestsSharedInfo
-                        .Where(t => t.CreatorId == userId)
-                        .Select(PublishedTestBriefInfoResponse.FromTest)
-                        .ToArray();
-
-                    return Results.Ok(responseData);
-                }
+        ) {
+            if (!httpContext.TryGetUserId(out AppUserId userId)) {
+                return UnaithorizedUserTestFetchingErr;
             }
-            else { return UnaithorizedUserTestFetchingErr; }
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                PublishedTestBriefInfoResponse[] responseData = db.TestsSharedInfo
+                    .Where(t => t.CreatorId == userId)
+                    .Select(PublishedTestBriefInfoResponse.FromTest)
+                    .ToArray();
+
+                return Results.Ok(responseData);
+            }
         }
-        public static IResult GetDraftTestOverviewInfo(
+        public static async Task<IResult> GetDraftTestOverviewInfo(
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext,
             string testId
-        )
-        {
+        ) {
             DraftTestId draftTestId;
-            if (!Guid.TryParse(testId, out var _))
-            {
-                return ResultsHelper.BadRequestUnknownTest();
+            if (!Guid.TryParse(testId, out var testGuid)) {
+                return ResultsHelper.BadRequest.UnknownTest();
             }
-            draftTestId = new(new(testId));
+            draftTestId = new(testGuid);
 
-            using (var db = dbFactory.CreateDbContext())
-            {
-                BaseDraftTest? test = db.DraftTestsSharedInfo
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseDraftTest? test = await db.DraftTestsSharedInfo
                     .Include(t => t.MainInfo)
-                    .FirstOrDefault(t => t.Id == draftTestId);
-                if (test is null)
-                {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    .FirstOrDefaultAsync(t => t.Id == draftTestId);
+                if (test is null) {
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
 
                 DraftTestOverviewInfoResponse returnData = httpContext.IsAuthenticatedUserIsTestCreator(test) ?
@@ -89,30 +79,25 @@ namespace vokimi_api.Endpoints.pages
             HttpContext httpContext,
             VokimiStorageService storageService,
             string testId
-        )
-        {
+        ) {
             DraftTestId draftTestId;
-            if (!Guid.TryParse(testId, out var _))
-            {
-                return ResultsHelper.BadRequestUnknownTest();
+            if (!Guid.TryParse(testId, out var _)) {
+                return ResultsHelper.BadRequest.UnknownTest();
             }
             draftTestId = new(new(testId));
 
-            using (var db = dbFactory.CreateDbContext())
-            {
-                BaseDraftTest? test = db.DraftTestsSharedInfo
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseDraftTest? test = await db.DraftTestsSharedInfo
                     .Include(t => t.MainInfo)
-                    .FirstOrDefault(t => t.Id == draftTestId);
-                if (test is null)
-                {
-                    return ResultsHelper.BadRequestUnknownTest();
+                    .FirstOrDefaultAsync(t => t.Id == draftTestId);
+                if (test is null) {
+                    return ResultsHelper.BadRequest.UnknownTest();
                 }
-                if (!httpContext.IsAuthenticatedUserIsTestCreator(test))
-                {
-                    return ResultsHelper.BadRequestNotCreator();
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
+                    return ResultsHelper.BadRequest.NotCreator();
                 }
             }
-            return ResultsHelper.BadRequestWithErr("not implemented");
+            return ResultsHelper.BadRequest.WithErr("not implemented");
         }
     }
 }

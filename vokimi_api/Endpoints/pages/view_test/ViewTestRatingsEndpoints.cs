@@ -15,7 +15,7 @@ namespace vokimi_api.Endpoints.pages.view_test
 {
     internal static class ViewTestRatingsEndpoints
     {
-        internal static IResult UpdateTestRating(
+        internal static async Task<IResult> UpdateTestRating(
             [FromBody] TestRatingUpdateRequest request,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -23,34 +23,39 @@ namespace vokimi_api.Endpoints.pages.view_test
 
             var requestErr = request.CheckForErr();
             if (requestErr.NotNone()) {
-                return ResultsHelper.BadRequestWithErr(requestErr);
+                return ResultsHelper.BadRequest.WithErr(requestErr);
             }
             try {
-                using (var db = dbFactory.CreateDbContext()) {
+                using (var db = await dbFactory.CreateDbContextAsync()) {
                     TestId testId = request.GetParsedTestId().Value;
-                    BaseTest? test = db.TestsSharedInfo
+                    BaseTest? test = await db.TestsSharedInfo
                         .Include(t => t.Ratings)
-                        .FirstOrDefault(t => t.Id == testId);
+                        .FirstOrDefaultAsync(t => t.Id == testId);
                     if (test is null) {
-                        return ResultsHelper.BadRequestUnknownTest();
+                        return ResultsHelper.BadRequest.UnknownTest();
                     }
                     if (!test.Settings.EnableTestRatings) {
-                        return ResultsHelper.BadRequestWithErr("Ratings for this test are disabled");
+                        return ResultsHelper.BadRequest.WithErr("Ratings for this test are disabled");
                     }
                     bool haveAccess;
                     if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                        haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
+                        haveAccess = await TestAccessValidator.CheckUserAccessToTest(
+                            db,
+                            test.CreatorId,
+                            test.Settings.Privacy,
+                            viewerId
+                        );
                     } else {
                         haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                     }
                     if (!haveAccess) {
-                        return ResultsHelper.BadRequestNoTestAccess();
+                        return ResultsHelper.BadRequest.NoTestAccess();
                     }
-                    AppUser? viewer = db.AppUsers
+                    AppUser? viewer = await db.AppUsers
                         .Include(u => u.TestRatings)
-                        .FirstOrDefault(u => u.Id == viewerId);
+                        .FirstOrDefaultAsync(u => u.Id == viewerId);
                     if (viewer is null) {
-                        return ResultsHelper.BadRequestWithErr("An error has occurred. Please log out, login and try again");
+                        return ResultsHelper.BadRequest.WithErr("An error has occurred. Please log out, login and try again");
                     }
                     TestRating? existingRating = viewer.TestRatings.FirstOrDefault(r => r.TestId == testId);
                     if (existingRating is null) {
@@ -59,11 +64,11 @@ namespace vokimi_api.Endpoints.pages.view_test
                         existingRating.UpdateRatingValue(request.Rating);
                         db.Update(existingRating);
                     }
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     return Results.Ok();
                 }
             } catch {
-                return ResultsHelper.BadRequestServerError();
+                return ResultsHelper.BadRequest.ServerError();
             }
         }
     }
