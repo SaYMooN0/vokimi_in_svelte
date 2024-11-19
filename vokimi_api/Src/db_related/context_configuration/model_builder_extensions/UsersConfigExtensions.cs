@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using vokimi_api.Src.db_related.context_configuration.db_entities_relations_classes;
+using vokimi_api.Src.db_related.db_entities.test_collections;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
 
@@ -54,6 +55,10 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.HasMany(u => u.DiscussionsCommentVotes)
                         .WithOne(t => t.User)
                         .HasForeignKey(t => t.UserId);
+
+                entity.HasMany(u => u.TestCollections)
+                        .WithOne()
+                        .HasForeignKey(t => t.OwnerId);
             });
         }
 
@@ -76,6 +81,20 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
             modelBuilder.Entity<UnconfirmedAppUser>(entity => {
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new UnconfirmedAppUserId(v));
+            });
+        }
+        internal static void ConfigureTestCollections(this ModelBuilder modelBuilder) {
+            modelBuilder.Entity<TestCollection>(entity => {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Id).HasConversion(v => v.Value, v => new TestCollectionId(v));
+                entity.OwnsOne(tc => tc.Styles);
+                modelBuilder.Entity<TestCollection>()
+                    .HasMany(tc => tc.Tests)
+                    .WithMany(t => t.CollectionTestIn)
+                    .UsingEntity<RelationsTestCollectionWithTest>(
+                          r => r.HasOne(r => r.Test).WithMany().HasForeignKey(r => r.TestId),
+                          r => r.HasOne(uf => uf.TestCollection).WithMany().HasForeignKey(r => r.TestCollectionId)
+                    );
             });
         }
     }

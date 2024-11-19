@@ -13,6 +13,7 @@ using vokimi_api.Src.db_related.db_entities;
 using vokimi_api.Src.db_related.db_entities.test_taken_records;
 using vokimi_api.Src.db_related.db_entities.tests_related.discussions.attachments;
 using vokimi_api.Src.db_related.db_entities.tests_related.discussions;
+using vokimi_api.Src.db_related.db_entities.test_collections;
 
 namespace vokimi_api.Src.db_related
 {
@@ -60,6 +61,8 @@ namespace vokimi_api.Src.db_related
         //test taken records
         public DbSet<BaseTestTakenRecord> BaseTestTakenRecords { get; set; }
         public DbSet<GeneralTestTakenRecord> GeneralTestTakenRecords { get; set; }
+        //test collections
+        public DbSet<TestCollection> TestCollections { get; set; }
 
 
 
@@ -109,6 +112,10 @@ namespace vokimi_api.Src.db_related
             //test taking records
             modelBuilder.ConfigureBaseTestTakenRecords();
             modelBuilder.ConfigureGeneralTestTakenRecords();
+            
+            //test collections
+            modelBuilder.ConfigureTestCollections();
+
         }
 
     }

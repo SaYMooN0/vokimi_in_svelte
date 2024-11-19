@@ -233,7 +233,7 @@ namespace vokimi_api.Endpoints.pages
             GeneralTestResultId resultToReceiveId = resultToReceiveIdWithPoints.Value.Key;
             return test.PossibleResults.FirstOrDefault(r => r.Id == resultToReceiveId);
         }
-        public static IResult GetGeneralTestReceivedResultData(
+        public static async Task<IResult> GetGeneralTestReceivedResultData(
             string resultId,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -245,22 +245,22 @@ namespace vokimi_api.Endpoints.pages
 
             resId = new(resGuid);
 
-            using (var db = dbFactory.CreateDbContext()) {
-                GeneralTestResult? result = db.GeneralTestResults.Find(resId);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                GeneralTestResult? result = await db.GeneralTestResults.FindAsync(resId);
 
                 if (result is null) {
                     return ResultsHelper.BadRequest.WithErr("Unknown result");
                 }
-                TestGeneralTemplate? test = db.TestsGeneralTemplate
+                TestGeneralTemplate? test = await db.TestsGeneralTemplate
                     .Include(t => t.PossibleResults)
                     .Include(t => t.TestTakings)
-                    .FirstOrDefault(t => t.Id == result.TestId);
+                    .FirstOrDefaultAsync(t => t.Id == result.TestId);
                 if (test is null) {
                     return ResultsHelper.BadRequest.UnknownTest();
                 }
                 bool haveAccess;
                 if (httpContext.TryGetUserId(out AppUserId viewerId)) {
-                    haveAccess = TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
+                    haveAccess = await TestAccessValidator.CheckUserAccessToTest(db, test.CreatorId, test.Settings.Privacy, viewerId);
                 } else {
                     haveAccess = test.Settings.Privacy == PrivacyValues.Anyone;
                 }

@@ -36,7 +36,7 @@ namespace vokimi_api.Endpoints.pages.view_test
                         return ResultsHelper.BadRequest.UnknownTest();
                     }
                     if (!test.Settings.DiscussionsOpen) {
-                        return ResultsHelper.BadRequest.WithErr("Discussions for this test are disabled");
+                        return ResultsHelper.BadRequest.DiscussionsDisabled();
                     }
                     if (!httpContext.TryGetUserId(out AppUserId creatorId)) {
                         return ResultsHelper.BadRequest.WithErr("Only logged in users can start new discussions");
@@ -89,7 +89,7 @@ namespace vokimi_api.Endpoints.pages.view_test
                         return ResultsHelper.BadRequest.UnknownTest();
                     }
                     if (!test.Settings.DiscussionsOpen) {
-                        return ResultsHelper.BadRequest.WithErr("Discussions for this test are disabled");
+                        return ResultsHelper.BadRequest.DiscussionsDisabled();
                     }
                     if (!httpContext.TryGetUserId(out AppUserId creatorId)) {
                         return ResultsHelper.BadRequest.WithErr("Only logged in users can answer to comments");
@@ -207,7 +207,67 @@ namespace vokimi_api.Endpoints.pages.view_test
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
-            return ResultsHelper.BadRequest.WithErr("not implemented");
+            TestDiscussionsCommentId? commentId = request.ParsedCommentId;
+            if (commentId is null) {
+                return ResultsHelper.BadRequest.ServerError();
+            }
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                TestDiscussionsComment? comment = await db.TestDiscussionComments
+                    .Include(c => c.CommentVotes)
+                    .FirstOrDefaultAsync(c => c.Id == commentId);
+                if (comment is null) {
+                    return ResultsHelper.BadRequest.WithErr("Comment not found");
+                }
+                BaseTest? test = await db.TestsSharedInfo.FindAsync(comment.TestId);
+                if (test is null) {
+                    return ResultsHelper.BadRequest.UnknownTest();
+                }
+                if (!test.Settings.DiscussionsOpen) {
+                    return ResultsHelper.BadRequest.DiscussionsDisabled();
+                }
+                if (!httpContext.TryGetUserId(out AppUserId viewerId)) {
+                    return ResultsHelper.BadRequest.WithErr("Only logged in users can vote for comments");
+                }
+                if (!await TestAccessValidator.CheckUserAccessToTest(db,
+                    test.CreatorId,
+                    test.Settings.Privacy,
+                    viewerId)
+                ) {
+                    return ResultsHelper.BadRequest.NoTestAccess();
+                }
+                try {
+                    bool? newViewersVote = request.WasUpPressed;
+                    int votesCountChange = 0;
+                    int votesRatingChange = 0;
+
+                    DiscussionsCommentVote? previousVote = comment.CommentVotes.FirstOrDefault(v => v.UserId == viewerId);
+                    if (previousVote is null) {
+                        var vote = DiscussionsCommentVote.CreateNew(viewerId, comment.Id, request.WasUpPressed);
+                        await db.DiscussionsCommentVotes.AddAsync(vote);
+                        votesRatingChange = request.WasUpPressed ? 1 : -1;
+                        votesCountChange = 1;
+                    } else if (previousVote.IsUp == request.WasUpPressed) {
+                        db.Remove(previousVote);
+                        newViewersVote = null;
+                        votesRatingChange = previousVote.IsUp ? -1 : 1;
+                        votesCountChange = -1;
+                    } else if (previousVote.IsUp != request.WasUpPressed) {
+                        votesRatingChange = previousVote.IsUp ? -2 : 2;
+                        previousVote.UpdateIsUp(request.WasUpPressed);
+                        db.Update(previousVote);
+                    }
+                    await db.SaveChangesAsync();
+
+                    var response = new {
+                        viewersVoteIsUp = newViewersVote,
+                        totalVotesCountChange = votesCountChange,
+                        votesRatingChange
+                    };
+                    return Results.Ok(response);
+                } catch {
+                    return ResultsHelper.BadRequest.ServerError();
+                }
+            }
         }
     }
 }

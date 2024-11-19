@@ -19,5 +19,10 @@
     {
         public UserAdditionalInfoId() : this(Guid.NewGuid()) { }
         public override string ToString() => Value.ToString();
+    }    
+    public readonly record struct TestCollectionId(Guid Value)
+    {
+        public TestCollectionId() : this(Guid.NewGuid()) { }
+        public override string ToString() => Value.ToString();
     } 
 }

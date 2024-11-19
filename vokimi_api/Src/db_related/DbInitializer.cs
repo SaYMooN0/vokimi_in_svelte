@@ -5,7 +5,7 @@
     {
         public static async Task InitializeDb(AppDbContext dbContext) {
 
-            //await RecreateDb(dbContext);
+            await RecreateDb(dbContext);
             await dbContext.Database.EnsureCreatedAsync();
         }
         public static async Task RecreateDb(AppDbContext db) {

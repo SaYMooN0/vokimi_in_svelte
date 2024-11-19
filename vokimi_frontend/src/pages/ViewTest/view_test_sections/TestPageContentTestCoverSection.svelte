@@ -1,9 +1,15 @@
 <script lang="ts">
     import AuthorizeView from "../../../components/AuthorizeView.svelte";
     import { ImgUtils } from "../../../ts/utils/ImgUtils";
+    import AddingToCollectionDropdown from "./test_cover_section_components/AddingToCollectionDropdown.svelte";
 
     export let testId: string;
     export let coverPath: string;
+
+    let collectionsDropdown: AddingToCollectionDropdown;
+    async function showCollectionsDropDown() {
+        await collectionsDropdown.open();
+    }
 </script>
 
 <div class="view-left-part unselectable">
@@ -38,7 +44,9 @@
                         stroke-linejoin="round"
                     />
                 </svg>
-                <label> Add To Collection </label>
+                <label on:click={showCollectionsDropDown}>
+                    Add To Collection
+                </label>
                 <svg viewBox="0 0 24 24">
                     <path
                         d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9"
@@ -48,6 +56,10 @@
                         stroke-linejoin="round"
                     />
                 </svg>
+                <AddingToCollectionDropdown
+                    bind:this={collectionsDropdown}
+                    {testId}
+                />
             </div>
         </AuthorizeView>
     </div>

@@ -22,8 +22,10 @@
 
         if (response.ok) {
             const data = await response.json();
-            votesRating = data.votesRating;
+            console.log(data);
+            votesRating = votesRating + data.votesRatingChange;
             viewersVoteIsUp = data.viewersVoteIsUp;
+            totalVotesCount = totalVotesCount + data.totalVotesCountChange;
         } else if (response.status === 400) {
             footerErr = await getErrorFromResponse(response);
         } else {
@@ -97,7 +99,7 @@
         Answer
     </div>
 </div>
-{#if StringUtils.isNullOrWhiteSpace(footerErr)}
+{#if !StringUtils.isNullOrWhiteSpace(footerErr)}
     <p class="comment-footer-err">{footerErr}</p>
 {/if}
 

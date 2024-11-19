@@ -38,7 +38,9 @@ namespace vokimi_api.Helpers
 
             public IResult NoTestAccess() =>
                 WithErr("You don't have permission to access this test");
-         
+            public IResult DiscussionsDisabled() =>
+                WithErr("Discussions for this test are disabled");
+
         }
 
         public class OkCollection

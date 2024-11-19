@@ -16,5 +16,7 @@ namespace vokimi_api.Src.db_related.db_entities.tests_related.discussions
             CommentId = commentId,
             IsUp = isUp
         };
+        public void UpdateIsUp(bool newVal) =>
+            IsUp = newVal;
     }
 }

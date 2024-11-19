@@ -127,10 +127,6 @@
                 <span class="filter-name">Comments only by my friends</span>
                 <CustomCheckbox bind:isChecked={filter.onlyByFriends} />
             </p>
-            <p class="filter-line">
-                <span class="filter-name">Comments only by my friends</span>
-                <CustomCheckbox bind:isChecked={filter.onlyByFriends} />
-            </p>
             <p class="filter-line"></p>
         </div>
         <div slot="unauthenticated" class="login-message unselectable">
