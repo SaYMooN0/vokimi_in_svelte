@@ -78,7 +78,7 @@
         grid-template-columns: 1fr auto;
     }
     .control-btns button > :global(svg) {
-        height: 100%;
+        height: 80%;
         aspect-ratio: 1/1;
     }
     .next-btn > :global(svg) {

@@ -1,6 +1,6 @@
 ﻿using vokimi_api.Src.db_related.db_entities_ids;
 
-namespace vokimi_api.Src.dtos.requests
+namespace vokimi_api.Src.dtos.requests.test_taken_request
 {
     public record class GeneralTestTakenRequest(
         string TestId,

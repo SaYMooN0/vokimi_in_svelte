@@ -8,6 +8,7 @@ namespace vokimi_api.Src.db_related.db_entities.test_collections
     {
         public TestCollectionId Id { get; init; }
         public string Name { get; private set; }
+        public string? Description { get; private set; }
         public AppUserId OwnerId { get; init; }
         public PrivacyValues Privacy { get; private set; }
         public TestCollectionStyles Styles { get; init; }
@@ -19,5 +20,9 @@ namespace vokimi_api.Src.db_related.db_entities.test_collections
             Privacy = PrivacyValues.ForMyself,
             Styles = TestCollectionStyles.Default,
         };
+        public void UpdateName(string name) =>
+            Name = name;
+        public void UpdateDescription(string description) =>
+            Description = description;
     }
 }

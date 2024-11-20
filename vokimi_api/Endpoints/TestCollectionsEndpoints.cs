@@ -9,7 +9,7 @@ using VokimiShared.src.models.db_classes.test.test_types;
 
 namespace vokimi_api.Endpoints
 {
-    internal class UserCollectionsEndpoints
+    internal class TestCollectionsEndpoints
     {
         public static async Task<IResult> GetCollectionsInfoForTest(
             string testId,

@@ -21,12 +21,13 @@
         );
         if (response.ok) {
             const data = JSON.parse(await response.json());
+            console.log(data);
             const t: TestTemplate = TestTemplateUtils.fromId(data.testTemplate);
             switch (t) {
                 case TestTemplate.General:
                     return new GeneralTestTakingData(
                         data.accentColor,
-                        TestStylesArrowTypeUtils.fromId(data.arrowType),
+                        TestStylesArrowTypeUtils.fromId(data.arrowIcons),
                         data.conclusionData,
                         data.questions.sort(
                             (

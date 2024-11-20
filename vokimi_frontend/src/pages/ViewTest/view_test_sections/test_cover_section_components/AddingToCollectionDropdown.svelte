@@ -1,23 +1,25 @@
 <script lang="ts">
-    import { Err } from "../../../../ts/Err";
+    import { onMount, onDestroy } from "svelte";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
+    import { StringUtils } from "../../../../ts/utils/StringUtils";
+    import CollectionDropdownNoCollections from "./CollectionDropdownNoCollections.svelte";
+    import NewCollectionCreationDialog from "../../../../components/shared/dialogs/NewCollectionCreationDialog.svelte";
+    import CollectionDropdownChoosingList from "./CollectionDropdownChoosingList.svelte";
+    import type { TestCollectionVmDataForCertainTest } from "../../../../ts/page_classes/view_test_page_classes/TestCollectionVmDataForCertainTest";
 
-    interface CollectionData {
-        id: string;
-        name: string;
-        testCount: number;
-        isTestInCollection: boolean;
-    }
     export let testId: string;
 
-    let collections: CollectionData[] = [];
+    let collections: TestCollectionVmDataForCertainTest[] = [];
     let fetchingErr: string = "";
-    let selectedCollections = new Set();
     let isVisible = false;
+    let dropdownRef: HTMLElement;
+    let newCollectionDialog: NewCollectionCreationDialog;
 
     export async function open(): Promise<void> {
-        isVisible = true;
         await fetchCollections();
+        setTimeout(() => {
+            isVisible = true;
+        }, 0);
     }
 
     export function close() {
@@ -26,13 +28,10 @@
 
     async function fetchCollections() {
         const response = await fetch(
-            `/api/userCollections/getCollectionsInfoForTest/${testId}`,
+            "/api/testCollections/getCollectionsInfoForTest/" + testId,
         );
-        console.log(response);
         if (response.ok) {
-            const data = await response.json();
-            collections = data.collections;
-            console.log(collections);
+            collections = await response.json();
         } else if (response.status === 400) {
             fetchingErr = await getErrorFromResponse(response);
         } else {
@@ -40,32 +39,97 @@
         }
     }
 
-    async function saveChanges() {}
-    function toggleCollection(collectionId: string) {
-        if (selectedCollections.has(collectionId)) {
-            selectedCollections.delete(collectionId);
-        } else {
-            selectedCollections.add(collectionId);
+    function newCollectionBtnPressed() {
+        newCollectionDialog.open();
+    }
+    function handleOutsideClick(event: MouseEvent) {
+        if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
+            close();
         }
     }
+
+    onMount(() => {
+        document.addEventListener("click", handleOutsideClick);
+    });
+
+    onDestroy(() => {
+        document.removeEventListener("click", handleOutsideClick);
+    });
 </script>
 
-<div class="dropdown" class:is-visible={isVisible}>
-    <div class="header">Manage Collections</div>
-    <div class="collections">
-        {#each collections as collection}
-            <div>
-                <input
-                    type="checkbox"
-                    id={collection.id}
-                    checked={selectedCollections.has(collection.id)}
-                    on:change={() => toggleCollection(collection.id)}
-                />
-                <label for={collection.id}>
-                    {collection.name} ({collection.testCount})
-                </label>
-            </div>
-        {/each}
+<div class="dropdown" bind:this={dropdownRef}>
+    <NewCollectionCreationDialog bind:this={newCollectionDialog} />
+    <div class="dropdown-menu" class:is-visible={isVisible}>
+        {#if !StringUtils.isNullOrWhiteSpace(fetchingErr)}
+            <p class="fetching-err">{fetchingErr}</p>
+        {:else if collections.length === 0}
+            <CollectionDropdownNoCollections
+                {testId}
+                openCollectionCreationDialog={newCollectionBtnPressed}
+            />
+        {:else}
+            <CollectionDropdownChoosingList
+                {testId}
+                {close}
+                {newCollectionBtnPressed}
+                selectedCollectionIds={new Set(
+                    collections
+                        .filter((c) => c.isTestInCollection)
+                        .map((c) => c.id),
+                )}
+            />
+        {/if}
     </div>
-    <button on:click={saveChanges}>Save</button>
 </div>
+
+<style>
+    .dropdown {
+        position: relative;
+        display: block;
+        width: 100%;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--back-main);
+        border: 1px solid var(--back-secondary);
+        box-shadow:
+            rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+            rgb(67, 58, 178, 0.1) 0px 0px 0px 1px;
+        border-radius: 4px;
+        padding: 8px;
+        box-sizing: border-box;
+        z-index: 1000;
+        width: 300px;
+        display: none;
+    }
+
+    .dropdown-menu.is-visible {
+        display: block;
+    }
+
+    .collections {
+        max-height: 150px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+    }
+
+    .fetching-err {
+        color: var(--red-del);
+    }
+
+    .dropdown-menu button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .dropdown-menu button:hover {
+        background-color: #0056b3;
+    }
+</style>
