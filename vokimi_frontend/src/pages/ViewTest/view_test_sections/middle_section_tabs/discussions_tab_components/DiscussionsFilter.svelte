@@ -98,8 +98,8 @@
     <p class="filter-line">
         <span class="filter-name">Votes rating</span>
         <MinMaxInputType
-            minPossibleValue={1}
-            maxPossibleValue={5}
+            minPossibleValue={null}
+            maxPossibleValue={null}
             bind:minVal={filter.minVotesRating}
             bind:maxVal={filter.maxVotesRating}
         />

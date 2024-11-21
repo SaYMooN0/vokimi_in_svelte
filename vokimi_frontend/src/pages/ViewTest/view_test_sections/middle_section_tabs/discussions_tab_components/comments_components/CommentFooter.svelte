@@ -22,7 +22,6 @@
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             votesRating = votesRating + data.votesRatingChange;
             viewersVoteIsUp = data.viewersVoteIsUp;
             totalVotesCount = totalVotesCount + data.totalVotesCountChange;

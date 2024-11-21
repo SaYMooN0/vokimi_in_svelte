@@ -30,7 +30,7 @@
             const responseData = await response.json();
             showNewAddedDiscussion(
                 new TestDiscussionCommentVm(
-                    responseData.commentText,
+                    responseData.commentId,
                     responseData.authorId,
                     responseData.authorUsername,
                     responseData.authorProfilePicture,
