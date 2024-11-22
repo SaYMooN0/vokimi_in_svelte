@@ -87,7 +87,6 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
             modelBuilder.Entity<TestCollection>(entity => {
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new TestCollectionId(v));
-                entity.OwnsOne(tc => tc.Styles);
                 modelBuilder.Entity<TestCollection>()
                     .HasMany(tc => tc.Tests)
                     .WithMany(t => t.CollectionTestIn)

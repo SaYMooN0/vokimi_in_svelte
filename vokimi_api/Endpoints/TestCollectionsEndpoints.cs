@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using vokimi_api.Helpers;
+using vokimi_api.Src;
 using vokimi_api.Src.db_related;
+using vokimi_api.Src.db_related.db_entities.test_collections;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
+using vokimi_api.Src.dtos.requests.collections_interactions;
 using vokimi_api.Src.dtos.responses;
 using vokimi_api.Src.extension_classes;
 using VokimiShared.src.models.db_classes.test.test_types;
@@ -54,9 +58,28 @@ namespace vokimi_api.Endpoints
             return ResultsHelper.BadRequest.WithErr("Not implemented");
         }
         public static async Task<IResult> CreateNewCollection(
-            IDbContextFactory<AppDbContext> dbFactory
+            [FromBody] CollectionCreationRequest request,
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext
         ) {
-            return ResultsHelper.BadRequest.WithErr("Not implemented");
+            Err requestErr = request.CheckForErr();
+            if (requestErr.NotNone()) {
+                return ResultsHelper.BadRequest.WithErr(requestErr);
+            }
+            if (!httpContext.TryGetUserId(out var userId)) {
+                return ResultsHelper.BadRequest.WithErr("You need to be logged in to create new collections");
+            }
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                TestCollection tCollection = TestCollection.CreateNew(
+                    request.CollectionName,
+                    userId,
+                    request.CollectionColor,
+                    request.CollectionIcon
+                );
+                await db.TestCollections.AddAsync(tCollection);
+                await db.SaveChangesAsync();
+                return Results.Ok();
+            }
         }
     }
 }

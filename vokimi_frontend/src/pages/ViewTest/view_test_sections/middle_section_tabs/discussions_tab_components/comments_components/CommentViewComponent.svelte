@@ -2,8 +2,8 @@
   import { ImgUtils } from "../../../../../../ts/utils/ImgUtils";
   import CommentFooter from "./CommentFooter.svelte";
   import CommentAnswerInput from "./CommentAnswerInput.svelte";
-    import type { TestDiscussionCommentVm } from "../../../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/discussions_tab_classes/TestDiscussionCommentVm";
-    import CommentsListViewComponent from "./CommentsListViewComponent.svelte";
+  import type { TestDiscussionCommentVm } from "../../../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/discussions_tab_classes/TestDiscussionCommentVm";
+  import CommentsListViewComponent from "./CommentsListViewComponent.svelte";
 
   export let comment: TestDiscussionCommentVm;
   export let incrementTotalCommentsCount: () => void;

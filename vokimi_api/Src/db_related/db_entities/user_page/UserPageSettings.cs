@@ -22,7 +22,7 @@ namespace vokimi_api.Src.db_related.db_entities.users
         public static UserPageSettings CreateNew() => new() {
             Id = new(),
             AboutMe = string.Empty,
-            BannerColor = BaseTestCreationConsts.DefaultAccentColor,
+            BannerColor = SharedConsts.PrimaryColor,
             PrivacySettings = UserPagePrivacySettings.Default,
         };
     }

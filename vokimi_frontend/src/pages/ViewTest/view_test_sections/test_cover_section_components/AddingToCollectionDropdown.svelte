@@ -4,8 +4,8 @@
     import { StringUtils } from "../../../../ts/utils/StringUtils";
     import CollectionDropdownNoCollections from "./CollectionDropdownNoCollections.svelte";
     import NewCollectionCreationDialog from "../../../../components/shared/dialogs/NewCollectionCreationDialog.svelte";
-    import CollectionDropdownChoosingList from "./CollectionDropdownChoosingList.svelte";
     import type { TestCollectionVmDataForCertainTest } from "../../../../ts/page_classes/view_test_page_classes/TestCollectionVmDataForCertainTest";
+    import CollectionDropdownChoosingList from "./CollectionDropdownChoosingList.svelte";
 
     export let testId: string;
 
@@ -16,7 +16,9 @@
     let newCollectionDialog: NewCollectionCreationDialog;
 
     export async function open(): Promise<void> {
-        await fetchCollections();
+        if (collections.length < 1) {
+            await fetchCollections();
+        }
         setTimeout(() => {
             isVisible = true;
         }, 0);
@@ -58,7 +60,10 @@
 </script>
 
 <div class="dropdown" bind:this={dropdownRef}>
-    <NewCollectionCreationDialog bind:this={newCollectionDialog} />
+    <NewCollectionCreationDialog
+        bind:this={newCollectionDialog}
+        updateParentElementData={fetchCollections}
+    />
     <div class="dropdown-menu" class:is-visible={isVisible}>
         {#if !StringUtils.isNullOrWhiteSpace(fetchingErr)}
             <p class="fetching-err">{fetchingErr}</p>
@@ -74,9 +79,10 @@
                 {newCollectionBtnPressed}
                 selectedCollectionIds={new Set(
                     collections
-                        .filter((c) => c.isTestInCollection)
-                        .map((c) => c.id),
+                        .filter((c) => c.isTestIsInCollection)
+                        .map((c) => c.collectionId),
                 )}
+                {collections}
             />
         {/if}
     </div>

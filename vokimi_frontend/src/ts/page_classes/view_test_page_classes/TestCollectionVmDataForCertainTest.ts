@@ -1,12 +1,14 @@
 export class TestCollectionVmDataForCertainTest {
-    id: string;
+    collectionId: string;
     name: string;
-    testCount: number;
-    isTestInCollection: boolean;
-    constructor(id: string, name: string, testCount: number, isTestInCollection: boolean) {
-        this.id = id;
+    iconName: string;
+    color: string;
+    isTestIsInCollection: boolean
+    constructor(collectionId: string, name: string, iconName: string, color: string, isTestIsInCollection: boolean) {
+        this.collectionId = collectionId;
         this.name = name;
-        this.testCount = testCount;
-        this.isTestInCollection = isTestInCollection;
+        this.iconName = iconName;
+        this.color = color;
+        this.isTestIsInCollection = isTestIsInCollection;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using vokimi_api.Src.enums;
 
@@ -15,8 +16,7 @@ namespace vokimi_api.Src.dtos.shared
         );
         public Err CheckForErr() {
             string accentcolor = this.AccentColor;
-            if (string.IsNullOrEmpty(accentcolor) ||
-                !System.Text.RegularExpressions.Regex.IsMatch(accentcolor, "^#[0-9A-Fa-f]{6}$")) {
+            if (string.IsNullOrEmpty(accentcolor) || SharedConsts.HexColorRegex.IsMatch(accentcolor)) {
 
                 return new Err("Invalid accent color");
             }

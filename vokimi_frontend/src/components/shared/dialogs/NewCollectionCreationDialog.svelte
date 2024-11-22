@@ -1,53 +1,68 @@
 <script lang="ts">
+    import { Err } from "../../../ts/Err";
+    import { getErrorFromResponse } from "../../../ts/ErrorResponse";
+    import { CollectionIconsIdComponentObj } from "../../../ts/TestCollectionIcons";
     import { StringUtils } from "../../../ts/utils/StringUtils";
     import BaseDialog from "../../BaseDialog.svelte";
-    import Bookmark from "../../icons/collection_icons/ci_Bookmark.svelte";
-    import Brain from "../../icons/collection_icons/ci_Brain.svelte";
-    import Clock from "../../icons/collection_icons/ci_Clock.svelte";
-    import Folder from "../../icons/collection_icons/ci_Folder.svelte";
-    import Heart from "../../icons/collection_icons/ci_Heart.svelte";
-    import Star from "../../icons/collection_icons/ci_Star.svelte";
-    import Study from "../../icons/collection_icons/ci_Study.svelte";
+
     import CloseButton from "../CloseButton.svelte";
+
+    export function open() {
+        dialogElement.open();
+    }
+    export let updateParentElementData: (() => Promise<void>) | null;
 
     let dialogElement: BaseDialog;
     let creationErr: string = "";
     let dialogId = "collection-creation-dialog" + StringUtils.randomString(4);
-    export function open() {
-        dialogElement.open();
-    }
+
     let collectionName: string;
     let collectionColor: string = "#796cfa";
     let collectionIcon: string = "default";
-    function createNewCollection() {
-        if (StringUtils.isNullOrWhiteSpace(collectionName)) {
-            creationErr = "Collection name cannot be empty";
-            return;
-        }
-        if (StringUtils.isNullOrWhiteSpace(collectionColor)) {
-            creationErr = "Please select a collection color";
-            return;
-        }
-        if (StringUtils.isNullOrWhiteSpace(collectionIcon)) {
-            creationErr = "Please select a collection icon";
+    async function createNewCollection() {
+        const err = validateData();
+        if (err.notNone()) {
+            creationErr = err.toString();
             return;
         }
         const data = {
-            name: collectionName,
-            color: collectionColor,
-            icon: collectionIcon,
+            collectionName,
+            collectionColor,
+            collectionIcon,
         };
-        console.log(data);
+        const response = await fetch(
+            `/api/testCollections/createNewCollection`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            },
+        );
+        if (response.ok) {
+            if (updateParentElementData != null) {
+                await updateParentElementData();
+            }
+            dialogElement.close();
+        } else if (response.status === 400) {
+            creationErr = await getErrorFromResponse(response);
+        } else {
+            creationErr = "An unknown error occurred.";
+        }
     }
-    let possibleIcons = Object.entries({
-        default: Folder,
-        bookmark: Bookmark,
-        heart: Heart,
-        clock: Clock,
-        star: Star,
-        brain: Brain,
-        study: Study,
-    });
+    function validateData(): Err {
+        if (StringUtils.isNullOrWhiteSpace(collectionName)) {
+            return new Err("Collection name cannot be empty");
+        }
+        if (StringUtils.isNullOrWhiteSpace(collectionColor)) {
+            return new Err("Please select a collection color");
+        }
+        if (StringUtils.isNullOrWhiteSpace(collectionIcon)) {
+            return new Err("Please select a collection icon");
+        }
+        return Err.none();
+    }
 </script>
 
 <BaseDialog {dialogId} bind:this={dialogElement}>
@@ -71,10 +86,11 @@
                 bind:value={collectionColor}
             />
             <div class="icons-input-container">
-                {#each possibleIcons as iconData}
+                {#each Object.entries(CollectionIconsIdComponentObj) as iconData}
                     <label for="icon-{iconData[0]}">
                         <input
                             checked={iconData[0] === collectionIcon}
+                            on:change={() => (collectionIcon = iconData[0])}
                             id="icon-{iconData[0]}"
                             class="radio-input"
                             type="radio"

@@ -15,7 +15,7 @@ namespace vokimi_api.Src.db_related.db_entities.draft_published_tests_shared
         }
         public static TestStylesSheet CreateNew() => new() {
             Id = new(),
-            AccentColor = BaseTestCreationConsts.DefaultAccentColor,
+            AccentColor = SharedConsts.PrimaryColor,
             ArrowsType = ArrowIconType.Default
         };
     }

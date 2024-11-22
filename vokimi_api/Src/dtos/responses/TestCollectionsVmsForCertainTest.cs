@@ -5,9 +5,9 @@ namespace vokimi_api.Src.dtos.responses
 {
     public record class TestCollectionsVmsForCertainTest(
         string CollectionId,
-        string CollectionName,
-        string CollectionIconName,
-        string CollectionColor,
+        string Name,
+        string IconName,
+        string Color,
         bool IsTestIsInCollection
     )
     {
@@ -17,8 +17,8 @@ namespace vokimi_api.Src.dtos.responses
         ) => new(
             testCollection.Id.Value.ToString(),
             testCollection.Name,
-            testCollection.Styles.IconName,
-            testCollection.Styles.Color,
+            testCollection.IconName,
+            testCollection.Color,
             testCollection.Tests.Any(t => t.Id == testId)
         );
     }
