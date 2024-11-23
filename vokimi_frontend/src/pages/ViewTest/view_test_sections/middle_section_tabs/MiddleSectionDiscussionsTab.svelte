@@ -78,5 +78,6 @@
     .discussions-tab-content {
         display: flex;
         flex-direction: column;
+        gap: 8px;
     }
 </style>

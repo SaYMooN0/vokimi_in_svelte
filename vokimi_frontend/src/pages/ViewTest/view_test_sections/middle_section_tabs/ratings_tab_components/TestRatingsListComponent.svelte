@@ -1,6 +1,8 @@
 <script lang="ts">
     import type { TestRatingVm } from "../../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/ViewTestRatingsTabData";
     import { ImgUtils } from "../../../../../ts/utils/ImgUtils";
+    import ProfilePictureWithLink from "../tabs_shared/ProfilePictureWithLink.svelte";
+    import UsernameWithLink from "../tabs_shared/UsernameWithLink.svelte";
 
     export let ratingsList: TestRatingVm[];
 </script>
@@ -8,15 +10,15 @@
 <div class="ratings-list">
     {#each ratingsList as rating}
         <div class="rating-view-div">
-            <img
-                class="rating-user-profile-picture"
-                src={ImgUtils.imgUrl(rating.userProfilePicture)}
-                alt="user-profile-picture"
+            <ProfilePictureWithLink
+                userId={rating.userId}
+                profilePicturePath={rating.profilePicturePath}
             />
             <div>
-                <a class="rating-username" href="/user/{rating.userId}">
-                    {rating.username}
-                </a>
+                <UsernameWithLink
+                    userId={rating.userId}
+                    username={rating.username}
+                />
                 <span>{rating.ratingValue}</span>
                 <span class="rating-update-date">
                     {rating.lastUpdateDateTime}

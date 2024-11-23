@@ -7,7 +7,7 @@ namespace vokimi_api.EndpointsMappers
         internal static void MapAll(WebApplication app) {
             app.MapGet("/testCollections/getCollectionsInfoForTest/{testId}",
                 TestCollectionsEndpoints.GetCollectionsInfoForTest);
-            app.MapPost("/testCollections/testEntriesInCollectionsChanged",
+            app.MapPost("/testCollections/testEntriesInCollectionsChanged/{testId}",
                 TestCollectionsEndpoints.HandleTestEntriesInCollectionsChanged);
             app.MapPost("/testCollections/createNewCollection",
                 TestCollectionsEndpoints.CreateNewCollection);

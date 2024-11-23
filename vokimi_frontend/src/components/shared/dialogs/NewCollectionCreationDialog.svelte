@@ -44,6 +44,9 @@
             if (updateParentElementData != null) {
                 await updateParentElementData();
             }
+            collectionName = "";
+            collectionColor = "#796cfa";
+            collectionIcon = "default";
             dialogElement.close();
         } else if (response.status === 400) {
             creationErr = await getErrorFromResponse(response);

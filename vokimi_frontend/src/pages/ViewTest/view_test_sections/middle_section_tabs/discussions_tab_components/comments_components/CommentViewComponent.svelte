@@ -4,6 +4,8 @@
   import CommentAnswerInput from "./CommentAnswerInput.svelte";
   import type { TestDiscussionCommentVm } from "../../../../../../ts/page_classes/view_test_page_classes/middle_section_tabs_classes/discussions_tab_classes/TestDiscussionCommentVm";
   import CommentsListViewComponent from "./CommentsListViewComponent.svelte";
+  import ProfilePictureWithLink from "../../tabs_shared/ProfilePictureWithLink.svelte";
+  import UsernameWithLink from "../../tabs_shared/UsernameWithLink.svelte";
 
   export let comment: TestDiscussionCommentVm;
   export let incrementTotalCommentsCount: () => void;
@@ -17,14 +19,14 @@
 
 <div class="comment">
   <div class="comment-header">
-    <img
-      src={ImgUtils.imgUrl(comment.authorProfilePicture)}
-      alt="Profile Picture"
-      class="profile-picture"
+    <ProfilePictureWithLink
+      userId={comment.authorId}
+      profilePicturePath={comment.authorProfilePicture}
     />
-    <a href="/user/{comment.authorId}" class="author-link">
-      {comment.authorUsername}
-    </a>
+    <UsernameWithLink
+      userId={comment.authorId}
+      username={comment.authorUsername}
+    />
     <span class="comment-date">{comment.createdAtDateTime}</span>
   </div>
   <div class="comment-body">
@@ -54,27 +56,25 @@
   .comment {
     display: grid;
     grid-template-rows: 48px auto auto;
-    border: 2px solid var(--back-secondary);
+    padding: 8px;
+    border-radius: 12px;
+    box-shadow:
+      rgba(0, 0, 0, 0.05) 0px 4px 16px 0px,
+      rgb(67, 58, 178, 0.1) 0px 0px 0px 1px;
   }
   .comment-header {
     display: grid;
-    grid-template-columns: 48px 1fr auto;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 16px;
-    margin-left: 20px;
+    gap: 8px;
+    margin-left: 4px;
   }
 
-  .profile-picture {
-    width: 100%;
-    aspect-ratio: 1/1;
-    border-radius: 40%;
-    border: 2px solid var(--back-secondary);
-  }
-  .author-link {
-  }
   .comment-date {
+    color: var(--text-faded);
+    font-size: 14px;
   }
   .child-comments {
-    margin-left: 20px;
+    margin-left: 24px;
   }
 </style>

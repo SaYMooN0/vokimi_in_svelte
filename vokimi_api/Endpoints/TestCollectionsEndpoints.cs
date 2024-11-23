@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using vokimi_api.Helpers;
 using vokimi_api.Src;
 using vokimi_api.Src.db_related;
@@ -53,9 +54,43 @@ namespace vokimi_api.Endpoints
             }
         }
         public static async Task<IResult> HandleTestEntriesInCollectionsChanged(
-            IDbContextFactory<AppDbContext> dbFactory
+            string testId,
+            [FromBody] string[] collectionIds,
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext
         ) {
-            return ResultsHelper.BadRequest.WithErr("Not implemented");
+            if (!Guid.TryParse(testId, out var tesdGuid)) {
+                return ResultsHelper.BadRequest.ServerError();
+            }
+            if (!httpContext.TryGetUserId(out AppUserId userId)) {
+                return ResultsHelper.BadRequest.LogOutLogIn();
+            }
+            TestId tId = new(tesdGuid);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseTest? test = await db.TestsSharedInfo
+                    .Include(t => t.CollectionTestIn)
+                    .FirstOrDefaultAsync(t => t.Id == tId);
+                if (test is null) {
+                    return ResultsHelper.BadRequest.UnknownTest();
+                }
+                HashSet<TestCollectionId> testCollectionIds = collectionIds
+                    .Where(i => Guid.TryParse(i, out var _))
+                    .Select(i => new TestCollectionId(new Guid(i)))
+                    .ToHashSet();
+                test.CollectionTestIn.Clear();
+                if (testCollectionIds.Count == 0) {
+                    await db.SaveChangesAsync();
+                    return Results.Ok();
+                }
+                var newCollections = db.TestCollections.Where(tc => testCollectionIds.Contains(tc.Id));
+                foreach (var collection in newCollections) {
+                    test.CollectionTestIn.Add(collection);
+                }
+                await db.SaveChangesAsync();
+                var response = test.CollectionTestIn
+                    .Select(tc => tc.Id.Value);
+                return Results.Ok(response);
+            }
         }
         public static async Task<IResult> CreateNewCollection(
             [FromBody] CollectionCreationRequest request,

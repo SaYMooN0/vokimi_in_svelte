@@ -144,7 +144,7 @@
 
 <style>
     .discussions-filter {
-        margin-top: 12px;
+        margin-top: 4px;
         display: block;
         background-color: var(--back-secondary);
         padding: 4px 16px;

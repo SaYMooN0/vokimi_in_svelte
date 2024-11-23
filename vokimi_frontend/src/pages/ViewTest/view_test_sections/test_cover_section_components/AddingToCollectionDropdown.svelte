@@ -106,7 +106,7 @@
             rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
             rgb(67, 58, 178, 0.1) 0px 0px 0px 1px;
         border-radius: 4px;
-        padding: 8px;
+        padding: 8px 2px 2px 2px;
         box-sizing: border-box;
         z-index: 1000;
         width: 300px;

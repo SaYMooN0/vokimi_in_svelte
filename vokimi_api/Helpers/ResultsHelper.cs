@@ -19,7 +19,7 @@ namespace vokimi_api.Helpers
             public IResult SaveChangesTryAgain() =>
                 WithErr("Server error. Save existing changes and try to refresh the page");
             public IResult LogOutLogIn() =>
-                WithErr("An error has occurred. Please log out and log in again");
+                WithErr("An error has occurred. Please log out, log in and try again");
 
             public IResult UnknownTest() =>
                 WithErr("Unknown Test");

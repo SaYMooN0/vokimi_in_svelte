@@ -38,14 +38,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [svelte({
-        onwarn: (warning, handler) => {
-            if (warning.code.indexOf('a11y-') === 0) {
-                return;
-            }
-            handler(warning);
-        }
-    })],
+    plugins: [svelte()],
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
