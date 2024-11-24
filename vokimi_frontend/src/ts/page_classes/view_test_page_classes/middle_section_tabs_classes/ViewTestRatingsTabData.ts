@@ -1,3 +1,5 @@
+import type { TestRatingVm } from "./ratings_tab_classes/TestRatingVm";
+
 export class ViewTestRatingsTabData {
     viewerRating: number | null;
     averageRating: number;
@@ -12,11 +14,4 @@ export class ViewTestRatingsTabData {
     addFetchedRatings(newRatingsList: TestRatingVm[]) {
         this.ratingsList = [...this.ratingsList, ...newRatingsList]
     }
-}
-export interface TestRatingVm {
-    readonly ratingValue: number
-    readonly userId: string
-    readonly username: string
-    readonly userProfilePicture: string
-    readonly lastUpdateDateTime: string
 }

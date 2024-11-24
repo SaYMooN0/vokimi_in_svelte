@@ -20,21 +20,21 @@ namespace vokimi_api.Src.dtos.requests.view_test_page.discussions
             }
 
             if (MinChildCommentsCount < 0 || MaxChildCommentsCount < 0) {
-                return new Err("Minimal and maximal child comments count cannot be negative.");
+                return new Err("Minimal and maximal child comments count cannot be negative");
             }
             if (MinChildCommentsCount > MaxChildCommentsCount) {
-                return new Err("Minimal child comments count cannot be more than maximal child comments count.");
+                return new Err("Minimal child comments count cannot be more than maximal child comments count");
             }
 
             if (MinVotesRating.HasValue && MaxVotesRating.HasValue && MinVotesRating > MaxVotesRating) {
-                return new Err("Minimal votes rating cannot be more than maximal votes rating.");
+                return new Err("Minimal votes rating cannot be more than maximal votes rating");
             }
 
             if (MinVotesCount < 0 || MaxVotesCount < 0) {
-                return new Err("Minimal and maximal votes count cannot be negative.");
+                return new Err("Minimal and maximal votes count cannot be negative");
             }
             if (MinVotesCount > MaxVotesCount) {
-                return new Err("Minimal votes count cannot be more than maximal votes count.");
+                return new Err("Minimal votes count cannot be more than maximal votes count");
             }
 
             return Err.None;

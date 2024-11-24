@@ -1,6 +1,6 @@
 ﻿using vokimi_api.Src.db_related.db_entities_ids;
 
-namespace vokimi_api.Src.dtos.requests.view_test_page
+namespace vokimi_api.Src.dtos.requests.view_test_page.ratings
 {
     public record class TestRatingUpdateRequest(
         string TestId,

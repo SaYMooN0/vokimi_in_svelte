@@ -14,6 +14,7 @@ namespace vokimi_api.EndpointsMappers.pages
 
             //ratings
             app.MapPost("/viewTest/ratings/updateTestRating", ViewTestRatingsEndpoints.UpdateTestRating);
+            app.MapPost("/viewTest/ratings/getFilteredRatings", ViewTestRatingsEndpoints.GetFilteredRatings);
 
             //discussions
             app.MapPost("/viewTest/discussions/startNewDiscussion", ViewTestDiscussionsEndpoints.StartNewDiscussion);

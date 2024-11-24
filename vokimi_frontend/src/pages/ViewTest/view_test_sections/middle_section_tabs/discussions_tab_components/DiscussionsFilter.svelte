@@ -35,7 +35,6 @@
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             return showFilteredComments(data);
         } else if (response.status === 400) {
             filterApplyingError = await getErrorFromResponse(response);
