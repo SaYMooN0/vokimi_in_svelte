@@ -1,4 +1,4 @@
-<div class="no-ratings">No one has rated this test yet</div>
+<div class="no-ratings">No ratings found for this test</div>
 
 <style>
     .no-ratings {

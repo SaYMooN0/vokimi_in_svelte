@@ -3,7 +3,7 @@
     import { StringUtils } from "../../../../../ts/utils/StringUtils";
 
     export let rating: number;
-    export let updateRating: (rating: number) => void;
+    export let updateParentElementRating: () => Promise<void>;
     export let testId: string;
 
     let unsavedRating: number = rating;
@@ -21,7 +21,7 @@
 
         if (response.ok) {
             rating = unsavedRating;
-            updateRating(unsavedRating);
+            await updateParentElementRating();
         } else if (response.status === 400) {
             ratingSavingErr = await getErrorFromResponse(response);
         } else {

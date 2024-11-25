@@ -3,6 +3,6 @@ export class RatingsTabFilter {
     public ratingMaxValue: number | null = null;
     public minDate: Date | null = null;
     public maxDate: Date | null = null;
-    public onlyByFollowersAndFriends: boolean = false;
-    public onlyByFriends: boolean = false;
+    public OnlyByFollowersAndFriends: boolean = false;
+    public OnlyByFriends: boolean = false;
 }

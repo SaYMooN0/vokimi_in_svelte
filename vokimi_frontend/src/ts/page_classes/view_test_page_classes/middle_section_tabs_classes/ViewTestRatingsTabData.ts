@@ -14,4 +14,7 @@ export class ViewTestRatingsTabData {
     addFetchedRatings(newRatingsList: TestRatingVm[]) {
         this.ratingsList = [...this.ratingsList, ...newRatingsList]
     }
+    static createEmpty(): ViewTestRatingsTabData {
+        return new ViewTestRatingsTabData(null, 0, []);
+    }
 }

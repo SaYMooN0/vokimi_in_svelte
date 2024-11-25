@@ -2,7 +2,7 @@
 
 namespace vokimi_api.Src.dtos.requests.view_test_page.ratings
 {
-    public class GetFilteredRatingsRequest(
+    public record class GetFilteredRatingsRequest(
         string TestId,
         ushort? RatingMinValue,
         ushort? RatingMaxValue,

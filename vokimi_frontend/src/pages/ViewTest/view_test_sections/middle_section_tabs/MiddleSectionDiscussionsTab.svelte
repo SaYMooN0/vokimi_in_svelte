@@ -7,7 +7,6 @@
     import DiscussionsFilter from "./discussions_tab_components/DiscussionsFilter.svelte";
     import NewDiscussionInput from "./discussions_tab_components/NewDiscussionInput.svelte";
     import TestDiscussionsCountPanel from "./discussions_tab_components/TestDiscussionsCountPanel.svelte";
-    import ShowFilterButton from "./tabs_shared/ShowFilterButton.svelte";
     export let testId: string;
 
     async function fetchDiscussionTabData(): Promise<
@@ -40,7 +39,6 @@
         commentsListComponent.updateCommentsList(comments);
     }
     let commentsCountPanel: TestDiscussionsCountPanel;
-    let discussionsFilter: DiscussionsFilter;
     let commentsListComponent: CommentsListViewComponent;
 </script>
 
@@ -55,13 +53,9 @@
                 discussionsCount={fetchingRes.discussionsCount}
                 totalCommentsCount={fetchingRes.totalCommentsCount}
             />
-            <ShowFilterButton
-                showFilter={() => discussionsFilter.show()}
-                hideFilter={() => discussionsFilter.hide()}
-            />
+
             <DiscussionsFilter
                 {testId}
-                bind:this={discussionsFilter}
                 showFilteredComments={showCommentsWithAppliedFilter}
             />
             <CommentsListViewComponent
@@ -78,6 +72,5 @@
     .discussions-tab-content {
         display: flex;
         flex-direction: column;
-        gap: 8px;
     }
 </style>

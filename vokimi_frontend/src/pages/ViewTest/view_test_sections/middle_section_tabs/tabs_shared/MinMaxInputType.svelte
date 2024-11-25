@@ -8,7 +8,7 @@
 </script>
 
 <div class="min-max-input-type">
-    From
+    <span>From</span>
     <input
         type="number"
         bind:value={minVal}
@@ -16,7 +16,7 @@
         max={maxPossibleValue}
         step={stepValue}
     />
-    To
+    <span>To</span>
     <input
         type="number"
         bind:value={maxVal}
@@ -31,9 +31,24 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
+    }
+    .min-max-input-type span {
+        margin-left: 12px;
+        color: var(--text-faded);
+        font-size: 18px;
     }
     .min-max-input-type input {
-        width: 80px;
+        width: 64px;
+        padding: 0 4px;
+        outline: none;
+        border: 2px solid var(--text-faded);
+        border-radius: 4px;
+        background-color: var(--back-main);
+        font-size: 18px;
+        text-align: center;
+    }
+    .min-max-input-type input:focus {
+        border-color: var(--primary);
     }
 </style>
