@@ -1,0 +1,26 @@
+import type { PrivacyValues } from "../../enums/PrivacyValues";
+
+export class EditPageAdditionalInfoSectionData {
+    realName: string;
+    readonly registrationDate: string;
+    birthDate: Date;
+    realNamePrivacy: PrivacyValues;
+    registrationDatePrivacy: PrivacyValues;
+    birthDatePrivacy: PrivacyValues;
+    constructor(
+        realName: string,
+        registrationDate: string,
+        birthDate: Date,
+        realNamePrivacy: PrivacyValues,
+        registrationDatePrivacy: PrivacyValues,
+        birthDatePrivacy: PrivacyValues
+    ) {
+        this.realName = realName;
+        this.registrationDate = registrationDate;
+        this.birthDate = birthDate;
+        this.realNamePrivacy = realNamePrivacy;
+        this.registrationDatePrivacy = registrationDatePrivacy;
+        this.birthDatePrivacy = birthDatePrivacy;
+
+    }
+}

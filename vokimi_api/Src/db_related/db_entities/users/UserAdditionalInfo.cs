@@ -27,6 +27,8 @@ namespace vokimi_api.Src.db_related.db_entities.users
         public string? YouTube { get; set; }
         public string? Facebook { get; set; }
         public string? X { get; set; }
+        public string? Instagram { get; set; }
+        public string? GitHub { get; set; }
         public string? Other1 { get; set; }
         public string? Other2 { get; set; }
         public Dictionary<string, string?> ToDictionary() => new Dictionary<string, string?> {
@@ -34,6 +36,8 @@ namespace vokimi_api.Src.db_related.db_entities.users
             ["YouTube"] = YouTube,
             ["Facebook"] = Facebook,
             ["X"] = X,
+            ["Instagram"] = Instagram,
+            ["GitHub"] = GitHub,
             ["Other1"] = Other1,
             ["Other2"] = Other2
         };
