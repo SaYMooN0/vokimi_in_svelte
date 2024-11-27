@@ -22,7 +22,7 @@ const authData = writable<AuthStoreData | null>(null);
 
 async function fetchAuthData(): Promise<void> {
     try {
-        const response = await fetch("/api/pingauth");
+        const response = await fetch("/api/auth/ping");
 
         if (response.status === 200) {
             const data = await response.json();

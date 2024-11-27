@@ -78,6 +78,7 @@ namespace vokimi_api
             TestTakingPageEndpointsMapper.MapAll(app);
             PostsCreationEndpointsMapper.MapAll(app);
             TestCollectionsEndpointsMapper.MapAll(app);
+            ProfileEditingEndpointsMapper.MapAll(app);
         }
 
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {

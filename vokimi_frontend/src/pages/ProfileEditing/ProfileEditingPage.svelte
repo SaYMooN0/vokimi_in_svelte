@@ -1,7 +1,7 @@
 <script lang="ts">
     import AuthorizeView from "../../components/AuthorizeView.svelte";
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
-    import type { AllProfileEditPageData } from "../../ts/page_classes/profile_edit_page/AllProfileEditPageData";
+    import { AllProfileEditPageData } from "../../ts/page_classes/profile_edit_page/AllProfileEditPageData";
     import { StringUtils } from "../../ts/utils/StringUtils";
     import AdditionalInfoSection from "./page_sections/AdditionalInfoSection.svelte";
     import LoginDataSection from "./page_sections/LoginDataSection.svelte";
@@ -12,9 +12,16 @@
     let pageData: AllProfileEditPageData;
     async function fetchPageData(): Promise<void> {
         fetchingErr = "";
-        const response = await fetch("/api/editProfile/getEditProfileData");
+        const response = await fetch("/api/profileEditing/getEditProfileData");
         if (response.ok) {
-            pageData = await response.json();
+            const data = await response.json();
+            pageData = new AllProfileEditPageData(
+                data.additionalInfoSection,
+                data.email,
+                data.mainInfoSection,
+                data.privacySettings,
+                data.userLinks,
+            );
         } else if (response.status === 400) {
             fetchingErr = await getErrorFromResponse(response);
         } else {

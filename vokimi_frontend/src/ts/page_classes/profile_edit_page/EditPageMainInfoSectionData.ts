@@ -1,10 +1,10 @@
 export class EditPageMainInfoSectionData {
-    nickname: string;
+    username: string;
     profilePicture: string;
     aboutMe: string;
     bannerColor: string;
-    constructor(nickname: string, profilePicture: string, aboutMe: string, bannerColor: string) {
-        this.nickname = nickname;
+    constructor(username: string, profilePicture: string, aboutMe: string, bannerColor: string) {
+        this.username = username;
         this.profilePicture = profilePicture;
         this.aboutMe = aboutMe;
         this.bannerColor = bannerColor;

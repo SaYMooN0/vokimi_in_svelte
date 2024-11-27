@@ -199,6 +199,9 @@ namespace vokimi_api.Endpoints
                 return Results.Ok();
             }
         }
+        internal static async Task<IResult> CreatePasswordUpdateRequest() {
+
+        }
 
         public static async Task<IResult> Logout(HttpContext httpContext) {
             await httpContext.SignOutAsync();

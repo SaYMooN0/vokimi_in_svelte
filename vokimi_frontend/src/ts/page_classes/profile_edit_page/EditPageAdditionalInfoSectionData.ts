@@ -2,15 +2,15 @@ import type { PrivacyValues } from "../../enums/PrivacyValues";
 
 export class EditPageAdditionalInfoSectionData {
     realName: string;
-    readonly registrationDate: string;
-    birthDate: Date;
+    readonly registrationDate: Date;
+    birthDate: Date | null;
     realNamePrivacy: PrivacyValues;
     registrationDatePrivacy: PrivacyValues;
     birthDatePrivacy: PrivacyValues;
     constructor(
         realName: string,
-        registrationDate: string,
-        birthDate: Date,
+        registrationDate: Date,
+        birthDate: Date | null,
         realNamePrivacy: PrivacyValues,
         registrationDatePrivacy: PrivacyValues,
         birthDatePrivacy: PrivacyValues
