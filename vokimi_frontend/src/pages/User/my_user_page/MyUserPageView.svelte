@@ -3,6 +3,7 @@
     import UserAdditionalInfoDialog from "../states_shared/UserAdditionalInfoDialog.svelte";
     import UserPageTopInfo from "../states_shared/UserPageTopInfo.svelte";
     import UserPageViewFrame from "../states_shared/UserPageViewFrame.svelte";
+    import AccountBaseStats from "../states_shared/AccountBaseStats.svelte";
 
     export let userId: string = "";
     let dialogElement: UserAdditionalInfoDialog;
@@ -54,6 +55,7 @@
             <label on:click={logout} class="logout-btn"> Log out </label>
         </div>
     </UserPageTopInfo>
+    <AccountBaseStats />
 </UserPageViewFrame>
 
 <style>

@@ -19,18 +19,17 @@ namespace vokimi_api.Services
             _password = password;
         }
 
-        public async Task<Err> SendEmail(string to, string subject, string body, bool isHtml = false) {
+        private async Task<Err> SendEmailWithHtmlBody(
+            string to,
+            string subject,
+            string body
+        ) {
             try {
                 MimeMessage message = new();
                 message.From.Add(new MailboxAddress("Vokimi", _username));
                 message.To.Add(new MailboxAddress("", to));
                 message.Subject = subject;
-
-                if (isHtml) {
-                    message.Body = new TextPart("html") { Text = body };
-                } else {
-                    message.Body = new TextPart("plain") { Text = body };
-                }
+                message.Body = new TextPart("html") { Text = body };
 
                 using (var client = await ConfigureSmtpClient()) {
                     await client.SendAsync(message);
@@ -42,13 +41,26 @@ namespace vokimi_api.Services
             }
         }
 
-        public async Task<Err> SendConfirmationLink(string to, string confirmationLink) {
+        public async Task<Err> SendRegistrationConfirmationLink(string to, string confirmationLink) {
             string subject = "Please confirm your email";
             string body =
                 "<p>Thank you for registering. Please click the link below to confirm your email:</p>" +
                $"<p><a href='{confirmationLink}'>Confirm Email</a></p>";
 
-            return await SendEmail(to, subject, body, true);
+            return await SendEmailWithHtmlBody(to, subject, body);
+        }
+        public async Task<Err> SendPasswordUpdateLink(
+            string to,
+            string confirmationLink,
+            string accountUsername
+        ) {
+            string subject = "Password update request";
+            string body =
+               $"<p>If you want to update the password on the {accountUsername} account, click the link. </p>" +
+               $"<p><a href='{confirmationLink}'>Update my password</a></p>"+
+               $"If you didn't make the password change request, just ignore this message.</p>";
+            
+            return await SendEmailWithHtmlBody(to, subject, body);
         }
         private async Task<SmtpClient> ConfigureSmtpClient() {
             var client = new SmtpClient();

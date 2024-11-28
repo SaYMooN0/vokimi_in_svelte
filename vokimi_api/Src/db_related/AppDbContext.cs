@@ -26,6 +26,7 @@ namespace vokimi_api.Src.db_related
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<LoginInfo> LoginInfo { get; set; }
         public DbSet<UserAdditionalInfo> UserAdditionalInfo { get; set; }
+        public DbSet<PasswordUpdateRequest> PasswordUpdateRequests { get; set; }
 
         //users page
         public DbSet<UserPageSettings> UserPageSettings { get; set; }
@@ -112,7 +113,7 @@ namespace vokimi_api.Src.db_related
             //test taking records
             modelBuilder.ConfigureBaseTestTakenRecords();
             modelBuilder.ConfigureGeneralTestTakenRecords();
-            
+
             //test collections
             modelBuilder.ConfigureTestCollections();
 

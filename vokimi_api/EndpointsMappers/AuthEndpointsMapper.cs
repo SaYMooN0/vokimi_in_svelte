@@ -11,7 +11,14 @@ namespace vokimi_api.EndpointsMappers
             app.MapPost("/confirmRegistration", AuthEndpoints.ConfirmRegistration);
             app.MapPost("/login", AuthEndpoints.Login);
             app.MapPost("/logout", AuthEndpoints.Logout);
-            app.MapPost("/auth/createPasswordUpdateRequest/email", AuthEndpoints.CreatePasswordUpdateRequest);
+            app.MapPost(
+                "/auth/createPasswordUpdateRequest/{email}",
+                AuthEndpoints.CreatePasswordUpdateRequest
+            );
+            app.MapPost(
+                "/auth/confirmPasswordUpdateRequest",
+                AuthEndpoints.SetNewPasswordRequest
+            );
         }
     }
 }

@@ -18,9 +18,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace vokimi_api.Endpoints
 {
-    public class AuthEndpoints
+    internal class AuthEndpoints
     {
-        public static async Task<Results<Ok<PingAuthResponse>, UnauthorizedHttpResult>> PingAuth(
+        internal static async Task<Results<Ok<PingAuthResponse>, UnauthorizedHttpResult>> PingAuth(
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
@@ -45,7 +45,7 @@ namespace vokimi_api.Endpoints
         }
 
 
-        public static async Task<IResult> GetUsernameWithProfilePicture(
+        internal static async Task<IResult> GetUsernameWithProfilePicture(
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
@@ -68,7 +68,7 @@ namespace vokimi_api.Endpoints
 
         }
 
-        public static async Task<IResult> Signup(
+        internal static async Task<IResult> Signup(
             [FromBody] SignupRequest signupRequest,
             IDbContextFactory<AppDbContext> dbFactory,
             EmailService emailService
@@ -103,7 +103,10 @@ namespace vokimi_api.Endpoints
                 string confirmationLink =
                     $"{signupRequest.FrontendBaseUrl}/confirm-registration/{unconfirmedUser.Id}/{confirmationCode}";
 
-                Err emailErr = await emailService.SendConfirmationLink(signupRequest.Email, confirmationLink);
+                Err emailErr = await emailService.SendRegistrationConfirmationLink(
+                    signupRequest.Email,
+                    confirmationLink
+                );
                 if (emailErr.NotNone()) {
                     throw new Exception();
                 }
@@ -117,7 +120,7 @@ namespace vokimi_api.Endpoints
             return Results.Ok();
         }
 
-        public static async Task<IResult> ConfirmRegistration(
+        internal static async Task<IResult> ConfirmRegistration(
             [FromBody] ConfirmRegistrationRequest requestData,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -168,7 +171,7 @@ namespace vokimi_api.Endpoints
             return Results.Ok();
         }
 
-        public static async Task<IResult> Login(
+        internal static async Task<IResult> Login(
             [FromBody] LoginRequest loginRequest,
             IDbContextFactory<AppDbContext> dbFactory,
             HttpContext httpContext
@@ -199,11 +202,109 @@ namespace vokimi_api.Endpoints
                 return Results.Ok();
             }
         }
-        internal static async Task<IResult> CreatePasswordUpdateRequest() {
+        internal static async Task<IResult> CreatePasswordUpdateRequest(
+            [FromBody] CreatePasswordUpdateRequest request,
+            EmailService emailService,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
+            Err requestErr = request.CheckForErr();
+            if (requestErr.NotNone()) {
+                return ResultsHelper.BadRequest.WithErr(requestErr);
+            }
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                using (var transaction = await db.Database.BeginTransactionAsync()) {
+                    try {
+                        AppUser? user = await db.AppUsers
+                            .Include(x => x.LoginInfo)
+                            .FirstOrDefaultAsync(u => u.LoginInfo.Email == request.Email);
+                        if (user is null) {
+                            return ResultsHelper.BadRequest.WithErr("There is no account with this email");
+                        }
+                        PasswordUpdateRequest? dbRequestRecord = await db.PasswordUpdateRequests
+                            .FirstOrDefaultAsync(ur => ur.LoginInfoId == user.LoginInfo.Id);
+                        if (dbRequestRecord is null) {
+                            dbRequestRecord = PasswordUpdateRequest.CreateNew(user.LoginInfo.Id);
+                            await db.AddAsync(dbRequestRecord);
+                        } else {
+                            dbRequestRecord.UpdateConfirmationCode();
+                            db.Update(dbRequestRecord);
+                        }
+                        string confirmationLink =
+                            $"{request.FrontendBaseUrl}/" +
+                            $"updatePassword/{dbRequestRecord.Id}/" +
+                            $"{dbRequestRecord.ConfirmationCode}";
+                        Err emailSendingErr = await emailService.SendPasswordUpdateLink(
+                            request.Email,
+                            confirmationLink,
+                            user.Username
+                        );
+                        if (emailSendingErr.NotNone()) {
+                            throw new Exception();
+                        }
+                        await db.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        return Results.Ok();
+
+                    } catch {
+                        await transaction.RollbackAsync();
+                        return ResultsHelper.BadRequest.ServerError();
+                    }
+                }
+
+            }
+
 
         }
+        internal static async Task<IResult> SetNewPasswordRequest(
+            [FromBody] SetNewPasswordRequest request,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
+            Err requestErr = request.CheckForErr();
+            if (requestErr.NotNone()) {
+                return ResultsHelper.BadRequest.WithErr(requestErr);
+            }
+            if (!Guid.TryParse(request.updateRequestRecordId, out var guid)) {
+                return ResultsHelper.BadRequest.WithErr("Invalid link");
+            }
+            PasswordUpdateRequestId updateRequestId = new(guid);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                using (var transaction = await db.Database.BeginTransactionAsync()) {
+                    try {
+                        PasswordUpdateRequest? updateRequest =
+                            await db.PasswordUpdateRequests.FindAsync(updateRequestId);
+                        if (updateRequest is null) {
+                            return ResultsHelper.BadRequest.WithErr(
+                                "No password update request found. " +
+                                "You may have already updated your password. " +
+                                "If you want to do it again, start the process all over again"
+                            );
+                        }
+                        if (updateRequest.ConfirmationCode != request.confirmationCode) {
+                            return ResultsHelper.BadRequest.WithErr(
+                                "It looks like you are using an old incorrect link to update your password. " +
+                                "Please use the latest one"
+                            );
+                        }
+                        LoginInfo? loginInfo = await db.LoginInfo.FindAsync(updateRequest.LoginInfoId);
+                        if (loginInfo is null) {
+                            return ResultsHelper.BadRequest.WithErr("Invalid link");
+                        }
+                        string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.newPassword);
+                        loginInfo.UpdatePasswordHash(passwordHash);
+                        db.Update(loginInfo);
+                        db.PasswordUpdateRequests.Remove(updateRequest);
+                        await db.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        return Results.Ok();
+                    } catch {
+                        await transaction.RollbackAsync();
+                        return ResultsHelper.BadRequest.ServerError();
+                    }
+                }
+            }
+        }
 
-        public static async Task<IResult> Logout(HttpContext httpContext) {
+        internal static async Task<IResult> Logout(HttpContext httpContext) {
             await httpContext.SignOutAsync();
             return Results.Ok();
         }

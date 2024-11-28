@@ -1,4 +1,5 @@
 <script lang="ts">
+    import AccountBaseStats from "../states_shared/AccountBaseStats.svelte";
     import UserAdditionalInfoDialog from "../states_shared/UserAdditionalInfoDialog.svelte";
     import UserPageTopInfo from "../states_shared/UserPageTopInfo.svelte";
     import UserPageViewFrame from "../states_shared/UserPageViewFrame.svelte";
@@ -17,4 +18,5 @@
             <button class="edit-profile-btn">Follow</button>
         </div>
     </UserPageTopInfo>
+    <AccountBaseStats />
 </UserPageViewFrame>
