@@ -67,6 +67,11 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new LoginInfoId(v));
             });
+            modelBuilder.Entity<PasswordUpdateRequest>(entity => {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Id).HasConversion(v => v.Value, v => new PasswordUpdateRequestId(v));
+                entity.Property(x => x.LoginInfoId).HasConversion(v => v.Value, v => new LoginInfoId(v));
+            });
         }
 
         internal static void ConfigureUserAdditionalInfo(this ModelBuilder modelBuilder) {

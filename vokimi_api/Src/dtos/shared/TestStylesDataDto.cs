@@ -16,7 +16,7 @@ namespace vokimi_api.Src.dtos.shared
         );
         public Err CheckForErr() {
             string accentcolor = this.AccentColor;
-            if (string.IsNullOrEmpty(accentcolor) || SharedConsts.HexColorRegex.IsMatch(accentcolor)) {
+            if (string.IsNullOrEmpty(accentcolor) || !SharedConsts.HexColorRegex.IsMatch(accentcolor)) {
 
                 return new Err("Invalid accent color");
             }
