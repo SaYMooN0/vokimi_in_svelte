@@ -6,6 +6,7 @@ namespace vokimi_api.EndpointsMappers.pages
     {
         internal static void MapAll(WebApplication app) {
             app.MapGet("/profileEditing/getEditProfileData", ProfileEditingEndpoints.GetProfileData);
+            app.MapPost("/profileEditing/updateUsername", ProfileEditingEndpoints.UpdateUsername);
         }
     }
 }

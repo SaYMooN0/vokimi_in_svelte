@@ -49,6 +49,8 @@ namespace vokimi_api.Src.db_related.db_entities.users
             UserAdditionalInfoId = userAdditionalInfoId,
             UserPageSettingsId = userPageSettingsId
         };
+        public void UpdateUsername(string newUsername) =>
+            this.Username = newUsername;
 
     }
 }

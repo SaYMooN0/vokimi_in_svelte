@@ -2,34 +2,36 @@
     import LinkHasBeenSentMessage from "./LinkHasBeenSentMessage.svelte";
     import InputWithIcon from "./InputWithIcon.svelte";
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
+    import { Err } from "../../ts/Err";
 
     let email: string = "";
     let password: string = "";
     let username: string = "";
     let errorMessage: string = "";
-    let valid: boolean = false;
     let linkHasBeenSent: boolean = false;
 
     async function submitForm() {
-        validateForm();
-        if (valid) {
-            const frontendBaseUrl = window.location.origin;
-            const data = { email, password, username, frontendBaseUrl };
-            const response = await fetch("/api/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
+        const formErr = checkFromDataForErr();
+        if (formErr.notNone()) {
+            errorMessage = formErr.toString();
+            return;
+        }
+        const frontendBaseUrl = window.location.origin;
+        const data = { email, password, username, frontendBaseUrl };
+        const response = await fetch("/api/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
 
-            if (response.ok) {
-                linkHasBeenSent = true;
-            } else if (response.status === 400) {
-                errorMessage = await getErrorFromResponse(response);
-            } else {
-                errorMessage = "An unknown error occurred.";
-            }
+        if (response.ok) {
+            linkHasBeenSent = true;
+        } else if (response.status === 400) {
+            errorMessage = await getErrorFromResponse(response);
+        } else {
+            errorMessage = "An unknown error occurred.";
         }
     }
     function validateEmail(email: string) {
@@ -37,17 +39,13 @@
         return regex.test(email);
     }
 
-    function validateForm() {
+    function checkFromDataForErr(): Err {
         if (!email || !password) {
-            errorMessage = "Please fill in all the fields.";
-            valid = false;
+            return new Err("Please fill in all the fields");
         } else if (!validateEmail(email)) {
-            errorMessage = "Please enter a valid email address.";
-            valid = false;
-        } else {
-            errorMessage = "";
-            valid = true;
+            return new Err("Please enter a valid email address");
         }
+        return Err.none();
     }
 </script>
 

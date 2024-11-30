@@ -55,6 +55,9 @@ async function getAuthData(): Promise<AuthStoreData | null> {
 
     return currentData;
 }
-
+export async function getAuthDataForced(): Promise<AuthStoreData | null> {
+    await fetchAuthData();
+    return get(authData);
+}
 
 export default getAuthData;

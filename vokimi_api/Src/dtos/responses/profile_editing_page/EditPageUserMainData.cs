@@ -3,7 +3,7 @@
 namespace vokimi_api.Src.dtos.responses.profile_editing_page
 {
     public record class EditPageUserMainData(
-        string Usermame,
+        string Username,
         string ProfilePicture,
         string AboutMe,
         string BannerColor

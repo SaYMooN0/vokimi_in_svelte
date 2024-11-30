@@ -88,11 +88,13 @@
         background-color: var(--back-secondary);
         padding: 4px 12px;
         width: fit-content;
+        max-width: 90%;
+        overflow: hidden;
         border: 2px solid var(--back-secondary);
         border-radius: 100px;
-        display: flex;
+        display: grid;
+        grid-template-columns: auto 1fr;
         align-items: center;
-        justify-content: center;
         gap: 8px;
         font-size: 16px;
         cursor: pointer;

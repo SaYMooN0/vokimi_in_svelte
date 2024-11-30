@@ -3,7 +3,6 @@
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
     import { AllProfileEditPageData } from "../../ts/page_classes/profile_edit_page/AllProfileEditPageData";
     import { StringUtils } from "../../ts/utils/StringUtils";
-    import EditTextFieldDialog from "./page_components/EditTextFieldDialog.svelte";
     import AdditionalInfoSection from "./page_sections/AdditionalInfoSection.svelte";
     import LoginDataSection from "./page_sections/LoginDataSection.svelte";
     import MainInfoSection from "./page_sections/MainInfoSection.svelte";
@@ -29,8 +28,6 @@
             fetchingErr = "Unknown error";
         }
     }
-
-    let dialogElement: EditTextFieldDialog;
 </script>
 
 <AuthorizeView>
@@ -46,23 +43,8 @@
                         : fetchingErr}
                 </div>
             {:else}
-                <EditTextFieldDialog bind:this={dialogElement} />
                 <div class="profile-editing-page-frame">
-                    <MainInfoSection
-                        sectionData={pageData.mainInfoSection}
-                        openTextFieldEditingDialog={(
-                            dialogTitleMessage,
-                            initialValue,
-                            inputPlaceholder,
-                            saveChangesFunc,
-                        ) =>
-                            dialogElement.open(
-                                dialogTitleMessage,
-                                initialValue,
-                                inputPlaceholder,
-                                saveChangesFunc,
-                            )}
-                    />
+                    <MainInfoSection sectionData={pageData.mainInfoSection} />
                     <AdditionalInfoSection
                         sectionData={pageData.additionalInfoSection}
                     />
@@ -94,6 +76,6 @@
         margin: 0 auto;
         display: flex;
         flex-direction: column;
-        width: calc(80vw + 64px);
+        width: calc(72vw + 64px);
     }
 </style>
