@@ -20,7 +20,9 @@
         bannerColor={sectionData.bannerColor}
         aboutMe={sectionData.aboutMe}
     />
-    <MainInfoSectionRightSide profilePicPath={sectionData.profilePicture} />
+    <MainInfoSectionRightSide
+        bind:profilePicPath={sectionData.profilePicture}
+    />
 </div>
 
 <style>

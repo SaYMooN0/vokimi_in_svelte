@@ -74,6 +74,9 @@
     color: var(--text-faded);
     font-size: 14px;
   }
+  .comment-body p {
+    word-break: break-all;
+  }
   .child-comments {
     margin-left: 24px;
   }

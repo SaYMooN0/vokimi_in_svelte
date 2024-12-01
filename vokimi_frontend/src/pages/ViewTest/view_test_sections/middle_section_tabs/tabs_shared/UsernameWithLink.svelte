@@ -15,5 +15,7 @@
         padding: 2px 6px;
         border-radius: 4px;
         transition: all 0.08s ease;
+        max-width: inherit;
+        word-break: break-all;
     }
 </style>

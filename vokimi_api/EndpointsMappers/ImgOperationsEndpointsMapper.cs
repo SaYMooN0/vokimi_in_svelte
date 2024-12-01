@@ -16,6 +16,11 @@ namespace vokimi_api.EndpointsMappers
                 .DisableAntiforgery();
             app.MapPost("/saveimg/saveDraftTestConclusionImage/{testId}", ImgOperationsEndpoints.SaveDraftTestConclusionImage)
                 .DisableAntiforgery();
+            app.MapPost("/saveimg/updateProfilePic", ImgOperationsEndpoints.UpdateUserProfilePic)
+                .DisableAntiforgery();
+            app.MapPost("/saveimg/setProfilePicToDefault", ImgOperationsEndpoints.SetUserProfilePicToDefault)
+                .DisableAntiforgery();
+
         }
     }
 

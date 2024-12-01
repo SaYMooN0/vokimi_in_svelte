@@ -88,7 +88,7 @@
         background-color: var(--back-secondary);
         padding: 4px 12px;
         width: fit-content;
-        max-width: 90%;
+        max-width: 92%;
         overflow: hidden;
         border: 2px solid var(--back-secondary);
         border-radius: 100px;

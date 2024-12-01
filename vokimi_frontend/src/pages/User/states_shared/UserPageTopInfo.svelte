@@ -131,6 +131,7 @@
         font-size: 32px;
         font-weight: 700;
         margin: 0;
+        word-break: break-all;
     }
 
     .additional-info-label {

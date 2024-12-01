@@ -51,6 +51,8 @@ namespace vokimi_api.Src.db_related.db_entities.users
         };
         public void UpdateUsername(string newUsername) =>
             this.Username = newUsername;
+        public void UpdateProfilePicture(string newProfilePic) =>
+            this.ProfilePicturePath = newProfilePic;
 
     }
 }

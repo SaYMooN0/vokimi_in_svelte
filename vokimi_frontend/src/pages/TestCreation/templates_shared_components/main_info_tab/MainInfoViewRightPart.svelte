@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { Err } from "../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
 
@@ -24,11 +25,12 @@
             },
         );
 
-        const { image: newImgPath, err: newErrorString } =
-            await handleResponse(response);
-        imgPath = "";
-        imgPath = newImgPath || imgPath;
-        errorString = newErrorString || "";
+        const data = await handleResponse(response);
+        if (data instanceof Err) {
+            errorString = data.toString();
+        } else {
+            imgPath = data;
+        }
     }
 
     async function changeImageToDefault() {
@@ -39,26 +41,21 @@
             },
         );
 
-        const { image: newImgPath, err: newErrorString } =
-            await handleResponse(response);
-        imgPath = newImgPath || imgPath;
-        errorString = newErrorString || "";
+        const data = await handleResponse(response);
+        if (data instanceof Err) {
+            errorString = data.toString();
+        } else {
+            imgPath = data;
+        }
     }
-    async function handleResponse(
-        response: Response,
-    ): Promise<{ image?: string; err?: string }> {
-        try {
-            if (response.ok) {
-                const data = await response.json();
-                return { image: data.imgPath, err: "" };
-            } else if (response.status === 400) {
-                const errorString = await getErrorFromResponse(response);
-                return { err: errorString };
-            } else {
-                return { err: "Unexpected server error" };
-            }
-        } catch (error) {
-            return { err: "Failed to process the request" };
+    async function handleResponse(response: Response): Promise<string | Err> {
+        if (response.ok) {
+            const data = await response.json();
+            return data.imgPath;
+        } else if (response.status === 400) {
+            return new Err(await getErrorFromResponse(response));
+        } else {
+            return new Err("Unexpected server error");
         }
     }
 </script>

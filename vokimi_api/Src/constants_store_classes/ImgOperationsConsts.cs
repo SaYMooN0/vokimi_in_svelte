@@ -19,6 +19,7 @@
            ResultsSubFolderName = "results";
         //base file names
         public const string
+            ProfilePic = "profile_pic",
             TestCoverFileName = "cover",
             QuestionImgFileName = "q_img";
         public static string DefaultTestCoverImg => $"{CommonFolder}/test_cover_default.webp";

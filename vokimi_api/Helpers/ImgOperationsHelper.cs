@@ -1,7 +1,4 @@
-﻿using Amazon.S3.Model;
-using System.Net;
-using vokimi_api.Services;
-using vokimi_api.Src.constants_store_classes;
+﻿using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related.db_entities_ids;
 
 namespace vokimi_api.Helpers
@@ -18,7 +15,8 @@ namespace vokimi_api.Helpers
         ) => CombineStoragePath(
             ImgOperationsConsts.PublishedTestsFolderName,
             testId.Value.ToString(),
-            ImgOperationsConsts.TestCoverFileName
+            ImgOperationsConsts.TestCoverFileName +
+            imgExtension
         );
         public static string GetPublishedGeneralTestResultImgKey(
             TestId testId,
@@ -112,6 +110,14 @@ namespace vokimi_api.Helpers
             ImgOperationsConsts.QuestionsSubFolderName,
             questionId.ToString(),
             ImgOperationsConsts.AnswersSubFolderName
+        );
+        public static string GetProfilePicImgKey(
+            AppUserId userId,
+            string imgExtension
+        ) => CombineStoragePath(
+            ImgOperationsConsts.ProfilePicturesFolder,
+            userId.Value.ToString(),
+            ImgOperationsConsts.ProfilePic + imgExtension
         );
     }
 }

@@ -75,6 +75,9 @@
         padding: 12px 32px;
     }
     .current-username {
+        max-width: 520px;
+        word-break: normal;
+        text-align: center;
         margin-top: 4px;
         margin-bottom: 0;
         font-size: 18px;
@@ -87,7 +90,7 @@
     }
     .new-username-input {
         margin-top: 20px;
-        width: 420px;
+        width: 480px;
         background-color: var(--back-secondary);
         outline: none;
         border: none;

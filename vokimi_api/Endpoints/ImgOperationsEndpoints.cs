@@ -6,6 +6,7 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.extension_classes;
+using vokimi_api.Src.db_related.db_entities.users;
 
 namespace vokimi_api.Endpoints
 {
@@ -165,6 +166,74 @@ namespace vokimi_api.Endpoints
                 $"{tId.Value.ToString()}" +
                 $"/{Guid.NewGuid()}{ImgOperationsHelper.ExtractFileExtension(file)}";
             return await storageService.IResultSaveImgToStorage(key, file);
+        }
+        public static async Task<IResult> UpdateUserProfilePic(
+           IFormFile file,
+           IDbContextFactory<AppDbContext> dbFactory,
+           VokimiStorageService vokimiStorage,
+           HttpContext httpContext
+        ) {
+            if (!httpContext.TryGetUserId(out var userId)) {
+                return ResultsHelper.BadRequest.LogOutLogIn();
+            }
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                AppUser? user = await db.AppUsers.FindAsync(userId);
+                if (user is null) {
+                    return ResultsHelper.BadRequest.LogOutLogIn();
+                }
+                string extension = ImgOperationsHelper.ExtractFileExtension(file);
+                string key = ImgOperationsHelper.GetProfilePicImgKey(userId, extension);
+
+                using (var transaction = await db.Database.BeginTransactionAsync()) {
+                    try {
+                        string? savedKey = await vokimiStorage.SaveImgToStorage(key, file);
+                        if (savedKey is null) {
+                            throw new Exception();
+                        }
+                        string oldPath = user.ProfilePicturePath;
+                        user.UpdateProfilePicture(savedKey);
+                        await db.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        if (oldPath != ImgOperationsConsts.DefaultProfilePicture && oldPath != savedKey) {
+                            await vokimiStorage.DeleteFiles([oldPath]);
+                        }
+                        return ResultsHelper.Ok.WithImgPath(key);
+                    } catch {
+                        await transaction.RollbackAsync();
+                        return ResultsHelper.BadRequest.ServerError();
+                    }
+                }
+            }
+        }
+        internal static async Task<IResult> SetUserProfilePicToDefault(
+           IDbContextFactory<AppDbContext> dbFactory,
+           HttpContext httpContext,
+           VokimiStorageService vokimiStorageService
+       ) {
+            if (!httpContext.TryGetUserId(out var userId)) {
+                return ResultsHelper.BadRequest.LogOutLogIn();
+            }
+            try {
+                using (var db = await dbFactory.CreateDbContextAsync()) {
+                    AppUser? user = await db.AppUsers.FindAsync(userId);
+                    if (user is null) {
+                        return ResultsHelper.BadRequest.LogOutLogIn();
+                    }
+                    if (user.ProfilePicturePath == ImgOperationsConsts.DefaultProfilePicture) {
+                        return ResultsHelper.Ok.WithImgPath(user.ProfilePicturePath);
+                    }
+                    string oldPath = user.ProfilePicturePath;
+                    string newPath = ImgOperationsConsts.DefaultProfilePicture;
+                    user.UpdateProfilePicture(newPath);
+                    await db.SaveChangesAsync();
+                    if (oldPath != ImgOperationsConsts.DefaultProfilePicture && oldPath != newPath) {
+                        await vokimiStorageService.DeleteFiles([oldPath]);
+                    }
+                    return ResultsHelper.Ok.WithImgPath(newPath);
+                }
+            } catch {
+                return ResultsHelper.BadRequest.ServerError();
+            }
         }
     }
 }
