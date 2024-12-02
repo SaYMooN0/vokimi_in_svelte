@@ -11,5 +11,7 @@ namespace vokimi_api.Src.constants_store_classes
         public const int 
             MinUsernameLength = 4, 
             MaxUsernameLength = 30;
+        public const int
+            MaxAboutMeLength = 500;
     }
 }

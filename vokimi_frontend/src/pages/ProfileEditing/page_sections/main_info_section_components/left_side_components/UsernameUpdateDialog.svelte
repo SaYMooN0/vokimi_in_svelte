@@ -1,9 +1,10 @@
 <script lang="ts">
-    import BaseDialog from "../../../../components/BaseDialog.svelte";
-    import CloseButton from "../../../../components/shared/CloseButton.svelte";
-    import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
-    import { getAuthDataForced } from "../../../../ts/stores/authStore";
-    import { StringUtils } from "../../../../ts/utils/StringUtils";
+    import BaseDialog from "../../../../../components/BaseDialog.svelte";
+    import CloseButton from "../../../../../components/shared/CloseButton.svelte";
+    import { getErrorFromResponse } from "../../../../../ts/ErrorResponse";
+    import { getAuthDataForced } from "../../../../../ts/stores/authStore";
+    import { StringUtils } from "../../../../../ts/utils/StringUtils";
+    import UpdateDialogSaveBtn from "./UpdateDialogSaveBtn.svelte";
 
     let dialogElement: BaseDialog;
     let newUsername: string = "";
@@ -42,7 +43,7 @@
     }
 </script>
 
-<BaseDialog dialogId="textFieldEditingDialog" bind:this={dialogElement}>
+<BaseDialog dialogId="usernameEditingDialog" bind:this={dialogElement}>
     <div class="dialog-content">
         <CloseButton
             onClose={() => {
@@ -60,9 +61,7 @@
         {#if !StringUtils.isNullOrWhiteSpace(errorMessage)}
             <p class="error-message">{errorMessage}</p>
         {/if}
-        <button on:click={saveNewUsername} class="save-btn unselectable">
-            Save
-        </button>
+        <UpdateDialogSaveBtn onSaveClicked={saveNewUsername} />
     </div>
 </BaseDialog>
 
@@ -98,7 +97,7 @@
         padding: 4px 8px;
         font-size: 20px;
         border-bottom: 2px solid var(--text-faded);
-        columns: var(--text);
+        color: var(--text);
         transition: all 0.12s ease-in;
     }
     .new-username-input:focus {
@@ -108,23 +107,5 @@
     .error-message {
         margin: 8px 0;
         color: var(--red-del);
-    }
-    .save-btn {
-        margin-top: 32px;
-        padding: 4px 24px;
-        font-size: 22px;
-        color: var(--back-main);
-        background-color: var(--primary);
-        border-radius: 4px;
-        outline: none;
-        border: none;
-        cursor: pointer;
-        transition: all 0.08s ease-in;
-    }
-    .save-btn:hover {
-        background-color: var(--primary-hov);
-    }
-    .save-btn:active {
-        transform: scale(0.94);
     }
 </style>

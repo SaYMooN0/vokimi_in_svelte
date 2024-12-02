@@ -3,7 +3,6 @@
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
     import { AllProfileEditPageData } from "../../ts/page_classes/profile_edit_page/AllProfileEditPageData";
     import { StringUtils } from "../../ts/utils/StringUtils";
-    import AdditionalInfoSection from "./page_sections/AdditionalInfoSection.svelte";
     import LoginDataSection from "./page_sections/LoginDataSection.svelte";
     import MainInfoSection from "./page_sections/MainInfoSection.svelte";
     import UserLinksSection from "./page_sections/UserLinksSection.svelte";
@@ -16,7 +15,6 @@
         if (response.ok) {
             const data = await response.json();
             pageData = new AllProfileEditPageData(
-                data.additionalInfoSection,
                 data.email,
                 data.mainInfoSection,
                 data.privacySettings,
@@ -45,9 +43,6 @@
             {:else}
                 <div class="profile-editing-page-frame">
                     <MainInfoSection sectionData={pageData.mainInfoSection} />
-                    <AdditionalInfoSection
-                        sectionData={pageData.additionalInfoSection}
-                    />
                     <UserLinksSection sectionData={pageData.userLinks} />
                     <UserPagePrivacySection
                         sectionData={pageData.privacySettings}

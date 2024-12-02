@@ -1,22 +1,18 @@
-import type { EditPageAdditionalInfoSectionData } from "./EditPageAdditionalInfoSectionData";
 import type { EditPageLinksSectionData } from "./EditPageLinksSectionData";
 import type { EditPageMainInfoSectionData } from "./EditPageMainInfoSectionData";
-import type { EditPageUserPagePrivacySectionData } from "./EditPageUserPagePrivacySectionData";
+import type { EditPagePrivacySettingsSectionData } from "./EditPagePrivacySettingsSectionData";
 
 export class AllProfileEditPageData {
-    additionalInfoSection: EditPageAdditionalInfoSectionData;
     readonly email: string;
     mainInfoSection: EditPageMainInfoSectionData;
     userLinks: EditPageLinksSectionData;
-    privacySettings: EditPageUserPagePrivacySectionData;
+    privacySettings: EditPagePrivacySettingsSectionData;
     constructor(
-        additionalInfoSection: EditPageAdditionalInfoSectionData,
         email: string,
         mainInfoSection: EditPageMainInfoSectionData,
         userLinks: EditPageLinksSectionData,
-        privacySettings: EditPageUserPagePrivacySectionData
+        privacySettings: EditPagePrivacySettingsSectionData
     ) {
-        this.additionalInfoSection = additionalInfoSection;
         this.email = email;
         this.mainInfoSection = mainInfoSection;
         this.userLinks = userLinks;

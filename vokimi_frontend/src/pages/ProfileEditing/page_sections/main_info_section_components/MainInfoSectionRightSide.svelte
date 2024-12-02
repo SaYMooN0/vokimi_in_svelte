@@ -1,8 +1,6 @@
 <script lang="ts">
-    import { Err } from "../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
-    import { StringUtils } from "../../../../ts/utils/StringUtils";
 
     export let profilePicPath: string;
     let errorString: string = "";

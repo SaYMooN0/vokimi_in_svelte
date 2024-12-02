@@ -1,9 +1,16 @@
 <script lang="ts">
     import EditButton from "../../section_shared_components/EditButton.svelte";
+
     export let openUsernameEditingDialog: () => void;
+    export let openAboutMeEditingDialog: () => void;
+    export let openBannerColorEditingDialog: () => void;
+
     export let username: string;
     export let bannerColor: string;
+    export let realName: string;
+    export let birthDate: Date | null;
     export let aboutMe: string;
+    export let registrationDate: Date;
 </script>
 
 <div class="section-left-side">
@@ -28,18 +35,34 @@
                 style="background-color: {bannerColor}"
             />
         </div>
+        <EditButton
+            showText={false}
+            editButtonAction={openBannerColorEditingDialog}
+        />
+    </div>
+    <div class="editable-field-p">
+        <span>real name</span>
         <EditButton showText={false} editButtonAction={() => {}} />
+    </div>
+    <div class="editable-field-p">
+        <span>birthDate</span>
+        <EditButton showText={false} editButtonAction={() => {}} />
+    </div>
+    <div>
+        <span>registrationDate</span>
     </div>
     <div class="editable-field-p">
         <span>About me</span>
         <label>{aboutMe || "No description"}</label>
-        <EditButton showText={false} editButtonAction={() => {}} />
+        <EditButton
+            showText={false}
+            editButtonAction={openAboutMeEditingDialog}
+        />
     </div>
 </div>
 
 <style>
     .section-left-side {
-        margin-top: 40px;
         display: flex;
         flex-direction: column;
     }

@@ -12,18 +12,21 @@ namespace vokimi_api.Src.db_related.db_entities.users
         public string BannerColor { get; private set; }
         //icons or chosen badges
         public UserPagePrivacySettings PrivacySettings { get; private set; } = UserPagePrivacySettings.Default;
-        public Err ChangeUserPageColor(string color) {
-            if (string.IsNullOrWhiteSpace(color) || !Regex.IsMatch(color, "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")) {
-                return new Err("Invalid color format. Please use a valid hex code.");
-            }
-            BannerColor = color;
-            return Err.None;
-        }
         public static UserPageSettings CreateNew() => new() {
             Id = new(),
             AboutMe = string.Empty,
             BannerColor = SharedConsts.PrimaryColor,
             PrivacySettings = UserPagePrivacySettings.Default,
         };
+        public Err UpdateBannerColor(string color) {
+            if (!SharedConsts.HexColorRegex.IsMatch(color)) {
+                return new Err("Invalid color format. Please use a valid hex code.");
+            }
+            BannerColor = color;
+            return Err.None;
+        }
+        public void UpdateAboutMe(string newAboutMe) {
+            AboutMe = newAboutMe;
+        }
     }
 }

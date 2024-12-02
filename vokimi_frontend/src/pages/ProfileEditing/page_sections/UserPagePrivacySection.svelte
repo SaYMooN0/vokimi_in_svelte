@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { EditPageUserPagePrivacySectionData } from "../../../ts/page_classes/profile_edit_page/EditPageUserPagePrivacySectionData";
+    import type { EditPagePrivacySettingsSectionData } from "../../../ts/page_classes/profile_edit_page/EditPagePrivacySettingsSectionData";
 
-    export let sectionData: EditPageUserPagePrivacySectionData;
+    export let sectionData: EditPagePrivacySettingsSectionData;
 </script>
 
 <div>

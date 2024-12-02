@@ -3,12 +3,13 @@
     import { getErrorFromResponse } from "../../../ts/ErrorResponse";
     import { UserAdditionalInfo } from "../../../ts/page_classes/user_page_classes/UserAdditionalInfo";
     import { StringUtils } from "../../../ts/utils/StringUtils";
-    import FacebookIcon from "../social_icons/FacebookIcon.svelte";
-    import OtherLinkIcon from "../social_icons/OtherLinkIcon.svelte";
-    import TelegramIcon from "../social_icons/TelegramIcon.svelte";
-    import XIcon from "../social_icons/XIcon.svelte";
-    import YouTubeIcon from "../social_icons/YouTubeIcon.svelte";
-
+    import FacebookIcon from "../../../components/icons/social_icons/FacebookIcon.svelte";
+    import InstagramIcon from "../../../components/icons/social_icons/InstagramIcon.svelte";
+    import OtherLinkIcon from "../../../components/icons/social_icons/OtherLinkIcon.svelte";
+    import TelegramIcon from "../../../components/icons/social_icons/TelegramIcon.svelte";
+    import XIcon from "../../../components/icons/social_icons/XIcon.svelte";
+    import YouTubeIcon from "../../../components/icons/social_icons/YouTubeIcon.svelte";
+    import GitHubIcon from "../../../components/icons/social_icons/GitHubIcon.svelte";
     export let userId: string;
     let userInfo: UserAdditionalInfo = UserAdditionalInfo.empty();
     let fetchingErr: string = "Unable to fetch data";
@@ -39,6 +40,8 @@
             YouTube: YouTubeIcon,
             Facebook: FacebookIcon,
             X: XIcon,
+            Instagram: InstagramIcon,
+            GitHub: GitHubIcon,
             Other1: OtherLinkIcon,
             Other2: OtherLinkIcon,
         };
