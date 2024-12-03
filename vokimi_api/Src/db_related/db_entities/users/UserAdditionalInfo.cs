@@ -6,9 +6,9 @@ namespace vokimi_api.Src.db_related.db_entities.users
     public class UserAdditionalInfo
     {
         public UserAdditionalInfoId Id { get; private set; }
-        public string RealName { get; private set; }
+        public string RealName { get; private set; } = string.Empty;
         public DateOnly RegistrationDate { get; init; }
-        public DateOnly? BirthDate { get; init; }
+        public DateOnly? BirthDate { get; private set; }
         public UserAdditionalInfoLinks Links { get; init; }
         public UserAdditionalInfoPrivacySettings PrivacySettings { get; init; }
         public static UserAdditionalInfo CreateNew(DateOnly registrationDate) =>
@@ -20,7 +20,14 @@ namespace vokimi_api.Src.db_related.db_entities.users
                 Links = new(),
                 PrivacySettings = UserAdditionalInfoPrivacySettings.Default
             };
+        public void UpdateRealName(string newRealName) {
+            RealName = newRealName;
+        }
+        public void UpdateBirthDate(DateOnly? newBirthDate) {
+            BirthDate = newBirthDate;
+        }
     }
+
     public class UserAdditionalInfoLinks
     {
         public string? Telegram { get; set; }
@@ -41,6 +48,11 @@ namespace vokimi_api.Src.db_related.db_entities.users
             ["Other1"] = Other1,
             ["Other2"] = Other2
         };
+        public void UpdateFromDictionary(IReadOnlyDictionary<string, string?> dictionary) {
+            Telegram = dictionary.GetValueOrDefault("Telegram", defaultValue: null);
+            YouTube = dictionary.GetValueOrDefault("YouTube", defaultValue: null);
+            throw new NotImplementedException();
+        }
     }
     public class UserAdditionalInfoPrivacySettings
     {

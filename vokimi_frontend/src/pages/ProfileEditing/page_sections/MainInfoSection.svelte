@@ -4,12 +4,16 @@
     import MainInfoSectionRightSide from "./main_info_section_components/MainInfoSectionRightSide.svelte";
     import AboutMeUpdateDialog from "./main_info_section_components/left_side_components/AboutMeUpdateDialog.svelte";
     import BannerColorUpdateDialog from "./main_info_section_components/left_side_components/BannerColorUpdateDialog.svelte";
+    import BirthdateUpdateDialog from "./main_info_section_components/left_side_components/BirthdateUpdateDialog.svelte";
+    import RealNameUpdateDialog from "./main_info_section_components/left_side_components/RealNameUpdateDialog.svelte";
     import UsernameUpdateDialog from "./main_info_section_components/left_side_components/UsernameUpdateDialog.svelte";
 
     export let sectionData: EditPageMainInfoSectionData;
     let usernameUpdatingDialog: UsernameUpdateDialog;
-    let aboutMeUpdatingDialog: AboutMeUpdateDialog;
     let bannerColorUpdatingDialog: BannerColorUpdateDialog;
+    let realNameUpdatingDialog: RealNameUpdateDialog;
+    let birthDateUpdatingDialog: BirthdateUpdateDialog;
+    let aboutMeUpdatingDialog: AboutMeUpdateDialog;
 </script>
 
 <div class="main-info-section">
@@ -18,22 +22,36 @@
         currentUsername={sectionData.username}
         updateParentElement={(newValue) => (sectionData.username = newValue)}
     />
-    <AboutMeUpdateDialog
-        bind:this={aboutMeUpdatingDialog}
-        currentAboutMe={sectionData.aboutMe}
-        updateParentElement={(newValue) => (sectionData.aboutMe = newValue)}
-    />
     <BannerColorUpdateDialog
         bind:this={bannerColorUpdatingDialog}
         currentBannerColor={sectionData.bannerColor}
         updateParentElement={(newValue) => (sectionData.bannerColor = newValue)}
     />
+    <RealNameUpdateDialog
+        bind:this={realNameUpdatingDialog}
+        currentName={sectionData.realName}
+        updateParentElement={(newVal) => (sectionData.realName = newVal)}
+    />
+    <BirthdateUpdateDialog
+        bind:this={birthDateUpdatingDialog}
+        updateParentElement={(newVal) => (sectionData.birthDate = newVal)}
+    />
+    <AboutMeUpdateDialog
+        bind:this={aboutMeUpdatingDialog}
+        currentAboutMe={sectionData.aboutMe}
+        updateParentElement={(newValue) => (sectionData.aboutMe = newValue)}
+    />
     <MainInfoSectionLeftSide
         openUsernameEditingDialog={() => usernameUpdatingDialog.open()}
-        openAboutMeEditingDialog={() => aboutMeUpdatingDialog.open()}
         openBannerColorEditingDialog={() => bannerColorUpdatingDialog.open()}
+        openRealNameEditingDialog={() => realNameUpdatingDialog.open()}
+        openBirthDateEditingDialog={() => birthDateUpdatingDialog.open()}
+        openAboutMeEditingDialog={() => aboutMeUpdatingDialog.open()}
         username={sectionData.username}
         bannerColor={sectionData.bannerColor}
+        realName={sectionData.realName}
+        birthDate={sectionData.birthDate}
+        registrationDate={sectionData.registrationDate}
         aboutMe={sectionData.aboutMe}
     />
     <MainInfoSectionRightSide

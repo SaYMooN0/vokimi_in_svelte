@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Pkcs;
 using System.Drawing;
 using vokimi_api.Helpers;
 using vokimi_api.Services;
@@ -113,6 +114,61 @@ namespace vokimi_api.Endpoints.pages
                     return ResultsHelper.BadRequest.LogOutLogIn();
                 }
                 user.UserPageSettings.UpdateBannerColor(newBannerColor);
+                await db.SaveChangesAsync();
+                return Results.Ok();
+            }
+        }
+        internal static async Task<IResult> UpdateRealName(
+            [FromBody] string newRealName,
+            HttpContext httpContext,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
+            int nameLength = string.IsNullOrEmpty(newRealName) ? 0 : newRealName.Length;
+            if (nameLength < AppUsersConsts.MinRealNameLength
+             || nameLength > AppUsersConsts.MaxRealNameLength) {
+                return ResultsHelper.BadRequest.WithErr(
+                    $"Real name must be between {AppUsersConsts.MinRealNameLength} and " +
+                    $"{AppUsersConsts.MaxRealNameLength} characters"
+                );
+            }
+
+            if (!httpContext.TryGetUserId(out var userId)) {
+                return ResultsHelper.BadRequest.LogOutLogIn();
+            }
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                AppUser? user = await db.AppUsers
+                    .Include(u => u.UserAdditionalInfo)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+                if (user is null) {
+                    return ResultsHelper.BadRequest.LogOutLogIn();
+                }
+                user.UserAdditionalInfo.UpdateRealName(newRealName);
+                await db.SaveChangesAsync();
+                return Results.Ok();
+            }
+        }
+        internal static async Task<IResult> UpdateBirthdate(
+            [FromBody] DateOnly? newBirthDate,
+            HttpContext httpContext,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
+            if (newBirthDate != null) {
+                if (newBirthDate < new DateOnly(2000, 1, 1) || newBirthDate > DateOnly.FromDateTime(DateTime.UtcNow)) {
+                    return ResultsHelper.BadRequest.WithErr("Looks like an unreal birthdate o_O");
+                }
+            }
+
+            if (!httpContext.TryGetUserId(out var userId)) {
+                return ResultsHelper.BadRequest.LogOutLogIn();
+            }
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                AppUser? user = await db.AppUsers
+                    .Include(u => u.UserAdditionalInfo)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+                if (user is null) {
+                    return ResultsHelper.BadRequest.LogOutLogIn();
+                }
+                user.UserAdditionalInfo.UpdateBirthDate(newBirthDate);
                 await db.SaveChangesAsync();
                 return Results.Ok();
             }

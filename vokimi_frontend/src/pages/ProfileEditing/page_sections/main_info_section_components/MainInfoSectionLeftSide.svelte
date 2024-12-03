@@ -1,9 +1,12 @@
 <script lang="ts">
+    import { StringUtils } from "../../../../ts/utils/StringUtils";
     import EditButton from "../../section_shared_components/EditButton.svelte";
 
     export let openUsernameEditingDialog: () => void;
-    export let openAboutMeEditingDialog: () => void;
     export let openBannerColorEditingDialog: () => void;
+    export let openRealNameEditingDialog: () => void;
+    export let openBirthDateEditingDialog: () => void;
+    export let openAboutMeEditingDialog: () => void;
 
     export let username: string;
     export let bannerColor: string;
@@ -14,9 +17,9 @@
 </script>
 
 <div class="section-left-side">
-    <p class="editable-field-p">
-        <span class="unselectable">My Username:</span>
-        <label class="username-label">
+    <p class="editable-field-div">
+        <span class="unselectable">Username:</span>
+        <label class="field-value">
             {username}
         </label>
         <EditButton
@@ -24,7 +27,7 @@
             editButtonAction={openUsernameEditingDialog}
         />
     </p>
-    <div class="editable-field-p">
+    <div class="editable-field-div">
         <span class="unselectable">Page Banner Color:</span>
         <div class="banner-color-field">
             <label>
@@ -40,20 +43,43 @@
             editButtonAction={openBannerColorEditingDialog}
         />
     </div>
-    <div class="editable-field-p">
-        <span>real name</span>
-        <EditButton showText={false} editButtonAction={() => {}} />
+    <div class="editable-field-div">
+        <span class="unselectable">Real name:</span>
+        {#if StringUtils.isNullOrWhiteSpace(realName)}
+            <label class="field-val-not-set">(Not set)</label>
+        {:else}
+            <label class="field-value">{realName}</label>
+        {/if}
+        <EditButton
+            showText={false}
+            editButtonAction={openRealNameEditingDialog}
+        />
     </div>
-    <div class="editable-field-p">
-        <span>birthDate</span>
-        <EditButton showText={false} editButtonAction={() => {}} />
+    <div class="editable-field-div">
+        <span class="unselectable">Birthdate:</span>
+        {#if birthDate === null}
+            <label class="field-val-not-set">(Not set)</label>
+        {:else}
+            <label class="field-value">{birthDate.toLocaleString()}</label>
+        {/if}
+        <EditButton
+            showText={false}
+            editButtonAction={openBirthDateEditingDialog}
+        />
     </div>
-    <div>
-        <span>registrationDate</span>
+    <div class="editable-field-div">
+        <span class="unselectable">Registration date:</span>
+        <label class="field-value">
+            {registrationDate.toLocaleString()}
+        </label>
     </div>
-    <div class="editable-field-p">
-        <span>About me</span>
-        <label>{aboutMe || "No description"}</label>
+    <div class="editable-field-div">
+        <span class="unselectable">About me:</span>
+        {#if StringUtils.isNullOrWhiteSpace(aboutMe)}
+            <label class="field-val-not-set">(Not set)</label>
+        {:else}
+            <label class="about-me-text">{aboutMe}</label>
+        {/if}
         <EditButton
             showText={false}
             editButtonAction={openAboutMeEditingDialog}
@@ -66,7 +92,7 @@
         display: flex;
         flex-direction: column;
     }
-    .editable-field-p {
+    .editable-field-div {
         min-width: 280px;
         max-width: 640px;
         position: relative;
@@ -76,20 +102,24 @@
         justify-content: space-between;
         align-items: start;
     }
-    .editable-field-p span {
+    .editable-field-div span {
         position: absolute;
         top: 0px;
         left: 12px;
         color: var(--text-faded);
         font-size: 14px;
     }
-    .username-label {
+    .field-value {
+        margin: 0;
         color: var(--text);
         font-size: 28px;
         max-width: inherit;
         overflow: hidden;
         word-break: break-all;
-        line-height: 24px;
+        align-self: flex-end;
+    }
+    .field-val-not-set {
+        font-size: 24px;
     }
     .banner-color-field {
         display: grid;
@@ -105,5 +135,9 @@
         height: 90%;
         width: 100%;
         border-radius: 5px;
+    }
+    .about-me-text {
+        color: var(--text);
+        font-size: 24px;
     }
 </style>

@@ -30,7 +30,7 @@
         flex-direction: row;
         align-items: center;
         gap: 8px;
-        height: 32px;
+        height: 28px;
         box-sizing: border-box;
         padding: 4px;
         background-color: var(--primary);

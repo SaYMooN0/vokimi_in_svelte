@@ -8,10 +8,12 @@ namespace vokimi_api.Src.constants_store_classes
             MinPasswordLength = 8,
             MaxPasswordLength = 30;
         public static readonly Regex UsernameRegex = new(@"^[a-zA-Z0-9_.,><~^А-Яа-яЁё]*$");
-        public const int 
-            MinUsernameLength = 4, 
+        public const int
+            MinUsernameLength = 4,
             MaxUsernameLength = 30;
         public const int
+            MinRealNameLength = 2,
+            MaxRealNameLength = 120,
             MaxAboutMeLength = 500;
     }
 }
