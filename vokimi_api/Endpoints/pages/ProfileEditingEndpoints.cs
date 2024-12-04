@@ -173,5 +173,47 @@ namespace vokimi_api.Endpoints.pages
                 return Results.Ok();
             }
         }
+        internal static async Task<IResult> UpdateUserLinks(
+            [FromBody] Dictionary<string, string?> newLinks,
+            HttpContext httpContext,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
+
+            if (!httpContext.TryGetUserId(out var userId)) {
+                return ResultsHelper.BadRequest.LogOutLogIn();
+            }
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                AppUser? user = await db.AppUsers
+                    .Include(u => u.UserAdditionalInfo)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+                if (user is null) {
+                    return ResultsHelper.BadRequest.LogOutLogIn();
+                }
+                return ResultsHelper.BadRequest.WithErr("Not implemented");
+                await db.SaveChangesAsync();
+                return Results.Ok();
+            }
+        }
+        internal static async Task<IResult> UpdateUserPrivacySettings(
+            [FromBody] EditPagePrivacySettingsSectionData newPrivacyValues,
+            HttpContext httpContext,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
+
+            if (!httpContext.TryGetUserId(out var userId)) {
+                return ResultsHelper.BadRequest.LogOutLogIn();
+            }
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                AppUser? user = await db.AppUsers
+                    .Include(u => u.UserAdditionalInfo)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+                if (user is null) {
+                    return ResultsHelper.BadRequest.LogOutLogIn();
+                }
+                return ResultsHelper.BadRequest.WithErr("Not implemented");
+                await db.SaveChangesAsync();
+                return Results.Ok();
+            }
+        }
     }
 }

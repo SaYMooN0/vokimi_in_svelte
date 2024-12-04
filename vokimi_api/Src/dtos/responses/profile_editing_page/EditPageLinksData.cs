@@ -11,8 +11,7 @@ namespace vokimi_api.Src.dtos.responses.profile_editing_page
         string? Instagram,
         string? GitHub,
         string? Other1,
-        string? Other2,
-        PrivacyValues LinksPrivacy
+        string? Other2
     )
     {
         public static EditPageLinksData FromUserAdditionalInfo(UserAdditionalInfo info) => new(
@@ -23,8 +22,7 @@ namespace vokimi_api.Src.dtos.responses.profile_editing_page
             info.Links.Instagram,
             info.Links.GitHub,
             info.Links.Other1,
-            info.Links.Other2,
-            info.PrivacySettings.LinksPrivacy
+            info.Links.Other2
         );
     }
 }

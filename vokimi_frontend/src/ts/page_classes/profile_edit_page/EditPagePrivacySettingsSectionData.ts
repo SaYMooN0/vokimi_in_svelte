@@ -8,6 +8,8 @@ export class EditPagePrivacySettingsSectionData {
     friends: PrivacyValues;
     followers: PrivacyValues;
     followings: PrivacyValues;
+    linksPrivacy: PrivacyValues
+
     constructor(
         realNamePrivacy: PrivacyValues,
         registrationDatePrivacy: PrivacyValues,
@@ -15,7 +17,8 @@ export class EditPagePrivacySettingsSectionData {
         publishedTest: PrivacyValues,
         friends: PrivacyValues,
         followers: PrivacyValues,
-        followings: PrivacyValues
+        followings: PrivacyValues,
+        linksPrivacy: PrivacyValues
     ) {
         this.realNamePrivacy = realNamePrivacy;
         this.registrationDatePrivacy = registrationDatePrivacy;
@@ -24,5 +27,6 @@ export class EditPagePrivacySettingsSectionData {
         this.friends = friends;
         this.followers = followers;
         this.followings = followings;
+        this.linksPrivacy = linksPrivacy;
     }
 }

@@ -2,6 +2,7 @@
     import AuthorizeView from "../../components/AuthorizeView.svelte";
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
     import { AllProfileEditPageData } from "../../ts/page_classes/profile_edit_page/AllProfileEditPageData";
+    import { EditPageLinksSectionData } from "../../ts/page_classes/profile_edit_page/EditPageLinksSectionData";
     import { StringUtils } from "../../ts/utils/StringUtils";
     import LoginDataSection from "./page_sections/LoginDataSection.svelte";
     import MainInfoSection from "./page_sections/MainInfoSection.svelte";
@@ -17,8 +18,8 @@
             pageData = new AllProfileEditPageData(
                 data.email,
                 data.mainInfoSection,
+                new EditPageLinksSectionData(data.userLinks),
                 data.privacySettings,
-                data.userLinks,
             );
         } else if (response.status === 400) {
             fetchingErr = await getErrorFromResponse(response);

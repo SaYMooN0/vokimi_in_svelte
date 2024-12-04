@@ -10,7 +10,8 @@ namespace vokimi_api.Src.dtos.responses.profile_editing_page
         PrivacyValues PublishedTest,
         PrivacyValues Friends,
         PrivacyValues Followers,
-        PrivacyValues Followings
+        PrivacyValues Followings,
+        PrivacyValues LinksPrivacy
     )
     {
         public static EditPagePrivacySettingsSectionData FromUser(AppUser user) => new(
@@ -20,7 +21,8 @@ namespace vokimi_api.Src.dtos.responses.profile_editing_page
             user.UserPageSettings.PrivacySettings.PublishedTests,
             user.UserPageSettings.PrivacySettings.Friends,
             user.UserPageSettings.PrivacySettings.Followers,
-            user.UserPageSettings.PrivacySettings.Followings
+            user.UserPageSettings.PrivacySettings.Followings,
+            user.UserAdditionalInfo.PrivacySettings.LinksPrivacy
         );
     }
 }
