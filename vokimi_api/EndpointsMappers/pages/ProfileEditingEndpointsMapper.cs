@@ -16,3 +16,4 @@ namespace vokimi_api.EndpointsMappers.pages
         }
     }
 }
+    

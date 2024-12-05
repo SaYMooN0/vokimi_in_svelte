@@ -1,10 +1,12 @@
 <script lang="ts">
     import LoadingMessage from "../../components/shared/LoadingMessage.svelte";
+    import { getErrorFromResponse } from "../../ts/ErrorResponse";
     import { StringUtils } from "../../ts/utils/StringUtils";
 
     let email: string = "";
     let linkHasBeenSent: boolean = false;
     let emailEntering: string = "";
+    let linkSendingErr: string = "";
     async function tryGetEmail() {
         const response = await fetch("/api/auth/ping");
 
@@ -14,6 +16,8 @@
             if (!StringUtils.isNullOrWhiteSpace(email)) {
                 linkHasBeenSent = true;
             }
+        } else {
+            email = "";
         }
     }
     async function sendUpdatePasswordRequest() {
@@ -25,6 +29,12 @@
         );
         if (response.status === 200) {
             linkHasBeenSent = true;
+        } else if (response.status === 404) {
+            linkHasBeenSent = false;
+            linkSendingErr = await getErrorFromResponse(response);
+        } else {
+            linkHasBeenSent = false;
+            linkSendingErr = "Unable to send update password link";
         }
     }
 </script>
@@ -42,9 +52,7 @@
                         . Click on the link in your email client to change password
                     </div>
                 {:else}
-                    <p class="error-message">
-                        An error has occurred. Please try again later
-                    </p>
+                    <p class="error-message">{linkSendingErr}</p>
                 {/if}
             {/await}
         {:else}

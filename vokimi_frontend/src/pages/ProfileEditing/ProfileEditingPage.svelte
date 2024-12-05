@@ -3,11 +3,12 @@
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
     import { AllProfileEditPageData } from "../../ts/page_classes/profile_edit_page/AllProfileEditPageData";
     import { EditPageLinksSectionData } from "../../ts/page_classes/profile_edit_page/EditPageLinksSectionData";
+    import { EditPagePrivacySettingsSectionData } from "../../ts/page_classes/profile_edit_page/EditPagePrivacySettingsSectionData";
     import { StringUtils } from "../../ts/utils/StringUtils";
     import LoginDataSection from "./page_sections/LoginDataSection.svelte";
     import MainInfoSection from "./page_sections/MainInfoSection.svelte";
     import UserLinksSection from "./page_sections/UserLinksSection.svelte";
-    import UserPagePrivacySection from "./page_sections/UserPagePrivacySection.svelte";
+    import UserPagePrivacySection from "./page_sections/UserPrivacySettingsSection.svelte";
     let fetchingErr: string = "";
     let pageData: AllProfileEditPageData;
     async function fetchPageData(): Promise<void> {
@@ -19,7 +20,7 @@
                 data.email,
                 data.mainInfoSection,
                 new EditPageLinksSectionData(data.userLinks),
-                data.privacySettings,
+                new EditPagePrivacySettingsSectionData(data.privacySettings),
             );
         } else if (response.status === 400) {
             fetchingErr = await getErrorFromResponse(response);

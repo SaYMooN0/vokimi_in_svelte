@@ -1,32 +1,23 @@
-import type { PrivacyValues } from "../../enums/PrivacyValues";
+import { PrivacyValuesUtils, type PrivacyValues } from "../../enums/PrivacyValues";
 
 export class EditPagePrivacySettingsSectionData {
-    realNamePrivacy: PrivacyValues;
-    registrationDatePrivacy: PrivacyValues;
-    birthDatePrivacy: PrivacyValues;
+    realName: PrivacyValues;
+    registrationDate: PrivacyValues;
+    birthDate: PrivacyValues;
     publishedTest: PrivacyValues;
     friends: PrivacyValues;
     followers: PrivacyValues;
     followings: PrivacyValues;
-    linksPrivacy: PrivacyValues
+    links: PrivacyValues
 
-    constructor(
-        realNamePrivacy: PrivacyValues,
-        registrationDatePrivacy: PrivacyValues,
-        birthDatePrivacy: PrivacyValues,
-        publishedTest: PrivacyValues,
-        friends: PrivacyValues,
-        followers: PrivacyValues,
-        followings: PrivacyValues,
-        linksPrivacy: PrivacyValues
-    ) {
-        this.realNamePrivacy = realNamePrivacy;
-        this.registrationDatePrivacy = registrationDatePrivacy;
-        this.birthDatePrivacy = birthDatePrivacy;
-        this.publishedTest = publishedTest;
-        this.friends = friends;
-        this.followers = followers;
-        this.followings = followings;
-        this.linksPrivacy = linksPrivacy;
+    constructor(data: any) {
+        this.realName = PrivacyValuesUtils.fromId(data.realNamePrivacy);
+        this.registrationDate = PrivacyValuesUtils.fromId(data.registrationDatePrivacy);
+        this.birthDate = PrivacyValuesUtils.fromId(data.birthDatePrivacy);
+        this.publishedTest = PrivacyValuesUtils.fromId(data.publishedTest);
+        this.friends = PrivacyValuesUtils.fromId(data.friends);
+        this.followers = PrivacyValuesUtils.fromId(data.followers);
+        this.followings = PrivacyValuesUtils.fromId(data.followings);
+        this.links = PrivacyValuesUtils.fromId(data.linksPrivacy);
     }
 }
