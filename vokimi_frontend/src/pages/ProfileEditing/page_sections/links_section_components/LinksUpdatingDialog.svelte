@@ -2,7 +2,7 @@
     import BaseDialog from "../../../../components/BaseDialog.svelte";
     import { Err } from "../../../../ts/Err";
     import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
-    import type { EditPageLinksSectionData } from "../../../../ts/page_classes/profile_edit_page/EditPageLinksSectionData";
+    import { EditPageLinksSectionData } from "../../../../ts/page_classes/profile_edit_page/EditPageLinksSectionData";
     import CloseButton from "../../../../components/shared/CloseButton.svelte";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
     import UpdateDialogSaveBtn from "../main_info_section_components/left_side_components/UpdateDialogSaveBtn.svelte";
@@ -12,9 +12,9 @@
 
     export let updateParentElement: (newVal: EditPageLinksSectionData) => void;
     export let currentLinksData: EditPageLinksSectionData;
-    let linksDataToEdit: Map<string, string | null> = new Map();
+    let linksDataToEdit: { linkName: string; linkVal: string | null }[] = [];
     export function open() {
-        linksDataToEdit = currentLinksData.toDictionary();
+        linksDataToEdit = currentLinksData.toNameValList();
         errorMessage = "";
         dialogElement.open();
     }
@@ -31,11 +31,14 @@
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(currentLinksData),
+            body: JSON.stringify(
+                EditPageLinksSectionData.fromNameValList(linksDataToEdit),
+            ),
         });
 
         if (response.ok) {
-            updateParentElement(currentLinksData);
+            const responseData = await response.json();
+            updateParentElement(new EditPageLinksSectionData(responseData));
             dialogElement.close();
         } else if (response.status === 400) {
             errorMessage = await getErrorFromResponse(response);
@@ -44,25 +47,19 @@
         }
     }
     function checkLinksForErr(): Err {
-        for (const [linkName, linkVal] of linksDataToEdit) {
-            if (!StringUtils.isNullOrWhiteSpace(linkVal)) {
+        for (const link of linksDataToEdit) {
+            if (!StringUtils.isNullOrWhiteSpace(link.linkVal)) {
                 if (
-                    !linkVal?.startsWith("http://") &&
-                    !linkVal?.startsWith("https://")
+                    !link.linkVal?.startsWith("http://") &&
+                    !link.linkVal?.startsWith("https://")
                 ) {
                     return new Err(
-                        `Links must start with http:// or https://. Link for  ${linkName} is invalid.`,
+                        `Links must start with http:// or https://. Link for  ${link.linkVal} is invalid.`,
                     );
                 }
             }
         }
         return Err.none();
-    }
-    function updateLinkValue(linkName: string, event: Event) {
-        const target = event.target as HTMLInputElement;
-        if (target) {
-            linksDataToEdit.set(linkName, target.value);
-        }
     }
 </script>
 
@@ -75,14 +72,31 @@
         />
         <p class="dialog-title-p">My links:</p>
         <div class="links-container">
-            {#each linksDataToEdit as [linkName, linkVal]}
-                <span class="link-name">{linkName}: </span>
+            {#each linksDataToEdit as linkData}
+                <span class="link-name">{linkData.linkName}: </span>
                 <input
                     placeholder="https://..."
                     class="link-val"
                     type="text"
-                    on:input={(e) => updateLinkValue(linkName, e)}
+                    bind:value={linkData.linkVal}
                 />
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    class="clear-link-icon"
+                    on:click={() => {
+                        linkData.linkVal = null;
+                    }}
+                >
+                    <path
+                        d="M18 6L12 12M12 12L6 18M12 12L18 18M12 12L6 6"
+                        stroke="currentColor"
+                        stroke-width="2.4"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
             {/each}
         </div>
         {#if !StringUtils.isNullOrWhiteSpace(errorMessage)}
@@ -112,7 +126,7 @@
     }
     .links-container {
         display: grid;
-        grid-template-columns: auto 420px;
+        grid-template-columns: auto 420px 24px;
         row-gap: 12px;
         column-gap: 24px;
         font-size: 20px;
@@ -137,5 +151,18 @@
     .link-val::placeholder {
         font-size: 14px;
         color: var(--text-faded);
+    }
+    .clear-link-icon {
+        width: 100%;
+        aspect-ratio: 1/1;
+        cursor: pointer;
+        color: var(--back-main);
+        background-color: var(--text-faded);
+        border-radius: 4px;
+        padding: 2px;
+        box-sizing: border-box;
+    }
+    .clear-link-icon:hover {
+        background-color: var(--primary);
     }
 </style>

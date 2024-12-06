@@ -11,6 +11,7 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.responses.profile_editing_page;
+using vokimi_api.Src.enums;
 using vokimi_api.Src.extension_classes;
 
 namespace vokimi_api.Endpoints.pages
@@ -174,7 +175,7 @@ namespace vokimi_api.Endpoints.pages
             }
         }
         internal static async Task<IResult> UpdateUserLinks(
-            [FromBody] Dictionary<string, string?> newLinks,
+            [FromBody] EditPageLinksData newLinks,
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
@@ -189,13 +190,14 @@ namespace vokimi_api.Endpoints.pages
                 if (user is null) {
                     return ResultsHelper.BadRequest.LogOutLogIn();
                 }
-                return ResultsHelper.BadRequest.WithErr("Not implemented");
+                user.UserAdditionalInfo.Links.UpdateFromDto(newLinks);
+                db.Update(user.UserAdditionalInfo);
                 await db.SaveChangesAsync();
-                return Results.Ok();
+                return Results.Ok(EditPageLinksData.FromUserAdditionalInfo(user.UserAdditionalInfo));
             }
         }
         internal static async Task<IResult> UpdateUserPrivacySettings(
-            [FromBody] EditPagePrivacySettingsSectionData newPrivacyValues,
+            string newPrivacyValues,
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
@@ -210,6 +212,8 @@ namespace vokimi_api.Endpoints.pages
                 if (user is null) {
                     return ResultsHelper.BadRequest.LogOutLogIn();
                 }
+                //PrivacyValues realName=new
+                //user.UserAdditionalInfo.PrivacySettings.
                 return ResultsHelper.BadRequest.WithErr("Not implemented");
                 await db.SaveChangesAsync();
                 return Results.Ok();

@@ -1,4 +1,5 @@
 ﻿using vokimi_api.Src.db_related.db_entities_ids;
+using vokimi_api.Src.dtos.responses.profile_editing_page;
 using vokimi_api.Src.enums;
 
 namespace vokimi_api.Src.db_related.db_entities.users
@@ -48,10 +49,15 @@ namespace vokimi_api.Src.db_related.db_entities.users
             ["Other1"] = Other1,
             ["Other2"] = Other2
         };
-        public void UpdateFromDictionary(IReadOnlyDictionary<string, string?> dictionary) {
-            Telegram = dictionary.GetValueOrDefault("Telegram", defaultValue: null);
-            YouTube = dictionary.GetValueOrDefault("YouTube", defaultValue: null);
-            throw new NotImplementedException();
+        public void UpdateFromDto(EditPageLinksData links) {
+            Telegram = links.Telegram;
+            YouTube = links.YouTube;
+            Facebook = links.Facebook;
+            X = links.X;
+            Instagram = links.Instagram;
+            GitHub = links.GitHub;
+            Other1 = links.Other1;
+            Other2 = links.Other2;
         }
     }
     public class UserAdditionalInfoPrivacySettings
@@ -66,5 +72,16 @@ namespace vokimi_api.Src.db_related.db_entities.users
             BirthDatePrivacy = PrivacyValues.Anyone,
             LinksPrivacy = PrivacyValues.Anyone,
         };
+        public void Update(
+            PrivacyValues realName,
+            PrivacyValues registrationDate,
+            PrivacyValues birthdatePrivacy,
+            PrivacyValues linksPrivacy
+        ) {
+            RealNamePrivacy = realName;
+            RegistrationDatePrivacy = registrationDate;
+            BirthDatePrivacy = birthdatePrivacy;
+            LinksPrivacy = linksPrivacy;
+        }
     }
 }

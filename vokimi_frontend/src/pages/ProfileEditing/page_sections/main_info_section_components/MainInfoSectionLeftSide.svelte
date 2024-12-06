@@ -1,6 +1,6 @@
 <script lang="ts">
     import { StringUtils } from "../../../../ts/utils/StringUtils";
-    import EditButton from "../../section_shared_components/EditButton.svelte";
+    import EditButton from "../../section_shared_components/EditButtonWithIcon.svelte";
 
     export let openUsernameEditingDialog: () => void;
     export let openBannerColorEditingDialog: () => void;
@@ -22,10 +22,7 @@
         <label class="field-value">
             {username}
         </label>
-        <EditButton
-            showText={false}
-            editButtonAction={openUsernameEditingDialog}
-        />
+        <EditButton editButtonAction={openUsernameEditingDialog} />
     </p>
     <div class="editable-field-div">
         <span class="unselectable">Page Banner Color:</span>
@@ -38,10 +35,7 @@
                 style="background-color: {bannerColor}"
             />
         </div>
-        <EditButton
-            showText={false}
-            editButtonAction={openBannerColorEditingDialog}
-        />
+        <EditButton editButtonAction={openBannerColorEditingDialog} />
     </div>
     <div class="editable-field-div">
         <span class="unselectable">Real name:</span>
@@ -50,10 +44,7 @@
         {:else}
             <label class="field-value">{realName}</label>
         {/if}
-        <EditButton
-            showText={false}
-            editButtonAction={openRealNameEditingDialog}
-        />
+        <EditButton editButtonAction={openRealNameEditingDialog} />
     </div>
     <div class="editable-field-div">
         <span class="unselectable">Birthdate:</span>
@@ -62,10 +53,7 @@
         {:else}
             <label class="field-value">{birthDate.toLocaleString()}</label>
         {/if}
-        <EditButton
-            showText={false}
-            editButtonAction={openBirthDateEditingDialog}
-        />
+        <EditButton editButtonAction={openBirthDateEditingDialog} />
     </div>
     <div class="editable-field-div">
         <span class="unselectable">Registration date:</span>
@@ -80,10 +68,7 @@
         {:else}
             <label class="about-me-text">{aboutMe}</label>
         {/if}
-        <EditButton
-            showText={false}
-            editButtonAction={openAboutMeEditingDialog}
-        />
+        <EditButton editButtonAction={openAboutMeEditingDialog} />
     </div>
 </div>
 

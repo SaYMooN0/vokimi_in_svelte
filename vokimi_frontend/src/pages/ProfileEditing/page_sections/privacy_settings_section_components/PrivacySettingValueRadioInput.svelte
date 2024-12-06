@@ -11,7 +11,7 @@
 
 <div class="privacy-inputs">
     {#each Object.values(PrivacyValues) as privVal}
-        <label class="privacy-radio">
+        <label class="privacy-radio unselectable">
             <input
                 type="radio"
                 name="privacy-radio-{idPrefix}"
@@ -29,13 +29,12 @@
         position: relative;
         display: flex;
         flex-wrap: wrap;
-        border-radius: 0.5rem;
-        background-color: #eee;
+        border-radius: 8px;
+        background-color: var(--back-secondary);
         box-sizing: border-box;
-        box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-        padding: 0.25rem;
-        width: 300px;
+        padding: 4px;
         font-size: 14px;
+        gap: 4px;
     }
 
     .privacy-radio {
@@ -52,15 +51,16 @@
         cursor: pointer;
         align-items: center;
         justify-content: center;
-        border-radius: 0.5rem;
+        border-radius: 6px;
         border: none;
-        padding: 0.5rem 0;
+        padding: 8px 12px;
         color: var(--text-faded);
-        transition: all 0.15s ease-in-out;
+        transition: all 0.15s ease-in;
     }
 
     .privacy-radio input:checked + .privacy-radio-span {
         background-color: var(--primary);
-        font-weight: 600;
+
+        color: var(--back-main);
     }
 </style>

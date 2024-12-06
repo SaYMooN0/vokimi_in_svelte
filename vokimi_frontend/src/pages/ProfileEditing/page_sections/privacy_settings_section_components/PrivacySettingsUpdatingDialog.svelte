@@ -19,6 +19,7 @@
     }
     async function saveNewPrivacySettings() {
         errorMessage = "";
+        console.log( JSON.stringify(sectionData));
         const response = await fetch(
             "/api/profileEditing/updatePrivacySettings",
             {
@@ -51,37 +52,27 @@
         <p class="dialog-title-p">Privacy settings</p>
         <div class="settings-container">
             <span class="prop-name">Real Name Visibility</span>
-            <PrivacySettingValueRadioInput
-                bind:value={sectionData.realName}
-            />
+            <PrivacySettingValueRadioInput bind:value={sectionData.realName} />
             <span class="prop-name">Registration Date Visibility</span>
             <PrivacySettingValueRadioInput
                 bind:value={sectionData.registrationDate}
             />
             <span class="prop-name">Birthdate Visibility</span>
-            <PrivacySettingValueRadioInput
-                bind:value={sectionData.birthDate}
-            />
+            <PrivacySettingValueRadioInput bind:value={sectionData.birthDate} />
             <span class="prop-name">Published Tests Visibility</span>
             <PrivacySettingValueRadioInput
                 bind:value={sectionData.publishedTest}
             />
             <span class="prop-name">Friends Visibility</span>
-            <PrivacySettingValueRadioInput
-                bind:value={sectionData.friends}
-            />
+            <PrivacySettingValueRadioInput bind:value={sectionData.friends} />
             <span class="prop-name">Followers Visibility</span>
-            <PrivacySettingValueRadioInput
-                bind:value={sectionData.followers}
-            />
+            <PrivacySettingValueRadioInput bind:value={sectionData.followers} />
             <span class="prop-name">Followings Visibility</span>
             <PrivacySettingValueRadioInput
                 bind:value={sectionData.followings}
             />
             <span class="prop-name">Links Visibility</span>
-            <PrivacySettingValueRadioInput
-                bind:value={sectionData.links}
-            />
+            <PrivacySettingValueRadioInput bind:value={sectionData.links} />
         </div>
         {#if !StringUtils.isNullOrWhiteSpace(errorMessage)}
             <p class="error-message">{errorMessage}</p>
