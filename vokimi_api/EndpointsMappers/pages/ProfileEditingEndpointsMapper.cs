@@ -13,7 +13,8 @@ namespace vokimi_api.EndpointsMappers.pages
             app.MapPost("/profileEditing/updateLinks", ProfileEditingEndpoints.UpdateUserLinks);
             app.MapPost("/profileEditing/updatePrivacySettings", ProfileEditingEndpoints.UpdateUserPrivacySettings);
             app.MapPost("/profileEditing/updateAboutMe", ProfileEditingEndpoints.UpdateAboutMe);
+            app.MapGet("/profileEditing/getDefaultPrivacySettings",
+                ProfileEditingEndpoints.GetDefaultUserPrivacySettings);
         }
     }
 }
-    

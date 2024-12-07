@@ -81,6 +81,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 2px solid var(--text-faded);
+        border-bottom: 1px solid var(--text-faded);
+        font-size: 22px;
     }
 </style>

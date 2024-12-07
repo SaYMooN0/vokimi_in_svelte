@@ -1,5 +1,6 @@
 <script lang="ts">
     import AuthorizeView from "../../components/AuthorizeView.svelte";
+    import { PrivacyValuesUtils } from "../../ts/enums/PrivacyValues";
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
     import { AllProfileEditPageData } from "../../ts/page_classes/profile_edit_page/AllProfileEditPageData";
     import { EditPageLinksSectionData } from "../../ts/page_classes/profile_edit_page/EditPageLinksSectionData";
@@ -20,7 +21,7 @@
                 data.email,
                 data.mainInfoSection,
                 new EditPageLinksSectionData(data.userLinks),
-                new EditPagePrivacySettingsSectionData(data.privacySettings),
+                EditPagePrivacySettingsSectionData.fromResponseData(data.privacySettings),
             );
         } else if (response.status === 400) {
             fetchingErr = await getErrorFromResponse(response);

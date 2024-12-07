@@ -11,7 +11,10 @@
 
 <div class="privacy-inputs">
     {#each Object.values(PrivacyValues) as privVal}
-        <label class="privacy-radio unselectable">
+        <label
+            class="privacy-radio unselectable"
+            on:click={() => (value = privVal)}
+        >
             <input
                 type="radio"
                 name="privacy-radio-{idPrefix}"

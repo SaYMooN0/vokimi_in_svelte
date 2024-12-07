@@ -14,5 +14,16 @@ namespace vokimi_api.Src.db_related.db_entities.user_page
             Followers = PrivacyValues.Anyone,
             Followings = PrivacyValues.FriendsOnly
         };
+        public void Update(
+            PrivacyValues publishedTests,
+            PrivacyValues friends,
+            PrivacyValues followers,
+            PrivacyValues followings
+        ) {
+            PublishedTests = publishedTests;
+            Friends = friends;
+            Followers = followers;
+            Followings = followings;
+        }
     }
 }

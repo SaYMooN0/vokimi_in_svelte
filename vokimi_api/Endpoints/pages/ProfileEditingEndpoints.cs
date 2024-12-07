@@ -8,6 +8,7 @@ using vokimi_api.Src;
 using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
+using vokimi_api.Src.db_related.db_entities.user_page;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.responses.profile_editing_page;
@@ -197,7 +198,7 @@ namespace vokimi_api.Endpoints.pages
             }
         }
         internal static async Task<IResult> UpdateUserPrivacySettings(
-            string newPrivacyValues,
+            [FromBody] Dictionary<string, string> newPrivacyValues,
             HttpContext httpContext,
             IDbContextFactory<AppDbContext> dbFactory
         ) {
@@ -208,16 +209,43 @@ namespace vokimi_api.Endpoints.pages
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 AppUser? user = await db.AppUsers
                     .Include(u => u.UserAdditionalInfo)
+                    .Include(u => u.UserPageSettings)
                     .FirstOrDefaultAsync(u => u.Id == userId);
                 if (user is null) {
                     return ResultsHelper.BadRequest.LogOutLogIn();
                 }
-                //PrivacyValues realName=new
-                //user.UserAdditionalInfo.PrivacySettings.
-                return ResultsHelper.BadRequest.WithErr("Not implemented");
+                TypedEditPagePrivacySettings privacySettings = TypedEditPagePrivacySettings.FromDictionary(newPrivacyValues);
+                user.UserAdditionalInfo.PrivacySettings.Update(
+                    privacySettings.realName,
+                    privacySettings.RegistrationDate,
+                    privacySettings.Birthdate,
+                    privacySettings.Links
+                );
+                user.UserPageSettings.PrivacySettings.Update(
+                    privacySettings.PublishedTest,
+                    privacySettings.Friends,
+                    privacySettings.Followers,
+                    privacySettings.Followings
+                );
+                db.Update(user.UserAdditionalInfo);
+                db.Update(user.UserPageSettings);
                 await db.SaveChangesAsync();
-                return Results.Ok();
+                return Results.Ok(EditPagePrivacySettingsSectionData.FromUser(user));
             }
+        }
+        internal static IResult GetDefaultUserPrivacySettings() {
+            var additionalInfo= UserAdditionalInfoPrivacySettings.Default;
+            var userPage = UserPagePrivacySettings.Default;
+            return Results.Ok(new EditPagePrivacySettingsSectionData(
+                RealName: additionalInfo.RealNamePrivacy.GetId(),
+                RegistrationDate: additionalInfo.RegistrationDatePrivacy.GetId(),
+                Birthdate: additionalInfo.BirthDatePrivacy.GetId(),
+                PublishedTest: userPage.PublishedTests.GetId(),
+                Friends: userPage.Friends.GetId(),
+                Followers: userPage.Followers.GetId(),
+                Followings: userPage.Followings.GetId(),
+                Links: additionalInfo.LinksPrivacy.GetId()
+            ));
         }
     }
 }
