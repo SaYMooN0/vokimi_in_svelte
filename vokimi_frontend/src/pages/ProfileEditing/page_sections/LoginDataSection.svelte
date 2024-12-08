@@ -5,17 +5,34 @@
 </script>
 
 <SectionHeader headerText="Login data" />
-<p class="login-data-p">
-    <label class="account-email-label">
-        Account email: <span>{email}</span>
-    </label>
+<div class="login-data-section">
+    <p>
+        <span>Account email:</span>
+        <span>{email}</span>
+    </p>
     <button class="update-password-btn">Update password</button>
-</p>
+</div>
 
 <style>
-    .login-data-p {
+    .login-data-section {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
+    }
+    .update-password-btn {
+        margin-bottom: 20px;
+        width: fit-content;
+        padding: 8px 24px;
+        background: var(--primary);
+        border-radius: 4px;
+        outline: none;
+        border: none;
+        color: var(--back-main);
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.12s ease;
+    }
+    .update-password-btn:hover {
+        transform: scale(1.02);
+        background-color: var(--primary-hov);
     }
 </style>

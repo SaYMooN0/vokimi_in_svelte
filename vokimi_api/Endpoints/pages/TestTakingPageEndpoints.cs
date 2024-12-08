@@ -226,7 +226,7 @@ namespace vokimi_api.Endpoints.pages
             }
             KeyValuePair<GeneralTestResultId, int>? resultToReceiveIdWithPoints = resultsWithPoints
                 .OrderBy(kvp => kvp.Value)
-                .Last();
+                .LastOrDefault();
             if (resultToReceiveIdWithPoints is null) {
                 return null;
             }

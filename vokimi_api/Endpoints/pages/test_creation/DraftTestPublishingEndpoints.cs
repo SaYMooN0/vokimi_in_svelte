@@ -457,7 +457,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                         throw new Exception();
                     } else {
                         imgsToDeleteInCaseOfFailure.Add(questionImg);
-                        publishingData.ImgsToDeleteInCaseOfSuccess.Add(questionImg);
+                        publishingData.ImgsToDeleteInCaseOfSuccess.Add(draftQuestion.ImagePath);
                     }
                 }
 
@@ -488,9 +488,9 @@ namespace vokimi_api.Endpoints.pages.test_creation
                         if (copyingErr.NotNone()) {
                             throw new Exception();
                         } else {
+                            publishingData.ImgsToDeleteInCaseOfSuccess.Add(imgInfo.ImagePath);
                             imgInfo.ImagePath = newAnswerImg;
                             imgsToDeleteInCaseOfFailure.Add(newAnswerImg);
-                            publishingData.ImgsToDeleteInCaseOfSuccess.Add(imgInfo.ImagePath);
                         }
                     }
                     ushort order = draftQuestion.ShuffleAnswers ? (ushort)0 : draftAnswer.OrderInQuestion;

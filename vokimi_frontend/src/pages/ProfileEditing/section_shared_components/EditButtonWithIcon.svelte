@@ -28,7 +28,7 @@
         gap: 8px;
         height: 28px;
         box-sizing: border-box;
-        padding: 4px;
+        padding: 4px 8px;
         background-color: var(--primary);
         color: var(--back-main);
         border: 0;

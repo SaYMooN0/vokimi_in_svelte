@@ -15,6 +15,7 @@
   import ViewTestPage from "./pages/ViewTest/ViewTestPage.svelte";
   import TestTakingPage from "./pages/TestTaking/TestTakingPage.svelte";
   import TestTakingPageResultView from "./pages/TestTaking/TestTakingPageResultView.svelte";
+  import UpdatePasswordPage from "./pages/UpdatePassword/UpdatePasswordPage.svelte";
 </script>
 
 <Router>

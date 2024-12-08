@@ -21,7 +21,6 @@
         );
         if (response.ok) {
             const data = JSON.parse(await response.json());
-            console.log(data);
             const t: TestTemplate = TestTemplateUtils.fromId(data.testTemplate);
             switch (t) {
                 case TestTemplate.General:

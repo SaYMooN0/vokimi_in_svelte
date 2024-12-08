@@ -80,7 +80,7 @@ namespace vokimi_api.Endpoints
                 test.CollectionTestIn.Clear();
                 if (testCollectionIds.Count == 0) {
                     await db.SaveChangesAsync();
-                    return Results.Ok();
+                    return Results.Ok(new string[] { });
                 }
                 var newCollections = db.TestCollections.Where(tc => testCollectionIds.Contains(tc.Id));
                 foreach (var collection in newCollections) {

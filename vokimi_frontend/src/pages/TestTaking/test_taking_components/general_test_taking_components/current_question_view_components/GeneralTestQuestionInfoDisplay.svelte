@@ -48,6 +48,15 @@
         font-weight: 500;
         color: var(--text);
     }
+    .question-image {
+        margin: 8px 0;
+        min-height: 120px;
+        min-width: 120px;
+        max-height: 280px;
+        max-width: calc(100% - 10vw);
+        object-fit: contain;
+        border-radius: 8px;
+    }
     .answers-count-label {
         font-size: 18px;
         color: var(--text);

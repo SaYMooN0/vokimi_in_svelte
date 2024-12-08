@@ -14,13 +14,11 @@
     }
 
     async function saveAnswer() {
-        console.log("1");
         answerSavingErr = "";
         if (StringUtils.isNullOrWhiteSpace(answerText.trim())) {
             return;
         }
         const data = { answerText, parentCommentId }; //+ attachment if any
-        console.log(data);
         const response = await fetch(
             "/api/viewTest/discussions/saveAnswerToComment",
             {

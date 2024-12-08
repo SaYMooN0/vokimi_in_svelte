@@ -6,7 +6,7 @@
 
 <style>
     .text-header {
-        margin: 8px 0px 4px 0;
+        margin: 24px 0px 4px 0;
         width: 100%;
         text-align: center;
         font-size: 28px;

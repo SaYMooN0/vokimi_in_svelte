@@ -63,7 +63,7 @@
     }
     .feedback-textarea {
         width: 100%;
-        height: 120px;
+        height: 140px;
         border: 2px solid var(--back-secondary);
         background-color: var(--back-secondary);
         box-sizing: border-box;
@@ -73,6 +73,7 @@
         resize: none;
         font-size: 18px;
         color: var(--text);
+        margin-bottom: 20px;
     }
     .feedback-textarea:focus {
         border-color: var(--test-accent);

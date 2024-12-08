@@ -25,7 +25,9 @@
         );
 
         if (response.ok) {
-            selectedCollectionIds = new Set(await response.json());
+            const responseData = await response.json();
+            console.log(responseData);
+            selectedCollectionIds = new Set(responseData);
             close();
         } else if (response.status === 400) {
             savingErr = await getErrorFromResponse(response);

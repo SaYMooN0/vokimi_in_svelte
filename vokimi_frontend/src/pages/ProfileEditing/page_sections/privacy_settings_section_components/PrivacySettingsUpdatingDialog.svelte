@@ -23,8 +23,6 @@
     }
     async function saveNewPrivacySettings() {
         errorMessage = "";
-        const bodyData = JSON.stringify(sectionData);
-        console.log(bodyData);
         const response = await fetch(
             "/api/profileEditing/updatePrivacySettings",
             {
@@ -32,7 +30,7 @@
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: bodyData,
+                body: JSON.stringify(sectionData),
             },
         );
 
