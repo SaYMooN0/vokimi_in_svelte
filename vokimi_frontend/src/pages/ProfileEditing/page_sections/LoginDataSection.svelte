@@ -1,8 +1,13 @@
 <script lang="ts">
+    import UpdatePasswordDialog from "../../../components/shared/dialogs/UpdatePasswordDialog.svelte";
     import SectionHeader from "../section_shared_components/SectionHeader.svelte";
 
     export let email: string = "";
+    let updatePasswordDialog: UpdatePasswordDialog;
 </script>
+
+<SectionHeader headerText="Login data" />
+<UpdatePasswordDialog bind:this={updatePasswordDialog} />
 
 <SectionHeader headerText="Login data" />
 <div class="login-data-section">
@@ -10,7 +15,12 @@
         <span>Account email:</span>
         <span>{email}</span>
     </p>
-    <button class="update-password-btn">Update password</button>
+    <button
+        class="update-password-btn"
+        on:click={() => updatePasswordDialog.open()}
+    >
+        Update password
+    </button>
 </div>
 
 <style>

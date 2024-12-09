@@ -151,9 +151,11 @@ namespace vokimi_api.Endpoints
 
             using var transaction = await db.Database.BeginTransactionAsync();
             try {
-                db.UserAdditionalInfo.Add(additionalInfo);
-                db.LoginInfo.Add(loginInfo);
-                db.AppUsers.Add(newUser);
+                await db.UserAdditionalInfo.AddAsync(additionalInfo);
+                await db.LoginInfo.AddAsync(loginInfo);
+                await db.UserPageSettings.AddAsync(pageSettings);
+                await db.AppUsers.AddAsync(newUser);
+
                 db.UnconfirmedAppUsers.Remove(unconfirmed);
                 await db.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -230,9 +232,10 @@ namespace vokimi_api.Endpoints
                             db.Update(dbRequestRecord);
                         }
                         string confirmationLink =
-                            $"{request.FrontendBaseUrl}/" +
-                            $"updatePassword/{dbRequestRecord.Id}/" +
-                            $"{dbRequestRecord.ConfirmationCode}";
+                            request.FrontendBaseUrl +
+                            "/confirm-password-update/" +
+                            dbRequestRecord.Id + "/" +
+                            dbRequestRecord.ConfirmationCode;
                         Err emailSendingErr = await emailService.SendPasswordUpdateLink(
                             request.Email,
                             confirmationLink,

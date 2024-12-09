@@ -12,7 +12,7 @@ namespace vokimi_api.EndpointsMappers
             app.MapPost("/login", AuthEndpoints.Login);
             app.MapPost("/logout", AuthEndpoints.Logout);
             app.MapPost(
-                "/auth/createPasswordUpdateRequest/{email}",
+                "/auth/createPasswordUpdateRequest",
                 AuthEndpoints.CreatePasswordUpdateRequest
             );
             app.MapPost(

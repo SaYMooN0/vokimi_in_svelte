@@ -15,7 +15,7 @@
   import ViewTestPage from "./pages/ViewTest/ViewTestPage.svelte";
   import TestTakingPage from "./pages/TestTaking/TestTakingPage.svelte";
   import TestTakingPageResultView from "./pages/TestTaking/TestTakingPageResultView.svelte";
-  import UpdatePasswordPage from "./pages/UpdatePassword/UpdatePasswordPage.svelte";
+  import ConfirmPasswordUpdatePage from "./pages/ConfirmPasswordUpdate/ConfirmPasswordUpdatePage.svelte";
 </script>
 
 <Router>
@@ -44,6 +44,16 @@
           userId={params.userId}
         />
       </Route>
+      <Route
+        path="/confirm-password-update/:requestId/:confirmationCode"
+        let:params
+      >
+        <ConfirmPasswordUpdatePage
+          requestId={params.requestId}
+          confirmationCode={params.confirmationCode}
+        />
+      </Route>
+
       <Route path="/test-creation/:testId/*" let:params>
         <TestCreationPage testId={params.testId} />
       </Route>
