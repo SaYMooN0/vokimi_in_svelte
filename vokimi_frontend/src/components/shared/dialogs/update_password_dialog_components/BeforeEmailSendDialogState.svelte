@@ -4,28 +4,19 @@
     export let sendLink: (email: string) => Promise<void>;
 </script>
 
-<p>
+<p class="before-email-send-p">
     You want to change password for:
     <span>{email}</span>
 </p>
-<span class="change-email-link" on:click={changeStateToEmailEntering}>
+<span class="dialog-link" on:click={changeStateToEmailEntering}>
     I want to update password for another email
 </span>
-<button class="continue-btn" on:click={() => sendLink(email)}>
-    Continue
-</button>
+<button class="submit-btn" on:click={() => sendLink(email)}> Continue </button>
 
 <style>
-    .change-email-link {
-        color: var(--text-faded);
-        padding: 2px 4px;
-        border-radius: 2px;
+    .before-email-send-p {
+        text-align: center;
+        font-size: 26px;
     }
-    .change-email-link:hover {
-        color: var(--primary);
-    }
-    .change-email-link:active {
-        background-color: var(--back-secondary);
-        color: var(--primary-hov);
-    }
+
 </style>

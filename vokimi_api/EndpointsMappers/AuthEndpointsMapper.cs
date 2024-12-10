@@ -15,9 +15,13 @@ namespace vokimi_api.EndpointsMappers
                 "/auth/createPasswordUpdateRequest",
                 AuthEndpoints.CreatePasswordUpdateRequest
             );
+            app.MapGet(
+                "/auth/checkPasswordUpdateRequest/{requestId}/{confirmationCode}",
+                AuthEndpoints.CheckPasswordUpdateRequest
+            );
             app.MapPost(
                 "/auth/confirmPasswordUpdateRequest",
-                AuthEndpoints.SetNewPasswordRequest
+                AuthEndpoints.ConfirmPasswordUpdateRequest
             );
         }
     }

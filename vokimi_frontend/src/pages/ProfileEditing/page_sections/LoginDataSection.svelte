@@ -6,9 +6,7 @@
     let updatePasswordDialog: UpdatePasswordDialog;
 </script>
 
-<SectionHeader headerText="Login data" />
 <UpdatePasswordDialog bind:this={updatePasswordDialog} />
-
 <SectionHeader headerText="Login data" />
 <div class="login-data-section">
     <p>

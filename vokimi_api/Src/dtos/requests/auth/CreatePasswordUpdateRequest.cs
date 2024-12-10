@@ -1,5 +1,4 @@
 ﻿using System.Net.Mail;
-using vokimi_api.Helpers;
 
 namespace vokimi_api.Src.dtos.requests.auth
 {

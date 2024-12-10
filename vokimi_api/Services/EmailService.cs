@@ -62,6 +62,17 @@ namespace vokimi_api.Services
             
             return await SendEmailWithHtmlBody(to, subject, body);
         }
+        public async Task<Err> SendPasswordUpdatedMessage(
+           string to
+       ) {
+            string subject = "Password has been updated";
+            string body =
+               $"<p>Password on the vokimi account registered on this email, has been updated.</p>" +
+               $"<p>If it was not you please change password to the stronger one as soon as you see this message. " +
+               $"Also ensure that nobody else has access to your email client</p>";
+
+            return await SendEmailWithHtmlBody(to, subject, body);
+        }
         private async Task<SmtpClient> ConfigureSmtpClient() {
             var client = new SmtpClient();
             await client.ConnectAsync(_host, _port, true);

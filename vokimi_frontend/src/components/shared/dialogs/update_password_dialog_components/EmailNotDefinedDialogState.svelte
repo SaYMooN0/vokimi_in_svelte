@@ -16,11 +16,18 @@
     let emailEnteringErr: string = "";
 </script>
 
-<p class="enter-email-p">Please, enter your email which you used to register</p>
-<a href="/auth/login" class="no-account-link">I don't have an account yet</a>
-<input type="email" bind:value={emailInput} />
-<p class="error-message">{emailEnteringErr}</p>
-<button class="update-password-btn" on:click={() => confirmEmailInput()}>
+<p class="enter-email-p unselectable">Please, enter your email which you used to register</p>
+<a href="/auth/login" class="dialog-link unselectable">I don't have an account yet</a>
+<input
+    type="email"
+    class="email-input"
+    placeholder="Email"
+    bind:value={emailInput}
+/>
+{#if !StringUtils.isNullOrWhiteSpace(emailEnteringErr)}
+    <p class="err-message">{emailEnteringErr}</p>
+{/if}
+<button class="submit-btn unselectable" on:click={() => confirmEmailInput()}>
     Send Password Update Link
 </button>
 
@@ -28,38 +35,31 @@
     .enter-email-p {
         color: var(--text);
         font-size: 28px;
+        margin: 4px 32px;
     }
-    .no-account-link {
-        color: var(--text-faded);
-        padding: 2px 4px;
-        border-radius: 2px;
-    }
-    .no-account-link:hover {
-        color: var(--primary);
-    }
-    .no-account-link:active {
+
+    .email-input {
+        width: 320px;
+        box-sizing: border-box;
+        margin-top: 48px;
+        padding: 4px 8px;
         background-color: var(--back-secondary);
-        color: var(--primary-hov);
-    }
-    .error-message {
-        color: var(--red-del);
-        font-size: 14px;
-        font-weight: 500;
-    }
-    .update-password-btn {
-        margin-top: 12px;
-        width: fit-content;
-        padding: 8px 24px;
-        background: var(--primary);
-        border-radius: 4px;
-        outline: none;
         border: none;
-        color: var(--back-main);
-        font-size: 18px;
-        cursor: pointer;
+        border-bottom: 2px solid var(--text-faded);
+        border-radius: 4px 4px 0 0;
+        color: var(--text);
+        font-size: 16px;
+        outline: none;
         transition: all 0.12s ease;
     }
-    .update-password-btn:hover {
-        background-color: var(--primary-hov);
+    .email-input:hover {
+        transform: scale(1.04);
+    }
+    .email-input::placeholder {
+        color: var(--text-faded);
+    }
+    .email-input:focus {
+        transform: scale(1.04);
+        border-color: var(--primary);
     }
 </style>

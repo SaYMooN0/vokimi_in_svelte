@@ -15,6 +15,7 @@ using vokimi_api.Src.dtos.requests.auth;
 using vokimi_api.Src.extension_classes;
 using vokimi_api.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace vokimi_api.Endpoints
 {
@@ -258,15 +259,36 @@ namespace vokimi_api.Endpoints
 
 
         }
-        internal static async Task<IResult> SetNewPasswordRequest(
+        internal static async Task<IResult> CheckPasswordUpdateRequest(
+            IDbContextFactory<AppDbContext> dbFactory,
+            string requestId,
+            string confirmationCode
+        ) {
+            if (!Guid.TryParse(requestId, out var requestGuid)) {
+                return Results.NotFound();
+            }
+            PasswordUpdateRequestId updateRequestId = new(requestGuid);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                var request = await db.PasswordUpdateRequests.FindAsync(updateRequestId);
+                if (request is null) {
+                    return Results.NotFound();
+                }
+                if (request.ConfirmationCode != confirmationCode) {
+                    return Results.NotFound();
+                }
+                return Results.Ok();
+            }
+        }
+        internal static async Task<IResult> ConfirmPasswordUpdateRequest(
             [FromBody] SetNewPasswordRequest request,
-            IDbContextFactory<AppDbContext> dbFactory
+            IDbContextFactory<AppDbContext> dbFactory,
+            EmailService emailService
         ) {
             Err requestErr = request.CheckForErr();
             if (requestErr.NotNone()) {
                 return ResultsHelper.BadRequest.WithErr(requestErr);
             }
-            if (!Guid.TryParse(request.updateRequestRecordId, out var guid)) {
+            if (!Guid.TryParse(request.updateRequestId, out var guid)) {
                 return ResultsHelper.BadRequest.WithErr("Invalid link");
             }
             PasswordUpdateRequestId updateRequestId = new(guid);
@@ -297,6 +319,10 @@ namespace vokimi_api.Endpoints
                         db.Update(loginInfo);
                         db.PasswordUpdateRequests.Remove(updateRequest);
                         await db.SaveChangesAsync();
+                        Err emailSendingErr = await emailService.SendPasswordUpdatedMessage(loginInfo.Email);
+                        if (emailSendingErr.NotNone()) {
+                            throw new Exception();
+                        }
                         await transaction.CommitAsync();
                         return Results.Ok();
                     } catch {

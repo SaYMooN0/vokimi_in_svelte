@@ -3,7 +3,7 @@
 namespace vokimi_api.Src.dtos.requests.auth
 {
     public record class SetNewPasswordRequest(
-        string updateRequestRecordId,
+        string updateRequestId,
         string confirmationCode,
         string newPassword
     )
@@ -15,7 +15,7 @@ namespace vokimi_api.Src.dtos.requests.auth
             ) {
                 return new($"Password must be between {AppUsersConsts.MinPasswordLength} and {AppUsersConsts.MaxPasswordLength} characters");
             }
-            if (string.IsNullOrEmpty(confirmationCode) || string.IsNullOrEmpty(updateRequestRecordId)) {
+            if (string.IsNullOrEmpty(confirmationCode) || string.IsNullOrEmpty(updateRequestId)) {
                 return new($"Invalid link");
             }
             return Err.None;

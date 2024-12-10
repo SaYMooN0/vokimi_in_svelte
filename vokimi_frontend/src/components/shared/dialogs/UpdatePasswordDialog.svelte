@@ -46,7 +46,7 @@
 
         if (response.status === 200) {
             linkHasBeenSent = true;
-        } else if (response.status === 404) {
+        } else if (response.status === 400) {
             linkSendingErr = await getErrorFromResponse(response);
         } else {
             linkSendingErr = "Unable to send update password link";
@@ -82,8 +82,8 @@
                             sendLink={trySendUpdatePasswordRequest}
                         />
                     {/if}
-                    {#if !StringUtils.isNullOrWhiteSpace(email)}
-                        <p class="link-sending-err">{linkSendingErr}</p>
+                    {#if !StringUtils.isNullOrWhiteSpace(linkSendingErr)}
+                        <p class="err-message">{linkSendingErr}</p>
                     {/if}
                 {/await}
             {/if}
@@ -96,12 +96,43 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 12px 20px;
+        padding: 24px 20px;
         position: relative;
     }
-    .link-sending-err {
+    .dialog-content :global(.err-message) {
         color: var(--red-del);
         font-size: 16px;
         font-weight: 500;
+    }
+    .dialog-content :global(.dialog-link) {
+        margin: 0;
+        color: var(--text-faded);
+        padding: 2px 8px;
+        border-radius: 2px;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    .dialog-content :global(.dialog-link):hover {
+        color: var(--primary);
+    }
+    .dialog-content :global(.dialog-link):active {
+        background-color: var(--back-secondary);
+        color: var(--primary-hov);
+    }
+    .dialog-content :global(.submit-btn) {
+        margin-top: 12px;
+        width: fit-content;
+        padding: 8px 24px;
+        background: var(--primary);
+        border-radius: 4px;
+        outline: none;
+        border: none;
+        color: var(--back-main);
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.12s ease;
+    }
+    .dialog-content :global(.submit-btn):hover {
+        background-color: var(--primary-hov);
     }
 </style>
