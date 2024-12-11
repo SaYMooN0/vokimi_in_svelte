@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Link } from "svelte-routing";
     import InputWithIcon from "./InputWithIcon.svelte";
+    import UpdatePasswordDialog from "../../components/shared/dialogs/UpdatePasswordDialog.svelte";
 
     let email = "";
     let password = "";
@@ -29,8 +30,10 @@
             errorMessage = "An unknown error occurred.";
         }
     }
+    let updatePasswordDialog: UpdatePasswordDialog;
 </script>
 
+<UpdatePasswordDialog bind:this={updatePasswordDialog} />
 <form on:submit|preventDefault={submitForm} class="form-container">
     <p class="form-title">Log in to your account</p>
     <InputWithIcon inputType="email" inputValueName="email" bind:value={email}>
@@ -85,9 +88,14 @@
 
     <p class="error-message">{errorMessage}</p>
     <button class="login-button" type="submit">Log In</button>
-    <Link to="/auth/signup">
-        <p class="no-account-link">I don't have an account</p>
-    </Link>
+    <div class="links-container">
+        <Link to="/auth/signup">
+            <span>I don't have an account</span>
+        </Link>
+        <span on:click={() => updatePasswordDialog.open()}>
+            I forgot my password
+        </span>
+    </div>
 </form>
 
 <style>
@@ -123,5 +131,26 @@
     }
     .login-button:hover {
         background: var(--primary-hov);
+    }
+    .links-container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        margin-top: 8px;
+    }
+    .links-container span {
+        color: var(--text-faded);
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+    .links-container span:hover {
+        color: var(--primary);
+    }
+    .links-container span:active {
+        color: var(--primary-hov);
+        background-color: var(--back-secondary);
     }
 </style>

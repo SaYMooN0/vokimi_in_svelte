@@ -2,22 +2,20 @@
     import LoadingMessage from "../../../components/shared/LoadingMessage.svelte";
     import { Err } from "../../../ts/Err";
     import { getErrorFromResponse } from "../../../ts/ErrorResponse";
+    import { UserPageTopInfoData } from "../../../ts/page_classes/user_page_classes/UserPageTopInfoData";
     import { ImgUtils } from "../../../ts/utils/ImgUtils";
+    import AccountBaseStats from "./AccountBaseStats.svelte";
 
     export let userId: string = "";
     export let openUserAdditionalInfoDialog: () => Promise<void>;
-    let profilePicturePath: string = "";
-    let username: string = "";
-    let bannerColor: string = "";
 
+    let pageInfo: UserPageTopInfoData;
     async function fetchData(): Promise<Err> {
         const url = "/api/userPage/getUserPageTopInfoData/" + userId;
         const response = await fetch(url);
         if (response.ok) {
             const data = await response.json();
-            profilePicturePath = data.profilePicturePath;
-            username = data.username;
-            bannerColor = data.bannerColor;
+            pageInfo = UserPageTopInfoData.fromResponseData(data);
             return Err.none();
         } else if (response.status === 400) {
             return new Err(await getErrorFromResponse(response));
@@ -34,16 +32,19 @@
         <div class="err-message">{fetchingErr.toString()}</div>
     {:else}
         <div class="user-info">
-            <div class="banner" style="background-color:{bannerColor};"></div>
+            <div
+                class="banner"
+                style="background-color:{pageInfo.bannerColor};"
+            ></div>
             <div class="info">
                 <div class="profile-picture">
                     <img
-                        src={ImgUtils.imgUrl(profilePicturePath)}
+                        src={ImgUtils.imgUrl(pageInfo.profilePicturePath)}
                         alt="Profile Picture"
                     />
                 </div>
                 <div class="username-zone">
-                    <p class="username">{username}</p>
+                    <p class="username">{pageInfo.username}</p>
                     <label
                         class="additional-info-label"
                         on:click={openUserAdditionalInfoDialog}
@@ -79,6 +80,13 @@
                 <slot name="right-side-slot" />
             </div>
         </div>
+        <AccountBaseStats
+            {userId}
+            publishedTestsCount={pageInfo.publishedTestsCount}
+            followingsCount={pageInfo.followingsCount}
+            friendsCount={pageInfo.friendsCount}
+            followersCount={pageInfo.followersCount}
+        />
     {/if}
 {/await}
 

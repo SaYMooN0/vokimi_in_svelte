@@ -36,7 +36,7 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                       );
 
                 entity.HasMany(x => x.Followers)
-                      .WithMany()
+                      .WithMany(x => x.Followings)
                       .UsingEntity<RelationsAppUserWithFollower>(
                           j => j.HasOne(uf => uf.Follower).WithMany().HasForeignKey(uf => uf.FollowerId),
                           j => j.HasOne(uf => uf.User).WithMany().HasForeignKey(uf => uf.UserId)

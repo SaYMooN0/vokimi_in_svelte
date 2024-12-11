@@ -15,7 +15,6 @@ using vokimi_api.Src.dtos.requests.auth;
 using vokimi_api.Src.extension_classes;
 using vokimi_api.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace vokimi_api.Endpoints
 {
