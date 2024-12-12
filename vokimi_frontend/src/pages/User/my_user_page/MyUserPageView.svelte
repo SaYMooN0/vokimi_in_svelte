@@ -55,7 +55,6 @@
             <label on:click={logout} class="logout-btn"> Log out </label>
         </div>
     </UserPageTopInfo>
-    <AccountBaseStats />
 </UserPageViewFrame>
 
 <style>

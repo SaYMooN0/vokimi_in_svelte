@@ -31,11 +31,8 @@
     {#if fetchingErr.notNone()}
         <div class="err-message">{fetchingErr.toString()}</div>
     {:else}
-        <div class="user-info">
-            <div
-                class="banner"
-                style="background-color:{pageInfo.bannerColor};"
-            ></div>
+        <div class="user-info" style="--banner-color: {pageInfo.bannerColor};">
+            <div class="banner"></div>
             <div class="info">
                 <div class="profile-picture">
                     <img
@@ -103,6 +100,7 @@
         height: 200px;
         position: relative;
         border-radius: 16px 16px 4px 4px;
+        background-color: var(--banner-color);
     }
 
     .info {
@@ -122,7 +120,9 @@
         aspect-ratio: 1 / 1;
         border-radius: 50%;
         overflow: hidden;
-        border: 3px solid #fb33bb;
+        border: 3px solid var(--banner-color);
+        background-color: var(--back-main);
+        align-content: center;
     }
 
     .profile-picture img {

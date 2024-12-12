@@ -66,5 +66,14 @@ namespace vokimi_api.Src.dtos.responses.users_page
                 ? user.Followers.Count()
                 : null
         );
+        public static PageTopInfoDataResponse ForMyself(AppUser user) => new PageTopInfoDataResponse(
+            user.ProfilePicturePath,
+            user.Username,
+            user.UserPageSettings.BannerColor,
+            user.PublishedTests.Count(),
+            user.Followings.Count(),
+            user.Friends.Count(),
+            user.Followers.Count()
+        );
     }
 }

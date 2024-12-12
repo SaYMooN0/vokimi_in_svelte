@@ -65,6 +65,9 @@ namespace vokimi_api.Endpoints.pages
                 if (!httpContext.TryGetUserId(out var viewerId)) {
                     return Results.Ok(PageTopInfoDataResponse.ForBasicUser(user));
                 }
+                if (viewerId == appUserId) {
+                    return Results.Ok(PageTopInfoDataResponse.ForMyself(user));
+                }
                 if (user.Friends.Any(u => u.Id == viewerId)) {
                     return Results.Ok(PageTopInfoDataResponse.ForFriend(user));
                 }
@@ -109,6 +112,36 @@ namespace vokimi_api.Endpoints.pages
                     Results.Ok(UserPageAdditionalInfoData.ForAnyOne(user.UserAdditionalInfo))
             };
         }
+        public static async Task<IResult> GetViewerAndUserRelations(
+            string userId,
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext
+        ) {
+            if (!Guid.TryParse(userId, out var userGuid)) {
+                return ResultsHelper.BadRequest.WithErr("Unknown user page");
+            }
+            AppUserId appUserId = new(userGuid);
+            if (!httpContext.TryGetUserId(out var viewerId)) {
+                return Results.Ok(new UserRelationsResponse(false, false));
+            }
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                AppUser? viewer = await db.AppUsers
+                    .Include(u => u.Friends)
+                    .Include(u => u.Followers)
+                    .Include(u => u.Followings)
+                    .FirstOrDefaultAsync(u => u.Id == viewerId);
+                if (viewer is null) {
+                    return ResultsHelper.BadRequest.LogOutLogIn();
+                }
+                if (viewer.Friends.Any(f => f.Id == appUserId)) {
+                    return Results.Ok(new UserRelationsResponse(true, true));
+                }
+                bool userIsFollowed = viewer.Followings.Any(f => f.Id == appUserId);
+                bool viewerIsFollowed = viewer.Followers.Any(f => f.Id == appUserId);
+                return Results.Ok(new UserRelationsResponse(userIsFollowed, viewerIsFollowed));
+            }
+        }
+
         public static async Task<IResult> FollowUser(
             string userToFollowId,
             IDbContextFactory<AppDbContext> dbFactory,
