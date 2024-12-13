@@ -20,13 +20,21 @@
         );
         if (response.ok) {
             const data = await response.json();
-            viewerFollowsOwner = data.viewerFollowsOwner;
-            ownerFollowsViewer = data.ownerFollowsViewer;
+            viewerFollowsOwner = data.viewerFollowsUser;
+            ownerFollowsViewer = data.userFollowsViewer;
+            console.log(data);
         } else if (response.status === 400) {
             fetchingErr = await getErrorFromResponse(response);
         } else {
             fetchingErr = "Unable to fetch information";
         }
+    }
+    function updateFollowingStates(
+        viewerFollowsUser: boolean,
+        userFollowsViewer: boolean,
+    ) {
+        viewerFollowsOwner = viewerFollowsUser;
+        ownerFollowsViewer = userFollowsViewer;
     }
 </script>
 
@@ -40,9 +48,9 @@
             {#await fetchViewerAndUserRelations() then _}
                 {#if StringUtils.isNullOrWhiteSpace(fetchingErr)}
                     {#if viewerFollowsOwner}
-                        <FollowedLabel userId={pageOwnerId} />
+                        <FollowedLabel userId={pageOwnerId} updateParentElement={updateFollowingStates} />
                     {:else}
-                        <FollowButton userId={pageOwnerId} />
+                        <FollowButton userId={pageOwnerId} updateParentElement={updateFollowingStates} />
                     {/if}
                     {#if ownerFollowsViewer}
                         <span class="relations-span">
@@ -64,14 +72,21 @@
 <style>
     .right-side-slot-div :global(button) {
         margin: 0 auto;
+        display: grid;
+        grid-template-columns: 24px auto;
+        gap: 4px;
         color: var(--back-main);
         background-color: var(--primary);
         padding: 6px 16px;
-        font-size: 18px;
+        font-size: 20px;
         border-radius: 4px;
         outline: none;
         border: none;
         cursor: pointer;
+
+    }
+    .right-side-slot-div :global(button):active{
+        transform: scale(0.98);
     }
     .relations-span {
         color: var(--text-faded) s;

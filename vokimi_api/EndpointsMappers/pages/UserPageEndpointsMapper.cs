@@ -10,6 +10,8 @@ namespace vokimi_api.EndpointsMappers.pages
             app.MapGet("/userPage/getUserPageTopInfoData/{userId}", UserEndpoints.GetUserPageTopInfoData);
             app.MapGet("/userPage/getUserPageAdditionalInfo/{userId}", UserEndpoints.GetUserPageAdditionalInfoData);
             app.MapGet("/userPage/getViewerAndUserRelations/{userId}", UserEndpoints.GetViewerAndUserRelations);
+            app.MapPost("/userPage/followUser/{userToFollowId}", UserEndpoints.FollowUser);
+            app.MapPost("/userPage/unfollowUser/{userToUnfollowId}", UserEndpoints.UnfollowUser);
         }
     }
 }

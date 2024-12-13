@@ -171,16 +171,66 @@ namespace vokimi_api.Endpoints.pages
             }
 
             using var transaction = await db.Database.BeginTransactionAsync();
+            bool userFollowsViewer = false;
+
             try {
-                if (userToFollow.Friends.Any(u => u.Id == viewerId)) {
-                    return ResultsHelper.BadRequest.WithErr("You are already friends with this user");
-                } else if (userToFollow.Followers.Any(u => u.Id == viewerId)) {
-                    throw new NotImplementedException();
-                } else {
-                    userToFollow.Followers.Add(userToFollow);
-                    throw new NotImplementedException();
+                if (
+                    userToFollow.Friends.Any(u => u.Id == viewerId) ||
+                    userToFollow.Followers.Any(u => u.Id == viewerId)
+                ) {
+                    return ResultsHelper.BadRequest.WithErr("You are already follow this user");
                 }
 
+                AppUser? userBackFollowing = userToFollow.Followings.FirstOrDefault(u => u.Id == viewerId);
+
+                if (userBackFollowing is null) {
+                    userToFollow.Followers.Add(viewer);
+                    userFollowsViewer = false;
+                } else {
+                    userToFollow.Followings.Remove(viewer);
+                    userToFollow.Friends.Add(viewer);
+                    userFollowsViewer = true;
+                }
+                bool viewerFollowsUser = true;
+                db.SaveChanges();
+                transaction.Commit();
+                return Results.Ok(new UserRelationsResponse(viewerFollowsUser, userFollowsViewer));
+            } catch {
+                await transaction.RollbackAsync();
+                return ResultsHelper.BadRequest.ServerError();
+            }
+        }
+        public static async Task<IResult> UnfollowUser(
+           string userToUnfollowId,
+           IDbContextFactory<AppDbContext> dbFactory,
+           HttpContext httpContext
+       ) {
+            if (!Guid.TryParse(userToUnfollowId, out var userToUnfollowGuid)) {
+                return ResultsHelper.BadRequest.ServerError();
+            }
+            var toUnfollowId = new AppUserId(userToUnfollowGuid);
+
+            using var db = await dbFactory.CreateDbContextAsync();
+
+            if (!httpContext.TryGetUserId(out var viewerId)) {
+                return ResultsHelper.BadRequest.LogOutLogIn();
+            }
+            AppUser? viewer = await db.AppUsers.FindAsync(viewerId);
+            if (viewer is null) {
+                return ResultsHelper.BadRequest.LogOutLogIn();
+            }
+
+            AppUser? userToUnfollow = await db.AppUsers
+                .Include(u => u.Friends)
+                .Include(u => u.Followers)
+                .FirstOrDefaultAsync(u => u.Id == toUnfollowId);
+            if (userToUnfollow is null) {
+                return ResultsHelper.BadRequest.WithErr("User not found");
+            }
+
+            using var transaction = await db.Database.BeginTransactionAsync();
+            try {
+                throw new NotImplementedException();
                 db.SaveChanges();
                 transaction.Commit();
             } catch {
