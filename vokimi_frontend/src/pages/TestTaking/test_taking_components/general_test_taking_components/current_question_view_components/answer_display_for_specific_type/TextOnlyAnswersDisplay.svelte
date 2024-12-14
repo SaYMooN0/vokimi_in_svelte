@@ -8,21 +8,36 @@
     export let chosenAnswersIds: string[];
 </script>
 
-{#each answers.sort((a, b) => a.orderInQuestion - b.orderInQuestion) as answer}
-    <p class="answer-btn" on:click={() => onAnswerClick(answer.answerId)}>
-        <AnswerChosenIndicator
-            isChosen={chosenAnswersIds.includes(answer.answerId)}
-            {isSingleChoice}
-        />
-        {answer.text}
-    </p>
-{/each}
+<div class="answers-container">
+    {#each answers.sort((a, b) => a.orderInQuestion - b.orderInQuestion) as answer}
+        <p class="answer-btn" on:click={() => onAnswerClick(answer.answerId)}>
+            <AnswerChosenIndicator
+                isChosen={chosenAnswersIds.includes(answer.answerId)}
+                {isSingleChoice}
+            />
+            <span class="answer-text">
+                {answer.text}
+            </span>
+        </p>
+    {/each}
+</div>
 
 <style>
-    .answer-btn {
-        cursor: pointer;
+    .answers-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
-    .answer-btn:hover :global(.is-chosen-indicator) {
-        border-color: var(--test-accent);
+    .answer-btn {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 12px;
+        border-right: 4px solid transparent;
+    }
+    .answer-btn:hover {
+        border-right: 4px solid var(--test-accent);
+    }
+    .answer-btn span {
+        font-size: 20px;
     }
 </style>

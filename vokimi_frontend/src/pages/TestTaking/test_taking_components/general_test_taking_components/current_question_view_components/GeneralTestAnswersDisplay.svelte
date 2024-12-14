@@ -78,5 +78,20 @@
         {chosenAnswersIds}
     />
 {:else}
-    <p>Unable to render question answers</p>
+    <p>Unable to display question answers</p>
 {/if}
+
+<style>
+    :global(.answer-btn) {
+        cursor: pointer;
+        transition: all 0.12s ease-in;
+        box-sizing: border-box;
+
+    }
+    :global(.answer-btn):hover {
+        transform: scale(1.01);
+    }
+    :global(.answer-btn):hover :global(.is-chosen-indicator) {
+        border-color: var(--test-accent);
+    }
+</style>

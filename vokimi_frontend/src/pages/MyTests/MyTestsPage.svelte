@@ -5,8 +5,6 @@
     
 </script>
 
-
-
 <AuthorizeView>
     <div slot="loading">
         <LoadingMessage />

@@ -52,4 +52,13 @@
     answersType={currentQuestionData.answersType}
     chosenAnswersIds={questionChosenAnswers}
 />
-<p class="answer-chosoing-error">{answersChoosingErr}</p>
+<p class="answer-choosing-error">{answersChoosingErr}</p>
+
+<style>
+    .answer-choosing-error {
+        color: var(--red-del);
+        font-size: 18px;
+        font-weight: 500;
+        text-align: center;
+    }
+</style>

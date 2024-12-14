@@ -9,7 +9,8 @@
 </script>
 
 <div class="received-res-view">
-    <h2 class="your-res-label">Your result:</h2>
+    <p class="your-res-label">Your result:</p>
+    <p class="res-name">{receivedResultName}</p>
     {#if !StringUtils.isNullOrWhiteSpace(receivedResultImage)}
         <img
             class="received-img"
@@ -17,7 +18,6 @@
             alt="received-result"
         />
     {/if}
-    <p class="res-name">{receivedResultName}</p>
     <p class="res-text">{receivedResultText}</p>
 </div>
 
@@ -26,5 +26,24 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+    .your-res-label {
+        font-size: 20px;
+        font-weight: 500;
+        color: var(--text-faded);
+        margin: 0;
+    }
+    .received-img {
+        margin: 4px 0;
+        width: 100%;
+        max-height: 480px;
+        aspect-ratio: 1/1;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+    .res-name {
+        margin: 4px 0;
+        font-size: 28px;
+        font-weight: 500;
     }
 </style>

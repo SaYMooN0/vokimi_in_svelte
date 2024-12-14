@@ -1,31 +1,33 @@
 <script lang="ts">
     import { navigate } from "svelte-routing";
+    import TestPublishedPostCreationDialog from "../../../../components/shared/dialogs/posts_creation_dialogs/TestPublishedPostCreationDialog.svelte";
 
-    export let publishedTestId: string = "";
-    export let publishedTestName: string = "";
+    export let publishedTestId: string;
+    export let publishedTestName: string;
     let newPostMakingErr: string = "";
-    function MakeNewPost() {
+    function makeNewPost() {
         newPostMakingErr = "Not implemented T_T";
     }
-    function GoToTestPage() {
+    function goToTestPage() {
         navigate(`/view-test/${publishedTestId}`);
     }
+    let postsCreationDialog: TestPublishedPostCreationDialog;
 </script>
 
+<TestPublishedPostCreationDialog bind:this={postsCreationDialog} />
 <h2 class="test-published-message">
-    Your test "<label>{publishedTestName}</label>" has been published
+    Your test "<span>{publishedTestName}</span>" has been published
     successfully
 </h2>
 <p class="new-post-p">Would you like to make a post about it?</p>
 
-<button class="new-post-btn unselectable" on:click={MakeNewPost}>
-    Make new post</button
->
+<button class="new-post-btn unselectable" on:click={makeNewPost}>
+    Make new post
+</button>
 <p class="new-post-err-p">{newPostMakingErr}</p>
-<label class="test-view-link unselectable" on:click={GoToTestPage}>
+<label class="test-view-link unselectable" on:click={goToTestPage}>
     Go to the test page
 </label>
-
 <style>
     .test-published-message {
         margin-top: 24px;
@@ -36,7 +38,7 @@
         color: var(--text);
         text-align: center;
     }
-    .test-published-message label {
+    .test-published-message span {
         text-decoration: underline;
         text-decoration-color: var(--primary);
         text-underline-offset: 6px;
@@ -56,6 +58,7 @@
         background-color: var(--primary);
         padding: 8px 20px;
         border-radius: 4px;
+        border: none;
         font-size: 22px;
         cursor: pointer;
         transition: all 0.12s ease-in;

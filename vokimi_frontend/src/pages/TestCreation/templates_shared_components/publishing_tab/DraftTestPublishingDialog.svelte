@@ -3,6 +3,7 @@
     import BaseDialog from "../../../../components/BaseDialog.svelte";
     import TestPublishedSuccessfully from "./TestPublishedSuccessfully.svelte";
     import CloseButton from "../../../../components/shared/CloseButton.svelte";
+    import { TestTemplate } from "../../../../ts/enums/TestTemplate";
 
     export let testId: string;
     let dialogElement: BaseDialog;
@@ -169,7 +170,7 @@
     }
     .error-message {
         font-size: 18px;
-        color: var(--text-faded);
+        color: var(--red-del);
         margin: 8px 12px;
     }
     .publish-btn {

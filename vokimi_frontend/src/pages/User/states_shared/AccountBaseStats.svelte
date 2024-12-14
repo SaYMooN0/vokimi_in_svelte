@@ -70,8 +70,6 @@
     .stat-label:active {
         transform: translateY(-4px) scale(1.02);
         box-shadow: rgba(60, 20, 110, 0.1) 0px 2px 2px 0px;
-
-        
     }
     .stat-value {
         cursor: inherit;

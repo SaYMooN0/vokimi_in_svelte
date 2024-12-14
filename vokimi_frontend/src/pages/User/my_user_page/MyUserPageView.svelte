@@ -3,7 +3,6 @@
     import UserAdditionalInfoDialog from "../states_shared/UserAdditionalInfoDialog.svelte";
     import UserPageTopInfo from "../states_shared/UserPageTopInfo.svelte";
     import UserPageViewFrame from "../states_shared/UserPageViewFrame.svelte";
-    import AccountBaseStats from "../states_shared/AccountBaseStats.svelte";
 
     export let userId: string = "";
     let dialogElement: UserAdditionalInfoDialog;
@@ -22,7 +21,6 @@
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                color="#000000"
                 fill="none"
             >
                 <path
@@ -52,7 +50,7 @@
             <Link to="/profile-editing" class="edit-profile-link">
                 Edit my profile
             </Link>
-            <label on:click={logout} class="logout-btn"> Log out </label>
+            <label on:click={logout} class="logout-btn">Log out</label>
         </div>
     </UserPageTopInfo>
 </UserPageViewFrame>
