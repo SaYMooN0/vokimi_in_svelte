@@ -9,10 +9,8 @@ namespace vokimi_api.Src.dtos.responses.my_tests_page
        string Name,
        string Cover,
        string Template,
-       string PublishedDate,
-       int TakersCount,
-       float AverageRating,
-       int CommentsCount
+       DateOnly PublishedDate,
+       int TakersCount
     )
     {
         public static PublishedTestBriefInfoResponse FromTest(BaseTest test) => new(
@@ -20,10 +18,8 @@ namespace vokimi_api.Src.dtos.responses.my_tests_page
             test.Name,
             test.Cover,
             test.Template.GetId(),
-            test.PublicationDate.ToString("dd.MM.yyyy"),
-            0,
-            0,
-            0
+            test.PublicationDate,
+            test.GetBaseTestTakings().Count()
         );
     }
 }

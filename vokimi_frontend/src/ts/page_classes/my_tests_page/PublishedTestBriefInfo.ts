@@ -5,20 +5,16 @@ export class PublishedTestBriefInfo {
     readonly name: string;
     readonly cover: string;
     readonly template: TestTemplate;
-    readonly publishedDate: string;
+    readonly publishedDate: Date;
     readonly takersCount: number;
-    readonly averageRating: number;
-    readonly commentsCount: number;
 
     constructor(
         id: string,
         name: string,
         cover: string,
         template: TestTemplate,
-        publishedDate: string,
-        takersCount: number,
-        averageRating: number,
-        commentsCount: number
+        publishedDate: Date,
+        takersCount: number
     ) {
         this.id = id;
         this.name = name;
@@ -26,7 +22,5 @@ export class PublishedTestBriefInfo {
         this.template = template;
         this.publishedDate = publishedDate;
         this.takersCount = takersCount;
-        this.averageRating = averageRating;
-        this.commentsCount = commentsCount;
     }
 }

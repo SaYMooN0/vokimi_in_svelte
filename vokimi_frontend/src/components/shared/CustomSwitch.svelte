@@ -19,6 +19,8 @@
         --toggle-shadow-offset: 10px;
         --color-grey: var(--text-faded);
         height: var(--button-height);
+        display: flex;
+        align-items: center;
     }
 
     .slider {

@@ -16,6 +16,7 @@
   import TestTakingPage from "./pages/TestTaking/TestTakingPage.svelte";
   import TestTakingPageResultView from "./pages/TestTaking/TestTakingPageResultView.svelte";
   import ConfirmPasswordUpdatePage from "./pages/ConfirmPasswordUpdate/ConfirmPasswordUpdatePage.svelte";
+    import ManageTestPage from "./pages/ManageTest/ManageTestPage.svelte";
 </script>
 
 <Router>
@@ -56,6 +57,9 @@
 
       <Route path="/test-creation/:testId/*" let:params>
         <TestCreationPage testId={params.testId} />
+      </Route>
+      <Route path="/manage-test/:testId/*" let:params>
+        <ManageTestPage testId={params.testId} />
       </Route>
       <Route path="/view-test/:testId/*" let:params>
         <ViewTestPage testId={params.testId} startingTab={params["*"]} />

@@ -17,7 +17,7 @@
 
 <UserAdditionalInfoDialog bind:this={dialogElement} {userId}>
     <div class="edit-additional-info-link">
-        <Link to="/profile-editing/additional-info">
+        <Link to="/profile-editing">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

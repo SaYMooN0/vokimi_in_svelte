@@ -1,5 +1,6 @@
 <script lang="ts">
     import CustomCheckbox from "../../../../components/shared/CustomCheckbox.svelte";
+    import CustomSwitch from "../../../../components/shared/CustomSwitch.svelte";
     import type { Err } from "../../../../ts/Err";
     import type { TestCreationConclusionTabData } from "../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
@@ -59,11 +60,11 @@
             saveImageFunction={saveConclusionImage}
         />
 
-        <div class="add-feedback-zone">
-            <label class="add-feedback-label">
-                Add feedback
-                <CustomCheckbox bind:isChecked={conclusionData.anyFeedback} />
-            </label>
+        <div class="manage-feedback-zone">
+            <div class="allow-feedback-div">
+                <span class="allow-feedback-span">Allow feedback</span>
+                <CustomSwitch bind:isChecked={conclusionData.anyFeedback} />
+            </div>
 
             <div
                 class="feedback-added-only"
@@ -106,16 +107,23 @@
         align-items: center;
     }
 
-    .add-feedback-zone {
+    .manage-feedback-zone {
         display: flex;
         flex-direction: column;
         font-size: 20px;
     }
 
-    .add-feedback-label {
+    .allow-feedback-div {
         display: flex;
         flex-direction: row;
+        align-items: center;
         gap: 8px;
+        background-color: var(--back-main);
+        padding: 4px 12px;
+        font-size: 14px;
+    }
+    .allow-feedback-span {
+        font-size: 22px;
     }
 
     .feedback-added-only {
@@ -154,24 +162,16 @@
     }
 
     .showFeedback {
-        animation: slideIn 0.6s forwards;
+        animation: slideIn 0.8s forwards;
     }
 
     .hideFeedback {
         display: none !important;
     }
-
-    .saving-error {
-        color: var(--red-del);
-        font-size: 18px;
-        width: 100%;
-        text-align: center;
-    }
-
     @keyframes slideIn {
         from {
-            transform: translateY(-10%);
-            opacity: 0;
+            transform: translateY(-16%);
+            opacity: 0.2;
         }
 
         to {

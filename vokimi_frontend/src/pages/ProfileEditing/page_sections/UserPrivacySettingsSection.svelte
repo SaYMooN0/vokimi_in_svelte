@@ -66,6 +66,7 @@
     </p>
 </div>
 
+
 <SectionsEditButtons
     editButtonAction={() => settingsUpdatingDialog.open()}
     text="Edit privacy settings"
