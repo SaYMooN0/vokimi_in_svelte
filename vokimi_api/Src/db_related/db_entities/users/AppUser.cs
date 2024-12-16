@@ -1,11 +1,11 @@
 ﻿using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
+using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.test_collections;
 using vokimi_api.Src.db_related.db_entities.tests_related;
 using vokimi_api.Src.db_related.db_entities.tests_related.discussions;
 using vokimi_api.Src.db_related.db_entities.user_page.posts;
 using vokimi_api.Src.db_related.db_entities_ids;
-using VokimiShared.src.models.db_classes.test.test_types;
 
 namespace vokimi_api.Src.db_related.db_entities.users
 {

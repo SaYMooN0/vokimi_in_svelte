@@ -6,7 +6,6 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_general_test;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
 using vokimi_api.Src.db_related.db_entities.users;
-using VokimiShared.src.models.db_classes.test.test_types;
 using vokimi_api.Src.db_related.db_entities.tests_related;
 using vokimi_api.Src.db_related.db_entities.user_page.posts;
 using vokimi_api.Src.db_related.db_entities;
@@ -14,6 +13,8 @@ using vokimi_api.Src.db_related.db_entities.test_taken_records;
 using vokimi_api.Src.db_related.db_entities.tests_related.discussions.attachments;
 using vokimi_api.Src.db_related.db_entities.tests_related.discussions;
 using vokimi_api.Src.db_related.db_entities.test_collections;
+using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
+using vokimi_api.Src.db_related.db_entities.tests_related.tags;
 
 namespace vokimi_api.Src.db_related
 {
@@ -99,6 +100,7 @@ namespace vokimi_api.Src.db_related
             //published tests
             modelBuilder.ConfigureBaseTest();
             modelBuilder.ConfigureTestTags();
+            modelBuilder.ConfigureTestTagSuggestions();
             modelBuilder.ConfigureTestRatings();
             modelBuilder.ConfigureTestDiscussionComments();
             modelBuilder.ConfigureDiscussionsCommentAttachmentConfiguration();

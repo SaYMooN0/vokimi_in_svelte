@@ -26,7 +26,6 @@
 
         if (response.ok) {
             const responseData = await response.json();
-            console.log(responseData);
             selectedCollectionIds = new Set(responseData);
             close();
         } else if (response.status === 400) {

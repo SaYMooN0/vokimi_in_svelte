@@ -1,7 +1,7 @@
 <script lang="ts">
     import NavMenu from "./NavMenu.svelte";
     import vokimiLogo from "../../../assets/vokimi-logo.svg";
-    import { ImgUtils } from "../../../ts/utils/ImgUtils";
+    import HeaderAccountDiv from "./HeaderAccountDiv.svelte";
 
     let username: string = "";
     let profilePicture: string = "";
@@ -30,14 +30,7 @@
         <div>Loading...</div>
     {:then authenticated}
         {#if authenticated}
-            <a href="/user" class="acc-div">
-                <img
-                    src={ImgUtils.imgUrl(profilePicture)}
-                    alt="Profile Picture"
-                    class="acc-img"
-                />
-                {username}
-            </a>
+            <HeaderAccountDiv {username} {profilePicture} />
         {:else}
             <a href="/auth/login" class="login-button">Login</a>
         {/if}
@@ -53,7 +46,7 @@
         padding: 0 calc(3vw - 22px);
         box-sizing: border-box;
         display: grid;
-        grid-template-columns: 200px 1fr 200px;
+        grid-template-columns: 200px 1fr 80px;
         align-items: center;
         height: var(--header-height);
         background-color: var(--back-main);
@@ -84,40 +77,13 @@
     .login-button:hover {
         background-color: var(--primary-hov);
     }
-    .acc-div {
-        background-color: var(--back-secondary);
-        padding: 4px 12px;
-        width: fit-content;
-        max-width: 92%;
-        overflow: hidden;
-        border: 2px solid var(--back-secondary);
-        border-radius: 100px;
-        display: grid;
-        grid-template-columns: auto 1fr;
-        align-items: center;
-        gap: 8px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    .acc-div:hover {
-        border: 2px solid var(--primary);
-    }
-    .acc-div:active {
-        transform: scale(0.98);
-    }
 
-    .acc-img {
-        height: 44px;
-        aspect-ratio: 1/1;
-        object-fit: cover;
-        border-radius: 12px;
-    }
     @media (max-width: 1600px) {
         .vokimi-logo {
             height: 96%;
         }
         .header-layout {
-            grid-template-columns: 184px 1fr 184px;
+            grid-template-columns: 184px 1fr 80px;
         }
     }
     @media (max-width: 1200px) {
@@ -125,17 +91,7 @@
             height: 92%;
         }
         .header-layout {
-            grid-template-columns: 148px 1fr 148px;
-        }
-        .acc-div {
-            font-size: 14px;
-            gap: 6px;
-        }
-        .acc-img {
-            height: 38px;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            border-radius: 10px;
+            grid-template-columns: 148px 1fr 80px;
         }
     }
 </style>

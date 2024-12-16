@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
+using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.responses;
-using VokimiShared.src.models.db_classes.test.test_types;
 
 namespace vokimi_api.Src.extension_classes
 {

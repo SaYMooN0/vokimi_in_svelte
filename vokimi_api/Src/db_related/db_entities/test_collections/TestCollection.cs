@@ -1,6 +1,6 @@
-﻿using vokimi_api.Src.db_related.db_entities_ids;
+﻿using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
+using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.enums;
-using VokimiShared.src.models.db_classes.test.test_types;
 
 namespace vokimi_api.Src.db_related.db_entities.test_collections
 {

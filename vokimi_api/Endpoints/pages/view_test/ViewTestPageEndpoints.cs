@@ -2,12 +2,12 @@
 using vokimi_api.Helpers;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.db_related;
-using VokimiShared.src.models.db_classes.test.test_types;
 using vokimi_api.Src.extension_classes;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.dtos.responses.view_test_page;
 using vokimi_api.Src.dtos.responses.view_test_page.discussions;
+using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
 
 namespace vokimi_api.Endpoints.pages
 {

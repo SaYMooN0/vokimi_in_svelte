@@ -7,10 +7,10 @@ using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.extension_classes;
-using VokimiShared.src.models.db_classes.test.test_types;
 using vokimi_api.Src;
 using vokimi_api.Src.dtos.requests.view_test_page.ratings;
 using vokimi_api.Src.dtos.responses.view_test_page;
+using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
 
 namespace vokimi_api.Endpoints.pages.view_test
 {

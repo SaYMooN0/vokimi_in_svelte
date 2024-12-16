@@ -3,15 +3,13 @@
     import UserAdditionalInfoDialog from "../states_shared/UserAdditionalInfoDialog.svelte";
     import UserPageTopInfo from "../states_shared/UserPageTopInfo.svelte";
     import UserPageViewFrame from "../states_shared/UserPageViewFrame.svelte";
+    import { logout } from "../../../ts/stores/authStore";
 
     export let userId: string = "";
     let dialogElement: UserAdditionalInfoDialog;
 
-    async function logout() {
-        const response = await fetch("/api/logout", { method: "POST" });
-        if (response.ok) {
-            window.location.href = "/auth/login";
-        }
+    async function logoutPressed() {
+        await logout();
     }
 </script>
 
@@ -50,7 +48,7 @@
             <Link to="/profile-editing" class="edit-profile-link">
                 Edit my profile
             </Link>
-            <label on:click={logout} class="logout-btn">Log out</label>
+            <label on:click={logoutPressed} class="logout-btn">Log out</label>
         </div>
     </UserPageTopInfo>
 </UserPageViewFrame>

@@ -1,14 +1,14 @@
-﻿using vokimi_api.Src.db_related.db_entities;
-using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
+﻿using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.test_collections;
 using vokimi_api.Src.db_related.db_entities.test_taken_records;
 using vokimi_api.Src.db_related.db_entities.tests_related;
 using vokimi_api.Src.db_related.db_entities.tests_related.discussions;
+using vokimi_api.Src.db_related.db_entities.tests_related.tags;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.enums;
 
-namespace VokimiShared.src.models.db_classes.test.test_types
+namespace vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared
 {
     public abstract class BaseTest
     {
@@ -36,10 +36,11 @@ namespace VokimiShared.src.models.db_classes.test.test_types
         public virtual TestStylesSheet StylesSheet { get; protected set; }
 
         public virtual ICollection<TestTag> Tags { get; protected set; } = [];
+        public virtual ICollection<TagSuggestionForTest> SuggestedTags { get; protected set; } = [];
 
         public virtual ICollection<TestRating> Ratings { get; protected set; } = [];
         public virtual ICollection<TestDiscussionsComment> DiscussionsComments { get; protected set; } = [];
-        public virtual ICollection<TestCollection> CollectionTestIn{ get; protected set; } = [];
+        public virtual ICollection<TestCollection> CollectionTestIn { get; protected set; } = [];
 
         public abstract ICollection<BaseTestTakenRecord> GetBaseTestTakings();
 

@@ -25,7 +25,6 @@
             confirmationCode,
             newPassword,
         };
-        console.log(data);
         const response = await fetch("/api/auth/confirmPasswordUpdateRequest", {
             method: "POST",
             headers: {

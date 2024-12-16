@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using vokimi_api.Helpers;
 using vokimi_api.Src.db_related;
+using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.extension_classes;
-using VokimiShared.src.models.db_classes.test.test_types;
 
 namespace vokimi_api.Endpoints
 {

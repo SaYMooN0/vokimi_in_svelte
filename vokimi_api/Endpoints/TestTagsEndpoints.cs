@@ -4,6 +4,8 @@ using vokimi_api.Helpers;
 using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
+using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
+using vokimi_api.Src.db_related.db_entities.tests_related.tags;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
 using vokimi_api.Src.extension_classes;
@@ -96,6 +98,65 @@ namespace vokimi_api.Endpoints
                 return ResultsHelper.BadRequest.ServerError();
             }
         }
+        public static async Task<IResult> SuggestTagsForTest(
+            string testIdString,
+            [FromBody] string[] tags,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
 
+            if (!Guid.TryParse(testIdString, out var testGuid)) {
+                return ResultsHelper.BadRequest.ServerError();
+            }
+            foreach (var tag in tags) {
+                if (!TestTagsConsts.TagRegex.IsMatch(tag)) {
+                    return ResultsHelper.BadRequest.WithErr(TestTagsConsts.InvalidTagMessage(tag));
+                }
+            }
+            TestId testId = new(testGuid);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseTest? test = await db.TestsSharedInfo
+                    .Include(t => t.Tags)
+                    .Include(t => t.SuggestedTags)
+                    .FirstOrDefaultAsync();
+                if (test is null) {
+                    return ResultsHelper.BadRequest.UnknownTest();
+                }
+
+                HashSet<string> tagsInTest = test.Tags
+                    .Select(t => t.Value)
+                    .ToHashSet();
+                HashSet<string> tagsToAdd = tags
+                    .Where(t => !tagsInTest.Contains(t))
+                    .ToHashSet();
+
+                if (tagsToAdd.Count > 0) {
+                    return ResultsHelper.BadRequest.WithErr("Test already has all these tags");
+                }
+                foreach (var suggested in tagsToAdd) {
+                    TagSuggestionForTest? existingSuggestion = test.SuggestedTags.FirstOrDefault(t => t.Value == suggested);
+                    if (existingSuggestion is null) {
+                        var newSuggestion = TagSuggestionForTest.CreateNew(suggested, testId);
+                        await db.AddAsync(newSuggestion);
+                        test.SuggestedTags.Add(newSuggestion);
+                    } else {
+                        existingSuggestion.IncreaseSuggestionsCount();
+                    }
+                }
+                await db.SaveChangesAsync();
+                return Results.Ok();
+            }
+
+        }
+        public static async Task<IResult> GetMostSuggestedTags(
+            string testIdString,
+            IDbContextFactory<AppDbContext> dbFactory
+        ) {
+
+            if (!Guid.TryParse(testIdString, out var testGuid)) {
+                return ResultsHelper.BadRequest.ServerError();
+            }
+            TestId testId = new(testGuid);
+            throw new();
+        }
     }
 }

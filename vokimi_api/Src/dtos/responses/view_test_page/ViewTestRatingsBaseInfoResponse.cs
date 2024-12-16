@@ -1,5 +1,5 @@
-﻿using vokimi_api.Src.db_related.db_entities.tests_related;
-using VokimiShared.src.models.db_classes.test.test_types;
+﻿using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
+using vokimi_api.Src.db_related.db_entities.tests_related;
 
 namespace vokimi_api.Src.dtos.responses.view_test_page
 {

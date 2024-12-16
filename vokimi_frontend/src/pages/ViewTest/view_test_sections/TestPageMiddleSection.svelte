@@ -51,7 +51,7 @@
     </div>
     <div class="tabs-content-container">
         <div class:tab-content-visible={activeTab === MiddlePartTabs.Info}>
-            <MiddleSectionInfoTab tabData={testInfoTabData} />
+            <MiddleSectionInfoTab tabData={testInfoTabData} {testId} />
         </div>
         <div class:tab-content-visible={activeTab === MiddlePartTabs.Ratings}>
             <MiddleSectionRatingsTab {testId} />

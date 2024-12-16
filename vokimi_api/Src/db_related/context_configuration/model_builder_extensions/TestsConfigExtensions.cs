@@ -2,12 +2,13 @@
 using vokimi_api.Src.db_related.context_configuration.db_entities_relations_classes;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
+using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.tests_related;
 using vokimi_api.Src.db_related.db_entities.tests_related.discussions;
 using vokimi_api.Src.db_related.db_entities.tests_related.discussions.attachments;
+using vokimi_api.Src.db_related.db_entities.tests_related.tags;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.enums;
-using VokimiShared.src.models.db_classes.test.test_types;
 
 namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensions
 {
@@ -45,6 +46,10 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                           j => j.HasOne(t => t.Tag).WithMany().HasForeignKey(t => t.TagId),
                           j => j.HasOne(t => t.Test).WithMany().HasForeignKey(t => t.TestId)
                       );
+                entity.HasMany(x => x.SuggestedTags)
+                    .WithOne()
+                    .HasForeignKey(x => x.TestId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasMany(t => t.Ratings)
                     .WithOne(t => t.Test)
@@ -60,6 +65,13 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
             modelBuilder.Entity<TestTag>(entity => {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasConversion(v => v.Value, v => new TestTagId(v));
+                entity.Property(e => e.Value).IsRequired();
+            });
+        }
+        internal static void ConfigureTestTagSuggestions(this ModelBuilder modelBuilder) {
+            modelBuilder.Entity<TagSuggestionForTest>(entity => {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasConversion(v => v.Value, v => new TagSuggestionForTestId(v));
                 entity.Property(e => e.Value).IsRequired();
             });
         }

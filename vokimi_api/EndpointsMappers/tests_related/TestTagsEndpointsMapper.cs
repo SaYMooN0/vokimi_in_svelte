@@ -8,6 +8,8 @@ namespace vokimi_api.EndpointsMappers.tests_related
             app.MapGet("/tags/getDraftTestTagsData/{testId}", TestTagsEndpoints.GetDraftTestTagsData);
             app.MapGet("/tags/searchTags/{*tagToSearch}", TestTagsEndpoints.SearchTags);
             app.MapPost("/tags/updateDraftTestTags/{testId}", TestTagsEndpoints.UpdateDraftTestTags);
+            app.MapPost("/tags/suggestTagsForTest/{testIdString}", TestTagsEndpoints.SuggestTagsForTest);
+            app.MapGet("/tags/getMostSuggestedTags/{testIdString}", TestTagsEndpoints.GetMostSuggestedTags);
         }
     }
 

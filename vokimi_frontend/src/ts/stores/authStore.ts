@@ -55,6 +55,14 @@ async function getAuthData(): Promise<AuthStoreData | null> {
 
     return currentData;
 }
+export async function logout() {
+    const response = await fetch("/api/logout", { method: "POST" });
+    if (response.ok) {
+        window.location.href = "/auth/login";
+    } else {
+        location.reload();
+    }
+}
 export async function getAuthDataForced(): Promise<AuthStoreData | null> {
     await fetchAuthData();
     return get(authData);

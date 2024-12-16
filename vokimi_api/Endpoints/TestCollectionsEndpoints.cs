@@ -4,13 +4,13 @@ using System.Linq;
 using vokimi_api.Helpers;
 using vokimi_api.Src;
 using vokimi_api.Src.db_related;
+using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.test_collections;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.requests.collections_interactions;
 using vokimi_api.Src.dtos.responses;
 using vokimi_api.Src.extension_classes;
-using VokimiShared.src.models.db_classes.test.test_types;
 
 namespace vokimi_api.Endpoints
 {

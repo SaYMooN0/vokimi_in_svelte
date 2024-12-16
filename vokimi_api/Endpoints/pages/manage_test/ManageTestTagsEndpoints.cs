@@ -2,5 +2,9 @@
 {
     internal static class ManageTestTagsEndpoints
     {
+        public static async Task<IResult> AcceptSuggestedTag() {
+            throw new NotImplementedException();
+        }
+
     }
 }

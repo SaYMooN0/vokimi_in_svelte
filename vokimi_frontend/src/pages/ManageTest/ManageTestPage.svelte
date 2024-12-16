@@ -2,10 +2,8 @@
     import FeedbackIcon from "../../components/icons/manage_test_tab_icons/FeedbackIcon.svelte";
     import StatisticsIcon from "../../components/icons/manage_test_tab_icons/StatisticsIcon.svelte";
     import TagsIcon from "../../components/icons/manage_test_tab_icons/TagsIcon.svelte";
-    import { TestTemplate } from "../../ts/enums/TestTemplate";
     import { Err } from "../../ts/Err";
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
-    import type { ITestStatisticsData } from "../../ts/page_classes/manage_test_page/test_statistics/ITestStatisticsData";
     import ManageTestTabLink from "./page_layout/ManageTestTabLink.svelte";
 
     export let testId: string;

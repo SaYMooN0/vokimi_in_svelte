@@ -1,5 +1,5 @@
-﻿using vokimi_api.Src.db_related.db_entities_ids;
-using VokimiShared.src.models.db_classes.test.test_types;
+﻿using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
+using vokimi_api.Src.db_related.db_entities_ids;
 
 namespace vokimi_api.Src.db_related.db_entities.user_page.posts
 {
