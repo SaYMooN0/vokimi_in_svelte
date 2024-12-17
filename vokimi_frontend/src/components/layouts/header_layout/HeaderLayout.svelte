@@ -43,10 +43,10 @@
         position: fixed;
         top: 0;
         width: 100vw;
-        padding: 0 calc(3vw - 22px);
+        padding: 0 calc(4vw - 20px);
         box-sizing: border-box;
         display: grid;
-        grid-template-columns: 200px 1fr 80px;
+        grid-template-columns: auto 1fr auto;
         align-items: center;
         height: var(--header-height);
         background-color: var(--back-main);
@@ -83,7 +83,7 @@
             height: 96%;
         }
         .header-layout {
-            grid-template-columns: 184px 1fr 80px;
+            grid-template-columns: auto 1fr auto;
         }
     }
     @media (max-width: 1200px) {
@@ -91,7 +91,7 @@
             height: 92%;
         }
         .header-layout {
-            grid-template-columns: 148px 1fr 80px;
+            grid-template-columns: auto 1fr auto;
         }
     }
 </style>

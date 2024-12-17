@@ -5,7 +5,7 @@
 
     export let setErrorMessage: (message: string) => void;
     export let setSearchedTags: (tags: string[]) => void;
-    export let maxTagNameLength: number;
+    export let maxTagNameLength: number | null = null;
 
     let searchTimeout: ReturnType<typeof setTimeout>;
     let tagSearchInput: string = "";

@@ -3,10 +3,15 @@
     import BaseDialog from "../../../../../components/BaseDialog.svelte";
     import CloseButton from "../../../../../components/shared/CloseButton.svelte";
     import TagOperatingDisplay from "../../../../../components/shared/tags/TagOperatingDisplay.svelte";
+    import TagsSearchBar from "../../../../../components/shared/tags/TagsSearchBar.svelte";
+    import { StringUtils } from "../../../../../ts/utils/StringUtils";
 
     let dialogElement: BaseDialog;
     let popularSuggestions: string[] = [];
     let chosenTags: string[] = [];
+    let searchingErr: string = "";
+    let tagsFromSearch: string[] = [];
+    let tagsSearchBar: TagsSearchBar;
     export let testId: string;
     export async function open() {
         dialogElement.open();
@@ -58,8 +63,19 @@
                         </div>
                         <p class="dialog-p-or">or</p>
                     {/if}
-                    <p class="dialog-p">Search for tags you want to suggest</p>
-                    <input class="search-bar" placeholder="Input tag" />
+                    <TagsSearchBar
+                        bind:this={tagsSearchBar}
+                        setErrorMessage={(errMsg) => (searchingErr = errMsg)}
+                        setSearchedTags={(searchedTags) =>
+                            (tagsFromSearch = searchedTags)}
+                    />
+                    {#if !StringUtils.isNullOrWhiteSpace(searchingErr)}
+                        <p class="searching-err">{searchingErr}</p>
+                    {/if}
+                    <span class="continue-input">
+                        If you don't find the tag you need continue entering the
+                        name of the tag
+                    </span>
                 </div>
                 <div class="dialog-right-side">
                     <p>List of tags to suggest</p>
@@ -74,6 +90,21 @@
     .dialog-content {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        gap: 12px;
         position: relative;
+        padding: 12px 20px;
+    }
+    .dialog-left-side {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .dialog-right-side {
+    }
+    .searching-err {
+        max-width: 420px
+    }
+    .continue-input {
+        max-width: min(180px, 100%);
     }
 </style>

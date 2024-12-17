@@ -3,8 +3,8 @@
     import { Err } from "../../../ts/Err";
     import { getErrorFromResponse } from "../../../ts/ErrorResponse";
     import { UserPageTopInfoData } from "../../../ts/page_classes/user_page_classes/UserPageTopInfoData";
-    import { ImgUtils } from "../../../ts/utils/ImgUtils";
     import AccountBaseStats from "./AccountBaseStats.svelte";
+    import UserProfilePicture from "./top_info_components/UserProfilePicture.svelte";
 
     export let userId: string = "";
     export let openUserAdditionalInfoDialog: () => Promise<void>;
@@ -34,12 +34,9 @@
         <div class="user-info" style="--banner-color: {pageInfo.bannerColor};">
             <div class="banner"></div>
             <div class="info">
-                <div class="profile-picture">
-                    <img
-                        src={ImgUtils.imgUrl(pageInfo.profilePicturePath)}
-                        alt="Profile Picture"
-                    />
-                </div>
+                <UserProfilePicture
+                    profilePicture={pageInfo.profilePicturePath}
+                />
                 <div class="username-zone">
                     <p class="username">{pageInfo.username}</p>
                     <label
@@ -111,24 +108,6 @@
         padding: 0 28px;
         box-sizing: border-box;
         justify-content: center;
-    }
-
-    .profile-picture {
-        z-index: 4;
-        margin-top: -50%;
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 3px solid var(--banner-color);
-        background-color: var(--back-main);
-        align-content: center;
-    }
-
-    .profile-picture img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
     }
 
     .username-zone {
