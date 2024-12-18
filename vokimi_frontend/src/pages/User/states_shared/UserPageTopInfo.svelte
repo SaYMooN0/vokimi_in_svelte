@@ -3,7 +3,6 @@
     import { Err } from "../../../ts/Err";
     import { getErrorFromResponse } from "../../../ts/ErrorResponse";
     import { UserPageTopInfoData } from "../../../ts/page_classes/user_page_classes/UserPageTopInfoData";
-    import AccountBaseStats from "./AccountBaseStats.svelte";
     import UserProfilePicture from "./top_info_components/UserProfilePicture.svelte";
 
     export let userId: string = "";

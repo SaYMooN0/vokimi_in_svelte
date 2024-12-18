@@ -9,35 +9,38 @@
     import OverallTabContent from "./overall_tab/OverallTabContent.svelte";
     import ManageTestTabLink from "./page_layout/ManageTestTabLink.svelte";
     import StatisticsTabContent from "./statistics_tab/StatisticsTabContent.svelte";
+    import TabDataFetchingErrDiv from "./tabs_shared/TabDataFetchingErrDiv.svelte";
     import TagsTabContent from "./tags_tab/TagsTabContent.svelte";
 
     export let testId: string;
     enum PageTab {
         Overall = "Overall",
+        Tags = "Tags",
         Statistics = "Statistics",
         Feedback = "Feedback",
-        Tags = "Tags",
     }
     function getTabLinkIcon(tab: PageTab) {
         switch (tab) {
             case PageTab.Overall:
                 return OverallIcon;
+            case PageTab.Tags:
+                return TagsIcon;
             case PageTab.Statistics:
                 return StatisticsIcon;
             case PageTab.Feedback:
                 return FeedbackIcon;
-            case PageTab.Tags:
-                return TagsIcon;
             default:
                 return StatisticsIcon;
         }
     }
-    async function checkPageAccess(): Promise<Err> {
+    type testName = string;
+    async function checkPageAccess(): Promise<testName | Err> {
         const response = await fetch(
             `/api/manageTest/overall/checkTestAccess/${testId}`,
         );
         if (response.ok) {
-            return Err.none();
+            const data = await response.json();
+            return data.testName;
         } else if (response.status === 400) {
             return new Err(await getErrorFromResponse(response));
         }
@@ -48,11 +51,18 @@
 
 {#await checkPageAccess()}
     <p>Loading...</p>
-{:then err}
-    {#if err.notNone()}
-        <p class="err-message">{err.toString()}</p>
+{:then fetchedData}
+    {#if fetchedData instanceof Err}
+        <TabDataFetchingErrDiv
+            err={fetchedData.toString()}
+            tryAgainAction={() => {
+                location.reload();
+            }}
+        />
     {:else}
-        <p class="mage-test-title">Manage the <span>testname</span> test</p>
+        <p class="mage-test-title">
+            Manage the <span>{fetchedData}</span> test
+        </p>
         <div class="tab-links-container">
             {#each Object.values(PageTab) as tab}
                 <ManageTestTabLink
@@ -64,20 +74,19 @@
                 </ManageTestTabLink>
             {/each}
         </div>
-        <div class="tab-content-container">
-            <div class:activeTabContent={currentPageTab === PageTab.Overall}>
-                <OverallTabContent {testId} />
-            </div>
-            <div class:activeTabContent={currentPageTab === PageTab.Statistics}>
-                <StatisticsTabContent {testId} />
-            </div>
-            <div class:activeTabContent={currentPageTab === PageTab.Feedback}>
-                <FeedbackTabContent {testId} />
-            </div>
-            <div class:activeTabContent={currentPageTab === PageTab.Tags}>
-                <TagsTabContent {testId} />
-            </div>
-        </div>
+        <OverallTabContent
+            {testId}
+            isActive={currentPageTab === PageTab.Overall}
+        />
+        <TagsTabContent {testId} isActive={currentPageTab === PageTab.Tags} />
+        <StatisticsTabContent
+            {testId}
+            isActive={currentPageTab === PageTab.Statistics}
+        />
+        <FeedbackTabContent
+            {testId}
+            isActive={currentPageTab === PageTab.Feedback}
+        />
     {/if}
 {/await}
 
@@ -88,7 +97,19 @@
         font-size: 24px;
         font-weight: 600;
         margin: 0;
+        display: flex;
+        justify-content: center;
     }
+    .mage-test-title span {
+        margin: 0 6px;
+        display: inline-block;
+        color: var(--primary);
+        max-width: min(320px, 32vw);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
     .tab-links-container {
         margin-top: 4px;
         display: flex;
@@ -96,15 +117,5 @@
         justify-content: center;
         width: 100%;
         gap: max(24px, calc(3.2vw));
-    }
-    .tab-content-container div {
-        display: none;
-    }
-    .tab-content-container div.activeTabContent {
-        display: flex;
-        flex-direction: column;
-    }
-    .err-message {
-        color: red;
     }
 </style>

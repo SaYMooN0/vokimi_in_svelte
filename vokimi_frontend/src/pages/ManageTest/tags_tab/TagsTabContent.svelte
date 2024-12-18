@@ -1,39 +1,24 @@
 <script lang="ts">
     import { Err } from "../../../ts/Err";
-    import { StringUtils } from "../../../ts/utils/StringUtils";
-    import TabDataFetchingErrDiv from "../tabs_shared/TabDataFetchingErrDiv.svelte";
-
+    import TabContentWrapper from "../page_layout/TabContentWrapper.svelte";
+    import CurrentTestTagsView from "./CurrentTestTagsView.svelte";
     export let testId: string;
-    let tabData: TagsTabData | null;
-    let tabFetchErr: string = "";
-    interface TagsTabData {}
-    async function getTabData(forcedFetch: boolean = false) {
-        tabFetchErr = "";
-        if (tabData !== null && !forcedFetch) {
-            return;
-        }
-        const fetchRes = await fetchTabData();
-        if (fetchRes instanceof Err) {
-            tabFetchErr = fetchRes.toString();
-        } else {
-            tabData = fetchRes;
-        }
+    export let isActive: boolean;
+
+    interface TagsTabData {
+        tags: string[];
     }
+
     async function fetchTabData(): Promise<TagsTabData | Err> {
-        return new Err("Not implemented");
+        // const response = await fetch(`/api/manageTest/tags/tabData/${testId}`);
+        return {
+            tags: ["tag1", "tag2", "tag3"],
+        };
     }
 </script>
 
-{#if !StringUtils.isNullOrWhiteSpace(tabFetchErr)}
-    <TabDataFetchingErrDiv
-        err={tabFetchErr}
-        tryAgainAction={() => getTabData(true)}
-    />
-{:else if tabData === null}
-    <TabDataFetchingErrDiv
-        err="Unable to fetch data tab"
-        tryAgainAction={() => getTabData(true)}
-    />
-{:else}
-    <div>Tags content</div>
-{/if}
+<TabContentWrapper {fetchTabData} let:tabDataSetRes {isActive}>
+    {#if !(tabDataSetRes instanceof Err)}
+        <CurrentTestTagsView tags={tabDataSetRes.tags} />
+    {/if}
+</TabContentWrapper>

@@ -28,7 +28,7 @@ namespace vokimi_api.Endpoints.pages.manage_test
                 }
 
                 if (t.CreatorId == userId) {
-                    return Results.Ok();
+                    return Results.Ok(new { TestName = t.Name });
                 }
                 return ResultsHelper.BadRequest.WithErr("You are not creator of this test");
 
