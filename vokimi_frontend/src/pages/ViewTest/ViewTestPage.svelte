@@ -38,6 +38,7 @@
                     TestTemplateUtils.fromId(data.template),
                     LanguageUtils.fromId(data.language),
                     data.tags,
+                    data.tagsSuggestionsAllowed
                 ),
             };
         } else if (response.status === 400) {

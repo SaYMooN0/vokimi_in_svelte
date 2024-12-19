@@ -7,14 +7,16 @@ namespace vokimi_api.Src.dtos.responses.test_creation_responses.shared
         string Privacy,
         bool DiscussionsOpen,
         bool TestTakenPostsAllowed,
-        bool EnableTestRatings
+        bool EnableTestRatings,
+        bool TagsSuggestionsAllowed
     )
     {
         public static DraftTestSettingsDataResponse FromTestSettings(TestSettings settings) => new(
             settings.Privacy.GetId(),
             settings.DiscussionsOpen,
             settings.TestTakenPostsAllowed,
-            settings.EnableTestRatings
+            settings.EnableTestRatings,
+            settings.TagsSuggestionsAllowed
         );
     }
 }

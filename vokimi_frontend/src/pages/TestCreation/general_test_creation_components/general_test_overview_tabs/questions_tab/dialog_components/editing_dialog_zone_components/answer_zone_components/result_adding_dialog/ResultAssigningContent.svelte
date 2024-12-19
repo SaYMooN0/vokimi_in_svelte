@@ -1,4 +1,5 @@
 <script lang="ts">
+    import CustomCheckbox from "../../../../../../../../../components/shared/CustomCheckbox.svelte";
     import { StringUtils } from "../../../../../../../../../ts/utils/StringUtils";
 
     let resultsCheckboxInputName: string =
@@ -11,45 +12,49 @@
     function toggleSelection(key: string, value: string) {
         if (chosenResults[key]) {
             delete chosenResults[key];
+            chosenResults = chosenResults;
         } else {
             chosenResults[key] = value;
         }
     }
 </script>
 
-<div class="result-assigning-state">
-    <p class="result-assigning-title">Choose results from the following:</p>
-    <div class="results-options">
-        {#if Object.keys(allResults).length === 0}
-            <p class="no-results-label">There are no results to choose from</p>
-        {:else}
-            {#each Object.entries(allResults) as [key, value]}
-                <input
-                    type="checkbox"
-                    name={resultsCheckboxInputName}
-                    id={resultsCheckboxInputName + key}
-                    on:change={() => toggleSelection(key, value)}
-                    checked={key in chosenResults}
-                />
-                <label
-                    class="result-option"
-                    for={resultsCheckboxInputName + key}
+<p class="result-assigning-title">Choose results from the following:</p>
+<div class="results-options">
+    {#if Object.keys(allResults).length === 0}
+        <p class="no-results-label">There are no results to choose from</p>
+    {:else}
+        {#each Object.entries(allResults) as [key, value]}
+            <div
+                class="result-div"
+                on:click={() => toggleSelection(key, value)}
+            >
+                <div
+                    class="chosen-indicator"
+                    class:res-chosen={chosenResults[key]}
                 >
-                    {value}
-                </label>
-            {/each}
-        {/if}
+                    <div></div>
+                </div>
+                {value}
+            </div>
+        {/each}
+    {/if}
 
-        <div
-            class="create-res-btn unselectable"
-            on:click={changeStateToResultCreation}
-        >
-            Create New
-        </div>
+    <div
+        class="create-res-btn unselectable"
+        on:click={changeStateToResultCreation}
+    >
+        Create New
     </div>
 </div>
 
 <style>
+    .result-assigning-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 500;
+        color: var(--text);
+    }
     .results-options {
         margin-top: 10px;
         width: 100%;
@@ -58,14 +63,54 @@
         align-items: center;
         gap: 4px;
         overflow-y: auto;
-        background-color: var(--back-secondary);
         min-height: 120px;
         max-height: 60vh;
     }
-    .create-res-btn {
-        margin-top: auto;
+    .result-div {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 20px 1fr;
+        box-sizing: border-box;
+        gap: 4px;
+        font-size: 18px;
+        color: var(--text);
+        cursor: pointer;
+        transition: all 0.14s ease-in;
+    }
+    .chosen-indicator {
+        width: 100%;
+        aspect-ratio: 1/1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px;
+        box-sizing: border-box;
+        border: 2px solid var(--text-faded);
+        border-radius: 4px;
+    }
+    .chosen-indicator div {
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        border-radius: 2px;
+    }
+    .result-div:hover {
+        padding-left: 4px;
+        gap: 6px;
+    }
+    .result-div:hover .chosen-indicator {
+        border-color: var(--primary);
+    }
+    .chosen-indicator.res-chosen {
+        border-color: var(--primary);
+    }
+    .chosen-indicator.res-chosen div {
         background-color: var(--primary);
-        padding: 5px 20px;
+    }
+    .create-res-btn {
+        margin-top: 12px;
+        background-color: var(--primary);
+        padding: 4px 20px;
         color: var(--back-main);
         font-size: 20px;
         border-radius: 100px;
@@ -74,7 +119,7 @@
     }
 
     .create-res-btn:hover {
-        padding: 5px 28px;
+        padding: 4px 28px;
         background-color: var(--primary-hov);
     }
 

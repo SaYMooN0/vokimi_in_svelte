@@ -10,9 +10,4 @@
         public TagSuggestionForTestId() : this(Guid.NewGuid()) { }
         public override string ToString() => Value.ToString();
     }
-    public readonly record struct BannedTagSuggestionForTestId(Guid Value)
-    {
-        public BannedTagSuggestionForTestId() : this(Guid.NewGuid()) { }
-        public override string ToString() => Value.ToString();
-    }
 }

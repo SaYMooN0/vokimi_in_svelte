@@ -6,9 +6,10 @@ namespace vokimi_api.Src.db_related.db_entities.draft_published_tests_shared
         PrivacyValues Privacy,
         bool DiscussionsOpen,
         bool TestTakenPostsAllowed,
-        bool EnableTestRatings
+        bool EnableTestRatings,
+        bool TagsSuggestionsAllowed
     )
     {
-        public static TestSettings Default() => new(PrivacyValues.Anyone, true, true, true);
+        public static TestSettings Default() => new(PrivacyValues.Anyone, true, true, true,true);
     }
 }

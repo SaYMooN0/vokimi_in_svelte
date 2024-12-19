@@ -28,6 +28,7 @@
                 data.discussionsOpen,
                 data.testTakenPostsAllowed,
                 data.enableTestRatings,
+                data.tagsSuggestionsAllowed,
             );
             isFetchedCorrectly = true;
         } else {
@@ -36,24 +37,21 @@
     }
 
     function openEditingDialog() {
-        settingsEditingDialog.open(
-            settingsData.privacy,
-            settingsData.discussionsOpen,
-            settingsData.testTakenPostsAllowed,
-            settingsData.enableTestRatings,
-        );
+        settingsEditingDialog.open(settingsData);
     }
     async function saveSettingsData(
         privacy: PrivacyValues,
         discussionsOpen: boolean,
         testTakenPostsAllowed: boolean,
         enableTestRatings: boolean,
+        tagsSuggestionsAllowed: boolean,
     ): Promise<Err> {
         const data = {
             privacy,
             discussionsOpen,
             testTakenPostsAllowed,
             enableTestRatings,
+            tagsSuggestionsAllowed,
             testId,
         };
         const response = await fetch(
@@ -114,6 +112,10 @@
             <p class="prop-name-val-p">
                 Allow users to create posts when about their test takings:
                 <YesNoIconDisplay value={settingsData.testTakenPostsAllowed} />
+            </p>
+            <p class="prop-name-val-p">
+                Allow tags suggestions:
+                <YesNoIconDisplay value={settingsData.tagsSuggestionsAllowed} />
             </p>
         </div>
     </div>

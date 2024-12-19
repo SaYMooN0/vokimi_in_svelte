@@ -14,12 +14,9 @@
 <div class="related-results-container unselectable">
     {#each Object.keys(relatedResults) as resKey}
         <div class="chosen-result">
-            <label class="result-label">
+            <span class="result-label">
                 {relatedResults[resKey]}
-            </label>
-            <!-- <div class="result-label-tooltip">
-                {relatedResults[resKey]}
-            </div> -->
+            </span>
             <svg
                 class="remove-result-btn"
                 on:click={() => removeResult(resKey)}
@@ -80,11 +77,11 @@
         z-index: 1;
     }
     .remove-result-btn {
-        height: 24px;
+        height: 20px;
         aspect-ratio: 1/1;
-        box-sizing: border-box;
         padding: 2px;
-        border-radius: 26%;
+        box-sizing: border-box;
+        border-radius: 4px;
         background: var(--text-faded);
         fill: var(--back-main);
         cursor: pointer;

@@ -8,7 +8,9 @@ namespace vokimi_api.Src.dtos.requests.test_creation.templates_shared
         string Privacy,
         bool DiscussionsOpen,
         bool TestTakenPostsAllowed,
-        bool EnableTestRatings
+        bool EnableTestRatings,
+        bool TagsSuggestionsAllowed
+
     )
     {
         public Err CheckForErr() {

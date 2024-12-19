@@ -6,16 +6,25 @@ export class ViewTestBaseInfoTabData {
     readonly template: TestTemplate;
     readonly language: Language;
     readonly tags: string[];
+    readonly tagsSuggestionsAllowed: boolean;
+    readonly enableTestRatings: boolean;
+    readonly discussionsOpen: boolean;
     constructor(
         testDescription: string,
         template: TestTemplate,
         language: Language,
-        tags: string[]
+        tags: string[],
+        tagsSuggestionsAllowed: boolean,
+        enableTestRatings: boolean,
+        discussionsOpen: boolean,
     ) {
         this.testDescription = testDescription;
         this.template = template;
         this.language = language;
         this.tags = tags;
+        this.tagsSuggestionsAllowed = tagsSuggestionsAllowed;
+        this.enableTestRatings = enableTestRatings;
+        this.discussionsOpen = discussionsOpen;
     }
 
 }

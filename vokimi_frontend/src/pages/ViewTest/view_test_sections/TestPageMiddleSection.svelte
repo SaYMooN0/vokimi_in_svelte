@@ -34,6 +34,7 @@
         >
             Information
         </div>
+
         <div
             class="tab-link"
             class:tab-link-active={activeTab === MiddlePartTabs.Ratings}
@@ -54,12 +55,24 @@
             <MiddleSectionInfoTab tabData={testInfoTabData} {testId} />
         </div>
         <div class:tab-content-visible={activeTab === MiddlePartTabs.Ratings}>
-            <MiddleSectionRatingsTab {testId} />
+            {#if testInfoTabData.enableTestRatings}
+                <MiddleSectionRatingsTab {testId} />
+            {:else}
+                <p class="disabled-message">
+                    Ratings are disabled for this test
+                </p>
+            {/if}
         </div>
         <div
             class:tab-content-visible={activeTab === MiddlePartTabs.Discussions}
         >
-            <MiddleSectionDiscussionsTab {testId} />
+            {#if testInfoTabData.discussionsOpen}
+                <MiddleSectionDiscussionsTab {testId} />
+            {:else}
+                <p class="disabled-message">
+                    Discussions are disabled for this test
+                </p>
+            {/if}
         </div>
     </div>
 </div>
@@ -113,5 +126,10 @@
         to {
             opacity: 1;
         }
+    }
+
+    .disabled-message {
+        color: var(--text-faded);
+        text-align: center;
     }
 </style>

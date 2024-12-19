@@ -99,12 +99,15 @@ namespace vokimi_api.Src.db_related
 
             //published tests
             modelBuilder.ConfigureBaseTest();
-            modelBuilder.ConfigureTestTags();
-            modelBuilder.ConfigureTestTagSuggestions();
             modelBuilder.ConfigureTestRatings();
             modelBuilder.ConfigureTestDiscussionComments();
             modelBuilder.ConfigureDiscussionsCommentAttachmentConfiguration();
             modelBuilder.ConfigureTestDiscussionCommentVotes();
+
+            //test tags
+            modelBuilder.ConfigureTestTags();
+            modelBuilder.ConfigureTestTagSuggestions();
+
 
             //published general tests
             modelBuilder.ConfigureTestGeneralTemplate();

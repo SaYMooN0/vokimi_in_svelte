@@ -11,7 +11,10 @@ namespace vokimi_api.Src.dtos.responses.view_test_page
         string TestDescription,
         string Template,
         string Language,
-        string[] Tags
+        string[] Tags,
+        bool TagsSuggestionsAllowed,
+        bool EnableTestRatings,
+        bool DiscussionsOpen
     )
     {
         public static ViewTestBasicTestInfoResponse FromTest(BaseTest test) => new(
@@ -22,7 +25,10 @@ namespace vokimi_api.Src.dtos.responses.view_test_page
             test.Description ?? "",
             test.Template.GetId(),
             test.Language.GetId(),
-            test.Tags.Select(tag => tag.Value).ToArray()
+            test.Tags.Select(tag => tag.Value).ToArray(),
+            test.Settings.TagsSuggestionsAllowed,
+            test.Settings.EnableTestRatings,
+            test.Settings.DiscussionsOpen
         );
     }
 }

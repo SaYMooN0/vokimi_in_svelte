@@ -4,6 +4,7 @@
         PrivacyValuesUtils,
     } from "../../../ts/enums/PrivacyValues";
     import type { Err } from "../../../ts/Err";
+    import type { TestCreationSettingsTabData } from "../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationSettingsTabData";
     import BaseDialog from "../../BaseDialog.svelte";
     import CloseButton from "../CloseButton.svelte";
     import CustomSwitch from "../CustomSwitch.svelte";
@@ -14,23 +15,22 @@
         discussionsOpen: boolean,
         testTakenPostsAllowed: boolean,
         enableTestRatings: boolean,
+        tagsSuggestionsAllowed: boolean,
     ) => Promise<Err>;
     let dialogElement: BaseDialog;
     let privacy: PrivacyValues;
     let discussionsOpen: boolean;
     let testTakenPostsAllowed: boolean;
     let enableTestRatings: boolean;
-    export function open(
-        privacyVal: PrivacyValues,
-        discussionsOpenVal: boolean,
-        testTakenPostsAllowedVal: boolean,
-        enableTestRatingsVal: boolean,
-    ) {
+    let tagsSuggestionsAllowed: boolean;
+
+    export function open(settingsData: TestCreationSettingsTabData) {
         errorMessage = "";
-        privacy = privacyVal;
-        discussionsOpen = discussionsOpenVal;
-        testTakenPostsAllowed = testTakenPostsAllowedVal;
-        enableTestRatings = enableTestRatingsVal;
+        privacy = settingsData.privacy;
+        discussionsOpen = settingsData.discussionsOpen;
+        testTakenPostsAllowed = settingsData.testTakenPostsAllowed;
+        enableTestRatings = settingsData.enableTestRatings;
+        tagsSuggestionsAllowed = settingsData.tagsSuggestionsAllowed;
         dialogElement.open();
     }
 
@@ -41,6 +41,7 @@
             discussionsOpen,
             testTakenPostsAllowed,
             enableTestRatings,
+            tagsSuggestionsAllowed,
         );
         if (savingErr.notNone()) {
             errorMessage = savingErr.toString();
@@ -75,6 +76,13 @@
                 <CustomSwitch
                     id="enable-test-ratings"
                     bind:isChecked={enableTestRatings}
+                />
+            </p>
+            <p class="prop-name-val-p">
+                <span>Allow tags suggestions:</span>
+                <CustomSwitch
+                    id="allow-tags-suggestions"
+                    bind:isChecked={tagsSuggestionsAllowed}
                 />
             </p>
             <label class="prop-name-val-p" for="test-privacy">

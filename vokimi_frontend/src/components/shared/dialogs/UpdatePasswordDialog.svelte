@@ -56,6 +56,7 @@
         isOpen = false;
         dialogElement.close();
     }
+    
 </script>
 
 <BaseDialog dialogId="updatePasswordDialog" bind:this={dialogElement}>

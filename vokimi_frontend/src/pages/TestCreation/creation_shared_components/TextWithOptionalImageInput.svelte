@@ -96,7 +96,7 @@
             </div>
         </div>
     {:else}
-        <label for="img-input" class="add-img-btn">
+        <label for="img-input" class="add-img-btn unselectable">
             Add Image
             <svg viewBox="0 0 24 24" fill="none">
                 <path

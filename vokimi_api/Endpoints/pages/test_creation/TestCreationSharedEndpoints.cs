@@ -367,7 +367,8 @@ namespace vokimi_api.Endpoints.pages.test_creation
                         privacy,
                         request.DiscussionsOpen,
                         request.TestTakenPostsAllowed,
-                        request.EnableTestRatings
+                        request.EnableTestRatings,
+                        request.TagsSuggestionsAllowed
                     );
                     test.UpdateTestSettings(newSettings);
                     await db.SaveChangesAsync();
