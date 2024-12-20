@@ -17,20 +17,16 @@ namespace vokimi_api.Endpoints.pages.manage_test
             if (!Guid.TryParse(testIdString, out var testGuid)) {
                 return ResultsHelper.BadRequest.UnknownTest();
             }
-            if (!httpContext.TryGetUserId(out var userId)) {
-                return ResultsHelper.BadRequest.LogOutLogIn();
-            }
             TestId testId = new(testGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 BaseTest? t = await db.TestsSharedInfo.FindAsync(testId);
                 if (t is null) {
                     return ResultsHelper.BadRequest.UnknownTest();
                 }
-
-                if (t.CreatorId == userId) {
-                    return Results.Ok(new { TestName = t.Name });
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(t)) {
+                    return ResultsHelper.BadRequest.WithErr("You don't have access to this page");
                 }
-                return ResultsHelper.BadRequest.WithErr("You are not creator of this test");
+                return Results.Ok(new { TestName = t.Name });
 
             }
         }
@@ -41,6 +37,5 @@ namespace vokimi_api.Endpoints.pages.manage_test
         ) {
             throw new();
         }
-
     }
 }

@@ -9,12 +9,14 @@ namespace vokimi_api.Src.db_related.db_entities.tests_related.tags
         public TestId TestId { get; init; }
         public string Value { get; init; }
         public int SuggestionsCount { get; private set; }
+        public DateOnly FirstSuggestionDate { get; init; }
         public void IncreaseSuggestionsCount() => SuggestionsCount += 1;
         public static TagSuggestionForTest CreateNew(string value, TestId testId) => new() {
             Id = new(),
             TestId = testId,
             Value = value,
-            SuggestionsCount = 1
+            SuggestionsCount = 1,
+            FirstSuggestionDate = DateOnly.FromDateTime(DateTime.Now)
         };
     }
 }
