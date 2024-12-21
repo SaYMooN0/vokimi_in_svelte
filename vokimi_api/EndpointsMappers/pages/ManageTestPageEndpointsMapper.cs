@@ -10,8 +10,12 @@ namespace vokimi_api.EndpointsMappers.pages
             app.MapGet("/manageTest/overall/getBasePageInfo/{testIdString}", ManageTestOverallEndpoints.GetBasePageInfo);
 
             app.MapGet("/manageTest/tags/tabData/{testIdString}", ManageTestTagsEndpoints.GetTabData);
+            app.MapPost("/manageTest/tags/setTestTags/{testIdString}", ManageTestTagsEndpoints.UpdateTestTags);
             app.MapPost("/manageTest/tags/enableTestTagsSuggestions/{testIdString}", ManageTestTagsEndpoints.EnableTestTagsSuggestions);
             app.MapPost("/manageTest/tags/disableTestTagsSuggestions/{testIdString}", ManageTestTagsEndpoints.DisableTestTagsSuggestions);
+            app.MapPost("/manageTest/tags/acceptSuggestedTag", ManageTestTagsEndpoints.AcceptSuggestedTag);
+            app.MapPost("/manageTest/tags/declineSuggestedTag", ManageTestTagsEndpoints.DeclineSuggestedTag);
+            app.MapPost("/manageTest/tags/banSuggestedTag", ManageTestTagsEndpoints.BanSuggestedTag);
         }
     }
 }

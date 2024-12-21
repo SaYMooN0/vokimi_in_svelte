@@ -1,8 +1,5 @@
 <script lang="ts">
-    import { onDestroy } from "svelte";
-    import { StringUtils } from "../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
-    import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import type { TestCreationTagsTabData } from "../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationTagsTabData";
     import TagOperatingDisplay from "../../../../components/shared/tags/TagOperatingDisplay.svelte";
     import TagsSearchBar from "../../../../components/shared/tags/TagsSearchBar.svelte";
@@ -159,6 +156,6 @@
 
     .continue-typing {
         font-size: 16px;
-        color: var(--grey);
+        color: var(--text-faded);
     }
 </style>

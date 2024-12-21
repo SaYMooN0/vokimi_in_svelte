@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { TagsSuggestionForTest } from "../../../ts/page_classes/manage_test_page/tags/TagsSuggestionForTest";
+    import type { TagSuggestionForTest } from "../../../ts/page_classes/manage_test_page/tags/TagSuggestionForTest";
 
-    export let tagsSuggestions: TagsSuggestionForTest[];
+    export let tagsSuggestions: TagSuggestionForTest[];
     enum SortBy {
         FromAToZ,
         FromZToA,
@@ -11,7 +11,7 @@
         FromLeastPopularToMostPopular,
     }
     let sortBy: SortBy = SortBy.FromAToZ;
-    function getSortedTagSuggestions(): TagsSuggestionForTest[] {
+    function getSortedTagSuggestions(): TagSuggestionForTest[] {
         return tagsSuggestions.sort((a, b) => {
             switch (sortBy) {
                 case SortBy.FromAToZ:
@@ -38,46 +38,50 @@
 </script>
 
 <h1 class="suggestions-header">Tags suggestion({tagsSuggestions.length})</h1>
-<p class="sort-by-p">Sort by:</p>
-<select bind:value={sortBy}>
-    <option value={SortBy.FromAToZ}>From A to Z</option>
-    <option value={SortBy.FromZToA}>From Z to A</option>
-    <option value={SortBy.FromOldestToNewest}>From oldest to newest</option>
-    <option value={SortBy.FromNewestToOldest}>From newest to oldest</option>
-    <option value={SortBy.FromMostPopularToLeastPopular}>
-        From most popular to least popular
-    </option>
-    <option value={SortBy.FromLeastPopularToMostPopular}>
-        From least popular to most popular
-    </option>
-</select>
-<div class="suggestions-container">
-    {#key sortBy}
-        {#each getSortedTagSuggestions() as suggestion}
-            <div class="suggestion">
-                <p class="sugggestion-p">
-                    Tag
-                    <span class="suggestion-value">
-                        {suggestion.value}
+{#if tagsSuggestions.length < 1}
+    <p class="no-suggestions-p">No suggestions</p>
+{:else}
+    <p class="sort-by-p">Sort by:</p>
+    <select bind:value={sortBy}>
+        <option value={SortBy.FromAToZ}>From A to Z</option>
+        <option value={SortBy.FromZToA}>From Z to A</option>
+        <option value={SortBy.FromOldestToNewest}>From oldest to newest</option>
+        <option value={SortBy.FromNewestToOldest}>From newest to oldest</option>
+        <option value={SortBy.FromMostPopularToLeastPopular}>
+            From most popular to least popular
+        </option>
+        <option value={SortBy.FromLeastPopularToMostPopular}>
+            From least popular to most popular
+        </option>
+    </select>
+    <div class="suggestions-container">
+        {#key sortBy}
+            {#each getSortedTagSuggestions() as suggestion}
+                <div class="suggestion">
+                    <p class="sugggestion-p">
+                        Tag
+                        <span class="suggestion-value">
+                            {suggestion.value}
+                        </span>
+                        was suggested
+                        <span class="suggestion-count">
+                            {suggestion.suggestionsCount}
+                        </span>
+                        times
+                    </p>
+                    <span class="suggestion-date">
+                        First suggestion: {suggestion.firstSuggestionDate.toLocaleString()}
                     </span>
-                    was suggested
-                    <span class="suggestion-count">
-                        {suggestion.suggestionsCount}
-                    </span>
-                    times
-                </p>
-                <span class="suggestion-date">
-                    First suggestion: {suggestion.firstSuggestionDate.toLocaleString()}
-                </span>
-                <div class="suggestion-actions">
-                    <button class="accept-btn">Accept</button>
-                    <button class="decline-btn">Decline</button>
-                    <button class="ban-btn">Ban</button>
+                    <div class="suggestion-actions">
+                        <button class="accept-btn">Accept</button>
+                        <button class="decline-btn">Decline</button>
+                        <button class="ban-btn">Ban</button>
+                    </div>
                 </div>
-            </div>
-        {/each}
-    {/key}
-</div>
+            {/each}
+        {/key}
+    </div>
+{/if}
 
 <style>
     .suggestions-container {

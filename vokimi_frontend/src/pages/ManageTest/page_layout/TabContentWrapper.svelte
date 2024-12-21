@@ -31,7 +31,7 @@
             tryAgainAction={() => setTabData(true)}
         />
     {:else}
-        <slot {tabDataSetRes} />
+        <slot {tabDataSetRes} updateTabData={() => setTabData(true)} />
     {/if}
 </div>
 
@@ -42,5 +42,6 @@
     .tab-content.activeTabContent {
         display: flex;
         flex-direction: column;
+        align-items: center;
     }
 </style>

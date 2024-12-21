@@ -12,7 +12,7 @@
 
     export let testId: string;
     export let startingTab: string | undefined = undefined;
-    
+
     interface LoadInfoSuccess {
         testNameAndCreatorSection: TestNameAndCreatorSectionClass;
         testCoverPath: string;
@@ -38,7 +38,9 @@
                     TestTemplateUtils.fromId(data.template),
                     LanguageUtils.fromId(data.language),
                     data.tags,
-                    data.tagsSuggestionsAllowed
+                    data.tagsSuggestionsAllowed,
+                    data.enableTestRatings,
+                    data.discussionsOpen,
                 ),
             };
         } else if (response.status === 400) {

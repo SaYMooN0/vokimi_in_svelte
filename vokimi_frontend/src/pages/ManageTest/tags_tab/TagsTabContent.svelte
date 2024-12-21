@@ -2,6 +2,7 @@
     import { Err } from "../../../ts/Err";
     import { getErrorFromResponse } from "../../../ts/ErrorResponse";
     import { ManageTestTagsTabData } from "../../../ts/page_classes/manage_test_page/tags/ManageTestTagsTabData";
+    import { StringUtils } from "../../../ts/utils/StringUtils";
     import TabContentWrapper from "../page_layout/TabContentWrapper.svelte";
     import CurrentTestTagsView from "./CurrentTestTagsView.svelte";
     import TagsSuggestionsView from "./TagsSuggestionsView.svelte";
@@ -18,6 +19,7 @@
                 data.testTags,
                 data.tagsSuggestions,
                 data.tagsSuggestionsAllowed,
+                data.maxTagsForTestCount,
             );
             return tabData;
         } else if (response.status === 400) {
@@ -64,8 +66,18 @@
     }
 </script>
 
-<TabContentWrapper {fetchTabData} {isActive}>
-    <CurrentTestTagsView tags={tabData.testTags} />
+<TabContentWrapper {fetchTabData} {isActive} let:updateTabData>
+    <CurrentTestTagsView
+        maxTagsCount={tabData.maxTagsForTestCount}
+        tags={tabData.testTags}
+        {testId}
+        updateParentElement={updateTabData}
+    />
+    {#if !StringUtils.isNullOrWhiteSpace(suggestionsAbilityChangeError)}
+        <p class="suggestions-allowed-change-error">
+            {suggestionsAbilityChangeError}
+        </p>
+    {/if}
     {#if !tabData.tagsSuggestionsAllowed}
         <p class="suggestions-message">
             Tags suggestions for this test are disabled
