@@ -112,6 +112,7 @@
         align-items: center;
         position: relative;
         padding: 12px 32px;
+        min-height: 420px;
     }
 
     .change-tags-header {
@@ -138,8 +139,6 @@
     }
 
     .tags-to-choose-list {
-        height: 300px;
-        max-height: 300px;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
@@ -149,5 +148,8 @@
     .continue-typing {
         font-size: 16px;
         color: var(--text-faded);
+    }
+    .save-changes-btn {
+        margin-top: auto;
     }
 </style>

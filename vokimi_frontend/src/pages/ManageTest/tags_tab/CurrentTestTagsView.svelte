@@ -1,4 +1,5 @@
 <script lang="ts">
+    import TabSubHeader from "../tabs_shared/TabSubHeader.svelte";
     import TagsChangingDialog from "./TagsChangingDialog.svelte";
 
     export let tags: string[];
@@ -8,7 +9,7 @@
     let tagsChangingDialog: TagsChangingDialog;
 </script>
 
-<h1 class="test-tags-header">Test tags</h1>
+<TabSubHeader headerText="Test tags ({tags.length})" />
 {#if tags.length < 1}
     <p class="no-tags-p">This test has no tags</p>
     <button class="add-tag-btn" on:click={() => tagsChangingDialog.open(tags)}>
@@ -32,17 +33,14 @@
 />
 
 <style>
-    .test-tags-header {
-        color: var(--text);
-        font-size: 32px;
-        margin: 12px;
-    }
     .no-tags-p {
         margin: 8px 0;
-        font-size: 28px;
+        font-size: 20px;
         color: var(--text);
         background-color: var(--back-secondary);
-        padding: 24px 32px;
+        padding: 16px 32px;
+        width: fit-content;
+        box-sizing: border-box;
         border-radius: 8px;
         border: 2px var(--primary) dashed;
     }
@@ -58,17 +56,16 @@
     }
     .add-tag-btn:hover {
         background-color: var(--primary-hov);
-        padding: 6px 20px;
     }
     .test-tags-container {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
         flex-wrap: wrap;
-        max-width: 64vw;
+        width: 100%;
         gap: 8px;
         margin: 8px 0;
+        box-sizing: border-box;
     }
     .test-tag {
         color: var(--back-main);

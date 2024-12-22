@@ -2,8 +2,10 @@
     import { Err } from "../../../ts/Err";
     import { getErrorFromResponse } from "../../../ts/ErrorResponse";
     import { ManageTestTagsTabData } from "../../../ts/page_classes/manage_test_page/tags/ManageTestTagsTabData";
+    import { TagSuggestionForTest } from "../../../ts/page_classes/manage_test_page/tags/TagSuggestionForTest";
     import { StringUtils } from "../../../ts/utils/StringUtils";
     import TabContentWrapper from "../page_layout/TabContentWrapper.svelte";
+    import TabSubHeader from "../tabs_shared/TabSubHeader.svelte";
     import CurrentTestTagsView from "./CurrentTestTagsView.svelte";
     import TagsSuggestionsView from "./TagsSuggestionsView.svelte";
     export let testId: string;
@@ -17,7 +19,15 @@
             const data = await response.json();
             tabData = new ManageTestTagsTabData(
                 data.testTags,
-                data.tagsSuggestions,
+                data.tagsSuggestions.map(
+                    (tag: any) =>
+                        new TagSuggestionForTest(
+                            tag.id,
+                            tag.value,
+                            tag.suggestionsCount,
+                            tag.firstSuggestionDate,
+                        ),
+                ),
                 data.tagsSuggestionsAllowed,
                 data.maxTagsForTestCount,
             );
@@ -73,11 +83,8 @@
         {testId}
         updateParentElement={updateTabData}
     />
-    {#if !StringUtils.isNullOrWhiteSpace(suggestionsAbilityChangeError)}
-        <p class="suggestions-allowed-change-error">
-            {suggestionsAbilityChangeError}
-        </p>
-    {/if}
+
+    <TabSubHeader headerText="Tags suggestions" />
     {#if !tabData.tagsSuggestionsAllowed}
         <p class="suggestions-message">
             Tags suggestions for this test are disabled
@@ -98,9 +105,32 @@
                 Disable Tags suggestions
             </button>
         </p>
-        <TagsSuggestionsView bind:tagsSuggestions={tabData.tagsSuggestions} />
+    {/if}
+
+    {#if !StringUtils.isNullOrWhiteSpace(suggestionsAbilityChangeError)}
+        <p class="suggestions-allowed-change-error">
+            {suggestionsAbilityChangeError}
+        </p>
+    {/if}
+    {#if tabData.tagsSuggestionsAllowed}
+        <TagsSuggestionsView
+            tagsSuggestions={tabData.tagsSuggestions}
+            addNewTag={(newTagValue) => {
+                tabData.testTags = [...tabData.testTags, newTagValue];
+                tabData.tagsSuggestions = tabData.tagsSuggestions.filter(
+                    (x) => x.value !== newTagValue,
+                );
+            }}
+            {testId}
+        />
     {/if}
 </TabContentWrapper>
 
 <style>
+    .suggestions-allowed-change-error {
+        color: var(--red-del);
+        font-weight: 400;
+        font-size: 16px;
+        margin: 4px 0;
+    }
 </style>

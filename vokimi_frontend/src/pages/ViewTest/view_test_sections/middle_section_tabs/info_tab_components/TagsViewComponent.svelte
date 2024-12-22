@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { EditPageLinksSectionData } from "../../../../../ts/page_classes/profile_edit_page/EditPageLinksSectionData";
     import TagSuggestionDialog from "./TagSuggestionDialog.svelte";
 
     export let testId: string;

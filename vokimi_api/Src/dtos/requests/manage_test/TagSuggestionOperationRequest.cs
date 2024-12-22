@@ -2,7 +2,7 @@
 {
     public record class TagSuggestionOperationRequest(
         string TestId,
-        string TagSugggestionId
+        string TagSuggestionId
     )
     {
     }

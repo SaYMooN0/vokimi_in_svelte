@@ -1,7 +1,10 @@
 <script lang="ts">
     import type { TagSuggestionForTest } from "../../../ts/page_classes/manage_test_page/tags/TagSuggestionForTest";
+    import SuggestionItem from "./SuggestionItem.svelte";
 
     export let tagsSuggestions: TagSuggestionForTest[];
+    export let addNewTag: (newTag: string) => void;
+    export let testId: string;
     enum SortBy {
         FromAToZ,
         FromZToA,
@@ -37,7 +40,6 @@
     }
 </script>
 
-<h1 class="suggestions-header">Tags suggestion({tagsSuggestions.length})</h1>
 {#if tagsSuggestions.length < 1}
     <p class="no-suggestions-p">No suggestions</p>
 {:else}
@@ -57,27 +59,11 @@
     <div class="suggestions-container">
         {#key sortBy}
             {#each getSortedTagSuggestions() as suggestion}
-                <div class="suggestion">
-                    <p class="sugggestion-p">
-                        Tag
-                        <span class="suggestion-value">
-                            {suggestion.value}
-                        </span>
-                        was suggested
-                        <span class="suggestion-count">
-                            {suggestion.suggestionsCount}
-                        </span>
-                        times
-                    </p>
-                    <span class="suggestion-date">
-                        First suggestion: {suggestion.firstSuggestionDate.toLocaleString()}
-                    </span>
-                    <div class="suggestion-actions">
-                        <button class="accept-btn">Accept</button>
-                        <button class="decline-btn">Decline</button>
-                        <button class="ban-btn">Ban</button>
-                    </div>
-                </div>
+                <SuggestionItem
+                    {suggestion}
+                    addThisTagToTest={() => addNewTag(suggestion.value)}
+                    {testId}
+                />
             {/each}
         {/key}
     </div>
@@ -86,25 +72,8 @@
 <style>
     .suggestions-container {
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
+        flex-direction: column;
         gap: 8px;
         margin: 8px 0;
-    }
-    .suggestion {
-        display: grid;
-        grid-template-columns: auto 24px;
-    }
-    .suggestion span {
-        color: var(--back-main);
-    }
-    .suggestions-header {
-        margin: 12px 0;
-        color: var(--text);
-    }
-    .suggestion-actions {
-        display: flex;
-        flex-direction: row;
-        gap: 8px;
     }
 </style>

@@ -129,7 +129,7 @@ namespace vokimi_api.Endpoints
                     .Where(t => !tagsInTest.Contains(t))
                     .ToHashSet();
 
-                if (tagsToAdd.Count > 0) {
+                if (tagsToAdd.Count == 0) {
                     return ResultsHelper.BadRequest.WithErr("Test already has all these tags");
                 }
                 foreach (var suggested in tagsToAdd) {
@@ -156,7 +156,29 @@ namespace vokimi_api.Endpoints
                 return ResultsHelper.BadRequest.ServerError();
             }
             TestId testId = new(testGuid);
-            throw new();
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseTest? test = await db.TestsSharedInfo
+                    .Include(t => t.SuggestedTags)
+                    .FirstOrDefaultAsync(t => t.Id == testId);
+                if (test is null) {
+                    return ResultsHelper.BadRequest.WithErr("Test not found");
+                }
+                var responseTags = test.SuggestedTags
+                    .OrderByDescending(tag => tag.SuggestionsCount)
+                    .ToArray();
+
+                int count = responseTags.Length;
+                int middleSuggestionsCount = count > 0 ? responseTags[count / 2].SuggestionsCount : 0;
+
+                int responseTagsCount = (count, middleSuggestionsCount) switch {
+                    ( > 15, > 20) => 7,
+                    ( > 12, > 15) => 5,
+                    ( > 7, > 10) => 4,
+                    ( > 3, > 5) => 3,
+                    _ => 0
+                };
+                return Results.Ok(responseTags.Take(responseTagsCount));
+            }
         }
     }
 }

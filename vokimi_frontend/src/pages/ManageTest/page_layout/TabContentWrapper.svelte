@@ -40,8 +40,8 @@
         display: none;
     }
     .tab-content.activeTabContent {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        display: block;
+        box-sizing: border-box;
+        padding: 4px 12px;
     }
 </style>

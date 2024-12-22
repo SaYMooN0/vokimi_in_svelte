@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { Link } from "svelte-routing";
     import FeedbackIcon from "../../components/icons/manage_test_tab_icons/FeedbackIcon.svelte";
     import OverallIcon from "../../components/icons/manage_test_tab_icons/OverallIcon.svelte";
     import StatisticsIcon from "../../components/icons/manage_test_tab_icons/StatisticsIcon.svelte";
@@ -46,7 +47,7 @@
         }
         return new Err("Something went wrong...");
     }
-    let currentPageTab: PageTab = PageTab.Statistics;
+    let currentPageTab: PageTab = PageTab.Overall;
 </script>
 
 {#await checkPageAccess()}
@@ -63,6 +64,10 @@
         <p class="mage-test-title">
             Manage the <span>{fetchedData}</span> test
         </p>
+
+        <Link to="/view-test/{testId}" class="to-test-page-link">
+            <svelte:fragment>To the test page</svelte:fragment>
+        </Link>
         <div class="tab-links-container">
             {#each Object.values(PageTab) as tab}
                 <ManageTestTabLink
@@ -109,9 +114,25 @@
         overflow: hidden;
         white-space: nowrap;
     }
-
+    .mage-test-title + :global(.to-test-page-link) {
+        width: fit-content;
+        color: var(--text-faded);
+        font-size: 18px;
+        margin: 2px auto;
+        padding: 2px 6px;
+        border-radius: 4px;
+        display: block;
+        text-decoration: none;
+    }
+    .mage-test-title + :global(.to-test-page-link):hover {
+        color: var(--primary);
+        background-color: var(--back-secondary);
+    }
+    .mage-test-title + :global(.to-test-page-link):active {
+        transform: scale(0.98);
+    }
     .tab-links-container {
-        margin-top: 4px;
+        margin: 8px 0 0 0;
         display: flex;
         flex-direction: row;
         justify-content: center;

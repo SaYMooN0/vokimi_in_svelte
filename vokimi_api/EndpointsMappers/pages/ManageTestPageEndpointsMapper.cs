@@ -1,5 +1,4 @@
-﻿using vokimi_api.Endpoints.pages;
-using vokimi_api.Endpoints.pages.manage_test;
+﻿using vokimi_api.Endpoints.pages.manage_test;
 
 namespace vokimi_api.EndpointsMappers.pages
 {
@@ -19,3 +18,4 @@ namespace vokimi_api.EndpointsMappers.pages
         }
     }
 }
+  

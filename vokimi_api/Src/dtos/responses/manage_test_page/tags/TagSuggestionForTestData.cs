@@ -7,7 +7,7 @@ namespace vokimi_api.Src.dtos.responses.manage_test_page.tags
         string Id,
         string Value,
         int SuggestionsCount,
-        DateOnly firstSuggestionDate
+        DateOnly FirstSuggestionDate
     )
     {
         public static TagSuggestionForTestData FromTagSuggestions(TagSuggestionForTest suggestion) => new(
