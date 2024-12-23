@@ -31,7 +31,7 @@
             tryAgainAction={() => setTabData(true)}
         />
     {:else}
-        <slot {tabDataSetRes} updateTabData={() => setTabData(true)} />
+        <slot updateTabData={() => setTabData(true)} />
     {/if}
 </div>
 

@@ -1,33 +1,68 @@
 <script lang="ts">
+    import { getErrorFromResponse } from "../../../ts/ErrorResponse";
     import type { TagSuggestionForTest } from "../../../ts/page_classes/manage_test_page/tags/TagSuggestionForTest";
     import { StringUtils } from "../../../ts/utils/StringUtils";
 
     export let suggestion: TagSuggestionForTest;
-    export let addThisTagToTest: () => void;
+    export let addThisTagToTest: (newTag: string) => void;
+    export let removeThisTagFromSuggestion: () => void;
     export let testId: string;
     let actionErrMsg: string = "";
     async function acceptSuggestion() {
         actionErrMsg = "";
-        const response = await fetch(`api/manageTest/acceptTagSuggestion`, {
+        const response = await fetch(`/api/manageTest/tags/acceptSuggestedTag`, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify({
                 testId: testId,
                 tagSuggestionId: suggestion.id,
             }),
         });
-        if(response.ok)
-        {
-            addThisTagToTest();
+        if (response.ok) {
+            const data = await response.json();
+            addThisTagToTest(data.acceptedTagValue);
+        } else if (response.status === 400) {
+            actionErrMsg = await getErrorFromResponse(response);
+        } else {
+            actionErrMsg = "Something went wrong...";
         }
     }
     async function declineSuggestion() {
-        await fetch(`api/manage_test/decline_tag_suggestion/${suggestion.id}`, {
-            method: "POST",
-        });
+        actionErrMsg = "";
+        const response = await fetch(
+            `/api/manageTest/tags/declineSuggestedTag`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    testId: testId,
+                    tagSuggestionId: suggestion.id,
+                }),
+            },
+        );
+        if (response.ok) {
+            removeThisTagFromSuggestion();
+        } else if (response.status === 400) {
+            actionErrMsg = await getErrorFromResponse(response);
+        } else {
+            actionErrMsg = "Something went wrong...";
+        }
     }
     async function banSuggestion() {
-        await fetch(`api/manage_test/ban_tag_suggestion/${suggestion.id}`, {
+        actionErrMsg = "";
+        const response = await fetch(`/api/manageTest/tags/banSuggestedTag`, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                testId: testId,
+                tagSuggestionId: suggestion.id,
+            }),
         });
     }
 </script>

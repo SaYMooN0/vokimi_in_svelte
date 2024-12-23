@@ -15,10 +15,6 @@
     }
 </script>
 
-<TabContentWrapper {fetchTabData} let:tabDataSetRes {isActive}>
-    {#if !(tabDataSetRes instanceof Err)}
-        <div>
-            <h1>Statistics</h1>
-        </div>
-    {/if}
+<TabContentWrapper {fetchTabData} {isActive}>
+    Tab data statistics
 </TabContentWrapper>

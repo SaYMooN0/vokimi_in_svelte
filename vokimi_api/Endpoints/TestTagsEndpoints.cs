@@ -163,21 +163,27 @@ namespace vokimi_api.Endpoints
                 if (test is null) {
                     return ResultsHelper.BadRequest.WithErr("Test not found");
                 }
-                var responseTags = test.SuggestedTags
+                var testTags = test.SuggestedTags
                     .OrderByDescending(tag => tag.SuggestionsCount)
                     .ToArray();
 
-                int count = responseTags.Length;
-                int middleSuggestionsCount = count > 0 ? responseTags[count / 2].SuggestionsCount : 0;
+                int count = testTags.Length;
 
-                int responseTagsCount = (count, middleSuggestionsCount) switch {
-                    ( > 15, > 20) => 7,
-                    ( > 12, > 15) => 5,
-                    ( > 7, > 10) => 4,
-                    ( > 3, > 5) => 3,
+                int midIndex = (int)Math.Floor(Math.Sqrt(count));
+                int midCount = count > 0 ? testTags[midIndex].SuggestionsCount : 0;
+
+                int responseTagsCount = (count, midCount) switch {
+                    ( > 15, > 2) => 7,
+                    ( > 12, > 2) => 5,
+                    ( > 7, > 1) => 4,
+                    ( > 3, > 1) => 3,
                     _ => 0
                 };
-                return Results.Ok(responseTags.Take(responseTagsCount));
+                var response = testTags
+                    .Take(responseTagsCount)
+                    .Select(t => t.Value)
+                    .ToArray();
+                return Results.Ok(response);
             }
         }
     }

@@ -23,7 +23,6 @@
             );
             if (response.ok) {
                 popularSuggestions = await response.json();
-                console.log("popularSuggestions", popularSuggestions);
             }
         }
         chosenTags = [];
@@ -82,7 +81,7 @@
                                 <TagOperatingDisplay
                                     {tag}
                                     isTagAdded={chosenTags.includes(tag)}
-                                    isTagAddingState={false}
+                                    isTagAddingState={true}
                                     btnOnClick={() => addTag(tag)}
                                 />
                             {/each}
@@ -154,8 +153,8 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        max-height: 420px;
-        max-width: 620px;
+        max-width: 820px;
+        max-height: min(820px, 80vh);
         overflow-y: auto;
     }
     .err-msg {
@@ -181,5 +180,11 @@
     }
     .submit-btn:hover {
         background-color: var(--primary-hov);
+    }
+    .dialog-p-or{
+        color: var(--text-faded);
+        font-weight: 500;
+        font-size: 16px;
+        margin: 4px 0;
     }
 </style>

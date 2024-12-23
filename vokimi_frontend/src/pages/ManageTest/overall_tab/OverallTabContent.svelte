@@ -9,12 +9,17 @@
 
     async function fetchTabData(): Promise<OverallTabData | Err> {
         const response = await fetch(`/api/manageTest/overall/tabData/${testId}`);
-        return new Err("Something went wrong.");
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else if (response.status === 400) {
+            return new Err("Something went wrong.");
+        } else {
+            return new Err("Something went wrong.");
+        }
     }
 </script>
 
-<TabContentWrapper {fetchTabData} let:tabDataSetRes {isActive}>
-    {#if !(tabDataSetRes instanceof Err)}
-        <div>Tab content</div>
-    {/if}
+<TabContentWrapper {fetchTabData} {isActive}>
+    Tab data overall
 </TabContentWrapper>

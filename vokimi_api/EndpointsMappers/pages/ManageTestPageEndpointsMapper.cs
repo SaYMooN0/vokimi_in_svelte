@@ -15,6 +15,9 @@ namespace vokimi_api.EndpointsMappers.pages
             app.MapPost("/manageTest/tags/acceptSuggestedTag", ManageTestTagsEndpoints.AcceptSuggestedTag);
             app.MapPost("/manageTest/tags/declineSuggestedTag", ManageTestTagsEndpoints.DeclineSuggestedTag);
             app.MapPost("/manageTest/tags/banSuggestedTag", ManageTestTagsEndpoints.BanSuggestedTag);
+
+            app.MapGet("/manageTest/feedback/tabData/{testIdString}", ManageTestFeedbackEndpoints.GetTabData);
+
         }
     }
 }

@@ -17,20 +17,7 @@
         const response = await fetch(`/api/manageTest/tags/tabData/${testId}`);
         if (response.ok) {
             const data = await response.json();
-            tabData = new ManageTestTagsTabData(
-                data.testTags,
-                data.tagsSuggestions.map(
-                    (tag: any) =>
-                        new TagSuggestionForTest(
-                            tag.id,
-                            tag.value,
-                            tag.suggestionsCount,
-                            tag.firstSuggestionDate,
-                        ),
-                ),
-                data.tagsSuggestionsAllowed,
-                data.maxTagsForTestCount,
-            );
+            tabData =ManageTestTagsTabData.fromResponseData(data); 
             return tabData;
         } else if (response.status === 400) {
             return new Err(await getErrorFromResponse(response));
@@ -114,12 +101,9 @@
     {/if}
     {#if tabData.tagsSuggestionsAllowed}
         <TagsSuggestionsView
-            tagsSuggestions={tabData.tagsSuggestions}
+            bind:tagsSuggestions={tabData.tagsSuggestions}
             addNewTag={(newTagValue) => {
-                tabData.testTags = [...tabData.testTags, newTagValue];
-                tabData.tagsSuggestions = tabData.tagsSuggestions.filter(
-                    (x) => x.value !== newTagValue,
-                );
+                tabData.testTags = [...tabData.testTags, newTagValue];  
             }}
             {testId}
         />

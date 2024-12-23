@@ -5,6 +5,9 @@
     export let tagsSuggestions: TagSuggestionForTest[];
     export let addNewTag: (newTag: string) => void;
     export let testId: string;
+    function removeTagFromSuggestionsList(tag: string) {
+        tagsSuggestions = tagsSuggestions.filter((x) => x.value !== tag);
+    }
     enum SortBy {
         FromAToZ,
         FromZToA,
@@ -57,11 +60,16 @@
         </option>
     </select>
     <div class="suggestions-container">
-        {#key sortBy}
+        {#key sortBy || tagsSuggestions}
             {#each getSortedTagSuggestions() as suggestion}
                 <SuggestionItem
                     {suggestion}
-                    addThisTagToTest={() => addNewTag(suggestion.value)}
+                    addThisTagToTest={() => {
+                        addNewTag(suggestion.value);
+                        removeTagFromSuggestionsList(suggestion.value);
+                    }}
+                    removeThisTagFromSuggestion={() =>
+                        removeTagFromSuggestionsList(suggestion.value)}
                     {testId}
                 />
             {/each}
