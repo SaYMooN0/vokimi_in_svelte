@@ -13,12 +13,12 @@
 
     let tabData: ManageTestTagsTabData;
     let suggestionsAbilityChangeError: string = "";
-    async function fetchTabData(): Promise<ManageTestTagsTabData | Err> {
+    async function fetchTabData(): Promise<Err> {
         const response = await fetch(`/api/manageTest/tags/tabData/${testId}`);
         if (response.ok) {
             const data = await response.json();
-            tabData =ManageTestTagsTabData.fromResponseData(data); 
-            return tabData;
+            tabData = ManageTestTagsTabData.fromResponseData(data);
+            return Err.none();
         } else if (response.status === 400) {
             return new Err(await getErrorFromResponse(response));
         } else {
@@ -103,7 +103,7 @@
         <TagsSuggestionsView
             bind:tagsSuggestions={tabData.tagsSuggestions}
             addNewTag={(newTagValue) => {
-                tabData.testTags = [...tabData.testTags, newTagValue];  
+                tabData.testTags = [...tabData.testTags, newTagValue];
             }}
             {testId}
         />

@@ -7,7 +7,7 @@
 
     interface StatisticsTabData {}
 
-    async function fetchTabData(): Promise<StatisticsTabData | Err> {
+    async function fetchTabData(): Promise<Err> {
         const response = await fetch(
             `/api/manageTest/statistics/tabData/${testId}`,
         );

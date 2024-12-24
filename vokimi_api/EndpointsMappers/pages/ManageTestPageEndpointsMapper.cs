@@ -6,7 +6,7 @@ namespace vokimi_api.EndpointsMappers.pages
     {
         internal static void MapAll(WebApplication app) {
             app.MapGet("/manageTest/overall/checkTestAccess/{testIdString}", ManageTestOverallEndpoints.CheckUserAccessToPage);
-            app.MapGet("/manageTest/overall/getBasePageInfo/{testIdString}", ManageTestOverallEndpoints.GetBasePageInfo);
+            app.MapGet("/manageTest/overall/tabData/{testIdString}", ManageTestOverallEndpoints.GetTabData);
 
             app.MapGet("/manageTest/tags/tabData/{testIdString}", ManageTestTagsEndpoints.GetTabData);
             app.MapPost("/manageTest/tags/setTestTags/{testIdString}", ManageTestTagsEndpoints.UpdateTestTags);
@@ -16,7 +16,12 @@ namespace vokimi_api.EndpointsMappers.pages
             app.MapPost("/manageTest/tags/declineSuggestedTag", ManageTestTagsEndpoints.DeclineSuggestedTag);
             app.MapPost("/manageTest/tags/banSuggestedTag", ManageTestTagsEndpoints.BanSuggestedTag);
 
-            app.MapGet("/manageTest/feedback/tabData/{testIdString}", ManageTestFeedbackEndpoints.GetTabData);
+            app.MapGet("/manageTest/conclusion/tabData/{testIdString}", ManageTestConclusionEndpoints.GetTabData);
+            app.MapPost("/manageTest/conclusion/enableTestFeedback/{testIdString}", ManageTestConclusionEndpoints.EnableTestFeedback);
+            app.MapPost("/manageTest/conclusion/disableTestFeedback/{testIdString}", ManageTestConclusionEndpoints.DisableTestFeedback);
+
+            app.MapGet("/manageTest/statistics/tabData/{testIdString}", ManageTestStatisticsEndpoints.GetTabData);
+
 
         }
     }

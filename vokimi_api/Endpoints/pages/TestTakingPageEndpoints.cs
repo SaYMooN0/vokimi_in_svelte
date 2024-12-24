@@ -143,9 +143,12 @@ namespace vokimi_api.Endpoints.pages
                 GeneralTestTakenRecord testTakenRecord = GeneralTestTakenRecord.CreateNew(
                     test,
                     testTaker,
-                    resultToSetAsReceived.Id,
-                    takenRequest.TestFeedback
+                    resultToSetAsReceived.Id
+                    
                 );
+                if(!string.IsNullOrEmpty(takenRequest.TestFeedback)) {
+                    TestFeedbackRecord feedbackRecord = TestFeedbackRecord.CreateNew(userId, testId, text, date);
+                }
                 try {
 
                     db.GeneralTestTakenRecords.Add(testTakenRecord);

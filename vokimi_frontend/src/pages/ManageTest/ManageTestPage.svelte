@@ -1,24 +1,24 @@
 <script lang="ts">
     import { Link } from "svelte-routing";
-    import FeedbackIcon from "../../components/icons/manage_test_tab_icons/FeedbackIcon.svelte";
     import OverallIcon from "../../components/icons/manage_test_tab_icons/OverallIcon.svelte";
     import StatisticsIcon from "../../components/icons/manage_test_tab_icons/StatisticsIcon.svelte";
     import TagsIcon from "../../components/icons/manage_test_tab_icons/TagsIcon.svelte";
     import { Err } from "../../ts/Err";
     import { getErrorFromResponse } from "../../ts/ErrorResponse";
-    import FeedbackTabContent from "./feedback_tab/FeedbackTabContent.svelte";
+    import ConclusionTabContent from "./conclusion_tab/ConclusionTabContent.svelte";
     import OverallTabContent from "./overall_tab/OverallTabContent.svelte";
     import ManageTestTabLink from "./page_layout/ManageTestTabLink.svelte";
     import StatisticsTabContent from "./statistics_tab/StatisticsTabContent.svelte";
     import TabDataFetchingErrDiv from "./tabs_shared/TabDataFetchingErrDiv.svelte";
     import TagsTabContent from "./tags_tab/TagsTabContent.svelte";
+    import ConclusionIcon from "../../components/icons/manage_test_tab_icons/ConclusionIcon.svelte";
 
     export let testId: string;
     enum PageTab {
         Overall = "Overall",
         Tags = "Tags",
+        Conclusion = "Conclusion",
         Statistics = "Statistics",
-        Feedback = "Feedback",
     }
     function getTabLinkIcon(tab: PageTab) {
         switch (tab) {
@@ -28,8 +28,8 @@
                 return TagsIcon;
             case PageTab.Statistics:
                 return StatisticsIcon;
-            case PageTab.Feedback:
-                return FeedbackIcon;
+            case PageTab.Conclusion:
+                return ConclusionIcon;
             default:
                 return StatisticsIcon;
         }
@@ -88,9 +88,9 @@
             {testId}
             isActive={currentPageTab === PageTab.Statistics}
         />
-        <FeedbackTabContent
+        <ConclusionTabContent
             {testId}
-            isActive={currentPageTab === PageTab.Feedback}
+            isActive={currentPageTab === PageTab.Conclusion}
         />
     {/if}
 {/await}

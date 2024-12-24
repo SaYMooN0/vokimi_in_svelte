@@ -1,37 +1,35 @@
-<script lang="ts" generics="T">
+<script lang="ts">
     import { Err } from "../../../ts/Err";
     import TabDataFetchingErrDiv from "../tabs_shared/TabDataFetchingErrDiv.svelte";
 
-    export let fetchTabData: () => Promise<T | Err>;
+    export let fetchTabData: () => Promise<Err>;
     export let isActive: boolean;
-    let tabDataSetRes: T | Err;
-    async function setTabData(forcedFetch: boolean = false): Promise<void> {
-        if (tabDataSetRes instanceof Err && !forcedFetch) {
-            return;
-        }
-        const fetchRes = await fetchTabData();
-        if (fetchRes instanceof Err) {
-            tabDataSetRes = new Err(fetchRes.toString());
-        } else {
-            tabDataSetRes = fetchRes;
-        }
+    let dataFetchingErr: Err = new Err("Data not fetched.");
 
-        console.log(`Fetched tab data ${fetchTabData}`, tabDataSetRes);
+    async function forcedSetTabData(): Promise<Err> {
+        dataFetchingErr = await fetchTabData();
+        return dataFetchingErr;
+    }
+    async function activeTabOnSwitchSetTabData() {
+        if (dataFetchingErr.notNone()) {
+            dataFetchingErr = await forcedSetTabData();
+        }
+    }
+    $: if (isActive) {
+        activeTabOnSwitchSetTabData();
     }
 </script>
 
 <div class="tab-content" class:activeTabContent={isActive}>
-    {#if !isActive}
-        <p>Tab not active</p>
-    {:else if tabDataSetRes === undefined}
-        {setTabData()}
-    {:else if tabDataSetRes instanceof Err}
-        <TabDataFetchingErrDiv
-            err={tabDataSetRes.toString()}
-            tryAgainAction={() => setTabData(true)}
-        />
-    {:else}
-        <slot updateTabData={() => setTabData(true)} />
+    {#if isActive}
+        {#if dataFetchingErr.notNone()}
+            <TabDataFetchingErrDiv
+                err={dataFetchingErr.toString()}
+                tryAgainAction={() => forcedSetTabData()}
+            />
+        {:else}
+            <slot updateTabData={() => forcedSetTabData()} />
+        {/if}
     {/if}
 </div>
 

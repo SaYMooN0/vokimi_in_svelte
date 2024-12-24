@@ -9,9 +9,9 @@ namespace vokimi_api.Src.db_related.db_entities.test_taken_records
         TestTakenRecordId Id,
         TestId TestId,
         AppUserId UserId,
-        GeneralTestResultId ReceivedResultId,
-        string? TestFeedback
-    ) : BaseTestTakenRecord(Id, TestId, UserId)
+        DateTime Date,
+        GeneralTestResultId ReceivedResultId
+    ) : BaseTestTakenRecord(Id, TestId, UserId, Date)
     {
 
         public virtual GeneralTestResult ReceivedResult { get; protected set; }
@@ -19,14 +19,13 @@ namespace vokimi_api.Src.db_related.db_entities.test_taken_records
         public static GeneralTestTakenRecord CreateNew(
             TestGeneralTemplate test,
             AppUser? testTaker,
-            GeneralTestResultId receivedResultId,
-            string? testFeedback
+            GeneralTestResultId receivedResultId
         ) => new(
             new(),
             test.Id,
             testTaker is null ? new AppUserId(Guid.Empty) : testTaker.Id,
-            receivedResultId,
-            testFeedback
+            DateTime.Now,
+            receivedResultId
         );
     }
 }

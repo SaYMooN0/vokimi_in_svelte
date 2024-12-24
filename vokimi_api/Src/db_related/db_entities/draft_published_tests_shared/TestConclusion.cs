@@ -26,6 +26,7 @@ namespace vokimi_api.Src.db_related.db_entities.draft_published_tests_shared
             FeedbackAccompanyingText = feedbackText;
             MaxFeedbackLength = maxFeedbackLength;
         }
+        public void SetAnyFeedback(bool newAnyFeedbackValue) => AnyFeedback = newAnyFeedbackValue;
 
     }
 }

@@ -7,7 +7,8 @@ namespace vokimi_api.Src.db_related.db_entities
     public abstract record class BaseTestTakenRecord(
         TestTakenRecordId Id,
         TestId TestId,
-        AppUserId UserId
+        AppUserId UserId,
+        DateTime Date
     )
     {
         public virtual BaseTest Test { get; protected set; }
