@@ -17,6 +17,5 @@ namespace vokimi_api.Src.test_publishing_data
         public TestConclusionId? ConclusionId { get; init; }
         public TestStylesSheetId StylesSheetId { get; init; }
         public string[] Tags { get; init; }
-        public List<string> ImgsToDeleteInCaseOfSuccess { get; init; }
     }
 }

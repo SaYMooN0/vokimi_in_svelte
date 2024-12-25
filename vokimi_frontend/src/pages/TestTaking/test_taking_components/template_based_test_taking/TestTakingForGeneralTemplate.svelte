@@ -39,14 +39,15 @@
     }
     async function completeTest() {
         testCompletionErr = "";
-        let testFeedback: string | null = null;
+        let testFeedbackData: { feedback: string; anonymous: boolean } | null =
+            null;
 
         if (testTakingData.conclusion !== null) {
-            testFeedback = conclusionDisplayComponent.getFeedback();
+            testFeedbackData = conclusionDisplayComponent.getFeedback();
             if (
                 testTakingData.conclusion.anyFeedback &&
-                testFeedback !== null &&
-                testFeedback.length >
+                testFeedbackData !== null &&
+                testFeedbackData.feedback.length >
                     testTakingData.conclusion.maxFeedbackLength
             ) {
                 testCompletionErr = `Feedback can't be longer than ${testTakingData.conclusion.maxFeedbackLength}characters`;
@@ -58,7 +59,16 @@
             testCompletionErr = answerValidatingErr.toString();
             return;
         }
-        const requestResult = await sendTestCompleteRequest(testFeedback);
+
+        const feedbackText: string | null =
+            testFeedbackData !== null ? testFeedbackData.feedback : null;
+        const isFeedbackAnonymous: boolean =
+            testFeedbackData?.anonymous ?? true;
+
+        const requestResult = await sendTestCompleteRequest(
+            feedbackText,
+            isFeedbackAnonymous,
+        );
         if (requestResult instanceof Err) {
             testCompletionErr = requestResult.toString();
             return;
@@ -69,7 +79,8 @@
         }
     }
     async function sendTestCompleteRequest(
-        feedback: string | null,
+        feedbackText: string | null,
+        isFeedbackAnonymous: boolean,
     ): Promise<Err | string> {
         let chosenAnswersToSend: Record<string, string[]> = {};
 
@@ -82,7 +93,8 @@
         const data = {
             testId,
             chosenAnswers: chosenAnswersToSend,
-            testFeedback: feedback,
+            feedbackText: feedbackText,
+            isFeedBackAnonymous: isFeedbackAnonymous,
         };
         const response = await fetch(
             "/api/testTaking/generalTestTakenRequest",

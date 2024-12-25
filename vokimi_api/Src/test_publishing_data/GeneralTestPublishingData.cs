@@ -19,7 +19,6 @@ namespace vokimi_api.Src.test_publishing_data
         TestConclusionId? ConclusionId,
         TestStylesSheetId StylesSheetId,
         string[] Tags,
-        List<string> ImgsToDeleteInCaseOfSuccess,
         Dictionary<DraftGeneralTestResultId, GeneralTestResult> PublishedResults,
         List<GeneralTestQuestion> PublishedQuestions
     ) : ITestPublishingData
@@ -35,12 +34,11 @@ namespace vokimi_api.Src.test_publishing_data
             newTestCoverPath,
             draftTest.MainInfo.Description,
             draftTest.MainInfo.Language,
-            draftTest.Settings,
+            draftTest.Settings with { }, //to copy values not the reference
             draftTest.CreationDate,
             draftTest.ConclusionId,
             draftTest.StylesSheetId,
             draftTest.Tags,
-            new List<string>(),
             new Dictionary<DraftGeneralTestResultId, GeneralTestResult>(),
             new List<GeneralTestQuestion>()
         );

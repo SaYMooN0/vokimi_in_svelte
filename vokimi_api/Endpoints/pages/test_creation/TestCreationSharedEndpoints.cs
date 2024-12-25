@@ -277,7 +277,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     string.IsNullOrWhiteSpace(data.AdditionalImage) ?
                     Array.Empty<string>() :
                     [data.AdditionalImage];
-                Err imgClearingErr = await vokimiStorage.ClearUnusedObjectsInFolder(unusedImgPrefix, reservedKeys);
+                Err imgClearingErr = await vokimiStorage.ClearFolder(unusedImgPrefix, reservedKeys);
                 if (imgClearingErr.NotNone()) {
                     return ResultsHelper.BadRequest.ServerError();
                 }

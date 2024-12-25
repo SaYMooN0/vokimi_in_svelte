@@ -78,7 +78,9 @@ namespace vokimi_api.Endpoints.pages.test_creation
             }
             problems.AddRange(CheckTestTagsForProblems(test.Tags));
             problems.AddRange(CheckGeneralTestResultsForProblems(test.PossibleResults));
-            problems.AddRange(CheckGeneralTestQuestionsForProblems(test.Questions.ToList()));
+            problems.AddRange(CheckGeneralTestQuestionsForProblems(
+                test.Questions.OrderBy(q => q.OrderInTest).ToList()
+            ));
             return problems;
 
         }
@@ -307,7 +309,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
             VokimiStorageService storageService,
             DraftTestId testId
         ) {
-            List<string> imgsToDeleteInCaseOfFailure = [];
+            string? folderWithImgsForPublishedTest = null;
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 using (var transaction = await db.Database.BeginTransactionAsync()) {
                     try {
@@ -333,30 +335,25 @@ namespace vokimi_api.Endpoints.pages.test_creation
                             newTestCover = ImgOperationsHelper.GetPublishedTestCoverImgKey(newTestId, extension);
                         }
 
-                        GeneralTestPublishingData publishingData = GeneralTestPublishingData
-                            .Create(newTestId, draftTest, newTestCover);
+                        var publishingData = GeneralTestPublishingData.Create(newTestId, draftTest, newTestCover);
+                        folderWithImgsForPublishedTest = ImgOperationsHelper.PublishedTestImgsParentFolder(publishingData.TestId);
 
                         if (publishingData.CoverRelocationNeeded) {
                             Err copyingErr =
                                 await storageService.CopyImageFile(draftTest.MainInfo.CoverImagePath, publishingData.NewTestCoverPath);
                             if (copyingErr.NotNone()) {
                                 throw new Exception();
-                            } else {
-                                imgsToDeleteInCaseOfFailure.Add(publishingData.NewTestCoverPath);
-                                publishingData.ImgsToDeleteInCaseOfSuccess.Add(draftTest.MainInfo.CoverImagePath);
                             }
                         }
                         await PublishGeneralTestResults(
                             db, storageService,
                             draftTest.PossibleResults,
-                            publishingData,
-                            imgsToDeleteInCaseOfFailure
+                            publishingData
                         );
                         await PublishGeneralTestQuestions(
                             db, storageService,
                             draftTest.Questions,
-                            publishingData,
-                            imgsToDeleteInCaseOfFailure
+                            publishingData
                         );
 
                         var testToPublish = TestGeneralTemplate.CreateNew(publishingData);
@@ -376,10 +373,8 @@ namespace vokimi_api.Endpoints.pages.test_creation
                         await ClearDraftGeneralTestData(
                             draftTest,
                             storageService,
-                            publishingData.ImgsToDeleteInCaseOfSuccess,
                             db
                         );
-
                         await db.SaveChangesAsync();
                         await transaction.CommitAsync();
                         return Results.Ok(new {
@@ -389,7 +384,9 @@ namespace vokimi_api.Endpoints.pages.test_creation
 
                     } catch {
                         await transaction.RollbackAsync();
-                        await storageService.DeleteFiles(imgsToDeleteInCaseOfFailure);
+                        if (!string.IsNullOrEmpty(folderWithImgsForPublishedTest)) {
+                            await storageService.ClearFolderWithSubfolders(folderWithImgsForPublishedTest);
+                        }
                         return ResultsHelper.BadRequest.WithErr("Something went wrong during publishing. Please try again later");
 
                     }
@@ -400,8 +397,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
             AppDbContext db,
             VokimiStorageService storageService,
             ICollection<DraftGeneralTestResult> results,
-            GeneralTestPublishingData publishingData,
-            List<string> imgsToDeleteInCaseOfFailure
+            GeneralTestPublishingData publishingData
         ) {
             foreach (var draftResult in results) {
 
@@ -417,9 +413,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     Err copyingErr = await storageService.CopyImageFile(draftResult.ImagePath, resultImg);
                     if (copyingErr.NotNone()) {
                         throw new Exception();
-                    } else {
-                        imgsToDeleteInCaseOfFailure.Add(resultImg);
-                    }
+                    } 
                 }
 
                 var resultToPublish = GeneralTestResult.CreateNew(
@@ -437,8 +431,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
             AppDbContext db,
             VokimiStorageService storageService,
             ICollection<DraftGeneralTestQuestion> questions,
-            GeneralTestPublishingData publishingData,
-            List<string> imgsToDeleteInCaseOfFailure
+            GeneralTestPublishingData publishingData
         ) {
             ushort questionOrder = 0;
 
@@ -455,9 +448,6 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     Err copyingErr = await storageService.CopyImageFile(draftQuestion.ImagePath, questionImg);
                     if (copyingErr.NotNone()) {
                         throw new Exception();
-                    } else {
-                        imgsToDeleteInCaseOfFailure.Add(questionImg);
-                        publishingData.ImgsToDeleteInCaseOfSuccess.Add(draftQuestion.ImagePath);
                     }
                 }
 
@@ -488,9 +478,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                         if (copyingErr.NotNone()) {
                             throw new Exception();
                         } else {
-                            publishingData.ImgsToDeleteInCaseOfSuccess.Add(imgInfo.ImagePath);
                             imgInfo.ImagePath = newAnswerImg;
-                            imgsToDeleteInCaseOfFailure.Add(newAnswerImg);
                         }
                     }
                     ushort order = draftQuestion.ShuffleAnswers ? (ushort)0 : draftAnswer.OrderInQuestion;
@@ -515,7 +503,6 @@ namespace vokimi_api.Endpoints.pages.test_creation
         public async static Task ClearDraftGeneralTestData(
             DraftGeneralTest test,
             VokimiStorageService storageService,
-            List<string> imgsToDelete,
             AppDbContext db
         ) {
             db.DraftGeneralTestResults.RemoveRange(test.PossibleResults);
@@ -523,7 +510,8 @@ namespace vokimi_api.Endpoints.pages.test_creation
             db.DraftGeneralTestQuestions.RemoveRange(test.Questions);
             db.DraftTestMainInfo.Remove(test.MainInfo);
             db.DraftGeneralTests.Remove(test);
-            await storageService.DeleteFiles(imgsToDelete);
+            var draftTestImgsFolder = ImgOperationsHelper.DraftTestImgsParentFolder(test.Id);
+            await storageService.ClearFolderWithSubfolders(draftTestImgsFolder);
         }
     }
 }

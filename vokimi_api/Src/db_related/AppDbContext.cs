@@ -56,6 +56,7 @@ namespace vokimi_api.Src.db_related
         //tests related
         public DbSet<TestTag> TestTags { get; set; }
         public DbSet<TestRating> TestRatings { get; set; }
+        public DbSet<TestFeedbackRecord> TestFeedbackRecords { get; set; }
         public DbSet<TestDiscussionsComment> TestDiscussionComments { get; set; }
         public DbSet<DiscussionsCommentVote> DiscussionsCommentVotes { get; set; }
         public DbSet<BaseDiscussionsCommentAttachment> DiscussionsCommentAttachments { get; set; }
@@ -100,6 +101,7 @@ namespace vokimi_api.Src.db_related
             //published tests
             modelBuilder.ConfigureBaseTest();
             modelBuilder.ConfigureTestRatings();
+            modelBuilder.ConfigureTestFeedbackRecord();
             modelBuilder.ConfigureTestDiscussionComments();
             modelBuilder.ConfigureDiscussionsCommentAttachmentConfiguration();
             modelBuilder.ConfigureTestDiscussionCommentVotes();

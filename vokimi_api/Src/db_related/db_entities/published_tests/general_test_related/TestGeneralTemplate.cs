@@ -13,8 +13,7 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.general_test_rel
         public virtual List<GeneralTestQuestion> Questions { get; init; } = [];
         public virtual ICollection<GeneralTestResult> PossibleResults { get; init; } = [];
         public virtual ICollection<GeneralTestTakenRecord> TestTakings { get; init; } = [];
-        public override ICollection<BaseTestTakenRecord> GetBaseTestTakings() =>
-            TestTakings.OfType<BaseTestTakenRecord>().ToList();
+        public override ICollection<BaseTestTakenRecord> BaseTestTakings => TestTakings.OfType<BaseTestTakenRecord>().ToList();
         public static TestGeneralTemplate CreateNew(GeneralTestPublishingData data) => new() {
             Id = data.TestId,
             CreatorId = data.CreatorId,

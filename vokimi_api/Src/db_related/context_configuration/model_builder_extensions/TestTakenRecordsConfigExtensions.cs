@@ -14,10 +14,11 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new(v));
 
                 entity.HasDiscriminator<TestTemplate>("Template")
-                    .HasValue<GeneralTestTakenRecord>(TestTemplate.General);
+                    .HasValue<GeneralTestTakenRecord>(TestTemplate.General)
+                    .IsComplete();
 
                 entity.HasOne(b => b.Test)
-                    .WithMany()
+                    .WithMany(t=>t.BaseTestTakings)
                     .HasForeignKey(b => b.TestId)
                     .OnDelete(DeleteBehavior.Cascade);
 

@@ -8,13 +8,13 @@ namespace vokimi_api.Helpers
         public static string ExtractFileExtension(IFormFile file) => Path.GetExtension(file.FileName);
         private static string CombineStoragePath(params string[] paths) =>
             Path.Combine(paths).Replace('\\', '/');
-
+        public static string PublishedTestImgsParentFolder(TestId testId)
+            => CombineStoragePath(ImgOperationsConsts.PublishedTestsFolderName, testId.Value.ToString());
         public static string GetPublishedTestCoverImgKey(
             TestId testId,
             string imgExtension
         ) => CombineStoragePath(
-            ImgOperationsConsts.PublishedTestsFolderName,
-            testId.Value.ToString(),
+            PublishedTestImgsParentFolder(testId),
             ImgOperationsConsts.TestCoverFileName +
             imgExtension
         );
@@ -23,8 +23,7 @@ namespace vokimi_api.Helpers
             GeneralTestResultId resultId,
             string imgExtension
         ) => CombineStoragePath(
-            ImgOperationsConsts.PublishedTestsFolderName,
-            testId.Value.ToString(),
+            PublishedTestImgsParentFolder(testId),
             ImgOperationsConsts.ResultsSubFolderName,
             resultId.Value.ToString() + imgExtension
         );
@@ -33,8 +32,7 @@ namespace vokimi_api.Helpers
             GeneralTestQuestionId questionId,
             string imgExtension
         ) => CombineStoragePath(
-            ImgOperationsConsts.PublishedTestsFolderName,
-            testId.Value.ToString(),
+            PublishedTestImgsParentFolder(testId),
             ImgOperationsConsts.QuestionsSubFolderName,
             questionId.ToString(),
             ImgOperationsConsts.QuestionImgFileName.ToString() + imgExtension
@@ -44,21 +42,24 @@ namespace vokimi_api.Helpers
             GeneralTestQuestionId questionId,
             string imgExtension
         ) => CombineStoragePath(
-            ImgOperationsConsts.PublishedTestsFolderName,
-            testId.Value.ToString(),
+            PublishedTestImgsParentFolder(testId),
             ImgOperationsConsts.QuestionsSubFolderName,
             questionId.ToString(),
             ImgOperationsConsts.AnswersSubFolderName,
             Guid.NewGuid().ToString() + imgExtension
         );
+        //draft tests
+        public static string DraftTestImgsParentFolder(DraftTestId testId)
+            => CombineStoragePath(ImgOperationsConsts.DraftTestsFolderName, testId.Value.ToString());
         public static string GetDraftTestCoverImgKey(
            DraftTestId testId,
            string imgExtension
         ) => CombineStoragePath(
-            ImgOperationsConsts.DraftTestsFolderName,
-            testId.Value.ToString(),
+            DraftTestImgsParentFolder(testId),
             ImgOperationsConsts.TestCoverFileName + imgExtension
         );
+
+        //draft general tests
         public static string GetDraftGeneralTestResultImgKey(
             DraftTestId testId,
             DraftGeneralTestResultId resultId,
@@ -71,8 +72,7 @@ namespace vokimi_api.Helpers
             DraftTestId testId,
             DraftGeneralTestResultId resultId
         ) => CombineStoragePath(
-            ImgOperationsConsts.DraftTestsFolderName,
-            testId.Value.ToString(),
+            DraftTestImgsParentFolder(testId),
             ImgOperationsConsts.ResultsSubFolderName,
             resultId.Value.ToString()
         );
@@ -88,8 +88,7 @@ namespace vokimi_api.Helpers
            DraftTestId testId,
            DraftGeneralTestQuestionId questionId
        ) => CombineStoragePath(
-           ImgOperationsConsts.DraftTestsFolderName,
-           testId.Value.ToString(),
+           DraftTestImgsParentFolder(testId),
            ImgOperationsConsts.QuestionsSubFolderName,
            questionId.ToString()
        );
@@ -105,8 +104,7 @@ namespace vokimi_api.Helpers
             DraftTestId testId,
             DraftGeneralTestQuestionId questionId
         ) => CombineStoragePath(
-            ImgOperationsConsts.DraftTestsFolderName,
-            testId.Value.ToString(),
+            DraftTestImgsParentFolder(testId),
             ImgOperationsConsts.QuestionsSubFolderName,
             questionId.ToString(),
             ImgOperationsConsts.AnswersSubFolderName

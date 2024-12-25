@@ -25,4 +25,9 @@
         public TestTakenRecordId() : this(Guid.NewGuid()) { }
         public override string ToString() => Value.ToString();
     }
+    public readonly record struct TestFeedbackRecordId(Guid Value)
+    {
+        public TestFeedbackRecordId() : this(Guid.NewGuid()) { }
+        public override string ToString() => Value.ToString();
+    }
 }

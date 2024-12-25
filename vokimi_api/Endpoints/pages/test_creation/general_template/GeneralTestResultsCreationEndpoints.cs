@@ -133,7 +133,8 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
         public static async Task<IResult> DeleteGeneralDraftTestResult(
             string resultId,
             IDbContextFactory<AppDbContext> dbFactory,
-            HttpContext httpContext
+            HttpContext httpContext,
+            VokimiStorageService storageService
         ) {
             DraftGeneralTestResultId resultToDeleteId;
             if (!Guid.TryParse(resultId, out Guid resultGuid)) {
@@ -153,6 +154,10 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                     if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                         return ResultsHelper.BadRequest.NotCreator();
                     }
+
+                    var resultImgsFolder = ImgOperationsHelper.DraftGeneralTestResultsFolder(res.TestId, res.Id);
+                    await storageService.ClearFolder(resultImgsFolder);
+
                     db.DraftGeneralTestResults.Remove(res);
                     await db.SaveChangesAsync();
                     return Results.Ok();
@@ -194,7 +199,7 @@ namespace vokimi_api.Endpoints.pages.test_creation.general_template
                 }
                 res.Update(newResData.Name, newResData.Text, newResData.ImagePath);
                 string unusedImgPrefix = ImgOperationsHelper.DraftGeneralTestResultsFolder(res.TestId, resId);
-                Err imgClearingErr = await vokimiStorage.ClearUnusedObjectsInFolder(unusedImgPrefix, newResData.ImagePath);
+                Err imgClearingErr = await vokimiStorage.ClearFolder(unusedImgPrefix, newResData.ImagePath);
                 if (imgClearingErr.NotNone()) {
                     return ResultsHelper.BadRequest.ServerError();
                 }

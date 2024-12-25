@@ -1,16 +1,22 @@
 <script lang="ts">
+    import AuthorizeView from "../../../../components/AuthorizeView.svelte";
+    import CustomCheckbox from "../../../../components/shared/CustomCheckbox.svelte";
     import type { TestTakingConclusionData } from "../../../../ts/page_classes/test_taking_page/ITestTakingData";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
 
     export let conclusionData: TestTakingConclusionData;
-    export function getFeedback(): string | null {
+    export function getFeedback(): {
+        feedback: string;
+        anonymous: boolean;
+    } | null {
         if (!conclusionData.anyFeedback) {
             return null;
         }
-        return feedback;
+        return { feedback: feedback, anonymous: anonymousFeedback };
     }
     let feedback: string = "";
+    let anonymousFeedback: boolean = false;
 </script>
 
 <div class="conclusion-display-container">
@@ -33,6 +39,14 @@
             class="feedback-textarea"
             maxlength={conclusionData.maxFeedbackLength}
         />
+        <AuthorizeView>
+            <svelte:fragment slot="authenticated">
+                <p class="anonymous-feedback-p">
+                    Leave feedback anonymously
+                    <CustomCheckbox bind:isChecked={anonymousFeedback} />
+                </p>
+            </svelte:fragment>
+        </AuthorizeView>
     {/if}
 </div>
 
@@ -77,5 +91,11 @@
     }
     .feedback-textarea:focus {
         border-color: var(--test-accent);
+    }
+    .anonymous-feedback-p {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 </style>

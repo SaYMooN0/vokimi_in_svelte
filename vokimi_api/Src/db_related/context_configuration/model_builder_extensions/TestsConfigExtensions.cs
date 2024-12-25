@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using vokimi_api.Src.db_related.context_configuration.db_entities_relations_classes;
+using vokimi_api.Src.db_related.db_entities;
 using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
 using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
 using vokimi_api.Src.db_related.db_entities.tests_related;
@@ -19,7 +20,8 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new TestId(v));
 
                 entity.HasDiscriminator<TestTemplate>("Template")
-                    .HasValue<TestGeneralTemplate>(TestTemplate.General);
+                    .HasValue<TestGeneralTemplate>(TestTemplate.General)
+                    .IsComplete();
                 //.HasValue<TestScoringTemplate>(TestTemplate.Scoring)
                 //.HasValue<TestCorrectAnswersTemplate>(TestTemplate.CorrectAnswers);
 
@@ -30,6 +32,10 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                     v => v.HasValue ? v.Value.Value : (Guid?)null,
                     v => v.HasValue ? new TestConclusionId(v.Value) : null);
 
+                entity.HasMany<BaseTestTakenRecord>()
+                    .WithOne()
+                    .HasForeignKey(t => t.TestId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(x => x.Conclusion)
                       .WithMany()
@@ -54,9 +60,15 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                     .WithOne(t => t.Test)
                     .HasForeignKey(t => t.TestId)
                     .OnDelete(DeleteBehavior.Cascade);
+
                 entity.HasMany(t => t.DiscussionsComments)
                    .WithOne()
                    .HasForeignKey(dc => dc.TestId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(t => t.FeedbackRecords)
+                   .WithOne()
+                   .HasForeignKey(f => f.TestId)
                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
@@ -78,6 +90,16 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
             modelBuilder.Entity<TestRating>(entity => {
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new TestRatingId(v));
+            });
+        }
+        internal static void ConfigureTestFeedbackRecord(this ModelBuilder modelBuilder) {
+            modelBuilder.Entity<TestFeedbackRecord>(entity => {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Id).HasConversion(v => v.Value, v => new TestFeedbackRecordId(v));
+                entity.HasOne(x => x.AppUser)
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
         }
         internal static void ConfigureTestDiscussionComments(this ModelBuilder modelBuilder) {
@@ -105,7 +127,8 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new DiscussionsCommentAttachmentId(v));
 
                 entity.HasDiscriminator<DiscussionsCommentAttachmentType>("AttachmentType")
-                    .HasValue<GeneralTestResultCommentAttachment>(DiscussionsCommentAttachmentType.GeneralTestResult);
+                    .HasValue<GeneralTestResultCommentAttachment>(DiscussionsCommentAttachmentType.GeneralTestResult)
+                    .IsComplete();
             });
             modelBuilder.Entity<GeneralTestResultCommentAttachment>(entity => {
                 entity.HasOne(grca => grca.ReceivedResult)

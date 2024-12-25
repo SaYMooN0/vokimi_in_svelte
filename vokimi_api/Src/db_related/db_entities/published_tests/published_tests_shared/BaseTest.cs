@@ -41,8 +41,9 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.published_tests_
         public virtual ICollection<TestRating> Ratings { get; protected set; } = [];
         public virtual ICollection<TestDiscussionsComment> DiscussionsComments { get; protected set; } = [];
         public virtual ICollection<TestCollection> CollectionTestIn { get; protected set; } = [];
+        public virtual ICollection<TestFeedbackRecord> FeedbackRecords { get; protected set; } = [];
 
-        public abstract ICollection<BaseTestTakenRecord> GetBaseTestTakings();
+        public abstract ICollection<BaseTestTakenRecord> BaseTestTakings { get; }
         public void UpdateSettings(TestSettings settings) => Settings = settings;
 
     }

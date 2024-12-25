@@ -15,10 +15,11 @@ namespace vokimi_api.Src.db_related.context_configuration.model_builder_extensio
                 entity.Property(x => x.Id).HasConversion(v => v.Value, v => new(v));
 
                 entity.HasDiscriminator<TestTemplate>("Template")
-                    .HasValue<DraftGeneralTest>(TestTemplate.General);
-
+                    .HasValue<DraftGeneralTest>(TestTemplate.General)
                 //.HasValue<DraftScoringTest>(TestTemplate.Scoring)
                 //.HasValue<DraftCorrectAnswersTest>(TestTemplate.CorrectAnswers);
+                    .IsComplete();
+
 
                 entity.OwnsOne(t => t.Settings);
 

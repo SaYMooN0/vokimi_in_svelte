@@ -19,7 +19,7 @@ namespace vokimi_api.Src.dtos.responses.my_tests_page
             test.Cover,
             test.Template.GetId(),
             test.PublicationDate,
-            test.GetBaseTestTakings().Count()
+            test.BaseTestTakings.Count()
         );
     }
 }

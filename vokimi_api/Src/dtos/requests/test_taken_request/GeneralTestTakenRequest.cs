@@ -6,7 +6,8 @@ namespace vokimi_api.Src.dtos.requests.test_taken_request
         string TestId,
         //question id and chosen answers ids
         Dictionary<string, string[]> ChosenAnswers,
-        string? TestFeedback
+        string? FeedbackText,
+        bool IsFeedBackAnonymous
     )
     {
         public Err CheckRequestForErr() {
@@ -16,16 +17,19 @@ namespace vokimi_api.Src.dtos.requests.test_taken_request
             if (GetParsedAnswers().Count == 0) {
                 return new Err("Unable to record test completion because of incorrectly saved answers ");
             }
+            if (IsFeedBackAnonymous && string.IsNullOrWhiteSpace(FeedbackText)) {
+                return new Err("You set feedback to be anonymous but did not write anything");
+            }
             return Err.None;
 
         }
         public Err CheckFeedbackForErr(uint feedbackMaxLength) {
-            if (string.IsNullOrEmpty(TestFeedback)) {
+            if (string.IsNullOrEmpty(FeedbackText)) {
                 return Err.None;
             }
-            if (TestFeedback.Length > feedbackMaxLength) {
+            if (FeedbackText.Length > feedbackMaxLength) {
                 return new Err(
-                    $"Length of the feedback is {TestFeedback.Length} characters. " +
+                    $"Length of the feedback is {FeedbackText.Length} characters. " +
                     $"Maximal possible length of feedback is {feedbackMaxLength} characters "
                 );
             }

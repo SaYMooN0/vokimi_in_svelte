@@ -21,7 +21,7 @@ namespace vokimi_api.Endpoints.pages.manage_test
             TestId testId = new(testGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 BaseTest? t = await db.TestsSharedInfo
-                    .Include(t => t.GetBaseTestTakings())
+                    .Include(t => t.FeedbackRecords)
                     .Include(t => t.Conclusion)
                     .FirstOrDefaultAsync(t => t.Id == testId);
                 if (t is null) {

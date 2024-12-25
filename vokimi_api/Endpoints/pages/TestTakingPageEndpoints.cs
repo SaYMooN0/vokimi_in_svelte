@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using vokimi_api.Src.dtos.responses.test_taking.general;
 using vokimi_api.Src.dtos.requests.test_taken_request;
 using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
+using vokimi_api.Src.db_related.db_entities.tests_related;
 
 namespace vokimi_api.Endpoints.pages
 {
@@ -144,10 +145,14 @@ namespace vokimi_api.Endpoints.pages
                     test,
                     testTaker,
                     resultToSetAsReceived.Id
-                    
+
                 );
-                if(!string.IsNullOrEmpty(takenRequest.TestFeedback)) {
-                    TestFeedbackRecord feedbackRecord = TestFeedbackRecord.CreateNew(userId, testId, text, date);
+                if (!string.IsNullOrEmpty(takenRequest.FeedbackText)) {
+                    var feedbackRecord = takenRequest.IsFeedBackAnonymous || testTaker is null
+                        ? TestFeedbackRecord.CreateAnonymous(test.Id, takenRequest.FeedbackText)
+                        : TestFeedbackRecord.CreateNew(test.Id, testTaker, takenRequest.FeedbackText
+                    );
+                    await db.TestFeedbackRecords.AddAsync(feedbackRecord);
                 }
                 try {
 

@@ -49,11 +49,11 @@ namespace vokimi_api.Services
                 return null;
             }
         }
-        public async Task<Err> ClearUnusedObjectsInFolder(string folder, string? reservedKey = null) =>
+        public async Task<Err> ClearFolder(string folder, string? reservedKey = null) =>
             string.IsNullOrEmpty(reservedKey) ?
-            await ClearUnusedObjectsInFolder(folder, Array.Empty<string>()) :
-            await ClearUnusedObjectsInFolder(folder, [reservedKey]);
-        public async Task<Err> ClearUnusedObjectsInFolder(string folder, IEnumerable<string> reservedKeys) {
+            await ClearFolder(folder, Array.Empty<string>()) :
+            await ClearFolder(folder, [reservedKey]);
+        public async Task<Err> ClearFolder(string folder, IEnumerable<string> reservedKeys) {
             try {
                 var listRequest = new ListObjectsV2Request {
                     BucketName = _bucketName,
@@ -107,6 +107,47 @@ namespace vokimi_api.Services
                 return serverErr;
             }
             return Err.None;
+        }
+        public async Task<Err> ClearFolderWithSubfolders(string folder) {
+            try {
+                var listRequest = new ListObjectsV2Request {
+                    BucketName = _bucketName,
+                    Prefix = folder
+                };
+
+                ListObjectsV2Response listResponse;
+                do {
+                    listResponse = await _s3Client.ListObjectsV2Async(listRequest);
+
+                    if (!folder.EndsWith('/')) {
+                        folder = folder + "/";
+                    }
+
+                    var objectsToDelete = listResponse.S3Objects
+                        .Where(o => o.Key.StartsWith(folder)) 
+                        .Select(o => new KeyVersion { Key = o.Key })
+                        .ToList();
+
+                    if (objectsToDelete.Any()) {
+                        var deleteRequest = new DeleteObjectsRequest {
+                            BucketName = _bucketName,
+                            Objects = objectsToDelete
+                        };
+
+                        var deleteResponse = await _s3Client.DeleteObjectsAsync(deleteRequest);
+
+                        if (deleteResponse.HttpStatusCode != System.Net.HttpStatusCode.OK) {
+                            return new Err("Failed to delete some objects in folder and subfolders");
+                        }
+                    }
+
+                    listRequest.ContinuationToken = listResponse.NextContinuationToken;
+                } while (listResponse.IsTruncated);
+            } catch {
+                return serverErr; 
+            }
+
+            return Err.None; 
         }
 
         public async Task<Err> DeleteFiles(IEnumerable<string> keys) {
@@ -185,9 +226,9 @@ namespace vokimi_api.Services
             List<string> answerImgs
         ) {
             string questionImgPref = ImgOperationsHelper.DraftGeneralTestQuestionsFolder(testId, questionId);
-            await ClearUnusedObjectsInFolder(questionImgPref, questionImagePath);
+            await ClearFolder(questionImgPref, questionImagePath);
             string answerImgPref = ImgOperationsHelper.DraftGeneralTestAnswersFolder(testId, questionId);
-            await ClearUnusedObjectsInFolder(answerImgPref, answerImgs);
+            await ClearFolder(answerImgPref, answerImgs);
         }
     }
 }
