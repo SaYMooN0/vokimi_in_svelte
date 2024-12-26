@@ -1,6 +1,6 @@
 import type { EditPageLinksSectionData } from "./EditPageLinksSectionData";
 import type { EditPageMainInfoSectionData } from "./EditPageMainInfoSectionData";
-import type EditPagePrivacySettingsSectionData from "./EditPagePrivacySettingsSectionData";
+import type { EditPagePrivacySettingsSectionData } from "./EditPagePrivacySettingsSectionData";
 
 export class AllProfileEditPageData {
     readonly email: string;

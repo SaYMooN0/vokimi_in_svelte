@@ -44,7 +44,6 @@ async function fetchAuthData(): Promise<void> {
 
 async function getAuthData(): Promise<AuthStoreData | null> {
     let currentData = get(authData);
-
     const now = new Date();
     const two_minutes = 2 * 60 * 1000;
 
@@ -55,7 +54,7 @@ async function getAuthData(): Promise<AuthStoreData | null> {
 
     return currentData;
 }
-export async function logout() {
+export  async function logout() {
     const response = await fetch("/api/logout", { method: "POST" });
     if (response.ok) {
         window.location.href = "/auth/login";

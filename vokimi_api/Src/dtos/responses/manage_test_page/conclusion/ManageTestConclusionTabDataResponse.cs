@@ -9,8 +9,11 @@ namespace vokimi_api.Src.dtos.responses.manage_test_page.conclusion
         ConclusionTabFeedbackData? FeedbackData
     )
     {
-        public static ManageTestConclusionTabDataResponse FromTest(BaseTest test) {
-            throw new NotImplementedException();
-        }
+        public static ManageTestConclusionTabDataResponse FromTest(BaseTest test) => new(
+            test.Conclusion.Text,
+            test.Conclusion.AdditionalImage,
+            test.Conclusion.AnyFeedback,
+            test.Conclusion.AnyFeedback ? ConclusionTabFeedbackData.FromTest(test) : null
+        );
     }
 }

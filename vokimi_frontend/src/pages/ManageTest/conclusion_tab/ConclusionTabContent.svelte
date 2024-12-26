@@ -5,6 +5,7 @@
     import TabContentWrapper from "../page_layout/TabContentWrapper.svelte";
     import ConclusionEnabledMessage from "./ConclusionEnabledMessage.svelte";
     import NoConclusionMessage from "./NoConclusionMessage.svelte";
+    import ViewConclusionTabContent from "./ViewConclusionTabContent.svelte";
     export let testId: string;
     export let isActive: boolean;
 
@@ -16,10 +17,13 @@
         );
         if (response.ok) {
             const data = await response.json();
-            if (data.TestHasConclusion) {
+            if (data.testHasConclusion) {
                 testHasConclusion = true;
                 tabConclusionData =
-                    ManageTestConclusionTabData.fromResponseData(data.conclusionData);
+                    ManageTestConclusionTabData.fromResponseData(
+                        data.conclusionData,
+                    );
+                console.log(tabConclusionData);
             } else {
                 testHasConclusion = false;
             }
@@ -33,12 +37,13 @@
 </script>
 
 <TabContentWrapper {fetchTabData} {isActive} let:updateTabData>
-    {#if testHasConclusion}
+    {#if !testHasConclusion}
+        <NoConclusionMessage {testId} updateTabData={() => updateTabData()} />
+    {:else}
         <ConclusionEnabledMessage
             {testId}
             updateTabData={() => updateTabData()}
         />
-    {:else}
-        <NoConclusionMessage {testId} updateTabData={() => updateTabData()} />
+        <ViewConclusionTabContent {tabConclusionData} {testId} />
     {/if}
 </TabContentWrapper>

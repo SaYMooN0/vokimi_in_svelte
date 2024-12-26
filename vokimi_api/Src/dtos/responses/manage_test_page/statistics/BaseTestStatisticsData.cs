@@ -1,6 +1,6 @@
-﻿using vokimi_api.Src.dtos.responses.manage_test_page.test_statistics.templates_shared;
+﻿using vokimi_api.Src.dtos.responses.manage_test_page.statistics.templates_shared;
 
-namespace vokimi_api.Src.dtos.responses.manage_test_page.test_statistics
+namespace vokimi_api.Src.dtos.responses.manage_test_page.statistics
 {
     public abstract record class BaseTestStatisticsData(
         TestStatisticsTestTakenRecordsCount TestTakenRecords,

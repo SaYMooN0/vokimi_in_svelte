@@ -5,6 +5,10 @@ using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.extension_classes;
 using vokimi_api.Src.dtos.responses.manage_test_page.conclusion;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Text.Json.Serialization.Metadata;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace vokimi_api.Endpoints.pages.manage_test
 {
@@ -22,6 +26,7 @@ namespace vokimi_api.Endpoints.pages.manage_test
             using (var db = await dbFactory.CreateDbContextAsync()) {
                 BaseTest? t = await db.TestsSharedInfo
                     .Include(t => t.FeedbackRecords)
+                        .ThenInclude(fr => fr.AppUser)
                     .Include(t => t.Conclusion)
                     .FirstOrDefaultAsync(t => t.Id == testId);
                 if (t is null) {
@@ -30,7 +35,34 @@ namespace vokimi_api.Endpoints.pages.manage_test
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(t)) {
                     return ResultsHelper.BadRequest.WithErr("You don't have access to this page");
                 }
-                return Results.Ok(ManageTestConclusionTabDataResponse.FromTest(t));
+                if (t.Conclusion is null) { return Results.Ok(new { TestHasConclusion = false }); }
+
+
+
+                var resolver = new DefaultJsonTypeInfoResolver();
+                resolver.Modifiers.Add((ti) => {
+                    if (ti.Type == typeof(ITestFeedbackRecordData)) {
+                        ti.PolymorphismOptions = new JsonPolymorphismOptions {
+                            TypeDiscriminatorPropertyName = "Type",
+                            DerivedTypes = {
+                                new JsonDerivedType(typeof(UserFeedbackRecordData), "UserFeedback") ,
+                                new JsonDerivedType(typeof(AnonymousFeedbackRecordData), "AnonymousFeedback")
+                            }
+                        };
+                    }
+
+                });
+
+                var options = new JsonSerializerOptions {
+                    TypeInfoResolver = resolver,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                var data = new {
+                    TestHasConclusion = true,
+                    ConclusionData = ManageTestConclusionTabDataResponse.FromTest(t)
+                };
+                return Results.Json(data, options, statusCode: 200);
             }
         }
         internal static async Task<IResult> EnableTestFeedback(
