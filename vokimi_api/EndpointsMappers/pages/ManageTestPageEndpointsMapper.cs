@@ -17,6 +17,9 @@ namespace vokimi_api.EndpointsMappers.pages
             app.MapPost("/manageTest/tags/banSuggestedTag", ManageTestTagsEndpoints.BanSuggestedTag);
 
             app.MapGet("/manageTest/conclusion/tabData/{testIdString}", ManageTestConclusionEndpoints.GetTabData);
+            app.MapDelete("/manageTest/conclusion/deleteConclusion/{testIdString}", ManageTestConclusionEndpoints.DeleteConclusion);
+            app.MapPost("/manageTest/conclusion/createConclusionForTest/{testIdString}", ManageTestConclusionEndpoints.CreateConclusionForTest);
+            app.MapPost("/manageTest/conclusion/updateTestConlusion", ManageTestConclusionEndpoints.UpdateConclusionForTest);
             app.MapPost("/manageTest/conclusion/enableTestFeedback/{testIdString}", ManageTestConclusionEndpoints.EnableTestFeedback);
             app.MapPost("/manageTest/conclusion/disableTestFeedback/{testIdString}", ManageTestConclusionEndpoints.DisableTestFeedback);
 
@@ -26,4 +29,3 @@ namespace vokimi_api.EndpointsMappers.pages
         }
     }
 }
-  

@@ -6,7 +6,7 @@
     export let updateTabData: () => void;
     async function createConclusion() {
         const response = await fetch(
-            `/api/manageTest/conclusion/createConclusion/${testId}`,
+            `/api/manageTest/conclusion/createConclusionForTest/${testId}`,
             {
                 method: "POST",
             },
@@ -51,7 +51,17 @@
         color: var(--red-del);
     }
     .create-conclusion-btn {
-        padding: 4px 16px;
+        padding: 6px 16px;
         border: none;
+        color: var(--back-main);
+        background-color: var(--primary);
+        font-size: 18px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.08s ease-in;
+    }
+    .create-conclusion-btn:hover {
+        padding: 6px 20px;
+        background-color: var(--primary-hov);
     }
 </style>

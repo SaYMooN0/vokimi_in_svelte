@@ -25,15 +25,6 @@ export class TestCreationConclusionTabData {
         return StringUtils.isNullOrWhiteSpace(this.text)
             && StringUtils.isNullOrWhiteSpace(this.additionalImage);
     }
-    copy(): TestCreationConclusionTabData {
-        return new TestCreationConclusionTabData(
-            this.text,
-            this.additionalImage,
-            this.anyFeedback,
-            this.feedbackText,
-            this.maxFeedbackLength
-        );
-    }
     static empty(): TestCreationConclusionTabData {
         return new TestCreationConclusionTabData(
             "", null, false, "Feedback", 64

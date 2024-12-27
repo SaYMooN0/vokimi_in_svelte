@@ -10,7 +10,7 @@
     import { ImgUtils } from "../../../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../../../ts/utils/StringUtils";
     import BaseDraftTestEditingDialog from "../../../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
-    import TextWithOptionalImageInput from "../../../../creation_shared_components/TextWithOptionalImageInput.svelte";
+    import TextWithOptionalImageInput from "../../../../../../components/shared/TextWithOptionalImageInput.svelte";
     import DraftGeneralTestQuestionEditingMultipleChoiceZone from "../dialog_components/editing_dialog_zone_components/DraftGeneralTestQuestionEditingMultipleChoiceZone.svelte";
     import DraftGeneralTestQuestionEditingAnswersZone from "./editing_dialog_zone_components/DraftGeneralTestQuestionEditingAnswersZone.svelte";
 

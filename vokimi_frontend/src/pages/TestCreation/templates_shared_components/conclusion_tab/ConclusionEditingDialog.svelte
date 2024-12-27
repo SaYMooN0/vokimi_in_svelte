@@ -1,35 +1,52 @@
 <script lang="ts">
-    import CustomCheckbox from "../../../../components/shared/CustomCheckbox.svelte";
     import CustomSwitch from "../../../../components/shared/CustomSwitch.svelte";
     import type { Err } from "../../../../ts/Err";
-    import type { TestCreationConclusionTabData } from "../../../../ts/page_classes/test_creation_page/test_creation_tabs_classes/test_creation_shared/TestCreationConclusionTabData";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
     import BaseDraftTestEditingDialog from "../../creation_shared_components/editing_dialog_components/BaseDraftTestEditingDialog.svelte";
-    import TextWithOptionalImageInput from "../../creation_shared_components/TextWithOptionalImageInput.svelte";
+    import TextWithOptionalImageInput from "../../../../components/shared/TextWithOptionalImageInput.svelte";
 
     export let updateParentElementData: () => void;
     export let testId: string;
 
-    let conclusionData: TestCreationConclusionTabData;
     let dialogElement: BaseDraftTestEditingDialog;
 
-    export function open(conclusion: TestCreationConclusionTabData) {
-        conclusionData = conclusion.copy();
+    let conclusionText: string = "";
+    let conclusionAdditionalImage: string | null = null;
+    let addFeedback: boolean = false;
+    let feedbackAccompanyingText: string = "";
+    let maxFeedbackLength: number = 0;
+
+    export function open(
+        conclusionTextVal: string,
+        conclusionAdditionalImageVal: string | null,
+        addFeedbackVal: boolean,
+        feedbackAccompanyingTextVal: string,
+        maxFeedbackLengthVal: number,
+    ) {
+        conclusionText = conclusionTextVal;
+        conclusionAdditionalImage = conclusionAdditionalImageVal;
+        addFeedback = addFeedbackVal;
+        feedbackAccompanyingText = feedbackAccompanyingTextVal;
+        maxFeedbackLength = maxFeedbackLengthVal;
         dialogElement.setErrorMessage("");
         dialogElement.open();
     }
 
     async function saveData() {
-        const response = await fetch(
-            "/api/testCreation/updateDraftTestConclusion/" + testId,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(conclusionData),
+        const bodyData = {
+            text: conclusionText,
+            additionalImage: conclusionAdditionalImage,
+            anyFeedback: addFeedback,
+            feedbackText: feedbackAccompanyingText,
+            maxFeedbackLength: maxFeedbackLength,
+        };
+        const response = await fetch(`/api/testCreation/updateDraftTestConclusion/${testId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-        );
+            body: JSON.stringify(bodyData),
+        });
         if (response.ok) {
             await updateParentElementData();
             dialogElement.close();
@@ -41,10 +58,7 @@
         }
     }
     async function saveConclusionImage(file: File): Promise<string | Err> {
-        return await ImgUtils.saveImage(
-            file,
-            `saveDraftTestConclusionImage/${testId}`,
-        );
+        return await ImgUtils.saveImage(file, `saveDraftTestConclusionImage/${testId}`);
     }
 </script>
 
@@ -54,36 +68,30 @@
 >
     <div class="dialog-content">
         <TextWithOptionalImageInput
-            bind:text={conclusionData.text}
-            bind:imagePath={conclusionData.additionalImage}
+            bind:text={conclusionText}
+            bind:imagePath={conclusionAdditionalImage}
             textInputLabel="Conclusion Text"
             saveImageFunction={saveConclusionImage}
         />
 
-        <div class="manage-feedback-zone">
+        <div class="feedback-zone">
             <div class="allow-feedback-div">
                 <span class="allow-feedback-span">Allow feedback</span>
-                <CustomSwitch bind:isChecked={conclusionData.anyFeedback} />
+                <CustomSwitch bind:isChecked={addFeedback} />
             </div>
 
             <div
                 class="feedback-added-only"
-                class:showFeedback={conclusionData.anyFeedback}
-                class:hideFeedback={!conclusionData.anyFeedback}
+                class:showFeedback={addFeedback}
+                class:hideFeedback={!addFeedback}
             >
                 <label class="feedback-text-input-label">
                     Accompanying text:
-                    <input
-                        type="text"
-                        bind:value={conclusionData.feedbackText}
-                    />
+                    <input type="text" bind:value={feedbackAccompanyingText} />
                 </label>
                 <label class="feedback-chars-count-label">
                     Maximum number of characters in feedback:
-                    <input
-                        type="number"
-                        bind:value={conclusionData.maxFeedbackLength}
-                    />
+                    <input type="number" bind:value={maxFeedbackLength} />
                 </label>
             </div>
         </div>
@@ -107,7 +115,7 @@
         align-items: center;
     }
 
-    .manage-feedback-zone {
+    .feedback-zone {
         display: flex;
         flex-direction: column;
         font-size: 20px;

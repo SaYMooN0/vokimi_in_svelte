@@ -31,7 +31,7 @@
 </script>
 
 <ActionConfirmationDialog
-    confirmBtnText="Delete Conclusion"
+    confirmBtnText="Delete"
     dialogId="removeConclusionConfirmationDialog"
     bind:this={confirmationDialog}
 />
@@ -49,10 +49,18 @@
         justify-content: space-between;
         align-items: center;
     }
+    .conclusion-enabled-message {
+        font-size: 22px;
+        font-weight: 500;
+    }
     .remove-conclusion-btn {
         background-color: var(--red-del);
-        padding: 4px 16px;
+        color: var(--back-main);
+        font-size: 18px;
+        padding: 6px 12px;
         border: none;
+        border-radius: 4px;
+        cursor: pointer;
     }
     .remove-conclusion-btn:hover {
         background-color: var(--red-del-hov);

@@ -1,8 +1,8 @@
 <script lang="ts">
-    import BasicTextAreaInput from "../../../components/shared/BasicTextAreaInput.svelte";
-    import { Err } from "../../../ts/Err";
-    import { ImgUtils } from "../../../ts/utils/ImgUtils";
-    import { StringUtils } from "../../../ts/utils/StringUtils";
+    import BasicTextAreaInput from "./BasicTextAreaInput.svelte";
+    import { Err } from "../../ts/Err";
+    import { ImgUtils } from "../../ts/utils/ImgUtils";
+    import { StringUtils } from "../../ts/utils/StringUtils";
 
     export let text: string = "";
     export let textInputLabel: string = "Text:";

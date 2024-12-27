@@ -5,7 +5,7 @@
     import TabContentWrapper from "../page_layout/TabContentWrapper.svelte";
     import ConclusionEnabledMessage from "./ConclusionEnabledMessage.svelte";
     import NoConclusionMessage from "./NoConclusionMessage.svelte";
-    import ViewConclusionTabContent from "./ViewConclusionTabContent.svelte";
+    import ViewConclusionTabContent from "./view_conclusion_components/ViewConclusionContent.svelte";
     export let testId: string;
     export let isActive: boolean;
 
@@ -23,7 +23,6 @@
                     ManageTestConclusionTabData.fromResponseData(
                         data.conclusionData,
                     );
-                console.log(tabConclusionData);
             } else {
                 testHasConclusion = false;
             }
@@ -44,6 +43,6 @@
             {testId}
             updateTabData={() => updateTabData()}
         />
-        <ViewConclusionTabContent {tabConclusionData} {testId} />
+        <ViewConclusionTabContent conclusionData={tabConclusionData} {testId} />
     {/if}
 </TabContentWrapper>

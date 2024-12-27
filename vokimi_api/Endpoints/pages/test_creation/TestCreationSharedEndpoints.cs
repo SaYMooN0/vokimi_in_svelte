@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using System.Security.Claims;
 using vokimi_api.Helpers;
 using vokimi_api.Services;
 using vokimi_api.Src;
@@ -13,11 +11,8 @@ using vokimi_api.Src.db_related.db_entities.draft_tests.draft_tests_shared;
 using vokimi_api.Src.db_related.db_entities.users;
 using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.dtos.requests.test_creation.templates_shared;
-using vokimi_api.Src.dtos.responses;
 using vokimi_api.Src.dtos.responses.test_creation_responses.shared;
 using vokimi_api.Src.dtos.shared;
-using vokimi_api.Src.dtos.shared.general_test_creation;
-using vokimi_api.Src.dtos.shared.test_creation_shared;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.extension_classes;
 
@@ -194,7 +189,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                 if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequest.NotCreator();
                 }
-                return Results.Ok(DraftTestConclusionData.FromConclusion(test.Conclusion));
+                return Results.Ok(TestConclusionData.FromConclusion(test.Conclusion));
             }
         }
         public static async Task<IResult> CreateDraftTestConclusion(
@@ -235,7 +230,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
         }
         public static async Task<IResult> UpdateDraftTestConclusion(
             IDbContextFactory<AppDbContext> dbFactory,
-            [FromBody] DraftTestConclusionData data,
+            [FromBody] TestConclusionData data,
             VokimiStorageService vokimiStorage,
             HttpContext httpContext,
             string testId
@@ -270,7 +265,7 @@ namespace vokimi_api.Endpoints.pages.test_creation
                     data.AdditionalImage,
                     data.AnyFeedback,
                     data.FeedbackText,
-                    data.maxFeedbackLength
+                    data.MaxFeedbackLength
                 );
                 string unusedImgPrefix = $"{ImgOperationsConsts.TestConclusionsFolder}/{test.Id.Value.ToString()}/";
                 string[] reservedKeys =

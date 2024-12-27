@@ -63,6 +63,15 @@
             "Do you really want to remove test conclusion?",
         );
     }
+    function openEditingDialog() {
+        conclusionEditingDialog.open(
+            conclusionData.text,
+            conclusionData.additionalImage,
+            conclusionData.anyFeedback,
+            conclusionData.feedbackText,
+            conclusionData.maxFeedbackLength,
+        );
+    }
     let dataFetchingErr: string = "";
     let conclusionEditingDialog: ConclusionEditingDialog;
     let conclusionDeletingDialog: ActionConfirmationDialog;
@@ -78,19 +87,15 @@
     </div>
     <div slot="content" class="conclusion-data">
         <ConclusionEditingDialog
-            {testId}
             bind:this={conclusionEditingDialog}
             updateParentElementData={loadData}
+            {testId}
         />
         <ActionConfirmationDialog bind:this={conclusionDeletingDialog} />
         <div class="content-header">
             <TabHeaderWithButton tabName="Test Conclusion:" />
             <div class="header-btns">
-                <button
-                    class="edit-btn"
-                    on:click={() =>
-                        conclusionEditingDialog.open(conclusionData)}
-                >
+                <button class="edit-btn" on:click={openEditingDialog}>
                     Edit Conclusion
                 </button>
                 <button
@@ -138,9 +143,9 @@
         {:else}
             <p class="prop-name-val-p">
                 <span class="property-name">Feedback:</span>
-                <span class="property-value"
-                    >Conclusion does not imply any feedback</span
-                >
+                <span class="property-value">
+                    Conclusion does not imply any feedback
+                </span>
             </p>
         {/if}
     </div>

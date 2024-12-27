@@ -29,7 +29,7 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.published_tests_
         public DateOnly CreationDate { get; init; }
         public DateOnly PublicationDate { get; init; }
 
-        public TestConclusionId? ConclusionId { get; init; }
+        public TestConclusionId? ConclusionId { get; protected set; }
         public virtual TestConclusion? Conclusion { get; protected set; }
 
         public TestStylesSheetId StylesSheetId { get; init; }
@@ -46,5 +46,14 @@ namespace vokimi_api.Src.db_related.db_entities.published_tests.published_tests_
         public abstract ICollection<BaseTestTakenRecord> BaseTestTakings { get; }
         public void UpdateSettings(TestSettings settings) => Settings = settings;
 
+        public void SetConclusion(TestConclusion? conclusion) {
+            if (conclusion is null) {
+                this.ConclusionId = null;
+                this.Conclusion = null;
+            } else {
+                this.ConclusionId = conclusion.Id;
+                this.Conclusion = conclusion;
+            }
+        }
     }
 }

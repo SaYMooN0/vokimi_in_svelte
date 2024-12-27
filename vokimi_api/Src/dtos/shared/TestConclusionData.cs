@@ -1,17 +1,17 @@
 ﻿using vokimi_api.Src.constants_store_classes;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 
-namespace vokimi_api.Src.dtos.shared.test_creation_shared
+namespace vokimi_api.Src.dtos.shared
 {
-    public record class DraftTestConclusionData(
+    public record class TestConclusionData(
         string Text,
         string? AdditionalImage,
         bool AnyFeedback,
         string FeedbackText,
-        uint maxFeedbackLength
+        uint MaxFeedbackLength
     )
     {
-        public static DraftTestConclusionData FromConclusion(TestConclusion? conclusion) =>
+        public static TestConclusionData FromConclusion(TestConclusion? conclusion) =>
             conclusion is null ?
             new(string.Empty, null, false, "Conclusion Feedback Text", 64) :
             new(
@@ -35,7 +35,7 @@ namespace vokimi_api.Src.dtos.shared.test_creation_shared
                     return new Err("Maximal length of the feedback accompanying text is" +
                         $"{BaseTestCreationConsts.ConclusionMaxAccompanyingFeedbackTextLength} characters");
                 }
-                if (maxFeedbackLength > BaseTestCreationConsts.ConclusionMaxFeedbackLength) {
+                if (MaxFeedbackLength > BaseTestCreationConsts.ConclusionMaxFeedbackLength) {
                     return new Err("Maximal feedback length cannot be more than " +
                         $"{BaseTestCreationConsts.ConclusionMaxFeedbackLength} characters");
                 }
