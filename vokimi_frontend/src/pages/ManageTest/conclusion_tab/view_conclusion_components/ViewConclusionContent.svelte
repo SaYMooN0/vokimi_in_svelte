@@ -2,6 +2,7 @@
     import type { ManageTestConclusionTabData } from "../../../../ts/page_classes/manage_test_page/conclusion/ManageTestConclusionTabData";
     import ConclusionDataEditingDialog from "./ConclusionDataEditingDialog.svelte";
     import ConclusionDataSection from "./ConclusionDataSection.svelte";
+    import FeedbackRecordsSection from "./FeedbackRecordsSection.svelte";
     import FeedbackSettingsEditingDialog from "./FeedbackSettingsEditingDialog.svelte";
     import FeedbackSettingsSection from "./FeedbackSettingsSection.svelte";
 
@@ -30,6 +31,9 @@
                     .accompanyingText}
                 maxLength={conclusionData.feedbackData.maxLength}
             />
+            <FeedbackRecordsSection
+                records={conclusionData.feedbackData.records}
+            />
             <FeedbackSettingsEditingDialog
                 feedbackAccompanyingText={conclusionData.feedbackData
                     .accompanyingText}
@@ -44,6 +48,21 @@
     .conclusion-container {
     }
     .conclusion-container :global(.section-subheader) {
-        font-size: 22px;
+        font-size: 24px;
+        font-weight: 600;
+        margin-top: 24px;
+        margin-bottom: 12px;
+    }
+    .conclusion-container :global(.prop-name-val-p) {
+        margin: 12px 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        font-size: 20px;
+    }
+    .conclusion-container :global(.prop-name) {
+    }
+    .conclusion-container :global(.prop-val) {
     }
 </style>

@@ -3,4 +3,4 @@
     export let maxLength: number;
 </script>
 
-<p class="section-subheader">FeedbackSettings</p>
+<p class="section-subheader">Feedback Settings</p>

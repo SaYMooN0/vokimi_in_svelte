@@ -25,7 +25,7 @@
     {/if}
 </p>
 <p class="prop-name-val-p">
-    <span class="prop-name">Text feedback:</span>
+    <span class="prop-name">Test feedback:</span>
     <span class="prop-val">
         {anyFeedback ? "Enabled" : "Disabled"}
     </span>
