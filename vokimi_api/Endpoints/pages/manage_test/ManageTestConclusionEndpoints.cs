@@ -44,31 +44,11 @@ namespace vokimi_api.Endpoints.pages.manage_test
                 if (t.Conclusion is null) { return Results.Ok(new { TestHasConclusion = false }); }
 
 
-
-                var resolver = new DefaultJsonTypeInfoResolver();
-                resolver.Modifiers.Add((ti) => {
-                    if (ti.Type == typeof(ITestFeedbackRecordData)) {
-                        ti.PolymorphismOptions = new JsonPolymorphismOptions {
-                            TypeDiscriminatorPropertyName = "Type",
-                            DerivedTypes = {
-                                new JsonDerivedType(typeof(UserFeedbackRecordData), "UserFeedback") ,
-                                new JsonDerivedType(typeof(AnonymousFeedbackRecordData), "AnonymousFeedback")
-                            }
-                        };
-                    }
-
-                });
-
-                var options = new JsonSerializerOptions {
-                    TypeInfoResolver = resolver,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                var data = new {
+                var response = new {
                     TestHasConclusion = true,
                     ConclusionData = ManageTestConclusionTabDataResponse.FromTest(t)
                 };
-                return Results.Json(data, options, statusCode: 200);
+                return Results.Ok(response);
             }
         }
         internal static async Task<IResult> DeleteConclusion(

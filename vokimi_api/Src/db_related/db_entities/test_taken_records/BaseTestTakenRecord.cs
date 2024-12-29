@@ -11,7 +11,7 @@ namespace vokimi_api.Src.db_related.db_entities
         DateTime Date
     )
     {
-        public virtual BaseTest Test { get; protected set; }
-        public virtual AppUser? User { get; protected set; }
+        public virtual BaseTest Test { get; init; }
+        public virtual AppUser? User { get; init; }
     }
 }

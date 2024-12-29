@@ -7,31 +7,31 @@
     export let filter: FeedbackRecordsFilter = new FeedbackRecordsFilter();
 
     export let filterFeedbackRecords: (filter: FeedbackRecordsFilter) => void;
+    let isHidden = true;
 </script>
 
-<div class="feedback-filter">
-    <div>
-        <label for="dateFrom">Date From:</label>
-        <input type="date" id="dateFrom" bind:value={filter.dateFrom} />
+<div class="feedback-filter" class:is-hidden={isHidden}>
+    <div class="filter-line">
+        <span class="filter-label">Creation Date</span>
+        <div>
+            <label for="dateFrom">From:</label>
+            <input type="date" id="dateFrom" bind:value={filter.dateFrom} />
+            <label for="dateTo">To:</label>
+            <input type="date" id="dateTo" bind:value={filter.dateTo} />
+        </div>
+    </div>
+    <div class="filter-line">
+        <span class="filter-label">Feedback length</span>
+        <div>
+            <label for="minLength">from:</label>
+            <input type="number" id="minLength" bind:value={filter.minLength} />
+            <label for="minLength">To:</label>
+            <input type="number" id="minLength" bind:value={filter.minLength} />
+        </div>
     </div>
 
-    <div>
-        <label for="dateTo">Date To:</label>
-        <input type="date" id="dateTo" bind:value={filter.dateTo} />
-    </div>
-
-    <div>
-        <label for="minLength">Minimum Length:</label>
-        <input type="number" id="minLength" bind:value={filter.minLength} />
-    </div>
-
-    <div>
-        <label for="maxLength">Maximum Length:</label>
-        <input type="number" id="maxLength" bind:value={filter.maxLength} />
-    </div>
-
-    <div>
-        <label>Feedback Type:</label>
+    <div class="filter-line">
+        <span class="filter-label">Feedback Type:</span>
         {#each Object.entries(FeedbackTypesForFilter) as [key, feedbackType]}
             <div>
                 <input
@@ -46,8 +46,34 @@
         {/each}
     </div>
 
-    <button on:click={() => filterFeedbackRecords(filter)}>Apply</button>
+    <button on:click={() => filterFeedbackRecords(filter)} class="apply-btn">
+        Apply
+    </button>
 </div>
 
+<button on:click={() => (isHidden = !isHidden)}>
+    {isHidden ? "Show Filter" : "Hide Filter"}
+</button>
+
 <style>
+    .filter-line {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+    }
+    .filter-line label {
+        margin-left: 12px;
+        color: var(--text-faded);
+        font-size: 18px;
+    }
+    .apply-btn {
+        background-color: var(--primary);
+        color: var(--text);
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
 </style>

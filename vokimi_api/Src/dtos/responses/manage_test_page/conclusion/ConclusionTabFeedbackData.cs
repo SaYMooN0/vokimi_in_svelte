@@ -6,13 +6,13 @@ namespace vokimi_api.Src.dtos.responses.manage_test_page.conclusion
     public record class ConclusionTabFeedbackData(
         string FeedbackAccompanyingText,
         uint FeedbackMaxLength,
-        ITestFeedbackRecordData[] FeedbackRecords
+        FeedbackRecordData[] FeedbackRecords
     )
     {
         public static ConclusionTabFeedbackData FromTest(BaseTest test) => new(
             test.Conclusion.FeedbackAccompanyingText,
             test.Conclusion.MaxFeedbackLength,
-            test.FeedbackRecords.Select(ITestFeedbackRecordData.FromTestFeedbackRecord).ToArray()
+            test.FeedbackRecords.Select(FeedbackRecordData.FromTestFeedbackRecord).ToArray()
         );
     }
 

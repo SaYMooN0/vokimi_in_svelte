@@ -1,4 +1,4 @@
-import { AnonymousFeedbackRecord, UserFeedbackRecord } from "./FeedbackRecordData";
+import type { FeedbackRecordData } from "./FeedbackRecordData";
 
 export enum FeedbackTypesForFilter {
     All = "All",
@@ -13,8 +13,8 @@ export class FeedbackRecordsFilter {
     maxLength: number | null = null
     feedbackType: FeedbackTypesForFilter = FeedbackTypesForFilter.All;
     applyFilter(
-        records: (AnonymousFeedbackRecord | UserFeedbackRecord)[]
-    ): (AnonymousFeedbackRecord | UserFeedbackRecord)[] {
+        records: FeedbackRecordData[]
+    ): FeedbackRecordData[] {
         return records.filter((record) => {
             if (
                 (this.dateFrom && new Date(record.date) < new Date(this.dateFrom)) ||
@@ -32,13 +32,13 @@ export class FeedbackRecordsFilter {
 
             if (
                 this.feedbackType === FeedbackTypesForFilter.Anonymous &&
-                record instanceof UserFeedbackRecord
+                record.authorId === null
             ) {
                 return false;
             }
             if (
                 this.feedbackType === FeedbackTypesForFilter.WithAuthor &&
-                record instanceof AnonymousFeedbackRecord
+                record.authorId !== null
             ) {
                 return false;
             }

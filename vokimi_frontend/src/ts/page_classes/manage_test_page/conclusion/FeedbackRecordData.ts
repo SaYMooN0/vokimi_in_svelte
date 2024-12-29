@@ -1,26 +1,9 @@
-export interface FeedbackRecordData {
+
+export class FeedbackRecordData {
     recordId: string;
     text: string;
     date: Date;
-}
-
-export class AnonymousFeedbackRecord implements FeedbackRecordData {
-    recordId: string;
-    text: string;
-    date: Date;
-
-    constructor(recordId: string, text: string, date: Date | string) {
-        this.recordId = recordId;
-        this.text = text;
-        this.date = date instanceof Date ? date : new Date(date);
-    }
-}
-
-export class UserFeedbackRecord implements FeedbackRecordData {
-    recordId: string;
-    text: string;
-    date: Date;
-    authorId: string;
+    authorId: string | null;
     authorUsername: string;
     authorProfilePicture: string;
 
@@ -28,7 +11,7 @@ export class UserFeedbackRecord implements FeedbackRecordData {
         recordId: string,
         text: string,
         date: Date | string,
-        authorId: string,
+        authorId: string | null,
         authorUsername: string,
         authorProfilePicture: string
     ) {
@@ -38,5 +21,8 @@ export class UserFeedbackRecord implements FeedbackRecordData {
         this.authorId = authorId;
         this.authorUsername = authorUsername;
         this.authorProfilePicture = authorProfilePicture;
+    }
+    isAnonymous(): boolean {
+        return this.authorId === null;
     }
 }

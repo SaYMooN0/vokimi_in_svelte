@@ -21,6 +21,11 @@
         conclusionText={conclusionData.conclusionText}
         conclusionImage={conclusionData.conclusionImage}
         anyFeedback={conclusionData.anyFeedback}
+        updateParentElement={(text, image, allowFeedback) => {
+            conclusionData.conclusionText = text;
+            conclusionData.conclusionImage = image;
+            conclusionData.anyFeedback = allowFeedback;
+        }}
     />
     {#if conclusionData.anyFeedback}
         {#if conclusionData.feedbackData === null}
@@ -39,6 +44,14 @@
                     .accompanyingText}
                 maxLength={conclusionData.feedbackData.maxLength}
                 {testId}
+                updateParentElement={(accompanyingText, maxLength) => {
+                    if (conclusionData.feedbackData === null) {
+                        return;
+                    }
+                    conclusionData.feedbackData.accompanyingText =
+                        accompanyingText;
+                    conclusionData.feedbackData.maxLength = maxLength;
+                }}
             />
         {/if}
     {/if}
@@ -46,6 +59,9 @@
 
 <style>
     .conclusion-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
     }
     .conclusion-container :global(.section-subheader) {
         font-size: 24px;
