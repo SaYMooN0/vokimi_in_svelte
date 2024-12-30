@@ -22,6 +22,8 @@ namespace vokimi_api.EndpointsMappers.pages
             app.MapPost("/manageTest/conclusion/updateTestConlusion", ManageTestConclusionEndpoints.UpdateConclusionForTest);
             app.MapPost("/manageTest/conclusion/enableTestFeedback/{testIdString}", ManageTestConclusionEndpoints.EnableTestFeedback);
             app.MapPost("/manageTest/conclusion/disableTestFeedback/{testIdString}", ManageTestConclusionEndpoints.DisableTestFeedback);
+            app.MapGet("/manageTest/conclusion/feedbackRecords/{testIdString}", ManageTestConclusionEndpoints.GetTestFeedbackRecords);
+            app.MapPost("/manageTest/conclusion/filteredFeedbackRecords/{testIdString}", ManageTestConclusionEndpoints.GetTestFeedbackFilteredRecords);
 
             app.MapGet("/manageTest/statistics/tabData/{testIdString}", ManageTestStatisticsEndpoints.GetTabData);
 

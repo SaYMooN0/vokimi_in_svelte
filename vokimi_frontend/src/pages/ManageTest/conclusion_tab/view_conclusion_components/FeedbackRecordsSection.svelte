@@ -1,14 +1,54 @@
 <script lang="ts">
+    import { getErrorFromResponse } from "../../../../ts/ErrorResponse";
     import type { FeedbackRecordData } from "../../../../ts/page_classes/manage_test_page/conclusion/FeedbackRecordData";
+    import type { FeedbackRecordsFilter } from "../../../../ts/page_classes/manage_test_page/conclusion/FeedbackRecordsFilter";
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
+    import FeedbackRecordsFilterComponent from "./feedback_records_section.svelte/FeedbackRecordsFilterComponent.svelte";
+    export let testId: string;
 
-    export let records: FeedbackRecordData[];
+    let records: FeedbackRecordData[] = [];
+    let fetchError: string;
+    async function fetchRecords() {
+        const response = await fetch(
+            "/manageTest/conclusion/feedbackRecords/" + testId,
+        );
+        if (response.ok) {
+            records = await response.json();
+        } else if (response.status === 400) {
+            fetchError = await getErrorFromResponse(response);
+        } else {
+            fetchError = "Unable to fetch feedback records";
+        }
+    }
+    async function fetchFilteredRecords(filter: FeedbackRecordsFilter) {
+        const response = await fetch(
+            "/manageTest/conclusion/filteredFeedbackRecords/" + testId,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(filter),
+            },
+        );
+        if (response.ok) {
+            records = await response.json();
+        } else if (response.status === 400) {
+            fetchError = await getErrorFromResponse(response);
+        } else {
+            fetchError = "Unable to fetch filtered feedback records";
+        }
+    }
 </script>
 
 <div class="feedback-records-section">
     <p class="section-subheader">Users' feedback</p>
+    <FeedbackRecordsFilterComponent
+        fetchFilteredRecords={(filter) => fetchFilteredRecords(filter)}
+        fetchRecords={() => fetchRecords()}
+    />
     {#if records.length == 0}
-        <p class="no-records-p">Users have not given any feedback yet</p>
+        <p class="no-records-p">No feedback found</p>
     {:else}
         {#each records as record}
             <div class="feedback-record">
@@ -20,7 +60,10 @@
                 {#if record.isAnonymous()}
                     <span class="username">{record.authorUsername}</span>
                 {:else}
-                    <a href="/user/{record.authorId}" class="username user-link">
+                    <a
+                        href="/user/{record.authorId}"
+                        class="username user-link"
+                    >
                         {record.authorUsername}
                     </a>
                 {/if}

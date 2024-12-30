@@ -5,14 +5,12 @@ namespace vokimi_api.Src.dtos.responses.manage_test_page.conclusion
 {
     public record class ConclusionTabFeedbackData(
         string FeedbackAccompanyingText,
-        uint FeedbackMaxLength,
-        FeedbackRecordData[] FeedbackRecords
+        uint FeedbackMaxLength
     )
     {
         public static ConclusionTabFeedbackData FromTest(BaseTest test) => new(
             test.Conclusion.FeedbackAccompanyingText,
-            test.Conclusion.MaxFeedbackLength,
-            test.FeedbackRecords.Select(FeedbackRecordData.FromTestFeedbackRecord).ToArray()
+            test.Conclusion.MaxFeedbackLength
         );
     }
 

@@ -6,7 +6,15 @@
 
     export let filter: FeedbackRecordsFilter = new FeedbackRecordsFilter();
 
-    export let filterFeedbackRecords: (filter: FeedbackRecordsFilter) => void;
+    export let fetchFilteredRecords: (
+        filter: FeedbackRecordsFilter,
+    ) => Promise<void>;
+    export let fetchRecords: () => Promise<void>;
+
+    async function clearFilter() {
+        filter = new FeedbackRecordsFilter();
+        await fetchRecords();
+    }
     let isHidden = true;
 </script>
 
@@ -45,10 +53,12 @@
             </div>
         {/each}
     </div>
-
-    <button on:click={() => filterFeedbackRecords(filter)} class="apply-btn">
-        Apply
-    </button>
+    <div class="buttons-container">
+        <button on:click={() => clearFilter()} class="clear-btn">Clear</button>
+        <button on:click={() => fetchFilteredRecords(filter)} class="apply-btn">
+            Apply
+        </button>
+    </div>
 </div>
 
 <button on:click={() => (isHidden = !isHidden)}>
@@ -56,6 +66,14 @@
 </button>
 
 <style>
+    .feedback-filter {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .is-hidden {
+        display: none;
+    }
     .filter-line {
         display: flex;
         flex-direction: row;

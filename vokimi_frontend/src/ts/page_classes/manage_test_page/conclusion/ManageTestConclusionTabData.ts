@@ -22,7 +22,10 @@ export class ManageTestConclusionTabData {
             data.conclusionText,
             data.conclusionImage,
             data.anyFeedback,
-            !data.anyFeedback ? null : ConclusionTabFeedbackData.fromResponseData(data.feedbackData)
+            !data.anyFeedback ? null : new ConclusionTabFeedbackData(
+                data.feedbackAccompanyingText,
+                data.feedbackMaxLength,
+            )
         );
     }
 }

@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 using vokimi_api.Src.dtos.requests.manage_test;
 using vokimi_api.Src;
 using vokimi_api.Src.dtos.shared;
+using static System.Net.Mime.MediaTypeNames;
+using vokimi_api.Src.db_related.db_entities.tests_related;
 
 namespace vokimi_api.Endpoints.pages.manage_test
 {
@@ -199,6 +201,102 @@ namespace vokimi_api.Endpoints.pages.manage_test
                 }
                 return ResultsHelper.BadRequest.WithErr("Not implemented");
             }
+        }
+        internal static async Task<IResult> GetTestFeedbackRecords(
+            string testIdString,
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext
+        ) {
+            if (!Guid.TryParse(testIdString, out var testGuid)) {
+                return ResultsHelper.BadRequest.UnknownTest();
+            }
+            TestId testId = new(testGuid);
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                BaseTest? test = await db.TestsSharedInfo
+                    .Include(t => t.FeedbackRecords)
+                        .ThenInclude(fr => fr.AppUser)
+                    .Include(t => t.Conclusion)
+                    .FirstOrDefaultAsync(t => t.Id == testId);
+                if (test is null) {
+                    return ResultsHelper.BadRequest.UnknownTest();
+                }
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
+                    return ResultsHelper.BadRequest.WithErr("You don't have access to this page");
+                }
+                if (test.Conclusion is null) {
+                    return Results.BadRequest("This test doesn't have conclusion so it doesn't have feedback");
+                }
+
+                var response = test.FeedbackRecords.Select(FeedbackRecordData.FromTestFeedbackRecord).ToArray();
+                return Results.Ok(response);
+            }
+        }
+        internal static async Task<IResult> GetTestFeedbackFilteredRecords(
+            string testIdString,
+            [FromBody] FeedbackRecordsFilter filter,
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext
+        ) {
+            if (!Guid.TryParse(testIdString, out var testGuid)) {
+                return ResultsHelper.BadRequest.UnknownTest();
+            }
+
+            var filterErr = filter.CheckForErr();
+            if (filterErr.NotNone()) {
+                return ResultsHelper.BadRequest.WithErr(filterErr);
+            }
+
+            var testId = new TestId(testGuid);
+
+            using (var db = await dbFactory.CreateDbContextAsync()) {
+                var test = await db.TestsSharedInfo
+                    .Include(t => t.FeedbackRecords)
+                        .ThenInclude(fr => fr.AppUser)
+                    .Include(t => t.Conclusion)
+                    .FirstOrDefaultAsync(t => t.Id == testId);
+
+                if (test == null || !httpContext.IsAuthenticatedUserIsTestCreator(test) || test.Conclusion == null) {
+                    return ResultsHelper.BadRequest.UnknownTest();
+                }
+
+                var query = FormFilteredFeedbackQuery(db, filter, testId);
+
+                var filteredFeedbackRecords = query
+                    .Select(FeedbackRecordData.FromTestFeedbackRecord)
+                    .ToArray();
+
+                return Results.Ok(filteredFeedbackRecords);
+            }
+        }
+
+        private static IQueryable<TestFeedbackRecord> FormFilteredFeedbackQuery(
+            AppDbContext db,
+            FeedbackRecordsFilter filter,
+            TestId testId
+        ) {
+            var query = db.TestFeedbackRecords.AsQueryable();
+
+            if (filter.MinLength.HasValue) {
+                query = query.Where(fr => fr.Text.Length >= filter.MinLength);
+            }
+            if (filter.MaxLength.HasValue) {
+                query = query.Where(fr => fr.Text.Length <= filter.MaxLength);
+            }
+            if (filter.FeedbackType != FeedbackRecordsFilter.FeedbackType_All) {
+                query = filter.FeedbackType switch {
+                    FeedbackRecordsFilter.FeedbackType_Anonymous => query.Where(fr => fr.AppUser == null),
+                    FeedbackRecordsFilter.FeedbackType_WithAuthor => query.Where(fr => fr.AppUser != null),
+                    _ => query
+                };
+            }
+            if (filter.DateFrom.HasValue) {
+                query = query.Where(fr => fr.CreatedAt >= filter.DateFrom.Value);
+            }
+            if (filter.DateTo.HasValue) {
+                query = query.Where(fr => fr.CreatedAt <= filter.DateTo.Value);
+            }
+
+            return query.Where(fr => fr.TestId == testId);
         }
     }
 }
