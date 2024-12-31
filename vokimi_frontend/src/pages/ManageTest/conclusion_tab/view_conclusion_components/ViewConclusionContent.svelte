@@ -36,7 +36,7 @@
                     .accompanyingText}
                 maxLength={conclusionData.feedbackData.maxLength}
             />
-            <FeedbackRecordsSection />
+            <FeedbackRecordsSection {testId} />
             <FeedbackSettingsEditingDialog
                 feedbackAccompanyingText={conclusionData.feedbackData
                     .accompanyingText}

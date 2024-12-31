@@ -22,7 +22,6 @@
             const data = await response.json();
             viewerFollowsOwner = data.viewerFollowsUser;
             ownerFollowsViewer = data.userFollowsViewer;
-            console.log(data);
         } else if (response.status === 400) {
             fetchingErr = await getErrorFromResponse(response);
         } else {

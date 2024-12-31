@@ -5,17 +5,11 @@ using vokimi_api.Src.db_related.db_entities_ids;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.extension_classes;
 using vokimi_api.Src.dtos.responses.manage_test_page.conclusion;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Text.Json.Serialization.Metadata;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using System.Threading.Tasks;
 using vokimi_api.Src.db_related.db_entities.draft_published_tests_shared;
 using Microsoft.AspNetCore.Mvc;
 using vokimi_api.Src.dtos.requests.manage_test;
 using vokimi_api.Src;
 using vokimi_api.Src.dtos.shared;
-using static System.Net.Mime.MediaTypeNames;
 using vokimi_api.Src.db_related.db_entities.tests_related;
 
 namespace vokimi_api.Endpoints.pages.manage_test
@@ -290,10 +284,10 @@ namespace vokimi_api.Endpoints.pages.manage_test
                 };
             }
             if (filter.DateFrom.HasValue) {
-                query = query.Where(fr => fr.CreatedAt >= filter.DateFrom.Value);
+                query = query.Where(fr => fr.CreatedAt >= filter.DateFrom.Value.ToUniversalTime());
             }
             if (filter.DateTo.HasValue) {
-                query = query.Where(fr => fr.CreatedAt <= filter.DateTo.Value);
+                query = query.Where(fr => fr.CreatedAt <= filter.DateTo.Value.ToUniversalTime());
             }
 
             return query.Where(fr => fr.TestId == testId);

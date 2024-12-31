@@ -4,7 +4,7 @@
         FeedbackTypesForFilter,
     } from "../../../../../ts/page_classes/manage_test_page/conclusion/FeedbackRecordsFilter";
 
-    export let filter: FeedbackRecordsFilter = new FeedbackRecordsFilter();
+    let filter: FeedbackRecordsFilter = new FeedbackRecordsFilter();
 
     export let fetchFilteredRecords: (
         filter: FeedbackRecordsFilter,
@@ -34,24 +34,26 @@
             <label for="minLength">from:</label>
             <input type="number" id="minLength" bind:value={filter.minLength} />
             <label for="minLength">To:</label>
-            <input type="number" id="minLength" bind:value={filter.minLength} />
+            <input type="number" id="minLength" bind:value={filter.maxLength} />
         </div>
     </div>
 
     <div class="filter-line">
         <span class="filter-label">Feedback Type:</span>
-        {#each Object.entries(FeedbackTypesForFilter) as [key, feedbackType]}
-            <div>
-                <input
-                    type="radio"
-                    id={key}
-                    name="feedbackType"
-                    bind:group={filter.feedbackType}
-                    value={feedbackType}
-                />
-                <label for={key}>{feedbackType}</label>
-            </div>
-        {/each}
+        <div class="feedback-type">
+            {#each Object.entries(FeedbackTypesForFilter) as [key, feedbackType]}
+                <div>
+                    <input
+                        type="radio"
+                        id={key}
+                        name="feedbackType"
+                        bind:group={filter.feedbackType}
+                        value={feedbackType}
+                    />
+                    <label for={key}>{feedbackType}</label>
+                </div>
+            {/each}
+        </div>
     </div>
     <div class="buttons-container">
         <button on:click={() => clearFilter()} class="clear-btn">Clear</button>
@@ -75,10 +77,10 @@
         display: none;
     }
     .filter-line {
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: 240px 1fr;
         align-items: center;
-        justify-content: space-between;
+
         gap: 6px;
     }
     .filter-line label {

@@ -23,8 +23,8 @@ export class ManageTestConclusionTabData {
             data.conclusionImage,
             data.anyFeedback,
             !data.anyFeedback ? null : new ConclusionTabFeedbackData(
-                data.feedbackAccompanyingText,
-                data.feedbackMaxLength,
+                data.feedbackData.accompanyingText,
+                data.feedbackData.maxLength,
             )
         );
     }

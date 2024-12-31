@@ -4,8 +4,8 @@ using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shar
 namespace vokimi_api.Src.dtos.responses.manage_test_page.conclusion
 {
     public record class ConclusionTabFeedbackData(
-        string FeedbackAccompanyingText,
-        uint FeedbackMaxLength
+        string AccompanyingText,
+        uint MaxLength
     )
     {
         public static ConclusionTabFeedbackData FromTest(BaseTest test) => new(

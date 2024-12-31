@@ -37,7 +37,6 @@ async function fetchAuthData(): Promise<void> {
             authData.set(null);
         }
     } catch (error) {
-        console.error('Failed to fetch auth data', error);
         authData.set(null);
     }
 }
