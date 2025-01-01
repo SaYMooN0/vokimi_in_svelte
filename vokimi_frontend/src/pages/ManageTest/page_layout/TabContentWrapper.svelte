@@ -20,7 +20,7 @@
     }
 </script>
 
-<div class="tab-content" class:activeTabContent={isActive}>
+<div class="tab-content-wrapper" class:activeTabContent={isActive}>
     {#if isActive}
         {#if dataFetchingErr.notNone()}
             <TabDataFetchingErrDiv
@@ -34,10 +34,10 @@
 </div>
 
 <style>
-    .tab-content {
+    .tab-content-wrapper {
         display: none;
     }
-    .tab-content.activeTabContent {
+    .tab-content-wrapper.activeTabContent {
         display: block;
         box-sizing: border-box;
         padding: 4px 12px;

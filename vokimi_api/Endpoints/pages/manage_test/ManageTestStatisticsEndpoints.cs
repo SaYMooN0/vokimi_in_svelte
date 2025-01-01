@@ -7,7 +7,7 @@ using vokimi_api.Src.dtos.responses.manage_test_page.tags;
 using vokimi_api.Src.extension_classes;
 using vokimi_api.Src.enums;
 using vokimi_api.Src.db_related.db_entities.published_tests.general_test_related;
-using vokimi_api.Src.dtos.responses.manage_test_page.statistics;
+using vokimi_api.Src.dtos.responses.manage_test_page.statistics.templates_shared;
 
 namespace vokimi_api.Endpoints.pages.manage_test
 {
@@ -48,7 +48,7 @@ namespace vokimi_api.Endpoints.pages.manage_test
             if (test is null) {
                 return ResultsHelper.BadRequest.UnknownTest();
             }
-            return Results.Ok(TestStatisticsData.ForGeneralTest(test));
+            return Results.Ok(GeneralTestStatisticsData.FromTest(test));
         }
     }
 }
