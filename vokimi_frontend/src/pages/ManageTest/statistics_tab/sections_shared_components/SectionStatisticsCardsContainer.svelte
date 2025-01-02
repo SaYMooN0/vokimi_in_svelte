@@ -43,10 +43,13 @@
         box-sizing: border-box;
         position: relative;
     }
-    .card-label {
-        font-size: 20px;
+    .card span {
+        cursor: default;
         color: var(--primary);
         text-align: center;
+    }
+    .card-label {
+        font-size: 20px;
         margin: auto 0;
         display: block;
         height: fit-content;
@@ -54,8 +57,6 @@
     .card-value {
         font-size: 38px;
         font-weight: 600;
-        color: var(--primary);
-        text-align: center;
     }
     .card:hover .make-post-button {
         opacity: 1 !important;

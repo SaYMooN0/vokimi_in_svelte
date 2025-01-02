@@ -1,6 +1,5 @@
 ﻿using vokimi_api.Src.db_related.db_entities.tests_related;
 using vokimi_api.Src.db_related.db_entities_ids;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace vokimi_api.Src.dtos.responses.manage_test_page.statistics.templates_shared
 {
