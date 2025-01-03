@@ -5,13 +5,7 @@
 
     export let receivedResultId: string;
     export let allResults: GeneralTestTakenResultVm[];
-    function getResultImage(res: GeneralTestTakenResultVm) {
-        const resKey = StringUtils.isNullOrWhiteSpace(res.image)
-            ? "common/result.webp"
-            : (res.image ?? "");
 
-        return ImgUtils.imgUrl(resKey);
-    }
 </script>
 
 <h2 class="all-results-label">All possible results:</h2>
@@ -19,17 +13,17 @@
     <div class="result" class:received-res={res.id == receivedResultId}>
         <img
             class="res-image unselectable"
-            src={getResultImage(res)}
+            src={ImgUtils.imgUrl(res.image)}
             alt="results"
         />
         <div class="res-name-with-percentage">
-            <label class="res-name">{res.name}</label>
+            <span class="res-name">{res.name}</span>
             <div class="res-percentage unselectable">
-                <label>{res.receivingPercentage}%</label>
+                <span>{res.receivingPercentage}%</span>
                 <div class="percentage-bar">
                     <div
                         class="percentage-fill"
-                        style="width: {res.receivingPercentage}%"
+                        style="width: {res.receivingPercentage}%;"
                     ></div>
                 </div>
             </div>
@@ -48,7 +42,7 @@
         margin: 4px 0;
         display: grid;
         height: 100px;
-        width: 360px;
+        width: 420px;
         grid-template-columns: 80px 1fr;
         align-items: center;
         padding: 4px 8px;
@@ -78,12 +72,12 @@
     .res-percentage {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 4px;
     }
-    .res-percentage label {
+    .res-percentage span {
         font-size: 0.9rem;
         color: var(--text-faded);
-        width: 40px;
+        width: 60px;
         text-align: right;
     }
     .percentage-bar {

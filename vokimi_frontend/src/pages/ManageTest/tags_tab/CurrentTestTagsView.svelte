@@ -3,7 +3,7 @@
     import TagsChangingDialog from "./TagsChangingDialog.svelte";
 
     export let tags: string[];
-    export let updateParentElement: () => Promise<void>;
+    export let updateParentElement: () => void;
     export let testId;
     export let maxTagsCount: number;
     let tagsChangingDialog: TagsChangingDialog;

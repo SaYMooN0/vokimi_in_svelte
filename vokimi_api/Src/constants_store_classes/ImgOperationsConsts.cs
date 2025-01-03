@@ -23,6 +23,8 @@
             TestCoverFileName = "cover",
             QuestionImgFileName = "q_img";
         public static string DefaultTestCoverImg => $"{CommonFolder}/test_cover_default.webp";
+        public static string DefaultTestResultImg => $"{CommonFolder}/result.webp";
+
         public static string DefaultProfilePicture => $"{CommonFolder}/default_profile_picture.webp";
         public static string AnonymousProfilePicture => $"{CommonFolder}/anonymous_profile_picture.webp";
 

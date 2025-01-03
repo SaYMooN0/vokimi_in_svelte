@@ -2,22 +2,19 @@
     import { ImgUtils } from "../../../../ts/utils/ImgUtils";
     import { StringUtils } from "../../../../ts/utils/StringUtils";
 
-
     export let receivedResultName: string;
-    export let receivedResultImage: string | null;
+    export let receivedResultImage: string;
     export let receivedResultText: string;
 </script>
 
 <div class="received-res-view">
     <p class="your-res-label">Your result:</p>
     <p class="res-name">{receivedResultName}</p>
-    {#if !StringUtils.isNullOrWhiteSpace(receivedResultImage)}
-        <img
-            class="received-img"
-            src={ImgUtils.imgUrl(receivedResultImage ?? "")}
-            alt="received-result"
-        />
-    {/if}
+    <img
+        class="received-img"
+        src={ImgUtils.imgUrl(receivedResultImage)}
+        alt="received-result"
+    />
     <p class="res-text">{receivedResultText}</p>
 </div>
 

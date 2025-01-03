@@ -44,6 +44,8 @@ namespace vokimi_api.Endpoints.pages.manage_test
                 .Include(t => t.Ratings)
                 .Include(t => t.DiscussionsComments)
                 .Include(t => t.TestTakings)
+                .Include(t=>t.PossibleResults)
+                    .ThenInclude(pr=>pr.TestTakenRecordsWithThisResult)
                 .FirstOrDefaultAsync(t => t.Id == testId);
             if (test is null) {
                 return ResultsHelper.BadRequest.UnknownTest();

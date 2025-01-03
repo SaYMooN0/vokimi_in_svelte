@@ -1,11 +1,11 @@
 export class GeneralTestTakenReceivedResultData {
     receivedResultName: string;
-    receivedResultImage: string | null;
+    receivedResultImage: string;
     receivedResultText: string;
     allResult: GeneralTestTakenResultVm[];
     constructor(
         receivedResultName: string,
-        receivedResultImage: string | null,
+        receivedResultImage: string,
         ReceivedResultText: string,
         allResult: GeneralTestTakenResultVm[]
     ) {
@@ -19,12 +19,12 @@ export class GeneralTestTakenReceivedResultData {
 export class GeneralTestTakenResultVm {
     id: string;
     name: string;
-    image: string | null;
+    image: string;
     receivingPercentage: number;
     constructor(
         id: string,
         name: string,
-        image: string | null,
+        image: string,
         receivingPercentage: number
     ) {
         this.id = id;

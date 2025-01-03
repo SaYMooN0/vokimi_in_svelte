@@ -7,7 +7,7 @@
     import { StringUtils } from "../../../ts/utils/StringUtils";
 
     export let testId: string;
-    export let updateParentElement: () => Promise<void>;
+    export let updateParentElement: () => void;
     export let maxTagsCount;
     let chosenTags: string[] = [];
     let dialogElement: BaseDialog;
@@ -35,7 +35,7 @@
         );
         if (response.ok) {
             dialogElement.close();
-            await updateParentElement();
+            updateParentElement();
         } else if (response.status === 400) {
             errorMessage = await getErrorFromResponse(response);
         } else {

@@ -7,6 +7,8 @@ namespace vokimi_api.EndpointsMappers.pages
         internal static void MapAll(WebApplication app) {
             app.MapGet("/manageTest/overall/checkTestAccess/{testIdString}", ManageTestOverallEndpoints.CheckUserAccessToPage);
             app.MapGet("/manageTest/overall/tabData/{testIdString}", ManageTestOverallEndpoints.GetTabData);
+            app.MapPost("/manageTest/overall/changeTestPrivacy/{testIdString}", ManageTestOverallEndpoints.ChangeTestPrivacy);
+            app.MapPost("/manageTest/overall/changeTestDescription/{testIdString}", ManageTestOverallEndpoints.ChangeTestDescription);
 
             app.MapGet("/manageTest/tags/tabData/{testIdString}", ManageTestTagsEndpoints.GetTabData);
             app.MapPost("/manageTest/tags/setTestTags/{testIdString}", ManageTestTagsEndpoints.UpdateTestTags);

@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using vokimi_api.Helpers;
 using vokimi_api.Src.db_related;
 using vokimi_api.Src.db_related.db_entities.published_tests.published_tests_shared;
 using vokimi_api.Src.db_related.db_entities_ids;
+using vokimi_api.Src.dtos.responses.manage_test_page.overall;
 using vokimi_api.Src.extension_classes;
 
 namespace vokimi_api.Endpoints.pages.manage_test
@@ -40,16 +42,34 @@ namespace vokimi_api.Endpoints.pages.manage_test
             }
             TestId testId = new(testGuid);
             using (var db = await dbFactory.CreateDbContextAsync()) {
-                BaseTest? t = await db.TestsSharedInfo
+                BaseTest? test = await db.TestsSharedInfo
+                    .Include(t => t.StylesSheet)
                     .FirstOrDefaultAsync(t => t.Id == testId);
-                if (t is null) {
+                if (test is null) {
                     return ResultsHelper.BadRequest.UnknownTest();
                 }
-                if (!httpContext.IsAuthenticatedUserIsTestCreator(t)) {
+                if (!httpContext.IsAuthenticatedUserIsTestCreator(test)) {
                     return ResultsHelper.BadRequest.WithErr("You don't have access to this page");
                 }
-                return ResultsHelper.BadRequest.WithErr("Overall tab not implemented");
+                return Results.Ok(ManageTestOverallTabDataResponse.FromTest(test));
+
             }
+        }
+        internal static async Task<IResult> ChangeTestDescription(
+            string testIdString,
+            [FromBody] string? newDescription,
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext
+        ) {
+            return ResultsHelper.BadRequest.WithErr("Not implemented");
+        }
+        internal static async Task<IResult> ChangeTestPrivacy(
+            string testIdString,
+            [FromBody] string newPrivacy,
+            IDbContextFactory<AppDbContext> dbFactory,
+            HttpContext httpContext
+        ) {
+            return ResultsHelper.BadRequest.WithErr("Not implemented");
         }
     }
 }
